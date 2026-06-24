@@ -1,0 +1,207 @@
+{
+  "id": "334_i_eu2_esa_bexus_gondola_frame",
+  "source": {
+    "catalog_ref": "I-EU2",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "balloon_gondola_experiment_frame",
+  "full_prompt": "Design the primary experiment mounting frame installed inside an ESA BEXUS stratospheric balloon gondola for a university team experiment. The BEXUS gondola external envelope is 1.16 m x 1.16 m x 0.84 m with the total lifted mass (gondola + all experiments + recovery hardware) of approximately 300 kg; the individual experiment allocation is 30 to 112 kg. For this design assume a 60 kg experiment allocation. The mounting frame is a bolted and welded aluminum 6082-T6 space frame built from 30 x 30 x 2 mm square tubing (E 70 GPa, yield 250 MPa, ultimate 290 MPa, density 2700 kg/m^3). Frame envelope: 800 x 800 x 500 mm (fitting inside the gondola interior with 50 mm margins). The frame carries a 60 kg experiment at its CoM 300 mm above the gondola mounting floor, mounted via four M8 A4-70 bolts to the gondola's standard T-slot deck. The gondola rises to 25-33 km altitude over ~2 hr, cruises for ~2-5 hr collecting data, then descends on parachute. Mission environment: stratospheric ambient pressure 1 kPa at float altitude, ambient temperature -80 C during ascent through tropopause, stabilizing to -50 C at float after solar-heated gondola interior reaches -20 C average; post-cutdown descent parachute shock and ground impact at 8 m/s on rough terrain. Load cases: (LC1) parachute opening shock: 5 g vertical on 60 kg experiment at frame CoM (equivalent static 2943 N distributed at the CoM); (LC2) ground-impact landing: 10 g on 60 kg (equivalent 5886 N distributed at CoM) with simultaneous 5 g horizontal skid; (LC3) handling / integration: 2 g vertical + 2 g lateral when the gondola is lifted by crane during integration; (LC4) thermal gradient at float: gondola-interior 10 C (solar warm from above) while experiment heat generation brings part of frame to 30 C at hot bosses - thermal delta 20 C; (LC5) cold-soak at -80 C during ascent: frame at -80 C with no mechanical load, but check material stiffness / CTE mismatch with M8 stainless fasteners (alu CTE 23.6e-6 /K, stainless 17.3e-6 /K); (LC6) wind gust during launch pre-release: 50 N horizontal applied at the top of the frame. Pass/fail: (R1) under LC1 and LC2 mechanical, max von Mises stress must remain below 166 MPa (250 / 1.5 yield FoS per BEXUS user-manual structural recommendation); (R2) frame dry mass (frame only, excluding experiment and fasteners) must not exceed 8 kg; (R3) first natural frequency of the loaded frame (with 60 kg experiment mass at CoM) must exceed 30 Hz to avoid coupling with gondola suspension rocking (typical 0.5 - 5 Hz); (R4) under LC4 thermal and LC5 cold-soak combined, bolt preload loss must remain below 15% (to keep experiment secured); (R5) under LC2 ground impact, CoM vertical deflection at the experiment attachment plate must remain below 3 mm. Fluid, radiation, and buckling analyses not primary gates. Deliverables: STEP AP242 frame, bolt table, mechanical FEA for LC1-LC3 + LC6, thermo-structural for LC4 and LC5, modal report, mass budget.",
+  "short_prompt": "Design the primary experiment mounting frame inside an ESA BEXUS stratospheric balloon gondola (gondola 1.16 x 1.16 x 0.84 m, lifted mass ~300 kg, experiment allocation 30-112 kg; take 60 kg here). Gondola rises to 25-33 km over ~2 hr, cruises 2-5 hr, then descends on parachute.\n\nEnvelope: welded 6082-T6 aluminum space frame, 30 x 30 x 2 mm square tube, inside 800 x 800 x 500 mm; 60 kg experiment at 300 mm above the gondola deck; 4 x M8 A4-70 bolts to the standard T-slot deck. Float at 1 kPa, -80 C ascent, -50 C float.\n\nFactor regime: BEXUS user-manual yield FoS 1.5 (allowable 166 MPa); frame dry mass <= 8 kg; loaded first frequency > 30 Hz (suspension-rock decouple); thermal + cold-soak bolt preload loss < 15%; CoM deflection at ground impact < 3 mm.\n\nLoad cases.\n- Parachute-opening shock: 5 g vertical on 60 kg at the CoM (2943 N distributed).\n- Ground-impact landing: 10 g vertical + 5 g horizontal skid on 60 kg (5886 N).\n- Handling / crane lift: 2 g vertical + 2 g lateral during integration.\n- Float thermal gradient: 10 C gondola interior to 30 C hot bosses (20 C delta).\n- Ascent cold-soak: -80 C uniform (CTE mismatch with stainless bolts, Al 23.6e-6 vs SST 17.3e-6).\n- Pre-release wind gust: 50 N horizontal at the top of the frame.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ESA BEXUS 60 kg Experiment Mounting Frame",
+    "brief": "6082-T6 space frame 800x800x500 mm for 60 kg experiment inside BEXUS gondola, 25-33 km altitude, parachute landing.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 800,
+        "y": 800,
+        "z": 500
+      },
+      "tubing_profile": "30 x 30 x 2 mm square",
+      "mount_bolts": {
+        "count": 4,
+        "size": "M8",
+        "grade": "A4-70"
+      },
+      "experiment_CoM_height_mm": 300
+    },
+    "material": {
+      "name": "Aluminum 6082-T6",
+      "properties": {
+        "E_GPa": 70,
+        "yield_MPa": 250,
+        "ultimate_MPa": 290,
+        "density_kg_m3": 2700,
+        "CTE_1e-6_per_K": 23.6
+      }
+    },
+    "environment": {
+      "float_altitude_km": [
+        25,
+        33
+      ],
+      "ambient_C_ascent": -80,
+      "ambient_C_float": -50,
+      "gondola_interior_C_float": 10,
+      "experiment_hotspot_C": 30,
+      "ground_impact_mps": 8
+    },
+    "experiment_allocation_kg": 60,
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "parachute_shock_5g",
+        "magnitude_g": 5,
+        "application": "60 kg at CoM"
+      },
+      {
+        "id": "LC2",
+        "name": "ground_impact",
+        "magnitude_g": 10,
+        "horizontal_g": 5,
+        "application": "60 kg at CoM + skid"
+      },
+      {
+        "id": "LC3",
+        "name": "handling_crane",
+        "magnitude_g": [
+          2,
+          2
+        ],
+        "application": "vertical + lateral"
+      },
+      {
+        "id": "LC4",
+        "name": "float_thermal_delta",
+        "delta_C": 20,
+        "application": "hot boss 30 C vs interior 10 C"
+      },
+      {
+        "id": "LC5",
+        "name": "cold_soak_-80C",
+        "application": "full frame cold soak, CTE mismatch with stainless bolts"
+      },
+      {
+        "id": "LC6",
+        "name": "launch_gust",
+        "magnitude_N": 50,
+        "application": "frame top horizontal"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 10,
+      "report_fields": [
+        "frame_mass_kg",
+        "max_stress_LC1_LC2_MPa",
+        "first_loaded_freq_Hz",
+        "bolt_preload_loss_LC4_LC5_pct",
+        "experiment_plate_deflection_LC2_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_mechanical",
+        "limit_MPa": 166,
+        "derivation": "250 / 1.5 yield FoS per BEXUS user manual",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "frame_dry_mass",
+        "limit_kg": 8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_loaded_freq",
+        "limit_Hz": 30,
+        "applies_to": [
+          "with_60kg_at_CoM"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "bolt_preload_loss",
+        "limit_pct": 15,
+        "applies_to": [
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "experiment_plate_deflection",
+        "limit_mm": 3,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam/shell for tubing; TET10 at bolted nodes",
+      "mesh_size_mm": 4,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x4 mech)",
+        "thermo-structural (LC4 + LC5)",
+        "modal with 60 kg point mass"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "fluid_analysis": "Ascent/descent aero reduced to parachute + gust loads.",
+      "radiation_analysis": "Solar heating captured via gondola interior boundary temperature.",
+      "buckling_analysis": "Stress gate bounds tubular frame."
+    }
+  },
+  "eval_coverage": [
+    "multi-environment FEA",
+    "thermal-structural bolt preload check",
+    "modal with lumped mass",
+    "parachute + impact envelope",
+    "mass budget"
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "id": "119_e9_ashrae_sdc_ahu_plenum",
+  "source": {
+    "catalog_ref": "E9",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "hvac_airflow",
+  "part_class": "ahu_supply_duct_plenum",
+  "full_prompt": "Design a monolithic 22-gauge (0.85 mm) G90 galvanized sheet-steel supply-air plenum for a variable-air-volume AHU serving the university HVAC plenum benchmark project building, meeting ASHRAE Standard 62.1-2022 (IEQ), 55-2023 (thermal comfort), 90.1-2022 (energy), and 189.1-2020 (high-performance). The plenum is treated as a single welded sheet-metal body (no slip-and-drive joints for this CAD prompt; integral welded corners). Rectangular cross section 800 mm x 500 mm, plenum axial length 1500 mm, one 600 mm x 400 mm main supply inlet on one end face, three 300 mm diameter round branch takeoff collars on the top, two 250 x 200 mm side takeoffs (left and right). The plenum is internally lined on the floor and two side walls with 25 mm fiberglass duct liner (k = 0.034 W/m-K, NRC 0.80, not part of the CAD body but its effect on acoustic and thermal BCs is applied). Bounding envelope 900 x 600 x 1600 mm. Material 22 ga G90 galvanized ASTM A653 CS Type B with yield 230 MPa, UTS 310 MPa, Young's modulus 200 GPa, Poisson's ratio 0.30, density 7850 kg/m^3, coating mass 275 g/m^2. Design basis: AHU supply flow 4500 L/s (9534 CFM) at 750 Pa static pressure, air temp 13 C cooling and 35 C heating, building neutral pressure +12 Pa. Per SMACNA HVAC Duct Construction Standards 4th Ed. pressure class 2 inch WG (500 Pa), leakage class 6, the plenum is operating at the pressure-class boundary (750 Pa) so must be reinforced to Class 3 (750 Pa / 3 in WG). Three load cases. Load Case 1 (operating): internal +750 Pa gauge at 13 C, ambient building side 20 C, AHU fan shut-off spike to +1000 Pa for 10 seconds. Load Case 2 (negative fault): internal -500 Pa gauge (return-fan fail in reverse) at 20 C, evaluating panel collapse. Load Case 3 (seismic import): horizontal 0.4g base acceleration per ASCE 7-22 Section 13.3 for mechanical equipment in a Seismic Design Category D building, with plenum self-weight and internal 1000 Pa pressure concurrent. Pass/fail: (R1) under LC1 operating + shutoff spike, peak von Mises in the panel or at any stiffener must not exceed 115 MPa (yield / 2.0 per SMACNA duct-construction allowable); (R2) under LC1 the maximum lateral panel deflection of any unreinforced panel shall not exceed L/120 where L is the clear panel span (SMACNA 4th Ed. Section S1.11 deflection limit); (R3) under LC2 external collapse, a linear buckling eigenvalue analysis must yield a first-mode load factor of at least 3.0; (R4) under LC3 seismic, peak stress shall not exceed 207 MPa (yield / 1.11 for R_p = 2.5 and Omega = 2.0 per ASCE 7 nonstructural components); (R5) a CFD analysis of LC1 at 4500 L/s must show outlet branch-to-branch flow imbalance of at most 15% and total plenum pressure drop below 50 Pa; (R6) a steady-state thermal analysis must show no condensation risk on the external surface when chilled supply air 13 C is inside and ambient 25 C / 60% RH is outside (dew point 16.7 C): external surface temperature must remain above 17 C; (R7) total plenum mass must not exceed 65 kg to fit the AHU room floor loading allowance. Radiation analysis is not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a welded 22-gauge (0.85 mm) G90 galvanized sheet-steel supply-air plenum for a variable-air-volume AHU serving a university HVAC plenum benchmark building, compliant with ASHRAE 62.1-2022 / 55-2023 / 90.1-2022 / 189.1-2020 and SMACNA HVAC Duct Construction Standards (4th Ed., Pressure Class 3 / 750 Pa with leakage Class 6). Rectangular cross section with one 600 x 400 mm main inlet, three 300 mm round top branch collars, two 250 x 200 mm side takeoffs. 25 mm fiberglass internal liner applied only as an acoustic / thermal BC, not part of the CAD body. Mass <= 65 kg. Allowables: SMACNA yield/2.0 on panel stress, SLS deflection L/120, ASCE 7-22 nonstructural component yield/1.11 seismic (Rp 2.5, Omega 2.0), external-collapse buckling SF 3.0.\n\nEnvelope: 800 x 500 mm cross section x 1500 mm length (inside 900 x 600 x 1600 mm).\n\nLoad cases.\n- LC1 operating with shutoff spike: +750 Pa gauge steady at 13 C, spike to +1000 Pa for 10 s; L/120 deflection limit on unreinforced panels.\n- LC2 return-fan fault: -500 Pa gauge at 20 C (external collapse check).\n- LC3 seismic: 0.4 g horizontal base acceleration per ASCE 7-22 Sect. 13.3 (SDC D), concurrent with +1000 Pa internal.\n- Plus steady-state CFD at 4500 L/s (imbalance <= 15%, pressure drop <= 50 Pa) and a condensation-prevention thermal check (13 C inside, 25 C / 60% RH outside, dew point 16.7 C -- external surface >= 17 C).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "fluid_analysis",
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "radiation_analysis",
+      "vibration_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "22-ga galvanized AHU plenum for university HVAC plenum benchmark",
+    "brief": "Rectangular 800x500 plenum with 1 main inlet + 3 round top branches + 2 side takeoffs; SMACNA Class 3 (750 Pa) with 25 mm internal liner.",
+    "geometric_constraints": {
+      "cross_section_mm": {
+        "width": 800,
+        "height": 500
+      },
+      "length_mm": 1500,
+      "main_inlet_mm": {
+        "width": 600,
+        "height": 400
+      },
+      "round_branch_takeoffs": {
+        "count": 3,
+        "diameter_mm": 300
+      },
+      "side_takeoffs": {
+        "count": 2,
+        "mm": [
+          250,
+          200
+        ]
+      },
+      "sheet_thickness_mm": 0.85,
+      "internal_liner_mm": 25,
+      "bounding_envelope_mm": {
+        "x": 900,
+        "y": 600,
+        "z": 1600
+      }
+    },
+    "material": {
+      "name": "22-ga G90 galvanized ASTM A653 CS Type B",
+      "properties": {
+        "yield_MPa": 230,
+        "ultimate_tensile_strength_MPa": 310,
+        "youngs_modulus_GPa": 200,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 7850
+      }
+    },
+    "design_flow": {
+      "flow_L_s": 4500,
+      "static_P_Pa": 750,
+      "cooling_C": 13,
+      "heating_C": 35
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "operating_with_shutoff_spike",
+        "internal_Pa_steady": 750,
+        "internal_Pa_spike": 1000,
+        "duration_spike_s": 10
+      },
+      {
+        "id": "LC2",
+        "name": "return_fan_fault",
+        "internal_Pa": -500
+      },
+      {
+        "id": "LC3",
+        "name": "seismic_0.4g",
+        "acceleration_g": 0.4,
+        "internal_Pa_concurrent": 1000
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "max_panel_deflection_mm",
+        "branch_flow_imbalance_pct",
+        "total_pressure_drop_Pa",
+        "min_external_surface_temp_C",
+        "first_buckling_load_factor",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 115,
+        "derivation": "yield/2.0 SMACNA duct allowable",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_panel_deflection_L_over_120",
+        "limit": "L/120",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_seismic",
+        "limit_MPa": 207,
+        "derivation": "yield/1.11 ASCE 7 Ch.13",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "fluid_analysis",
+        "metric": "branch_imbalance_and_pressure_drop",
+        "limit_compound": {
+          "imbalance_pct": 15,
+          "pressure_drop_Pa": 50
+        },
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "thermal_analysis",
+        "metric": "min_external_surface_temp_above_dew_point",
+        "limit_C": 17,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 65,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (SHELL181 or S4) for sheet metal",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "ANSYS Mechanical + Fluent",
+        "Abaqus + CFX",
+        "CalculiX + OpenFOAM"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling (LC2)",
+        "CFD steady RANS",
+        "steady thermal with film BC"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "radiation_analysis": "Not a dominant mode in conditioned room.",
+      "vibration_analysis": "Not the SMACNA governing case; AHU vibration isolated at fan base."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Acoustic NC rating per ASHRAE Handbook Applications",
+      "Sealant UL 181A leakage class",
+      "Corrosion at liner-metal interface"
+    ]
+  },
+  "eval_coverage": [
+    "SMACNA pressure-class structural reinforcement",
+    "ASCE 7 seismic nonstructural component",
+    "dew-point surface temperature prevention",
+    "duct CFD flow distribution"
+  ]
+}

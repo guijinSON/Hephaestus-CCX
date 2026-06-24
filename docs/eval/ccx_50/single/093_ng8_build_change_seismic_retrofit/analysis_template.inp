@@ -1,0 +1,71 @@
+**
+** NG8 — Build Change Seismic Retrofit (URM 2-story house) — analysis template
+** =============================================================================
+** Equivalent-static check at PGA 0.35 g for the simplified retrofitted wall
+** panel + corner columns produced by build.py.
+**
+** Mesh + NSETs are spliced in by wire_bcs.py from out.step + meta.json.
+** Required NSETs (from meta.json):
+**   NFIXED  - foundation, Z = 0 (existing strip footing assumed rigid)
+**   NTOP    - top of panel, Z = 3.0 m (used for displacement read-out only)
+** Required ELSET:
+**   Eall    - all C3D* volume elements, auto-built by wire_bcs.py from gmsh
+**             physical group "VOLUME". URM is aliased to Eall below so that
+**             check.py's ELSET=URM stress parse continues to work.
+**
+** Units: SI -> m, N, Pa, kg, kg/m^3
+** =============================================================================
+**
+** (no *HEADING here — gmsh's mesh.inp already declares one and CCX
+**  rejects multiple *HEADING cards in a single deck.)
+**
+** ============== MATERIALS ==============
+** Composite URM + RC jacket / corner-column homogenization. Volume-weighted
+** average of URM (E = 3.0 GPa, rho = 1900) and RC (E = 21 GPa, rho = 2400):
+**   URM panel volume   = 8.5 * 0.27 * 3.0  = 6.885 m^3 (~89% of total)
+**   2 corner columns   = 2 * 0.27^2 * 3.0  = 0.437 m^3 (~6%)
+**   RC jacket (40 mm)  ~ already inside the 0.27 m composite thickness
+** Effective E ~ 4.5 GPa, rho ~ 1950 kg/m^3 -> use 4.5e9 / 0.20 / 1950
+** for a single-material conservative composite. Agent submissions MAY
+** override via __MATERIAL__ template substitution to refine.
+**
+*MATERIAL, NAME=URM_RC
+*ELASTIC
+4.5e9, 0.20
+*DENSITY
+1950.0
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=URM_RC
+**
+** Alias ELSET=URM to Eall so the existing check.py URM-stress parser still
+** finds the *EL PRINT block under that name. (CalculiX accepts an ELSET
+** that is a copy of another ELSET via *ELSET, ELSET=URM, GENERATE? No --
+** simpler: re-declare URM as a member of every element via Eall.)
+*ELSET, ELSET=URM
+Eall
+**
+** ============== BOUNDARY ==============
+** Foundation: existing strip footing assumed rigid -> fix base.
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ============== LOAD CASE: LC1+LC2 combined ==============
+**   - Gravity (g = 9.81 m/s^2) downward (-Z) on all elements
+**   - Equivalent lateral seismic = 0.35 g horizontal (+X) on all elements
+**     applied as a mass-proportional inertial body force via *DLOAD GRAV.
+*STEP, NLGEOM=NO
+*STATIC
+1.0, 1.0
+*DLOAD
+Eall, GRAV, 9.81,    0.0, 0.0, -1.0
+Eall, GRAV, 3.4335,  1.0, 0.0,  0.0
+**
+*NODE PRINT, NSET=NTOP
+U
+*EL PRINT, ELSET=URM
+S
+*NODE FILE
+U
+*EL FILE
+S, E
+*END STEP

@@ -1,0 +1,202 @@
+{
+  "id": "135_hv11_fs_czech_hybrid_drivetrain_mount",
+  "source": {
+    "catalog_ref": "HV11",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "fsae_hybrid_drivetrain",
+  "part_class": "ice_motor_coupling_mount",
+  "full_prompt": "Design a monolithic 4340 chromoly steel ICE-to-EM coupling mount plate for a collegiate formula-class racecar benchmark Republic 2026 Class 1 CV-Hybrid vehicle combining a spec 600 cc four-cylinder gasoline engine with 20 mm intake restrictor (FS Rules 2026 IC.1.11) and a 25 kW 400 V permanent-magnet electric motor in an integrated P2 parallel-hybrid layout, per FSCzech Handbook 2026 v1.0 CV hybrid addendum. The mount is a single plate milled from 4340 Q&T steel (no welds, no bolted gussets) bolted between the engine rear face and the EM front bellhousing, reacting both torques and any driveline axial load. Geometry: plate 260 mm wide x 200 mm tall x 15 mm thick, central 100 mm through-hole for the input shaft pilot, eight M10 (11 mm clearance) holes on a 200 mm PCD matching the engine bellhousing, eight M8 (9 mm clearance) holes on a 160 mm PCD matching the EM end-bell, two integral 25 mm OD x 25 mm long dowel features at 12 and 6 o'clock for concentric alignment, two M12 (13 mm clearance) chassis-tie holes at the top corners for chassis-mount tie-rods. Overall bounding envelope 260 x 200 x 40 mm (40 mm accounts for dowel bosses). Material AISI 4340 Q&T to 38-42 HRC: E 205 GPa, nu 0.29, density 7850 kg/m^3, yield 860 MPa, UTS 1080 MPa, endurance limit 380 MPa at 5e8 cycles (machined surface factor 0.75 and ground fillets). Three load cases. Load Case 1 (combined ICE + EM torque): 60 N-m ICE peak torque at the engine flange plus 55 N-m EM peak torque at the EM flange (total 115 N-m reacted as a couple about the input shaft axis); chassis tie-rods reacting in pure tension with the engine bolted to the frame at full rear bulkhead. Load Case 2 (launch inertia pulse): 1.5g longitudinal vehicle acceleration produces a reaction torque pulse at the mount = engine inertia 0.12 kg-m^2 + EM inertia 0.015 kg-m^2 = 0.135 kg-m^2 x (8000 rpm / 60 * 2 pi / 1.0 s launch rate) = 113 N-m peak inertia torque, combined with operating torque = 228 N-m total. Load Case 3 (transient misfire / clutch dump): 1.5x peak combined torque = 173 N-m as a short transient pulse at the mount. Pass/fail: (R1) under LC1 operating, peak von Mises must not exceed 430 MPa (yield/2.0 collegiate formula-class racecar benchmark drivetrain conservative); (R2) under LC2 launch, peak stress 430 MPa; (R3) under LC3 misfire transient, peak stress 573 MPa (yield/1.5); (R4) fatigue: 10^7 cycles of LC1 stress range at 40% of LC1 peak, local fatigue range at any bolt-hole or dowel fillet must not exceed 380 MPa; (R5) first six natural frequencies of the mount + bolted engine/EM lumped masses (engine 45 kg, EM 18 kg) must exceed 400 Hz to stay above the 200 Hz engine firing frequency at 8000 rpm (4-cyl 4-stroke = 4 firings/rev * 133 rev/s / 2 = 267 Hz) with 50% margin; (R6) mass of the mount plate must not exceed 3.0 kg; (R7) concentricity of the two dowel features and the 100 mm central pilot must be within 0.05 mm at print. Thermal, fluid, buckling, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 4340 Q&T chromoly-steel engine-to-motor coupling mount plate for a collegiate formula-class racecar (FSCzech 2026 hybrid addendum, spec 600 cc four-cylinder + 25 kW 400 V PMSM in P2 parallel layout). The plate is milled from a single 4340 Q&T billet with a central pilot bore, two bolt-circle patterns (8x on 200 mm PCD engine side, 8x on 160 mm PCD motor side), two concentric dowel bosses, and two chassis-tie holes at the top corners; no welds, no bolted gussets. Apply yield/2.0 operating and yield/1.5 transient safety factors per collegiate formula-class drivetrain practice.\n\nEnvelope: 260 x 200 x 40 mm (40 mm with dowel bosses).\n\nLoad cases.\n- LC1 combined ICE + EM torque: 60 N-m ICE + 55 N-m EM reacted as a couple about the input-shaft axis (115 N-m total).\n- LC2 launch inertia pulse: combined engine+EM inertia 0.135 kg-m^2 rate pulsed to 113 N-m plus operating torque = 228 N-m.\n- LC3 misfire / clutch dump transient: 1.5x combined torque = 173 N-m short pulse.\nAlso check a 10^7 cycle fatigue on LC1 at bolt-hole and dowel fillets, and first six modes (engine 45 kg + EM 18 kg lumped) above 400 Hz clear of the 267 Hz firing harmonic at 8000 rpm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FS Czech hybrid drivetrain ICE-EM coupling mount (4340)",
+    "brief": "Single milled 4340 plate coupling 600cc ICE to 25 kW EM; P2 parallel hybrid; 260x200x15 with integral dowels + chassis ties.",
+    "geometric_constraints": {
+      "plate_mm": {
+        "w": 260,
+        "h": 200,
+        "t": 15
+      },
+      "input_shaft_bore_mm": 100,
+      "engine_bolt_pattern": {
+        "count": 8,
+        "pcd_mm": 200,
+        "hole_mm": 11
+      },
+      "em_bolt_pattern": {
+        "count": 8,
+        "pcd_mm": 160,
+        "hole_mm": 9
+      },
+      "dowels": {
+        "count": 2,
+        "od_mm": 25,
+        "length_mm": 25,
+        "positions_clock": [
+          12,
+          6
+        ]
+      },
+      "chassis_ties": {
+        "count": 2,
+        "hole_mm": 13
+      },
+      "bounding_envelope_mm": {
+        "x": 260,
+        "y": 200,
+        "z": 40
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "AISI 4340 Q&T 38-42 HRC",
+      "properties": {
+        "youngs_modulus_GPa": 205,
+        "poissons_ratio": 0.29,
+        "density_kg_m3": 7850,
+        "yield_MPa": 860,
+        "ultimate_tensile_strength_MPa": 1080,
+        "endurance_5e8_MPa": 380
+      }
+    },
+    "drivetrain": {
+      "ice_peak_torque_Nm": 60,
+      "em_peak_torque_Nm": 55,
+      "ice_mass_kg": 45,
+      "em_mass_kg": 18,
+      "firing_freq_Hz_at_8000rpm": 267
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "combined_torque",
+        "torque_Nm": 115
+      },
+      {
+        "id": "LC2",
+        "name": "launch_inertia",
+        "torque_Nm": 228
+      },
+      {
+        "id": "LC3",
+        "name": "misfire_transient",
+        "torque_Nm": 173
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_six_freqs_Hz_with_lumped_masses",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 430,
+        "derivation": "yield/2.0 drivetrain SF",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 573,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 380,
+        "cycles": 10000000,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 400,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 3.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal with lumped ICE/EM masses"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Coolant jacket handled at engine block.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Plate dominated by strength + fatigue + modal."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Bolt preload scatter",
+      "Dowel press-fit galling",
+      "EM stator-mounted HV cable routing"
+    ]
+  },
+  "eval_coverage": [
+    "hybrid dual-torque superposition",
+    "engine firing frequency modal floor",
+    "misfire transient SF 1.5",
+    "dowel concentricity dimensional gate"
+  ]
+}

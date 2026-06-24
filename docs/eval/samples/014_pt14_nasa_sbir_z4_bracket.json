@@ -1,0 +1,259 @@
+{
+  "id": "014_pt14_nasa_sbir_z4_bracket",
+  "source": {
+    "catalog_ref": "PT14",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_space",
+  "part_class": "launch_vehicle_secondary_structure_bracket",
+  "full_prompt": "Design a lightweight structural bracket for a CubeSat secondary-payload adapter per a representative lightweight-structural-bracket brief: the bracket connects a 6U CubeSat mass model (nominal 12 kg) to an ESPA-class secondary payload ring, meeting NASA-STD-5001B safety factors (1.4 ultimate, 1.25 yield), NASA GEVS random-vibration qualification (14.1 g RMS, 20-2000 Hz), and a mass-reduction goal of >=40% vs a machined-billet baseline. Envelope: 150 x 150 x 100 mm, with an ICD-fixed bolt pattern on the ESPA interface (four M8 bolts on a 110 x 110 mm square pattern) and a CubeSat-interface pattern on the opposite face (four M6 bolts on a 90 x 90 mm pattern, 100 x 100 mm outer). Material: Ti-6Al-4V ELI (Grade 23, Young's modulus 113.8 GPa, Poisson 0.342, density 4430 kg/m^3, yield 795 MPa, UTS 860 MPa, minimum elongation 10%) hot-isostatic-pressed AM or wrought; AM route must be post-processed by HIP to close internal porosity. Load cases from NASA LSP-REQ-317.01 Rev B quasi-static + NASA GEVS: LC1 quasi-static 12.5 g axial along launch direction with payload mass 12 kg = 1,471 N; LC2 quasi-static 8 g lateral = 941 N; LC3 sine sweep 2 g 0-peak 5-50 Hz; LC4 random vibration 14.1 g RMS 20-2000 Hz input at ESPA interface, with Miles' equation response magnification or full PSD analysis; LC5 thermal-gradient induced stress between +80 C (sun) and -100 C (eclipse) computed with alpha_Ti = 9.7e-6 /K. Pass/fail: (R1) max von Mises under any quasi-static or sine case <= 860 / 1.4 = 614 MPa (NASA-STD-5001B ultimate); (R2) max von Mises <= 795 / 1.25 = 636 MPa (yield); the binding constraint is R1 at 614 MPa since 614 < 636; (R3) random-vibration 3-sigma von Mises <= 614 MPa (same ultimate gate applied on 3-sigma statistical bound); (R4) first natural frequency >= 100 Hz (NASA launch-coupled-load decoupling typical for CubeSat secondary) and >= 50 Hz (ESPA requirement floor, looser); binding is 100 Hz; (R5) bracket mass <= 300 g AND at least 40% lighter than a machined-billet baseline filling the 150x150x100 mm envelope; (R6) thermal-gradient induced max von Mises <= 614 MPa at delta-T = 180 C (worst sun-to-eclipse swing); (R7) AM manufacturability: minimum feature 0.5 mm, overhang >= 45 deg, internal void <= 8 mm for powder removal, mandatory post-HIP at 920 C for 2 hours. Deliverables: STEP AP242 + 3MF of the final part; per-load-case FEA report with quasi-static, sine, random, and thermal stresses; modal analysis first-mode frequency; mass and baseline-comparison report; AM build orientation and HIP schedule.",
+  "short_prompt": "Design a lightweight structural bracket connecting a 6U CubeSat mass model (nominal 12 kg) to an ESPA-class secondary payload ring, meeting NASA-STD-5001B safety factors (1.4 ultimate, 1.25 yield), NASA GEVS random vibration (14.1 g RMS, 20-2000 Hz), and a mass-reduction goal of >= 40% vs a machined-billet baseline.\n\nEnvelope: 150 x 150 x 100 mm. ESPA interface: four M8 bolts on 110 x 110 mm. CubeSat interface: four M6 bolts on 90 x 90 mm (100 x 100 mm outer).\n\nMaterial: Ti-6Al-4V ELI (Grade 23), wrought or HIP'd AM. AM route post-processed by HIP at 920 C for 2 hours.\n\nLoad cases per NASA LSP-REQ-317.01 Rev B + NASA GEVS.\n- LC1 quasi-static 12.5 g axial with 12 kg payload = 1,471 N.\n- LC2 quasi-static 8 g lateral = 941 N.\n- LC3 sine sweep 2 g 0-peak 5-50 Hz.\n- LC4 random vibration 14.1 g RMS 20-2000 Hz at the ESPA interface.\n- LC5 thermal gradient +80 C (sun) to -100 C (eclipse) with alpha_Ti = 9.7e-6/K.\n\nGates include first natural mode >= 100 Hz, mass <= 300 g, AM manufacturability (min feature 0.5 mm, overhang >= 45 deg, internal void <= 8 mm).\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "40% mass reduction target drives topo-opt outer loop.",
+        "examples": [
+          "Altair OptiStruct",
+          "implicit-lattice topology tool",
+          "Ansys Mechanical Topo-Opt"
+        ]
+      },
+      {
+        "tool": "random_vibration_miles_equation",
+        "reason": "Closed-form Miles response if PSD FEA not run.",
+        "examples": [
+          "Excel",
+          "Python NumPy"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Ti-6Al-4V ELI CubeSat-to-ESPA secondary bracket per lightweight-structural-bracket brief",
+    "brief": "Design a 150x150x100 mm Ti-6Al-4V ELI bracket connecting a 12 kg 6U CubeSat to an ESPA ring, meeting NASA-STD-5001B, GEVS random, thermal gradient, and 40% mass reduction.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 150,
+        "y": 150,
+        "z": 100
+      },
+      "espa_interface": {
+        "bolts": 4,
+        "thread": "M8",
+        "pattern_mm": {
+          "x": 110,
+          "y": 110
+        }
+      },
+      "cubesat_interface": {
+        "bolts": 4,
+        "thread": "M6",
+        "pattern_mm": {
+          "x": 90,
+          "y": 90
+        }
+      },
+      "am_process": "LPBF + post-HIP 920 C / 2 h",
+      "min_feature_mm": 0.5,
+      "min_overhang_deg": 45
+    },
+    "material": {
+      "name": "Ti-6Al-4V ELI (Grade 23)",
+      "yield_MPa": 795,
+      "ultimate_MPa": 860,
+      "youngs_modulus_GPa": 113.8,
+      "density_kg_m3": 4430,
+      "alpha_thermal_per_K": 9.7e-06
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "qs_axial_12.5g",
+        "force_N": 1471
+      },
+      {
+        "id": "LC2",
+        "name": "qs_lateral_8g",
+        "force_N": 941
+      },
+      {
+        "id": "LC3",
+        "name": "sine_sweep",
+        "amplitude_g": 2,
+        "band_Hz": [
+          5,
+          50
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "random_vibration",
+        "grms": 14.1,
+        "band_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_gradient",
+        "delta_T_C": 180,
+        "range_C": [
+          -100,
+          80
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "espa_interface": "4 x M8 fully constrained",
+      "cubesat_interface": "12 kg lumped at payload CG"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_mass_g_max": 300,
+      "mass_reduction_vs_billet_pct": 40
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "3MF"
+      ],
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_mode_Hz",
+        "random_3sigma_von_mises_MPa",
+        "thermal_gradient_stress_MPa",
+        "mass_g",
+        "mass_reduction_vs_baseline_pct"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 614,
+        "derivation": "UTS / 1.4 = 860 / 1.4 per NASA-STD-5001B ultimate",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 636,
+        "derivation": "yield / 1.25 = 795 / 1.25 per NASA-STD-5001B yield",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_von_mises",
+        "limit_MPa": 614,
+        "derivation": "3-sigma <= ultimate/1.4 under GEVS 14.1 g RMS",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 100,
+        "derivation": "NASA launch-coupled-load decoupling for CubeSat secondary",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 300,
+        "derivation": ">=40% lighter than machined-billet baseline",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "thermal_analysis",
+        "metric": "thermal_gradient_induced_max_von_mises",
+        "limit_MPa": 614,
+        "derivation": "UTS/1.4 under delta-T 180 C",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "geometric_check",
+        "metric": "am_manufacturability_compliance",
+        "limit": 1,
+        "derivation": "feature >=0.5 mm, overhang >=45 deg, HIP post-process",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      }
+    ],
+    "governing_standard": "NASA-STD-5001B + NASA-STD-7001B (GEVS) + NASA LSP-REQ-317.01 Rev B",
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus Standard",
+        "Altair OptiStruct"
+      ],
+      "analysis_types": [
+        "linear static x2 QS",
+        "sine sweep modal",
+        "random PSD",
+        "thermal static"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Vacuum space environment.",
+      "radiation_analysis": "Radiation dose is a separate component selection exercise, not structural."
+    },
+    "numeric_source": "NASA-STD-5001B, NASA-STD-7001B GEVS 14.1 g RMS, NASA LSP-REQ-317.01 Rev B quasi-static envelope, Ti-6Al-4V ELI mechanical data."
+  },
+  "eval_coverage": [
+    "space-qual SF 1.4 ult / 1.25 yield",
+    "random vibration 3-sigma stress check",
+    "modal frequency floor",
+    "thermal-gradient induced stress",
+    "AM + HIP manufacturability",
+    "mass reduction target"
+  ]
+}

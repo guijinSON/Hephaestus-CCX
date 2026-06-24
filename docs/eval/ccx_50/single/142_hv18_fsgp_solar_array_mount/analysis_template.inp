@@ -1,0 +1,112 @@
+**
+** FSGP solar-array canopy panel mount (142_hv18) - submission-agnostic template
+** Units: mm, N, MPa, t (tonne), s
+**
+** This template is spliced into model.inp by wire_bcs.py with:
+**   - mesh.inp                (gmsh-produced C3D tet mesh of the agent's STEP)
+**   - *ELSET=Eall             (auto-built from C3D ELSETs by wire_bcs.py)
+**   - *NSET=NFIXED, NLOAD     (built from meta.json selectors)
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIXED  - rail-saddle face (clamped to the 50 mm canopy rail)
+**   NLOAD   - panel-clamp footprint face (4800 mm^2 region under the panel)
+**
+** *SOLID SECTION uses ELSET=Eall (auto-built from gmsh's volume sets).
+**
+** ----------------------------------------------------------------
+** Material: Aluminum 6061-T6 (mm-MPa-N-tonne)
+**   E   = 68.9 GPa  = 68900 MPa
+**   nu  = 0.33
+**   rho = 2700 kg/m^3 = 2.7e-9 t/mm^3
+**   Sy  = 276 MPa  (used by check.py for R1..R3)
+** ----------------------------------------------------------------
+*HEADING
+FSGP HV18 solar-array canopy panel mount - 6061-T6 (LC1 aero, LC2 gust, LC3 transport, modal)
+*MATERIAL, NAME=AL6061T6
+*ELASTIC
+68900.0, 0.33
+*DENSITY
+2.7e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=AL6061T6
+**
+** ----------------------------------------------------------------
+** Boundary: pin the rail-saddle face (NFIXED) in 3 DOF.
+** Represents the half-saddle clamping to the 50 mm OD canopy rail.
+** ----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ----------------------------------------------------------------
+** STEP 1 : LC1 aero at 70 mph
+**   176 N lift + 88 N drag distributed through the panel-clamp.
+**   Idealised as a uniform pressure of 0.0367 MPa over the
+**   4800 mm^2 (60 x 80 mm) panel-clamp footprint (NLOAD).
+**   *DLOAD with label P magnitude is applied per-element by
+**   wire_bcs onto the NLOAD-bearing element faces.
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+1.0, 1.0
+*DLOAD
+NLOAD, P, 0.0367
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ----------------------------------------------------------------
+** STEP 2 : LC2 gust lift (2x LC1)
+**   352 N lift at the panel clamp -> 0.0733 MPa pressure on NLOAD.
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+1.0, 1.0
+*DLOAD
+NLOAD, P, 0.0733
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ----------------------------------------------------------------
+** STEP 3 : LC3 transport / rollover (5 g vertical on 12 kg panel)
+**   588 N distributed across NLOAD -> 0.1225 MPa pressure.
+**   Single-point rail clamp (NFIXED) is the fixed boundary
+**   representing a jacked-up vehicle during transport.
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+1.0, 1.0
+*DLOAD
+NLOAD, P, 0.1225
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ----------------------------------------------------------------
+** STEP 4 : Modal (informational; vibration not in spec pass/fail)
+**   First 3 natural frequencies of the bracket clamped at NFIXED.
+** ----------------------------------------------------------------
+*STEP
+*FREQUENCY
+3
+*NODE FILE
+U
+*END STEP

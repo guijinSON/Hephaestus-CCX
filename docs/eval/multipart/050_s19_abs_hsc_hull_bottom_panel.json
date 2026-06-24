@@ -1,0 +1,295 @@
+{
+  "id": "050_s19_abs_hsc_hull_bottom_panel",
+  "source": {
+    "catalog_ref": "S19",
+    "year": 2013,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/050_s19_abs_hsc_hull_bottom_panel.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "marine_structural",
+  "part_class": "hsc_hull_bottom_panel",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a stiffened aluminum-alloy hull bottom plating panel in the forward region of a 15 m high-speed planing craft (design speed 35 knots, full-load displacement 15 metric tons) per ABS Rules for Building and Classing High-Speed Craft Part 3 (2013), delivered as a multi-part assembly because the ABS scantling equations and FEM pass/fail all reference the coupled behavior of plating, longitudinal stiffeners, and transverse frames connected by welded joints. ABS Part 3 Section 2 defines slamming design pressure; Section 3 gives minimum plating thickness; Section 4 gives stiffener scantlings; Section 3.5 gives fatigue at welded joints.\n\nAssembly layout. (A) Hull bottom plating: Al 5083-H116, 500 mm (between longitudinals) x 1200 mm (between transverse frames) panel at Station 4 (forward of midships, x/L = 0.3), thickness 3-8 mm design variable (trial 5 mm). (B) Longitudinal stiffeners: aluminum L-bar 50x50x5 mm, running fore-aft, welded to plate inner face at 500 mm pitch. (C) Transverse frames: aluminum T-section 80x40x6 mm, running athwartships, welded to plate and longitudinals at 1200 mm pitch. (D) Welded joints: MIG welds at plate-to-longitudinal and plate-to-frame intersections, fatigue Class D per ABS appendix.\n\nMaterial. Al 5083-H116 marine plate/extrusion per Aluminum Association and ABS: E = 70 GPa, nu = 0.33, rho = 2700 kg/m^3, Fty = 215 MPa (welded minimum), Ftu = 305 MPa. ABS permissible stress sigma_perm = 120 MPa for welded aluminum (Part 3 Table 3.2).\n\nDesign pressures (ABS HSC Part 3 Section 2). For a 15 m craft at 35 knots, design vertical acceleration a_v = 6 g at forward stations. Slamming design pressure at Station 4 bottom: p_sl_bottom = 50 kPa. Hydrostatic+hydrodynamic service pressure p_design = 40 kPa. Fatigue range reference 20 kPa over 10^6 cycles.\n\nLoad cases. LC1 (slamming 50 kPa uniform on panel, stiffener-simply-supported). LC2 (hydrostatic 40 kPa). LC3 (slamming + hull-girder bending contribution 60 MPa). LC4 (fatigue 10^6 cycles @ 20 kPa range, Class D S-N at welded toe).\n\nPass/fail criteria (all on the assembled plate+stiffener+frame panel). (R1) Plating thickness t satisfies the ABS HSC Section 3.3 scantling equation t >= 5 mm for this panel geometry and slamming pressure (note ABS coefficient form). (R2) Under LC1 slamming, plating max von Mises <= sigma_perm = 120 MPa. (R3) Under LC3 slamming + hull-girder, plating max von Mises <= Fty = 215 MPa (ABS ultimate). (R4) Panel mid-point deflection under LC2 <= s/300 = 1.67 mm (ABS serviceability). (R5) Longitudinal stiffener section modulus Z >= 25 cm^3 per ABS HSC Part 3 Section 4 scantling (L-bar 50x50x5 has Z ~ 8 cm^3, so the trial stiffener is binding and must be upsized). (R6) Fatigue weld-toe stress range at 10^6 cycles <= 71 MPa (ABS Class D S-N). (R7) Panel plating + longitudinals + half-frame mass per unit hull area <= 25 kg/m^2.\n\nAssembly policy. Plating stress (R2, R3) depends on the stiffener pitch (A-B) and frame pitch (A-C) boundary conditions. Stiffener section modulus (R5) is a property of the B element welded to the A plate via flange-plate composite section. Weld-toe fatigue (R6) exists only at the A-B and A-C welded interfaces. None of the pass/fail can be evaluated on plating-alone, stiffener-alone, or frame-alone geometry.\n\nSolver and analysis expectations. Primary: linear static FEM with shell plating + beam/shell stiffeners (10 mm mesh in plating, finer at weld toes). Closed-form ABS scantling cross-check for R1/R5. Hot-spot stress fatigue at welded toes for R6. Buckling, modal, thermal, fluid CFD, radiation analyses NOT required.\n\nDeliverables. STEP AP242 of stiffened panel assembly, mass per unit hull area in kg/m^2, plating thickness, max von Mises per LC, mid-point deflection, stiffener Z actual vs required, and hot-spot weld-toe stress range.",
+  "short_prompt": "Design a stiffened aluminum-alloy hull bottom plating panel in the forward region of a 15 m high-speed planing craft (35 knots, 15 metric tons full-load) per ABS Rules for Building and Classing High-Speed Craft Part 3 (2013). Delivered as a multi-part assembly: Al 5083-H116 plating (500 mm between longitudinals x 1200 mm between transverse frames at Station 4, x/L = 0.3, trial 5 mm thickness) + aluminum L-bar 50 x 50 x 5 mm longitudinals (500 mm pitch) + aluminum T-section 80 x 40 x 6 mm transverse frames (1200 mm pitch) + MIG welds (fatigue Class D per ABS appendix).\n\nMaterial. Al 5083-H116: E = 70 GPa, nu = 0.33, rho = 2700 kg/m^3, Fty = 215 MPa (welded minimum), Ftu = 305 MPa. ABS permissible stress sigma_perm = 120 MPa for welded aluminum (Part 3 Table 3.2).\n\nDesign pressures (ABS HSC Part 3 Section 2). Design vertical acceleration a_v = 6 g forward. Station 4 slamming p_sl_bottom = 50 kPa; hydrostatic+hydrodynamic service p_design = 40 kPa; fatigue range 20 kPa over 10^6 cycles.\n\nLoad cases.\n- LC1 slamming 50 kPa uniform on panel.\n- LC2 hydrostatic 40 kPa.\n- LC3 slamming + hull-girder bending contribution 60 MPa.\n- LC4 fatigue 10^6 cycles at 20 kPa range, Class D weld toe.\n\nPass limits: LC1 von Mises <= 120 MPa; LC3 <= 215 MPa; LC2 mid-point deflection <= s/300 = 1.67 mm; stiffener Z >= 25 cm^3 (L-bar 50 x 50 x 5 gives ~8 cm^3, so stiffener must be upsized); Class D hot-spot <= 71 MPa; mass <= 25 kg/m^2.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ABS_scantling_closed_form",
+        "reason": "Plate thickness and stiffener section-modulus equations are mandated closed-form formulas.",
+        "examples": [
+          "hand calc",
+          "ABS Rules scantling spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "5083-H116 stiffened bottom hull panel per ABS HSC Part 3 as multi-part assembly",
+    "brief": "500x1200 mm welded stiffened panel (plating + longitudinals + transverse frames) Station 4, slamming 50 kPa, hull-girder 60 MPa, ABS welded allowable 120 MPa; fatigue 10^6 at Class D.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "bottom_plating",
+        "role": "Al 5083-H116 bottom plate panel between stiffeners and frames",
+        "count_min": 1,
+        "geometric_constraints": {
+          "transverse_mm": 500,
+          "longitudinal_mm": 1200,
+          "thickness_mm": {
+            "min": 3,
+            "max": 8,
+            "trial": 5
+          },
+          "material": "Al 5083-H116"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "longitudinal_stiffener",
+        "role": "L-bar longitudinal welded to plate inner face carrying longitudinal bending of panel",
+        "count_min": 2,
+        "geometric_constraints": {
+          "section": "L 50x50x5 (may upsize)",
+          "material": "Al 5083-H116 extrusion"
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "transverse_frame",
+        "role": "T-section transverse frame welded across longitudinals providing panel shortspan support",
+        "count_min": 2,
+        "geometric_constraints": {
+          "section": "T 80x40x6",
+          "material": "Al 5083-H116 extrusion"
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "panel_mm": {
+        "transverse": 500,
+        "longitudinal": 1200
+      }
+    },
+    "material": {
+      "name": "Al 5083-H116 welded",
+      "E_GPa": 70,
+      "nu": 0.33,
+      "density_kg_m3": 2700,
+      "Fty_MPa": 215,
+      "Ftu_MPa": 305,
+      "sigma_perm_MPa": 120
+    },
+    "design_pressures": {
+      "slamming_kPa": 50,
+      "hydrostatic_kPa": 40,
+      "hull_girder_bending_MPa_at_panel": 60,
+      "fatigue_range_kPa": 20,
+      "fatigue_cycles": 1000000
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "slamming_50kPa"
+      },
+      {
+        "id": "LC2",
+        "name": "hydrostatic_40kPa"
+      },
+      {
+        "id": "LC3",
+        "name": "slamming_plus_hull_girder"
+      },
+      {
+        "id": "LC4",
+        "name": "fatigue_10^6_class_D"
+      }
+    ],
+    "boundary_conditions": {
+      "panel_edges": "simply supported at stiffeners and frames"
+    },
+    "objective": {
+      "minimize": "mass_per_unit_area",
+      "target_kg_m2_max": 25
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (plating + longitudinals + frames)",
+      "body_metadata": [
+        "part_family (A|B|C)"
+      ],
+      "report_fields": [
+        "plating_thickness_mm",
+        "plating_max_vm_MPa",
+        "mid_point_deflection_mm",
+        "stiffener_Z_cm3",
+        "weld_toe_stress_range_MPa",
+        "mass_per_m2_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "ABS Rules for Building and Classing High-Speed Craft Part 3",
+      "revision": "2013 July"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "plating_thickness_vs_ABS_scantling",
+        "limit_mm": 5,
+        "derivation": "ABS HSC Part 3 Section 3.3 minimum-thickness equation",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "plating_max_von_mises_LC1_slamming",
+        "limit_MPa": 120,
+        "derivation": "ABS welded-aluminum allowable sigma_perm",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "plating_max_von_mises_LC3_combined",
+        "limit_MPa": 215,
+        "derivation": "Fty welded 5083 (ABS)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "panel_mid_point_deflection_LC2",
+        "limit_mm": 1.67,
+        "derivation": "ABS serviceability s/300",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "longitudinal_stiffener_section_modulus_cm3",
+        "limit_cm3": 25,
+        "derivation": "ABS HSC Part 3 Section 4 stiffener scantling",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "weld_toe_stress_range_at_10_6_cycles",
+        "limit_MPa": 71,
+        "derivation": "ABS Class D S-N fatigue at 10^6 cycles",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "mass_per_unit_hull_area",
+        "limit_kg_m2": 25,
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + beam stiffeners",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "MAESTRO"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "hot-spot stress fatigue"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A bottom_plating inner face",
+        "B longitudinal_stiffener flange/web"
+      ],
+      "mediated_by": "MIG fillet weld (ABS Class D at weld toe)",
+      "load_path": "transverse and longitudinal shear transfer; fatigue hot-spot at weld toe"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A bottom_plating inner face",
+        "C transverse_frame flange"
+      ],
+      "mediated_by": "MIG fillet weld",
+      "load_path": "short-span support; fatigue hot-spot at weld toe"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B longitudinal_stiffener",
+        "C transverse_frame"
+      ],
+      "mediated_by": "intersecting welded joint with cutout",
+      "load_path": "load sharing between longitudinal and transverse grids"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Plating stress (R2, R3) depends on stiffener+frame pitch; stiffener section modulus (R5) is a composite (B flange + A plate) property; weld-toe fatigue (R6) exists only at welded interfaces. No individual part has a meaningful pass/fail."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "ABS HSC scantling equations and fatigue rules are interface-specific; a bare unstiffened plate or a lone stiffener does not constitute the panel the Rules refer to.",
+    "exclusions_explained": {
+      "vibration_analysis": "Global hull-girder vibration out of scope.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Slamming pressure pre-computed; no CFD.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Panel buckling not driving at this station; could be production concern."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Global FE hull model per ABS HSC Part 3 Section 1",
+      "Bottom-plate local denting / dropped-object",
+      "Galvanic corrosion between Al plate and steel fasteners"
+    ]
+  },
+  "eval_coverage": [
+    "ABS scantling closed-form + FEM stress on assembled stiffened panel",
+    "slamming + hull-girder bending combined across interfaces",
+    "welded-joint S-N fatigue at explicit weld-toe locations"
+  ]
+}

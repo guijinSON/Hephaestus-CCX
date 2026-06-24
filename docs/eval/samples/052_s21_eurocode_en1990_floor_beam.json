@@ -1,0 +1,208 @@
+{
+  "id": "052_s21_eurocode_en1990_floor_beam",
+  "source": {
+    "catalog_ref": "S21",
+    "year": 2002,
+    "tier": "A"
+  },
+  "domain": "civil_structural_steel",
+  "part_class": "steel_floor_beam",
+  "full_prompt": "Design a composite-naked (bare steel) simply-supported floor beam in a multi-story office building, governed by Eurocode EN 1990 (basis of design) and EN 1993-1-1 (steel). The beam is an IPE or HEA section spanning 7.5 m between columns, loaded by permanent load G (steel deck + finishes) and variable load Q (office live load per EN 1991-1-1 category B). EN 1990 6.4.3.2 ULS combination 6.10a/6.10b: gamma_G = 1.35 and gamma_Q = 1.5 on main variable, psi_0 = 0.7 for office category B on combination factor. EN 1993-1-1 gamma_M0 = 1.00 for cross-section resistance; gamma_M1 = 1.00 for member stability.\n\nGeometry. Simply-supported span L = 7.5 m. Beam spacing 3.0 m (tributary width). Depth budget 400 mm. Candidate sections: IPE 360, IPE 400, HEA 360, HEA 400 (designer picks one). Bracing: continuous lateral restraint from concrete floor slab assumed (so Lb = 0 for LTB; full plastic moment governs unless local buckling intervenes). Connections at both ends are shear-only fin plates (not moment connections). Beam is S355 J0 structural steel.\n\nMaterial. EN 10025-2 S355 J0: Fy (thickness <= 40 mm) = 355 MPa, Fu = 490 MPa, E = 210 GPa, nu = 0.30, rho = 7850 kg/m^3. gamma_M0 = 1.00 so design yield = 355 MPa directly. gamma_M2 = 1.25 applied to tensile rupture at connections (out of scope here since end connections are out of scope).\n\nLoad cases.\nPermanent G: self-weight of beam ~ 60 kg/m x 9.81 = 0.59 kN/m plus slab + finishes 1.5 kN/m^2 x 3.0 m = 4.5 kN/m. Total g_k = 5.1 kN/m (characteristic).\nVariable Q: office category B live load 3.0 kN/m^2 per EN 1991-1-1 Table 6.2 => q_k = 3.0 x 3.0 = 9.0 kN/m. Additional partition allowance 0.8 kN/m^2 treated as permanent per EN 1991-1-1 6.3.1.2 => +2.4 kN/m in G.\nAdjusted g_k = 7.5 kN/m, q_k = 9.0 kN/m.\nLC1 (ULS 6.10): gamma_G * g_k + gamma_Q * q_k = 1.35 * 7.5 + 1.5 * 9.0 = 10.125 + 13.5 = 23.6 kN/m.\nLC2 (SLS characteristic): g_k + q_k = 16.5 kN/m.\nLC3 (SLS frequent psi_1 = 0.5 for category B): g_k + 0.5 * q_k = 7.5 + 4.5 = 12.0 kN/m.\nLC4 (ULS combination 6.10b with leading variable and reduced permanent): zeta * gamma_G * g_k + gamma_Q * q_k with zeta = 0.85 => 0.85 * 1.35 * 7.5 + 1.5 * 9.0 = 8.6 + 13.5 = 22.1 kN/m (less critical than LC1 here).\n\nSectional demand under LC1 uniform load w_Ed = 23.6 kN/m, L = 7.5 m. M_Ed = w_Ed * L^2 / 8 = 23.6 * 56.25 / 8 = 165.9 kN*m. V_Ed = w_Ed * L / 2 = 88.5 kN.\n\nPass/fail criteria per EN 1993-1-1. (R1) Cross-section bending resistance M_c,Rd = W_pl * Fy / gamma_M0. For IPE 400: W_pl,y = 1307 cm^3, so M_c,Rd = 1307e-6 * 355e6 / 1.0 = 464 kN*m. M_Ed = 165.9 kN*m => utilization = 0.358 (pass). For IPE 360: W_pl,y = 1019 cm^3, M_c,Rd = 362 kN*m => util = 0.46 (pass). (R2) Cross-section shear resistance V_c,Rd = A_v * Fy / sqrt(3) / gamma_M0. For IPE 360 A_v ~ 35.1 cm^2 => V_c,Rd = 3510e-6 * 355e6 / sqrt(3) = 719 kN. V_Ed = 88.5 kN => util = 0.12 (pass). (R3) SLS deflection under LC2 characteristic: delta_max = 5 * w * L^4 / (384 * E * I). For IPE 360 I_y = 16270 cm^4 => delta = 5 * 16.5e3 * 7.5^4 / (384 * 210e9 * 16270e-8) = 5 * 16500 * 3164 / (384 * 210e9 * 1.627e-4) = 261.1e6 / 1.312e7 = 19.9 mm. SLS limit per EN 1990 A1.4.2 suggested = L/300 = 25 mm for this category. Util = 0.80 (pass). (R4) SLS deflection under LC3 frequent with variable only: additional variable-load deflection <= L/350 = 21.4 mm for IPE 360 under 4.5 kN/m variable = 5.4 mm (pass). (R5) Vibration: natural frequency of the beam with floor mass should be >= 3 Hz (EN 1990 A1.4.4 suggested for office floors; low-strictness gate). For IPE 360 with tributary mass approx 13 kN/m permanent, fn = 18.07 / sqrt(delta_mm) = 18.07/sqrt(19.9) = 4.05 Hz (pass). (R6) Section weight per meter <= 70 kg/m.\n\nSolver and analysis expectations. Primary: closed-form EN 1993-1-1 section check (hand calc or RFEM / Dlubal / SCIA / Robot / Tekla chapter-based module). Linear static beam FEM acceptable as cross-check. Buckling / LTB not evaluated because the slab gives full lateral restraint. Modal / vibration closed-form per EN 1990 A1.4.4 (Bachmann simplified formula). Thermal, fluid, radiation NOT required.\n\nDeliverables. Chosen section designation (IPE 360, IPE 400, etc.), utilization ratios for ULS bending and shear, SLS deflection in mm under LC2 and LC3, natural frequency in Hz, and section weight kg/m.",
+  "short_prompt": "Select a rolled IPE/HEA steel floor beam (S355 J0) for a simply-supported span of 7.5 m at 3.0 m tributary spacing in an office building (EN 1991-1-1 category B). Design per EN 1990 ULS combinations 6.10/6.10b and EN 1993-1-1 cross-section checks (gamma_M0 = 1.00). Bracing: continuous lateral restraint from the concrete slab (LTB not governing). Depth budget 400 mm. Candidate sections include IPE 360, IPE 400, HEA 360, HEA 400.\n\nCharacteristic loads: permanent g_k = 7.5 kN/m (self-weight + slab/finishes + partition allowance), variable q_k = 9.0 kN/m (office Cat. B).\n\nLoad cases.\n- LC1 ULS 6.10 (1.35 G + 1.5 Q): w_Ed = 23.6 kN/m, M_Ed = 165.9 kN*m, V_Ed = 88.5 kN.\n- LC2 SLS characteristic: w = 16.5 kN/m (total-deflection check, L/300 = 25 mm).\n- LC3 SLS frequent (psi_1 = 0.5 for Cat. B): w = 12.0 kN/m (variable-only deflection, L/350 = 21.4 mm).\n- LC4 ULS 6.10b (zeta 0.85 on G + 1.5 Q): w_Ed = 22.1 kN/m.\n- Floor vibration: fn >= 3 Hz (EN 1990 A1.4.4 suggested office-floor gate).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "Eurocode_section_check",
+        "reason": "EN 1993-1-1 chapter equations are the primary pass/fail path.",
+        "examples": [
+          "hand calc",
+          "RFEM",
+          "Dlubal",
+          "SCIA",
+          "Robot",
+          "Tekla"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "S355 steel floor beam per Eurocode EN 1990 + EN 1993-1-1",
+    "brief": "7.5 m simply-supported IPE/HEA beam, g_k 7.5 kN/m + q_k 9.0 kN/m, ULS 6.10 + SLS characteristic/frequent.",
+    "geometric_constraints": {
+      "span_m": 7.5,
+      "spacing_m": 3.0,
+      "depth_budget_mm": 400,
+      "candidate_sections": [
+        "IPE 360",
+        "IPE 400",
+        "HEA 360",
+        "HEA 400"
+      ],
+      "lateral_restraint": "continuous from slab"
+    },
+    "material": {
+      "name": "S355 J0",
+      "Fy_MPa": 355,
+      "Fu_MPa": 490,
+      "E_GPa": 210,
+      "density_kg_m3": 7850,
+      "gamma_M0": 1.0,
+      "gamma_M2": 1.25
+    },
+    "loads": {
+      "g_k_kN_m": 7.5,
+      "q_k_kN_m": 9.0,
+      "partition_allowance_kN_m2": 0.8,
+      "office_category": "B per EN 1991-1-1"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "ULS_6.10_gamma_G_1.35_gamma_Q_1.5",
+        "w_Ed_kN_m": 23.6,
+        "M_Ed_kNm": 165.9,
+        "V_Ed_kN": 88.5
+      },
+      {
+        "id": "LC2",
+        "name": "SLS_characteristic",
+        "w_kN_m": 16.5
+      },
+      {
+        "id": "LC3",
+        "name": "SLS_frequent_psi1_0.5",
+        "w_kN_m": 12.0
+      },
+      {
+        "id": "LC4",
+        "name": "ULS_6.10b_zeta_0.85",
+        "w_Ed_kN_m": 22.1
+      }
+    ],
+    "boundary_conditions": {
+      "ends": "simply supported shear-only fin plates"
+    },
+    "objective": {
+      "minimize": "section_weight",
+      "target_kg_m_max": 70
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "EN 1990 + EN 1993-1-1",
+      "revision": "EN 1990:2002 + EN 1993-1-1:2005"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "bending_utilization_M_Ed_over_M_c_Rd",
+        "limit": 1.0,
+        "derivation": "M_c_Rd = W_pl * Fy / gamma_M0 per EN 1993-1-1 6.2.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "shear_utilization_V_Ed_over_V_c_Rd",
+        "limit": 1.0,
+        "derivation": "V_c_Rd = A_v * Fy / sqrt(3) / gamma_M0 per EN 1993-1-1 6.2.6",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "SLS_characteristic_deflection",
+        "limit_mm": 25,
+        "derivation": "L/300 per EN 1990 A1.4.2 suggested",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "SLS_frequent_variable_only_deflection",
+        "limit_mm": 21.4,
+        "derivation": "L/350 for variable-only SLS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "floor_fn",
+        "limit_Hz": 3,
+        "derivation": "EN 1990 A1.4.4 suggested for office floors",
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "section_weight",
+        "limit_kg_m": 70,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "N/A (closed-form) or Euler-Bernoulli beam",
+      "solver_hints": [
+        "hand calc",
+        "RFEM",
+        "Dlubal",
+        "SCIA",
+        "Robot",
+        "Tekla"
+      ],
+      "analysis_types": [
+        "EN 1993-1-1 section check",
+        "closed-form deflection"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "No fire design (EN 1993-1-2 separate).",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Slab-restrained; LTB does not govern."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fire design per EN 1993-1-2",
+      "Fatigue per EN 1993-1-9 (not generally relevant for office floors)",
+      "Connection design per EN 1993-1-8"
+    ]
+  },
+  "eval_coverage": [
+    "EN 1990 ULS 6.10/6.10b combinations",
+    "EN 1993-1-1 M_Rd / V_Rd chapter check",
+    "SLS characteristic + frequent deflection",
+    "EN 1990 A1.4.4 floor vibration"
+  ]
+}

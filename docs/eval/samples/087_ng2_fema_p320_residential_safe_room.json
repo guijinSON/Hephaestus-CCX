@@ -1,0 +1,219 @@
+{
+  "id": "087_ng2_fema_p320_residential_safe_room",
+  "source": {
+    "catalog_ref": "NG2",
+    "year": 2021,
+    "tier": "A+"
+  },
+  "domain": "humanitarian_civil",
+  "part_class": "residential_tornado_safe_room",
+  "full_prompt": "Design one representative interior in-home residential tornado safe room, 2.4 m x 2.4 m x 2.4 m clear interior, built as a site-cast reinforced concrete box (four walls + roof slab + floor slab) compliant with FEMA P-320 Taking Shelter from the Storm (5th ed., 2021). The room must protect occupants from an EF5 tornado event with a 250 mph (112 m/s) 3-second gust design wind speed, a design wind pressure derived from that gust on an Exposure C site with directionality and gust factors per ICC 500 / ASCE 7, and the tornado debris missile defined in FEMA P-320 and ICC 500: a 15-lb (6.8 kg) nominal Douglas-fir 2x4 lumber impactor traveling at 100 mph (44.7 m/s) horizontally against walls and 67 mph (30.0 m/s) vertically against the roof, impacting at any location. All reinforced-concrete walls and roof must be 6.0-8.0 in (152-203 mm) thick with normal-weight concrete of minimum compressive strength 4000 psi (27.6 MPa) and Grade 60 reinforcement (fy = 420 MPa) detailed per the FEMA P-320 prescriptive schedule (e.g. #4 bars each way each face, or equivalent wall steel ratio). The entire safe room must be anchored to a continuous reinforced concrete foundation with anchor bolts sized and embedded to resist the full uplift and overturning from the 250 mph wind with a net safety factor of at least 1.0 against ASCE 7 load-factored demand. The single entry door must be a tested FEMA ICC 500 compliant safe-room door assembly; the door itself is NOT designed in this sample (listed as excluded) but the rough opening and its reinforced jamb must be modeled. Deliverable is a single assembled CAD model of the RC shell with rebar cage representation, foundation, and anchor layout, suitable for (a) linear + nonlinear static structural FEA under design wind pressure, (b) explicit-dynamics debris-impact analysis of the 2x4 missile against the wall and roof, and (c) anchor pull-out / overturning check. Vibration (modal), thermal, fluid (CFD of wind), and radiation analyses are NOT required; wind is applied as an equivalent static pressure. The 2x4 missile impact explicitly requires a non-FEA static solver category (explicit-dynamics / transient-dynamics solver such as LS-DYNA, Abaqus/Explicit, or Radioss); it cannot be evaluated with linear static FEA alone.",
+  "short_prompt": "Design one interior in-home residential tornado safe room as a site-cast reinforced-concrete box (four walls + roof slab + floor slab on a continuous RC footing with anchor bolts) per FEMA P-320 Taking Shelter from the Storm (5th ed., 2021) and ICC 500. Normal-weight concrete with minimum 4000 psi fc and Grade 60 rebar per the prescriptive schedule; tested ICC 500 door assembly and reinforced jamb (door itself out of scope).\n\nEnvelope: ~2.4 x 2.4 x 2.4 m clear interior, 6-8 in RC walls and roof.\n\nLoad cases.\n- LC1 design wind: EF5-equivalent 250 mph 3-sec gust on Exposure C, applied as ASCE 7 / ICC 500 equivalent static pressures on walls and roof.\n- LC2 debris missile horizontal: 15 lb (6.8 kg) Douglas-fir 2x4 impacting any wall at 100 mph.\n- LC3 debris missile vertical: same 2x4 impacting the roof at 67 mph.\n- Anchors and overall overturning must resist ASCE 7 factored wind uplift / overturning demand.\n\nDebris-missile impact requires an explicit-dynamics solver; the wind case is static.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_impact_solver",
+        "reason": "The 15-lb 2x4 debris missile at 100 mph horiz / 67 mph vert is a transient impact event; penetration / perforation must be evaluated with explicit dynamics, not linear static FEA.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus/Explicit",
+          "Altair Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FEMA P-320 interior residential tornado safe room",
+    "brief": "Design one 2.4 x 2.4 x 2.4 m interior RC safe room for 250 mph gust + 15-lb 2x4 at 100/67 mph debris missile per FEMA P-320.",
+    "geometric_constraints": {
+      "interior_clear_LxWxH_m": [
+        2.4,
+        2.4,
+        2.4
+      ],
+      "wall_thickness_in_range": [
+        6,
+        8
+      ],
+      "wall_thickness_mm_range": [
+        152,
+        203
+      ],
+      "roof_thickness_in_range": [
+        6,
+        8
+      ],
+      "min_door_opening_mm": [
+        914,
+        2032
+      ]
+    },
+    "material": {
+      "concrete": {
+        "min_fc_psi": 4000,
+        "min_fc_MPa": 27.6,
+        "density_kg_m3": 2400
+      },
+      "rebar": {
+        "grade": "ASTM A615 Gr 60",
+        "fy_MPa": 420
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "design_wind",
+        "gust_3s_mph": 250,
+        "gust_3s_m_s": 112,
+        "exposure": "C",
+        "application": "ASCE 7 / ICC 500 derived pressures on walls + roof"
+      },
+      {
+        "id": "LC2",
+        "name": "debris_missile_horizontal",
+        "impactor": "15 lb Douglas-fir 2x4",
+        "mass_kg": 6.8,
+        "velocity_mph": 100,
+        "velocity_m_s": 44.7,
+        "application": "normal impact on any wall location"
+      },
+      {
+        "id": "LC3",
+        "name": "debris_missile_vertical",
+        "impactor": "15 lb Douglas-fir 2x4",
+        "mass_kg": 6.8,
+        "velocity_mph": 67,
+        "velocity_m_s": 30.0,
+        "application": "normal impact on roof"
+      }
+    ],
+    "boundary_conditions": {
+      "foundation_interface": "continuous RC footing, anchored with bolts per prescriptive schedule",
+      "door_opening": "reinforced jamb; door assembly itself tested separately"
+    },
+    "objective": {
+      "primary": "pass all pass/fail criteria",
+      "secondary": "minimum wall thickness within 6-8 in range"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "IFC"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_wall_flexural_stress_MPa",
+        "max_roof_flexural_stress_MPa",
+        "missile_residual_velocity_m_s",
+        "perforation_yes_no",
+        "anchor_pullout_SF",
+        "overturning_SF"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "design_wind_3s_gust_mph",
+        "limit_mph": 250,
+        "derivation": "FEMA P-320 Table for EF5 shelter",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "wall_and_roof_flexural_capacity_vs_factored_wind_demand_ratio",
+        "limit": 1.0,
+        "derivation": "ACI 318 phi*Mn >= Mu under ASCE 7 factored load combos",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "debris_missile_perforation",
+        "limit": "no perforation",
+        "derivation": "FEMA P-320 / ICC 500 Section 305 debris-impact test criterion",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "anchor_pullout_safety_factor",
+        "limit": 1.0,
+        "derivation": "ACI 318 Appendix D / Ch. 17 factored demand vs anchor capacity",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "overall_overturning_safety_factor",
+        "limit": 1.0,
+        "derivation": "ASCE 7 factored load combination 0.9D vs wind uplift + overturning",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid (concrete), embedded 1D rebar (reinforcement), rigid impactor body",
+      "mesh_size_mm_in_critical_regions": 20,
+      "solver_hints": [
+        "LS-DYNA (impact)",
+        "Abaqus/Explicit (impact)",
+        "ANSYS Mechanical (static wind)"
+      ],
+      "analysis_types": [
+        "linear/nonlinear static (wind)",
+        "explicit dynamics (debris missile)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "P-320 safe rooms are not evaluated against modal/harmonic loads.",
+      "thermal_analysis": "No thermal envelope requirement in P-320.",
+      "fluid_analysis": "Wind is reduced to ICC 500 equivalent static pressures; no CFD.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Short thick RC walls not buckling-governed."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Door assembly qualification (tested to ICC 500 separately)",
+      "Ventilation sizing for occupancy duration",
+      "Accessibility compliance (ADA)"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "explicit-dynamics debris-impact coupled with static wind FEA",
+    "FEMA P-320 exact numeric loads (250 mph / 100 mph / 67 mph)",
+    "concrete+embedded-rebar modeling requirement",
+    "anchor pull-out and overturning against ASCE 7 factored combos",
+    "humanitarian life-safety structural scope"
+  ]
+}

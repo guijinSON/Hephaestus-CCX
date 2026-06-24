@@ -1,0 +1,172 @@
+{
+  "id": "288_i_ea3_kosen_robocon_2025_lift_arm",
+  "source": {
+    "catalog_ref": "I-EA3",
+    "year": 2025,
+    "tier": "A",
+    "language_note": "Rulebook is Japanese; dimensions restated in SI.",
+    "needs_rulebook_fetch": false
+  },
+  "domain": "robotics_manipulator_structural",
+  "part_class": "scissor_lift_link",
+  "full_prompt": "Design a single-part aluminium scissor-lift link for a technical-college robotics benchmark robot. The link is one of four identical members in a 2-stage scissor pantograph that lifts a 5 kg task payload from 0 to 600 mm above the robot chassis within the technical-college robotics benchmark weight and envelope budget (robot stowed envelope 1000 x 1000 x 500 mm, total robot mass <= 50 kg). The link is a straight aluminium bar of length 400 mm (pin-to-pin center distance) with a cross-section that the designer chooses but must fit within a 25 mm x 12 mm bounding rectangle. The two pin holes at each end have diameter 8.0 mm (H7 fit on an 8 g6 steel pin) and there is one central pivot hole of diameter 8.0 mm at the midpoint. Material is 7075-T6 aluminium with Young's modulus 71.7 GPa, Poisson's ratio 0.33, density 2810 kg/m^3, yield strength 503 MPa, ultimate tensile strength 572 MPa. Load cases: LC1 (Full payload at full extension) — end pin on one side fully fixed, opposite end pin loaded with a tangential 245 N (1/2 of 5 kg x 9.81 m/s^2 x 10 lift ratio due to mechanical disadvantage at full extension); center pivot free. LC2 (Compressive buckling) — axial compressive force of 600 N along the link's long axis (central pin to end pin), worst case during mid-stroke; LC3 (Transverse impact) — 3 g lateral shock (roughly 15 N at the center pivot) simultaneous with LC1 loading. Pass/fail: (R1) max von Mises under each load case must stay below 335 MPa (yield / 1.5); (R2) linear buckling eigenvalue under LC2 must have a first mode load factor >= 4.0; (R3) max deflection at the center pivot under LC1 must stay below 1.5 mm so the pantograph geometry does not bind; (R4) link mass must be less than 60 g so the 4-link set stays below the 0.5% robot mass budget of 250 g; (R5) fatigue check by peak-stress-vs-S-N: peak stress under LC1 must stay below 180 MPa so 1e6 cycles of lift is achievable for 7075-T6 (Basquin constant). Primary verification: linear static structural FEA of LC1, LC2, LC3 plus linear buckling extraction for LC2. Vibration, thermal, fluid, and radiation analyses are explicitly not required. Output one STEP AP242 file and a report listing link mass in g, max von Mises per case in MPa, center pivot deflection under LC1, and buckling load factor.",
+  "short_prompt": "Design a single-part aluminum scissor-lift link: one of four identical members in a 2-stage pantograph lifting a 5 kg payload from 0 to 600 mm above a technical-college robotics benchmark robot chassis. Robot stowed 1000 x 1000 x 500 mm, total robot mass <= 50 kg.\n\nEnvelope: straight 400 mm pin-to-pin bar, cross-section within a 25 x 12 mm bounding box; two 8.0 mm end holes (H7/g6 on 8 mm steel pins) and one 8.0 mm central pivot; 7075-T6 aluminum.\n\nFactor regime: yield FoS 1.5, linear buckling eigenvalue >= 4.0 on the axial compression case; S-N 1e6-cycle peak-stress limit 180 MPa for 7075-T6.\n\nLoad cases.\n- Full payload at full extension: 245 N tangential at one end pin (opposite end fixed, center free), reflecting 10:1 mechanical disadvantage at full stroke.\n- Compressive buckling: 600 N axial along the link.\n- Transverse impact: 15 N lateral at center pivot simultaneous with the LC1 load.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "technical-college robotics benchmark scissor-lift link",
+    "brief": "7075-T6 aluminium scissor-lift link, 400 mm pin-to-pin, sized to the technical-college robotics benchmark 50 kg / 1 m envelope budget with explicit tension, buckling, and fatigue limits.",
+    "geometric_constraints": {
+      "pin_to_pin_length_mm": 400,
+      "cross_section_bounding_mm": {
+        "w": 25,
+        "h": 12
+      },
+      "end_hole_diameter_mm": 8.0,
+      "center_hole_diameter_mm": 8.0,
+      "holes_total": 3
+    },
+    "material": {
+      "name": "7075-T6",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2810,
+        "yield_strength_MPa": 503,
+        "ultimate_tensile_strength_MPa": 572
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "full_ext_payload",
+        "force_N": 245,
+        "application": "tangential at end pin"
+      },
+      {
+        "id": "LC2",
+        "name": "compressive_buckling",
+        "force_N": 600,
+        "direction": "axial compression"
+      },
+      {
+        "id": "LC3",
+        "name": "lateral_shock",
+        "force_N": 15,
+        "direction": "lateral at center pivot"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "center_deflection_LC1_mm",
+        "buckling_factor_LC2"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 335,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 4.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "center_pivot_deflection",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 60,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "peak_stress_fatigue",
+        "limit_MPa": 180,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<=",
+        "rationale": "7075-T6 endurance for 1e6 cycles"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x3)",
+        "linear buckling (LC2)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not imposed; quasi-static lift.",
+      "thermal_analysis": "Ambient indoor venue.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Pin-hole bearing wear",
+      "Anodize finish spec"
+    ]
+  },
+  "eval_coverage": [
+    "slender link in compression + bending",
+    "buckling eigenvalue",
+    "fatigue-strength static surrogate",
+    "mass budget vs. robot total"
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "id": "143_hv19_purdue_ev_kart_motor_plate",
+  "source": {
+    "catalog_ref": "HV19 (user-assigned Purdue evGrandPrix)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "electric_kart_drivetrain",
+  "part_class": "motor_chassis_mount_plate",
+  "full_prompt": "Design a monolithic 6061-T6 aluminum motor-to-chassis mounting plate for a Purdue evGrandPrix 2026 Collegiate Class electric kart running a brushed DC series motor driven by a spec Alltrax SPM 48600 controller at 48 V nominal with peak pack current 220 A. The kart wheelbase must be 39.75-43 inches (1010-1092 mm) per the 2026 Rules, tires are Hoosier R60B 4.5/10-5 front and 7.1/11-5 rear. The plate is a single billet-machined 6061-T6 part (no welds, no bolted gussets; integral motor mounting pattern + integral chassis-tab attachment ears + integral chain-adjustment slot). Geometry: 280 mm wide x 240 mm tall x 8 mm thick base plate. Motor mounting pattern: 8 M8 (9 mm clearance) holes on a 170 mm bolt circle plus a central 90 mm diameter pilot through-hole for the motor end-bell register (matching ME0909 or similar 9-inch series DC motor envelope). Chassis attachment ears: 4 integral ears on the corners, each 40 mm x 40 mm x 8 mm with a 12 mm through-bore for M12 chassis mount bolts; the four ears are positioned on a 240 mm x 200 mm rectangular pattern. Chain-adjustment slot: two parallel slots 50 mm long x 9 mm wide (matching motor bolt-hole positions to allow +/-25 mm of chain tension adjustment in the plane of the plate). Bounding envelope 280 x 240 x 50 mm (50 mm accounts for motor pilot protrusion and reinforcement ribs). Material 6061-T6 (E 68.9 GPa, nu 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa, yield at 85 C 262 MPa). Motor data: mass 35 kg, peak torque 54 N-m at 2500 rpm, rated 12 kW, max temperature at case 110 C during 20-minute heat race. Three load cases. Load Case 1 (peak drive torque): 54 N-m reacted at the motor flange bolt circle as a couple around the central pilot axis, the four chassis ears fully constrained. Load Case 2 (3g vertical bump): 35 kg * 3g = 1030 N vertical load applied at the motor pilot (cantilever from the plate), four chassis ears fixed. Load Case 3 (crash / tip-over): 10g lateral side impact on the motor mass = 3.4 kN lateral load at the motor pilot axis. Pass/fail: (R1) under LC1 peak drive torque, peak von Mises must not exceed 138 MPa (yield/2.0); (R2) under LC2 bump, peak stress 184 MPa (yield/1.5 transient); (R3) under LC3 tip-over, peak stress 184 MPa; (R4) first six natural frequencies (plate + 35 kg lumped motor mass at pilot) must exceed 50 Hz to avoid coupling with the 25-40 Hz kart-chassis second-bending mode typical of steel tube karts; (R5) a steady-state thermal analysis with motor case 110 C (heat source), ambient 30 C, natural convection 10 W/m^2-K on exposed plate surfaces must show plate body temperature at the pilot register below 85 C (preserves 6061-T6 properties) to protect the 4 chassis-ear bolts from thermal creep; (R6) plate mass must not exceed 1.8 kg; (R7) maximum angular misalignment of the motor output shaft axis under LC1 must remain below 0.25 deg (4.4 mrad) to preserve chain drive reliability. Fluid, buckling, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 6061-T6 aluminum motor-to-chassis mounting plate for a collegiate Purdue evGrandPrix electric kart (brushed DC series motor, Alltrax SPM 48600 controller, 48 V, 220 A peak pack current, 39.75-43 in wheelbase). The plate is a single billet-machined 6061-T6 part with a central 90 mm motor-pilot bore, an 8x M8 bolt circle on 170 mm PCD, four corner chassis ears on a 240 x 200 mm pattern, and two parallel chain-adjustment slots; no welds. Apply yield/2.0 continuous and yield/1.5 transient safety factors, plus 85 C yield derating for thermal cases.\n\nEnvelope: 280 x 240 x 50 mm (50 mm accounts for pilot protrusion and ribs).\n\nLoad cases.\n- LC1 peak drive torque: 54 N-m reacted at the motor bolt circle as a couple about the pilot axis, four chassis ears fixed.\n- LC2 3 g vertical bump: 1030 N vertical at the motor pilot (35 kg x 3 g), chassis ears fixed.\n- LC3 crash / tip-over: 10 g lateral on 35 kg = 3.4 kN at the motor pilot axis.\nAlso require a steady-state thermal with motor case at 110 C (ambient 30 C, natural convection 10 W/m^2-K) holding the plate pilot below 85 C, first six modes >50 Hz, and motor-shaft angular misalignment under LC1 below 0.25 deg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Purdue evGrandPrix motor-to-chassis mount plate",
+    "brief": "6061-T6 mount plate 280x240x8 with 8-hole motor flange + 4 corner chassis ears + chain adjust slots.",
+    "geometric_constraints": {
+      "plate_mm": {
+        "w": 280,
+        "h": 240,
+        "t": 8
+      },
+      "motor_flange": {
+        "bolts": 8,
+        "pcd_mm": 170,
+        "hole_mm": 9,
+        "pilot_mm": 90
+      },
+      "chassis_ears": {
+        "count": 4,
+        "mm": [
+          40,
+          40,
+          8
+        ],
+        "hole_mm": 12,
+        "pattern_mm": [
+          240,
+          200
+        ]
+      },
+      "chain_adjustment_slots": {
+        "count": 2,
+        "mm": [
+          50,
+          9
+        ]
+      },
+      "bounding_envelope_mm": {
+        "x": 280,
+        "y": 240,
+        "z": 50
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_20C_MPa": 276,
+        "yield_85C_MPa": 262,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "motor_data": {
+      "mass_kg": 35,
+      "peak_torque_Nm": 54,
+      "rated_power_kW": 12,
+      "case_max_C": 110,
+      "pack_voltage_V": 48,
+      "peak_current_A": 220
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "peak_drive_torque",
+        "torque_Nm": 54
+      },
+      {
+        "id": "LC2",
+        "name": "bump_3g",
+        "vertical_N": 1030
+      },
+      {
+        "id": "LC3",
+        "name": "tip_over_10g_lateral",
+        "lateral_N": 3400
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_six_freqs_Hz",
+        "plate_pilot_temp_C",
+        "motor_axis_misalignment_deg",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 138,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 50,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "plate_pilot_temperature",
+        "limit_C": 85,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "motor_axis_misalignment",
+        "limit_deg": 0.25,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal with lumped motor mass",
+        "steady thermal with convection"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not dominant.",
+      "buckling_analysis": "Compact plate with 8 mm thickness not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Controller thermal sidewall contact",
+      "Motor end-bell spigot squareness",
+      "Chain tensioner slip interlock"
+    ]
+  },
+  "eval_coverage": [
+    "electric-kart peak torque + bump + tip-over multi-case",
+    "motor-case-to-plate heat leak thermal gate",
+    "chain-drive misalignment deflection cap",
+    "chassis-mode frequency avoidance"
+  ]
+}

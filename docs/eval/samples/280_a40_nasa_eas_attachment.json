@@ -1,0 +1,212 @@
+{
+  "id": "280_a40_nasa_eas_attachment",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A40",
+    "year": 2019,
+    "tier": "A+"
+  },
+  "domain": "space_structural",
+  "part_class": "iss_seat_track_attachment",
+  "full_prompt": "Design a single-part monolithic Experiment Attachment System (EAS) bracket per the NASA / open-CAD platform EAS Challenge. Purpose: provide a standardized rapid-install attachment point for crew-accessible experiments inside the ISS, interfacing to the MS33601 standard ISS seat-track rails. Geometric constraints: bracket mates to MS33601 seat track (20 mm slot, 0.5 in wide x 1.0 in deep) on one side; on the other side provides a planar mounting face with 4x M6 tapped holes on a 76 mm x 50 mm rectangular pattern for crew experiments. Overall bounding box 180 mm x 80 mm x 75 mm. The bracket must include defined keep-out zones (per challenge brief): no part of the bracket may protrude into the MS33601 seat-track slot envelope except the interface lug. Material: 7075-T73 aluminum (E = 71.7 GPa, yield = 435 MPa, ultimate = 505 MPa, density = 2810 kg/m^3). Load cases: (R1) 1000 N (approx 225 lbf) applied at the experiment-mount face in the pull-out direction (away from seat track); max von Mises <= yield / 2.0 = 217 MPa; deflection at load point <= 0.5 in (12.7 mm). (R2) 500 N applied laterally (parallel to seat-track rail) at the experiment-mount face; max von Mises <= 217 MPa; deflection <= 12.7 mm. (R3) 300 N moment-arm pull: 300 N applied 50 mm off-axis producing bending moment 15 N*m at the seat-track interface; max von Mises <= 217 MPa. (R4) Bracket mass <= 20 lb (9.07 kg) - this is the challenge hard cap but trivially met (aim for <= 500 g for realistic scoring). (R5) Linear buckling eigenvalue under LC1 compressive reaction path >= 3.0. (R6) Modal first frequency hard-mounted at MS33601 interface >= 50 Hz (ISS mission requirement). Primary verification: structural FEA (linear static x3) + modal + buckling. Vibration secondary via R6. Thermal, fluid, radiation NOT required. Deliverables: STEP AP242 + Parasolid monolithic bracket, MS33601 interface drawing, and a report listing mass in g, max von Mises per case in MPa, deflection at load per case in mm, first buckling load factor, first modal frequency in Hz.",
+  "short_prompt": "Design a single-part monolithic Experiment Attachment System (EAS) bracket per the NASA open-CAD EAS Challenge. The bracket provides a standardized rapid-install attachment inside the ISS between the MS33601 seat-track rails on one side and a planar 4 x M6 experiment-mount face (76 x 50 mm pattern) on the other. Keep-out: no part of the bracket may protrude into the MS33601 slot envelope except the interface lug. Material 7075-T73 aluminum.\n\nEnvelope: bounding 180 x 80 x 75 mm.\n\nLoad cases.\n- LC1 pull-out: 1000 N (~225 lbf) at the experiment-mount face away from the seat track; load-point deflection <= 12.7 mm (0.5 in).\n- LC2 lateral: 500 N parallel to the seat-track rail at the experiment-mount face; deflection <= 12.7 mm.\n- LC3 moment-arm pull: 300 N applied 50 mm off-axis = 15 N*m bending at the seat-track interface.\n- LC4 linear buckling under LC1 compressive reaction path, eigenvalue >= 3.0.\n- LC5 modal: hard-mounted at the MS33601 interface, first frequency >= 50 Hz (ISS mission requirement).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "NASA EAS seat-track experiment bracket",
+    "brief": "7075-T73 monolithic bracket on MS33601 ISS seat-track. 1000/500/300 N load cases + 50 Hz modal floor.",
+    "geometric_constraints": {
+      "bounding_box_mm": "180 x 80 x 75",
+      "seat_track_interface": "MS33601",
+      "experiment_mount_bolts": {
+        "count": 4,
+        "size": "M6",
+        "pattern_mm": "76 x 50"
+      },
+      "mass_kg_max": 9.07,
+      "monolithic": true
+    },
+    "material": {
+      "name": "7075-T73 aluminum",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "yield_strength_MPa": 435,
+        "ultimate_tensile_strength_MPa": 505,
+        "density_kg_m3": 2810
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pull_out_1000N",
+        "force_N": 1000,
+        "direction": "pull away from seat track"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_500N",
+        "force_N": 500,
+        "direction": "parallel to seat track"
+      },
+      {
+        "id": "LC3",
+        "name": "moment_15Nm",
+        "force_N": 300,
+        "offset_mm": 50
+      },
+      {
+        "id": "LC4",
+        "name": "buckling_LC1"
+      },
+      {
+        "id": "LC5",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "MS33601 seat-track interface fully constrained",
+      "loads": "applied at experiment-mount face"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "deflection_LC1_mm",
+        "deflection_LC2_mm",
+        "first_buckling_load_factor",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 217,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "deflection_at_load",
+        "limit_mm": 12.7,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 217,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "structural_analysis",
+        "metric": "deflection_at_load",
+        "limit_mm": 12.7,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 217,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 9.07,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 50,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "ISS cabin ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "TID separate."
+    }
+  },
+  "eval_coverage": [
+    "MS33601 seat-track interface compliance",
+    "combined stress + deflection + modal + buckling",
+    "ISS mission 50 Hz floor"
+  ]
+}

@@ -1,0 +1,188 @@
+{
+  "id": "253_a13_asabe_quarter_scale_rops",
+  "source": {
+    "catalog_ref": "A13",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "mechanical_structural",
+  "part_class": "tractor_rops_frame",
+  "full_prompt": "Design a single-part monolithic Roll-Over Protective Structure (ROPS) for a quarter-scale agricultural tractor. Gross vehicle weight (GVW) shall not exceed 900 lb (408 kg), the fixed powertrain is a small-displacement single-cylinder engine (approximately 25 hp), and minimum wheel track is 24 in (610 mm). The ROPS is a two-post rear-mount roll bar welded from 50.8 mm (2 in) OD x 3.2 mm (0.125 in) wall mild steel tubing (ASTM A513, E = 200 GPa, yield = 295 MPa, ultimate = 400 MPa, density = 7850 kg/m^3). Geometric constraints: ROPS height above operator seat reference point (SIP) >= 800 mm, ROPS width outside post-to-post 900 mm, post-to-seat clearance envelope >= 50 mm. Mounted to chassis via four M12 bolts on a 500 mm x 80 mm rectangular pattern. Load cases derived from ISO 3471 / OECD Code 4 scaled to GVW 408 kg: (R1) Lateral load: 1.75 x GVW x g = 1.75 x 408 x 9.81 = 7,000 N applied horizontally to the top of the ROPS; max von Mises in tube <= yield = 295 MPa; plastic deflection volume within Deflection Limiting Volume (DLV) bounds (operator seat envelope shall not be penetrated). (R2) Vertical crush: 2.0 x GVW x g = 8,000 N applied vertically to the top of the ROPS; max von Mises <= ultimate / 1.5 = 267 MPa. (R3) Longitudinal load: 0.5 x GVW x g = 2,000 N applied longitudinally at the top; max von Mises <= 295 MPa. (R4) Drawbar pull event: 1,500 N applied at the drawbar hitch point on the rear of the chassis while ROPS is loaded with operator (80 kg) weight; this is a coupling check at the ROPS-to-chassis bolt interface; bolt-hole bearing <= yield = 295 MPa. (R5) ROPS mass <= 12 kg. Primary verification: structural FEA, linear static, four independent load cases. Vibration, thermal, fluid, radiation, buckling explicitly NOT required. Deliverables: STEP AP242 welded frame, weld map, and a report listing mass in kg, max deflection under R1 in mm (must stay outside DLV), max von Mises per load case in MPa.",
+  "short_prompt": "Design a monolithic welded two-post rear-mount Roll-Over Protective Structure (ROPS) for a quarter-scale agricultural tractor (GVW capped at 900 lb / 408 kg, ~25 hp single-cylinder engine, >= 24 in wheel track). Tubing is 50.8 mm OD x 3.2 mm wall ASTM A513 mild steel; chassis mount is four M12 bolts on a 500 x 80 mm rectangular pattern. Loads follow ISO 3471 / OECD Code 4 scaled to GVW 408 kg.\n\nEnvelope: ROPS height >= 800 mm above the seat reference point, outside post-to-post width 900 mm, post-to-seat clearance >= 50 mm.\n\nLoad cases.\n- LC1 lateral: 1.75 x GVW x g = 7,000 N horizontal at the top of the ROPS; plastic deflection must stay outside the Deflection Limiting Volume.\n- LC2 vertical crush: 2.0 x GVW x g = 8,000 N at the top.\n- LC3 longitudinal: 0.5 x GVW x g = 2,000 N at the top.\n- LC4 drawbar pull: 1,500 N at the hitch with 80 kg operator on-seat, coupling check at the four chassis bolts.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Quarter-Scale Tractor ROPS (ISO 3471 analog loads)",
+    "brief": "Mild steel two-post ROPS sized to ISO 3471 analog on 408 kg GVW tractor. Four static cases.",
+    "geometric_constraints": {
+      "tube_OD_mm": 50.8,
+      "tube_wall_mm": 3.2,
+      "height_above_SIP_mm_min": 800,
+      "width_mm": 900,
+      "mounting_bolts": {
+        "count": 4,
+        "size": "M12",
+        "pattern_mm": "500 x 80"
+      },
+      "track_min_mm": 610,
+      "GVW_kg_max": 408
+    },
+    "material": {
+      "name": "ASTM A513 mild steel",
+      "properties": {
+        "youngs_modulus_GPa": 200,
+        "yield_strength_MPa": 295,
+        "ultimate_tensile_strength_MPa": 400,
+        "density_kg_m3": 7850
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "lateral_1.75GVW",
+        "force_N": 7000,
+        "direction": "horizontal lateral at ROPS top"
+      },
+      {
+        "id": "LC2",
+        "name": "vertical_crush_2GVW",
+        "force_N": 8000,
+        "direction": "vertical at ROPS top"
+      },
+      {
+        "id": "LC3",
+        "name": "longitudinal_0.5GVW",
+        "force_N": 2000,
+        "direction": "horizontal longitudinal"
+      },
+      {
+        "id": "LC4",
+        "name": "drawbar_pull",
+        "force_N": 1500,
+        "direction": "horizontal at hitch"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "four M12 bolt holes fixed",
+      "loads": "point loads at tube apex / drawbar point"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa",
+        "max_deflection_LC1_mm",
+        "DLV_intrusion_check_bool"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 295,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "DLV_intrusion_depth",
+        "limit_mm": 0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 267,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 295,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bolt_hole_bearing",
+        "limit_MPa": 295,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 12,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order beam or shell",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x4 cases)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static per ISO 3471.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Closed frame, tubes in bending."
+    }
+  },
+  "eval_coverage": [
+    "multi-directional ROPS loads (lateral/vertical/longitudinal)",
+    "DLV envelope check",
+    "drawbar cross-coupling load"
+  ]
+}

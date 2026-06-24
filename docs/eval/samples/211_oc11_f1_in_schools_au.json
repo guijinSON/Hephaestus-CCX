@@ -1,0 +1,157 @@
+{
+  "id": "211_oc11_f1_in_schools_au",
+  "source": {
+    "catalog_ref": "OC5",
+    "year": 2024,
+    "tier": "B"
+  },
+  "domain": "scale_model_racecar_structural",
+  "part_class": "3dp_f1_car_body",
+  "full_prompt": "Design the 3D-printed monocoque car body for a schools-class CO2-cartridge scale model racecar benchmark. Overall vehicle length must be between 170 mm and 210 mm; width between 50 mm and 85 mm excluding wings; total height (including wings) between 40 mm and 65 mm. The car is propelled by a single 8 g CO2 cartridge that fires into a fully-enclosed driver-side cylindrical chamber of internal diameter 5.5 mm and depth 50 mm, located on the car centerline. The vehicle runs on a 20 m straight track suspended from a tensioned nylon fishing line routed through two 3.5 mm diameter guide tubes on the underside of the car. Material is a single 3D-printed polymer, permitted: PLA, PETG, or ASA (use PLA for the baseline model with Young's modulus 3.5 GPa, Poisson 0.36, tensile yield 55 MPa, ultimate 65 MPa, density 1240 kg/m^3). The body includes front and rear wings with minimum chord 15 mm, maximum chord 30 mm, minimum thickness 2.5 mm, and maximum thickness 8 mm. All decals must be flush within 2 mm of the surface. Load cases: (LC1) CO2 impulse: at trigger, the 8 g CO2 cartridge releases approximately 12 g (0.012 kg) of gas at an initial pressure of ~6 MPa through a 3 mm throat generating a thrust peak of ~70 N for ~10 ms, applied axially at the cartridge throat against the forward chamber wall; (LC2) guide line tension: total aerodynamic + friction drag of ~2 N acts upward through the two guide tubes during the 20 m run; (LC3) handling drop: 1 m free-fall of the fully assembled car (mass 50 g) onto a flat surface landing on one rear wheel, modeled as 20 g impulse at the rear-right wheel hub; (LC4) finish-line capture: deceleration of ~25 g over 10 ms at the front nose as the car impacts the foam capture block. Pass/fail: (R1) max von Mises stress under LC1-LC4 must remain below 37 MPa (yield 55 / 1.5), (R2) chamber-wall radial expansion under LC1 must remain below 0.1 mm to avoid cartridge seating failure, (R3) car total mass must remain above 50 g (minimum regulation) and below 120 g, (R4) first natural body-bending mode must exceed 200 Hz to avoid coupling with track vibration. Deliverables: STEP AP242, STL, FEA per case, modal report, mass sheet, and a wing span/chord/thickness measurement table certified against the rulebook.",
+  "short_prompt": "Design the 3D-printed monocoque body of a schools-class CO2-cartridge scale racecar running on a 20 m tensioned-line track. Material class: a single 3D-printed polymer (PLA baseline). No external structural standard is cited; design to a 1.5 FoS on yield.\n\nEnvelope: length 170-210 mm, width 50-85 mm (ex wings), height 40-65 mm (incl wings); cylindrical CO2 chamber 5.5 mm ID x 50 mm deep on centerline; two 3.5 mm guide tubes; wing chord 15-30 mm, thickness 2.5-8 mm; total mass 50-120 g.\n\nLoad cases.\n- LC1 CO2 impulse: 8 g cartridge gives ~70 N peak axial thrust for ~10 ms at the forward chamber wall.\n- LC2 guide-line drag: ~2 N upward through the two guide tubes during the run.\n- LC3 drop: 1 m free-fall onto one rear wheel, 20 g impulse at the rear-right hub, ~50 g car mass.\n- LC4 finish-line capture: ~25 g deceleration over 10 ms at the nose.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "radiation_analysis",
+      "buckling_analysis",
+      "fluid_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Schools-class 3DP scale racecar body",
+    "brief": "3D-printed monocoque scale car with 8 g CO2 cartridge propulsion on a 20 m track.",
+    "geometric_constraints": {
+      "length_mm": [
+        170,
+        210
+      ],
+      "width_mm": [
+        50,
+        85
+      ],
+      "height_mm": [
+        40,
+        65
+      ],
+      "co2_chamber_mm": {
+        "diameter": 5.5,
+        "depth": 50
+      },
+      "guide_tube_diameter_mm": 3.5,
+      "wing_chord_mm": [
+        15,
+        30
+      ],
+      "wing_thickness_mm": [
+        2.5,
+        8
+      ],
+      "decal_protrusion_mm_max": 2
+    },
+    "material": {
+      "name": "PLA 3D print",
+      "youngs_modulus_GPa": 3.5,
+      "poissons_ratio": 0.36,
+      "density_kg_m3": 1240,
+      "yield_strength_MPa": 55,
+      "ultimate_tensile_strength_MPa": 65
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "co2_impulse",
+        "peak_thrust_N": 70,
+        "duration_ms": 10
+      },
+      {
+        "id": "LC2",
+        "name": "guide_drag",
+        "F_N": 2
+      },
+      {
+        "id": "LC3",
+        "name": "drop_1m",
+        "g": 20,
+        "application": "rear-right wheel hub"
+      },
+      {
+        "id": "LC4",
+        "name": "finish_line_impact",
+        "g": 25,
+        "duration_ms": 10,
+        "application": "nose"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "STL"
+      ],
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "chamber_radial_expansion_mm",
+        "first_body_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 37,
+        "derivation": "PLA yield 55 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "chamber_wall_radial_expansion",
+        "limit_mm": 0.1,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_g_range": [
+          50,
+          120
+        ],
+        "applies_to": [
+          "design"
+        ]
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_body_bending_mode",
+        "limit_Hz": 200,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

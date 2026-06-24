@@ -1,0 +1,167 @@
+{
+  "id": "191_sa8_in_space_cansat_paraglider",
+  "source": {
+    "catalog_ref": "SA8",
+    "year": 2026,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_primary_structure_with_paraglider_mount",
+  "full_prompt": "Design the primary structural chassis of a CanSat payload as a CanSat-class primary structure benchmark, configured for a powered-paraglider recovery mission rather than a conventional parachute. The CanSat is released at approximately 500 m AGL from a quadcopter carrier and must autonomously deploy a ram-air paraglider canopy, steer to a designated landing zone, and transmit GPS telemetry at 1 Hz during descent.\n\nGeometry. The CanSat primary structure is a thin-walled cylindrical enclosure with outer diameter 66 mm and total length 130 mm, sized to fit the reference CanSat soda-can envelope. The cylinder has a 1.5 mm wall machined from 6061-T6 aluminum. The top cap is a 3.0 mm circular plate that carries (a) a central M5 paraglider-riser attachment boss with an internal reinforcement web, (b) two diametrically opposed servo cutouts (25 mm x 15 mm) for the canopy-steering line servos, and (c) a pitot static port at the 12-o'clock position. The base plate is 2.5 mm thick with a central GPS antenna cutout (15 mm diameter). Internal bulkheads at 40 mm and 80 mm from the base support a 3-PCB stack (each 58 mm x 58 mm, 1.6 mm FR-4) and a 7.4 V 2200 mAh LiPo pack. Four M3 stainless-steel socket-head cap screws hold the top plate.\n\nMaterial. The primary structure is 6061-T6 aluminum (Young's modulus 68.9 GPa, Poisson's ratio 0.33, density 2700 kg/m^3, yield strength 276 MPa, ultimate tensile strength 310 MPa). The paraglider canopy is modeled as ripstop nylon with a nominal loaded area of 0.35 m^2 and is attached via eight 2-mm Dyneema risers terminating at the top-cap M5 boss. Analyses are at 25 C.\n\nLoad cases. (LC1) Carrier release free-fall: the CanSat experiences zero-g for approximately 1.8 s before canopy opening; treat as a quasi-static inertia-relief check, no applied load beyond self-weight. (LC2) Canopy opening shock: 12 g peak, 80 ms half-sine applied through the top-cap M5 riser boss (ram-air canopies open gradually so peak is lower than round-parachute shock). (LC3) Steady descent at 2.0 m/s terminal velocity with asymmetric steering input producing a 15 N side-force couple at the servo horns. (LC4) Hard-landing contingency: 25 g 8 ms half-sine applied through the base plate if the canopy fails to fully inflate.\n\nPass/fail criteria. (R1) Maximum von Mises stress in the aluminum chassis must not exceed 184 MPa (yield / 1.5) for LC2 and LC4. (R2) Maximum lateral displacement of the servo mount bosses under LC3 must not exceed 0.5 mm so the steering-line geometry stays calibrated. (R3) Total CanSat wet mass including canopy, risers, and battery must not exceed 350 g. (R4) The first natural frequency of the chassis with populated electronics must be at least 90 Hz to avoid coupling with the 60 Hz servo-PWM carrier. (R5) The M5 riser-boss pullout load must exceed 600 N (canopy-shock safety factor 4x over the 150 N predicted peak riser tension).\n\nSolver and analysis expectations. Primary verification is linear static structural FEA for LC2, LC3, and LC4. Modal analysis is required to compute the natural frequency in R4. LC1 is trivial (self-weight + inertia relief) and may be hand-checked. A 6-DOF trajectory simulation for canopy descent (needed to size the canopy for 2 m/s terminal velocity) is out of scope for the structural deliverable but must be flagged as a non-FEA solver requirement that precedes canopy sizing. Thermal and fluid analyses are not required. Radiation analysis is not applicable.\n\nDeliverables. STEP (AP242) + Parasolid of the full primary structure including the riser boss, servo cutouts, and PCB bulkheads. Mass budget table broken down by subsystem. Report with the three stress extrema, the first three natural frequencies, the riser-boss pullout strength estimate, and a note on the required external trajectory simulation.",
+  "short_prompt": "Design the primary structural chassis of a CanSat payload configured for a powered-paraglider recovery from ~500 m AGL, released from a quadcopter carrier. The chassis is a thin-walled 6061-T6 aluminum cylinder, 66 mm OD x 130 mm long (CanSat soda-can reference), 1.5 mm wall, with a 3.0 mm top cap carrying a central M5 paraglider-riser boss with reinforcement web, two diametrically opposed 25 x 15 mm servo cutouts, and a pitot port; the 2.5 mm base plate has a 15 mm GPS antenna cutout. Internal bulkheads at 40 and 80 mm support a 3-PCB stack plus a 7.4 V 2200 mAh LiPo; the top plate is secured by four M3 SHCS. Canopy is a 0.35 m^2 ram-air wing on eight Dyneema risers tied to the M5 boss.\n\nLoad cases.\n- LC1 carrier release free-fall: 0 g for ~1.8 s (self-weight inertia relief only).\n- LC2 canopy-opening shock: 12 g half-sine, 80 ms, through the top-cap M5 boss.\n- LC3 steady descent with steering asymmetry: 15 N side-force couple at the servo horns at 2.0 m/s terminal velocity.\n- LC4 hard-landing contingency: 25 g half-sine, 8 ms, through the base plate.\n\nTotal wet mass (chassis + canopy + risers + battery) must stay within the 350 g CanSat cap; first natural frequency must avoid the 60 Hz servo-PWM carrier; the M5 riser boss must hold >=600 N pullout (4x over the 150 N predicted peak).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "6dof_descent_trajectory_simulation",
+        "reason": "Canopy sizing for 2.0 m/s terminal velocity target requires atmospheric descent simulation (e.g., JSBSim, custom Python RK4) that is not an FEA category. Must precede canopy area selection.",
+        "examples": [
+          "JSBSim",
+          "custom Python RK4 descent solver"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CanSat-class primary structure with paraglider recovery",
+    "geometric_constraints": {
+      "form_factor": "CanSat soda-can (66 mm OD x 130 mm length)",
+      "wall_thickness_mm": 1.5,
+      "top_plate_thickness_mm": 3.0,
+      "base_plate_thickness_mm": 2.5,
+      "paraglider_mount": "M5 central riser boss with internal reinforcement web",
+      "servo_cutouts": "2x (25 x 15 mm) diametrically opposed on top cap",
+      "fasteners": "4x M3 SHCS"
+    },
+    "material": {
+      "name": "Al-6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "recovery_system": {
+      "type": "ram_air_paraglider",
+      "canopy_area_m2": 0.35,
+      "riser_count": 8,
+      "riser_material": "Dyneema 2 mm"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "free_fall_release",
+        "magnitude_g": 0
+      },
+      {
+        "id": "LC2",
+        "name": "canopy_opening_shock",
+        "peak_g": 12,
+        "duration_ms": 80,
+        "shape": "half_sine"
+      },
+      {
+        "id": "LC3",
+        "name": "steering_asymmetry",
+        "side_force_N": 15
+      },
+      {
+        "id": "LC4",
+        "name": "hard_landing_contingency",
+        "peak_g": 25,
+        "duration_ms": 8,
+        "shape": "half_sine"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield / 1.5 = 276 / 1.5",
+        "applies_to": [
+          "LC2",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_lateral_displacement_servo_boss",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_wet_mass",
+        "limit_g": 350,
+        "derivation": "CanSat class mass cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 90,
+        "derivation": "avoid 60 Hz servo-PWM carrier",
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "riser_boss_pullout_load",
+        "limit_N": 600,
+        "derivation": "4x SF over 150 N predicted peak",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Short mission (<60 s descent). Thermal loads negligible.",
+      "radiation_analysis": "Not applicable to sub-orbital CanSat."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Canopy aerodynamics (finite-wing CFD or vortex-lattice method)",
+      "Autopilot control law tuning for target landing zone"
+    ]
+  },
+  "eval_coverage": [
+    "paraglider recovery vs parachute (different shock profile)",
+    "servo-mount stiffness driving steering calibration",
+    "trajectory-simulation flagged as non-FEA dependency"
+  ]
+}

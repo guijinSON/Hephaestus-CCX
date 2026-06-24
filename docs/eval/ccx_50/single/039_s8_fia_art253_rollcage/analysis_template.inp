@@ -1,0 +1,104 @@
+**
+** FIA Appendix J Article 253 (2013) rollcage - analysis template
+** (mesh + NSETs spliced in by wire_bcs.py from the agent's STEP)
+**
+** Submission-agnostic eval kit: the agent's build.py emits out.step +
+** meta.json. wire_bcs.py builds Eall (all C3D* element sets) and
+** populates the four NSETs declared in meta.json:
+**
+**   NFIXED - all six floor mounting foot footprints (z = 0 plane)
+**   NLC1   - top of main hoop, vertical-load patch
+**   NLC2   - top of front hoop, rearward-load patch (near MH-FH cnx)
+**   NLC3   - main hoop driver-side leg at shoulder height (z ~ 915 mm)
+**
+** Material: cold-drawn seamless non-alloy carbon steel, S235-equivalent.
+**   E = 210 GPa, nu = 0.30, rho = 7850 kg/m^3 = 7.85e-9 t/mm^3.
+**   Yield Fty = 235 MPa, UTS Ftu >= 350 MPa (FIA Art 253-8.3.1.1).
+** Units: mm, N, MPa, t (tonne).
+**
+** Three quasi-static homologation load steps per Art. 253-8.3.2.1
+** (W = 1200 kg * 9.81 = 11772 N):
+**   LC1 - vertical 7.5 W = 88,290 N (~9 t) on main hoop top
+**   LC2 - rearward 3.5 W = 41,202 N (~4.2 t) on front hoop top
+**   LC3 - lateral 3.5 W = 41,202 N (~4.2 t) on main hoop at shoulder
+**
+** *CLOAD applies the listed value to EACH node in the NSET (CalculiX
+** convention). The structural pass/fail criteria R1..R3 (max von Mises
+** vs. 235 MPa yield) and R4 (deformation at the load patch <= 50 mm)
+** are verified CLOSED-FORM in check.py against the spec tube
+** OD x wall sections - this is mesh-count independent and matches the
+** FIA homologation analytical practice. The FEM step here is a
+** sanity-check linear static under a small representative per-node
+** demand, so this deck always assembles + solves regardless of the
+** mesh node count produced by gmsh.
+**
+*MATERIAL, NAME=STEEL_S235
+*ELASTIC
+210000.0, 0.30
+*DENSITY
+7.85e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=STEEL_S235
+**
+** ----------------------------------------------------------------
+** Boundary: clamp the six floor mounting foot footprints (all 6 DOF
+** for solid C3D elements only translational DOFs exist; the entire
+** z_min plane is restrained which produces an effective fixed-end
+** clamp on the mount feet).
+** ----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ----------------------------------------------------------------
+** Step 1: LC1 - vertical 7.5W on main hoop top (per-node sanity load)
+**         Direction: -Z. Per-node Fz = -50 N (representative).
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+*CLOAD, OP=NEW
+NLC1, 3, -50.0
+*NODE PRINT, NSET=NLC1
+U
+*EL PRINT, ELSET=Eall
+S
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ----------------------------------------------------------------
+** Step 2: LC2 - rearward 3.5W on front hoop top (per-node sanity load)
+**         Direction: +X (rearward). Per-node Fx = +25 N.
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+*CLOAD, OP=NEW
+NLC2, 1, 25.0
+*NODE PRINT, NSET=NLC2
+U
+*EL PRINT, ELSET=Eall
+S
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ----------------------------------------------------------------
+** Step 3: LC3 - lateral 3.5W on main hoop at shoulder height
+**         Direction: +Y. Per-node Fy = +25 N (representative).
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+*CLOAD, OP=NEW
+NLC3, 2, 25.0
+*NODE PRINT, NSET=NLC3
+U
+*EL PRINT, ELSET=Eall
+S
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP

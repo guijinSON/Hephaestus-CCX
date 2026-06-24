@@ -1,0 +1,205 @@
+{
+  "id": "287_i_ea2_nhk_student_robocon_2025_pneumatic_manifold",
+  "source": {
+    "catalog_ref": "I-EA2",
+    "year": 2025,
+    "tier": "A",
+    "language_note": "Rulebook is in Japanese; numeric values are reproduced here in SI."
+  },
+  "domain": "robotics_pneumatics_structural",
+  "part_class": "pneumatic_manifold_block",
+  "full_prompt": "Design a single-body machined pneumatic distribution manifold for an collegiate robotics benchmark robot that receives regulated shop air and fans it out to eight solenoid-valve ports. The rulebook sets the maximum allowable working pressure at 0.60 MPa gauge and requires any pressure-bearing component to withstand at least 1.2 MPa (2x MAWP) without permanent deformation and 1.8 MPa (3x MAWP) as a burst limit. The manifold external envelope must fit within 160 mm (length) x 50 mm (width) x 30 mm (height); the inlet is a single G1/4 thread on one short face; the eight outlets are M5-threaded cross-drilled ports arranged as two rows of four along the top face, pitched 20 mm apart, with the outlet axis perpendicular to the top face; the internal trunk is a 6 mm diameter longitudinal bore connecting inlet to all outlets. The manifold is machined from 6061-T6 aluminium with Young's modulus 69 GPa, Poisson's ratio 0.33, density 2700 kg/m^3, yield strength 276 MPa, ultimate tensile strength 310 MPa. Mounting is via two through-holes of 5.2 mm diameter (M5 clearance) on the bottom face, spaced 140 mm apart, each fully fixed. Load Case 1 (MAWP): apply 0.6 MPa internal pressure on every wetted wall simultaneously. Load Case 2 (Proof): apply 1.2 MPa internal pressure. Load Case 3 (Burst check): apply 1.8 MPa internal pressure. Load Case 4 (Mounting torque): apply 6 Nm tightening torque about each M5 bottom hole with internal pressure at 0.6 MPa. Pass/fail criteria: (R1) under LC1, maximum von Mises stress must stay below 92 MPa (276 MPa yield divided by 3, a standard pneumatic vessel margin) and maximum bulging of any external face must stay below 0.10 mm; (R2) under LC2, max von Mises must stay below 184 MPa (yield/1.5) and residual deformation upon unload must be zero (fully elastic); (R3) under LC3, max von Mises must stay below 276 MPa (yield) so no plastic collapse occurs before the 3x MAWP burst; (R4) under LC4, combined stress from internal pressure + bolt preload must stay below 184 MPa; (R5) total manifold mass must be less than or equal to 150 g so the robot weight budget is respected; (R6) a linear buckling check on the thin top wall between the two outlet rows must return a load factor >= 3 at 1.2 MPa. Primary verification: linear static structural FEA of all four cases plus a linear buckling eigenvalue analysis of LC2 on the top wall. Vibration, thermal, fluid, and radiation analyses are not required. Output one STEP AP242 file of the manifold as a single solid body and a report listing manifold mass in g, max von Mises per case in MPa, max external face deformation under LC1 in mm, and the buckling load factor.",
+  "short_prompt": "Design a single-body machined pneumatic distribution manifold for a collegiate robotics benchmark robot, fanning regulated shop air from one G1/4 inlet to eight M5 cross-drilled outlets. MAWP 0.60 MPa, proof 1.2 MPa (2x), burst 1.8 MPa (3x).\n\nEnvelope: 160 x 50 x 30 mm machined 6061-T6 billet; 6 mm longitudinal internal trunk; outlets in two rows of four at 20 mm pitch on the top face; two M5 mounting holes on the bottom spaced 140 mm apart (fixed).\n\nFactor regime: yield FoS 3 at MAWP (standard pneumatic-vessel margin), yield FoS 1.5 at proof, yield at burst; buckling eigenvalue >= 3 on the thin top-wall strip between outlet rows at proof.\n\nLoad cases.\n- MAWP: 0.6 MPa on all wetted walls.\n- Proof: 1.2 MPa internal.\n- Burst: 1.8 MPa internal (no plastic collapse).\n- Mounting: 6 N-m torque on each M5 bolt combined with 0.6 MPa internal.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "NHK robotics benchmark pneumatic distribution manifold",
+    "brief": "Single-body 6061-T6 manifold with one G1/4 inlet and eight M5 outlets, sized and rated for the collegiate robotics benchmark 0.6 MPa pneumatic limit with 2x proof and 3x burst margins.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 160,
+        "W": 50,
+        "H": 30
+      },
+      "inlet": {
+        "thread": "G1/4",
+        "count": 1,
+        "face": "short end"
+      },
+      "outlets": {
+        "count": 8,
+        "thread": "M5",
+        "rows": 2,
+        "pitch_mm": 20,
+        "face": "top"
+      },
+      "internal_trunk_diameter_mm": 6,
+      "mount_holes": {
+        "count": 2,
+        "diameter_mm": 5.2,
+        "pitch_mm": 140
+      }
+    },
+    "material": {
+      "name": "6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 69,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "MAWP",
+        "internal_pressure_MPa": 0.6
+      },
+      {
+        "id": "LC2",
+        "name": "Proof_2x",
+        "internal_pressure_MPa": 1.2
+      },
+      {
+        "id": "LC3",
+        "name": "Burst_3x",
+        "internal_pressure_MPa": 1.8
+      },
+      {
+        "id": "LC4",
+        "name": "MountingTorque",
+        "internal_pressure_MPa": 0.6,
+        "bolt_torque_Nm": 6
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "max_face_bulge_LC1_mm",
+        "buckling_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 92,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_face_bulge",
+        "limit_mm": 0.1,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 276,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_combined",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 150,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "linear buckling (LC2)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not imposed by robotics benchmark rulebook.",
+      "thermal_analysis": "Indoor ambient, no thermal gradient.",
+      "fluid_analysis": "Upstream regulator sets boundary; CFD unnecessary.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Port sealing Shore-hardness",
+      "O-ring groove tolerancing"
+    ]
+  },
+  "eval_coverage": [
+    "pressure-vessel-style stress margin ladder (1x/2x/3x)",
+    "mass budget",
+    "buckling of thin wall between cross-drilled ports"
+  ]
+}

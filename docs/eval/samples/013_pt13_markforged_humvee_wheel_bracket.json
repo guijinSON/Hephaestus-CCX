@@ -1,0 +1,217 @@
+{
+  "id": "013_pt13_markforged_humvee_wheel_bracket",
+  "source": {
+    "catalog_ref": "PT13",
+    "year": 2020,
+    "tier": "A+"
+  },
+  "domain": "automotive_military",
+  "part_class": "composite_printed_wheel_bracket",
+  "full_prompt": "Design a continuous-carbon-fiber-reinforced chopped-CF-nylon 3D-printed replacement wheel bracket for a light tactical vehicle per a canonical AM composite case-study template, sized to survive a rated load of 14,000 lbf (62.3 kN) at the bolted wheel-hub interface with a composite-structure safety factor of 2.0 on ultimate. The bracket attaches a steering linkage pickup to the axle assembly and must fit within an envelope of 180 mm x 120 mm x 80 mm. Interfaces: one 16 mm diameter through-hole for the axle mounting stud on the top face, two 12 mm diameter through-holes for the linkage clevis pin on the front face (centered on a 40 mm spacing). Material: chopped-carbon-fiber-reinforced nylon matrix (nylon 6 + chopped CF) with continuous carbon fiber (CCF) layers printed concentrically around stress paths and as floor/roof reinforcement. Published properties for CCF-reinforced CF-nylon (per CCF-AM material data sheet 2024): flexural strength (axial CF) ~= 540 MPa, tensile strength (axial CF) ~= 800 MPa, Young's modulus (axial) ~= 60 GPa, density ~= 1.4 g/cm^3; transverse (off-fiber) properties significantly lower (typically 50-80 MPa tensile). Load cases, derived from the canonical AM composite case study + military vehicle service: LC1 rated pull 62.3 kN (14,000 lbf) along the linkage pin axis; LC2 vertical axle load 20 kN applied at the 16 mm hole; LC3 combined LC1 + LC2 at 75% each (46.7 kN + 15 kN); LC4 20 g impact multiplier on LC1 (for rough-terrain shock), amplifying LC1 to ~65 kN peak but limited to composite ultimate by the primary pass/fail. Pass/fail: (R1) under LC1, max von Mises (isotropic approximation) <= 800 / 2.0 = 400 MPa along reinforcement direction and <= 50 / 2.0 = 25 MPa transverse to reinforcement, enforced via anisotropic composite failure criterion (Tsai-Wu or Hashin); (R2) max displacement at the linkage pin under LC1 <= 2 mm (steering tolerance requirement typical for light tactical vehicles); (R3) bracket mass <= 800 g (canonical AM composite case study reported ~680 g vs ~3 kg original steel); (R4) combined LC3 failure index (Tsai-Wu) <= 1/1.5 = 0.67 (SF 1.5 on composite interaction); (R5) bolt bearing stress at 16 mm hole on chopped-CF-nylon matrix <= 100 MPa (composite bearing allowable with 2.0 SF against 200 MPa ultimate); (R6) manufacturability: CCF layer count >= 4 per 5 mm of wall thickness; printed wall must have at least 2 chopped-CF-nylon floor/roof layers; build orientation must place continuous CF layers parallel to principal load direction. Deliverables: STEP AP242 + AM-slicer-compatible STL, with a layer plan (or reference to one) specifying CCF routing; report with Tsai-Wu failure index per load case, pin deflection, bracket mass, bearing stress, and CCF-layer routing description.",
+  "short_prompt": "Design a continuous-carbon-fiber-reinforced chopped-CF-nylon 3D-printed replacement wheel bracket for a light tactical vehicle, sized to survive a rated 14,000 lbf (62.3 kN) load at the bolted wheel-hub interface with a composite-structure safety factor of 2.0 on ultimate.\n\nEnvelope: 180 x 120 x 80 mm. Interfaces: one 16 mm through-hole for the axle mounting stud on the top face, two 12 mm through-holes for the linkage clevis pin on the front face (40 mm spacing).\n\nMaterial: nylon 6 + chopped CF matrix with concentric continuous-CF layers around stress paths and as floor/roof reinforcement. Published properties (CCF-AM 2024 data sheet): flexural strength (axial CF) ~540 MPa, tensile (axial CF) ~800 MPa, Young's modulus ~60 GPa, density ~1.4 g/cm^3; transverse tensile typically 50-80 MPa.\n\nLoad cases.\n- LC1 rated pull 62.3 kN (14,000 lbf) along the linkage pin axis.\n- LC2 vertical axle load 20 kN at the 16 mm hole.\n- LC3 combined LC1 + LC2 at 75% each (46.7 kN + 15 kN).\n- LC4 20 g impact multiplier on LC1 (rough-terrain shock), peak ~65 kN limited by composite ultimate.\n\nPin-hole deflection under LC1 <= 2 mm. Mass <= 800 g. Manufacturability: CCF layer count >= 4 per 5 mm wall, >= 2 chopped-CF floor/roof layers, continuous CF parallel to principal load direction.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "composite_layup_planner",
+        "reason": "CCF routing is a build-prep step, not FEA.",
+        "examples": [
+          "continuous-fiber AM slicer",
+          "nTopology composite routing"
+        ]
+      },
+      {
+        "tool": "tsai_wu_failure_criterion",
+        "reason": "Closed-form anisotropic failure check, post-processes FEA stresses.",
+        "examples": [
+          "ANSYS ACP",
+          "Abaqus composites post"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CCF-reinforced CF-nylon replacement light-tactical-vehicle linkage bracket (14,000 lbf)",
+    "brief": "Design a CCF-reinforced chopped-CF-nylon light-tactical-vehicle steering linkage bracket in a 180x120x80 mm envelope rated to 62.3 kN with SF 2.0 on ultimate and Tsai-Wu check.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 180,
+        "y": 120,
+        "z": 80
+      },
+      "axle_hole": {
+        "diameter_mm": 16,
+        "location": "top face"
+      },
+      "linkage_holes": {
+        "count": 2,
+        "diameter_mm": 12,
+        "spacing_mm": 40,
+        "location": "front face"
+      }
+    },
+    "material": {
+      "name": "Chopped-CF-nylon + continuous carbon fiber (CCF)",
+      "axial_tensile_MPa": 800,
+      "axial_flexural_MPa": 540,
+      "axial_modulus_GPa": 60,
+      "transverse_tensile_MPa": 50,
+      "density_kg_m3": 1400
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "rated_linkage_pull",
+        "force_N": 62300,
+        "axis": "linkage_pin"
+      },
+      {
+        "id": "LC2",
+        "name": "vertical_axle",
+        "force_N": 20000,
+        "axis": "axle_stud"
+      },
+      {
+        "id": "LC3",
+        "name": "combined_75pct",
+        "linkage_N": 46700,
+        "axle_N": 15000
+      },
+      {
+        "id": "LC4",
+        "name": "impact_20g_multiplier",
+        "amplifier": 20,
+        "on": "LC1"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting_interface": "fully constrained at axle stud boss",
+      "linkage_pin_holes": "bearing load over 180 deg"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_mass_g_max": 800
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "STL_am_slicer_compatible"
+      ],
+      "report_fields": [
+        "tsai_wu_FI_per_case",
+        "pin_deflection_mm",
+        "mass_g",
+        "bearing_stress_at_16mm_hole_MPa",
+        "ccf_layer_plan_summary"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_axial_fiber_stress",
+        "limit_MPa": 400,
+        "derivation": "axial UTS / 2.0 = 800 / 2.0 (composite SF 2.0)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "linkage_pin_deflection",
+        "limit_mm": 2.0,
+        "derivation": "Light tactical vehicle steering tolerance",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 800,
+        "derivation": "Canonical AM composite case study target (~680 g achieved)",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_failure_index",
+        "limit": 0.67,
+        "derivation": "1/1.5 (SF 1.5 on composite interaction)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "bolt_bearing_stress_on_ccf_matrix",
+        "limit_MPa": 100,
+        "derivation": "composite bearing ult 200 / 2.0",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "geometric_check",
+        "metric": "ccf_layer_count_per_5mm_wall",
+        "limit": 4,
+        "derivation": "Minimum fiber density for structural composite AM parts",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "CCF-AM Composite Material Data Sheet 2024 + MIL-PRF-32565 (ballistic composite analog, reference only) + ASTM D3518 (in-plane shear properties)",
+    "recommended_fea_setup": {
+      "element_type": "layered shell or solid-shell with CCF anisotropic",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical ACP",
+        "Abaqus composites"
+      ],
+      "analysis_types": [
+        "linear static with Tsai-Wu post-processing"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static ratings only per the canonical AM composite case study.",
+      "thermal_analysis": "Ambient service; chopped-CF-nylon glass transition ~145 C not engaged.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "CCF-AM Composite Material Data Sheet 2024 (CCF-nylon tensile 800 MPa axial); canonical AM composite light-tactical-vehicle case study 14,000 lbf rating."
+  },
+  "eval_coverage": [
+    "anisotropic composite bracket design",
+    "Tsai-Wu failure criterion",
+    "AM + composite-layup constraints",
+    "military vehicle rated-load compliance"
+  ]
+}

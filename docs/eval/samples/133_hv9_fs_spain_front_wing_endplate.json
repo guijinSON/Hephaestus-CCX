@@ -1,0 +1,217 @@
+{
+  "id": "133_hv9_fs_spain_front_wing_endplate",
+  "source": {
+    "catalog_ref": "HV9",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "fsae_aerodynamics",
+  "part_class": "front_wing_endplate",
+  "full_prompt": "Design a monolithic carbon-fiber-skinned (for CAD prompt treated as equivalent isotropic T800/Epoxy quasi-isotropic CFRP laminate) front-wing endplate for a collegiate formula-class racecar benchmark 2026 Class 1 CV vehicle running under FS Rules 2026 base plus the FSS v1.20260118 Spain handbook, exploiting warm-weather aerodynamic envelope. The endplate must conform to the FS 2026 aerodynamic rules T.9: no sharp edges (min 5 mm radius), no sharp corners (3 mm rad), bodywork forward of the front wheels may not extend more than 700 mm forward of the fronts of the front tires, and must remain within 250 mm outside of the outermost wheels. The endplate is a single molded quasi-isotropic CFRP part (no bolted vanes; all gurney flaps, footplates, and vortex generators are integral to the laminate shape - treat as monolithic for CAD). Geometry: endplate overall 320 mm forward-to-aft x 280 mm tall, laminate thickness 2.0 mm nominal with reinforcement ramps to 4.0 mm along front/top/bottom edges; integral mounting clevises (2x integral inserts) at the trailing edge (25 mm diameter x 20 mm deep blind-pocket equivalent with 8 mm through-bores), integral curved footplate at the bottom (70 mm x 320 mm x 2.0 mm sweeping outboard), integral L-shaped gurney at the top trailing edge 15 mm tall x 320 mm x 2.0 mm. Bounding envelope 320 x 30 x 290 mm. Material quasi-isotropic T800/Epoxy CFRP laminate equivalent: E_isotropic 55 GPa, nu 0.30, density 1600 kg/m^3, tensile strength 650 MPa (in-plane), compressive strength 550 MPa, shear strength 80 MPa, inter-laminar shear strength (ILSS) 80 MPa. Design basis: vehicle peak speed 130 km/h (36.1 m/s), air density 1.15 kg/m^3 (Spain warm dry conditions), dynamic pressure q = 0.5 * 1.15 * 36.1^2 = 749 Pa. Three load cases. Load Case 1 (aero at peak speed): uniform net pressure 1.5 kPa on the outboard face of the endplate (2x q to account for pressure coefficient envelope Cp range +/-1.0 producing deltaP = 2q), two trailing-edge mounts fully constrained. Load Case 2 (FIA-style impact debris): 500 N point load on any 50 mm x 50 mm patch on the endplate surface simulating a 250 g tire-debris impact at 50 m/s (kinetic energy reduced to equivalent static load per empirical FS scrutineering practice). Load Case 3 (curb strike / push test per T.9.4): 200 N push test at the most rearward extremity of the aerodynamic device per FS 2026 T.9.4, mounts fixed. Pass/fail: (R1) under LC1 aero, peak in-plane tensile stress in the laminate must not exceed 65 MPa (ultimate/10.0 per FIA Composite panel scrutineering conservative factor applied to collegiate formula-class racecar benchmark); (R2) under LC1 the peak deflection at any point of the endplate must not exceed 15 mm per FS 2026 T.9.3 aerodynamic device deflection rule during the scrutineering deflection test; (R3) under LC2 debris impact, peak stress 130 MPa (ultimate/5.0, transient); (R4) under LC3 push test, peak deflection must not exceed 10 mm (R3 subset of the rule); (R5) a linear buckling eigenvalue analysis under LC1 must yield a first-mode factor of at least 2.0 (thin laminate buckling is the most common failure for endplates); (R6) endplate mass must not exceed 0.65 kg; (R7) first three natural frequencies must exceed 25 Hz to avoid coupling with suspension-induced chassis oscillation. Thermal, fluid (beyond LC1 equivalent-static pressure), and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic front-wing endplate for a collegiate formula-class racecar, modeled as an equivalent isotropic T800/Epoxy quasi-isotropic CFRP laminate. The part is a single molded CFRP body with an integral outboard footplate, an L-shaped top-edge gurney, and two trailing-edge mounting inserts; no bolted vanes. Design per FS Rules 2026 T.9 aero rules (minimum 5 mm edge radii, 3 mm corner radii, 700 mm forward of the front tires and 250 mm outside the wheels), using a conservative ultimate/10 in-plane and ultimate/5 transient safety factor per FIA composite scrutineering practice.\n\nEnvelope: 320 mm fore-aft x 280 mm tall, nominal 2 mm laminate ramping to 4 mm along reinforced edges.\n\nLoad cases.\n- LC1 aero at peak speed: 1.5 kPa uniform net pressure on the outboard face (130 km/h, q = 749 Pa, Cp envelope 2q), trailing-edge mounts fixed; deflection must also pass the T.9.3 scrutineering test.\n- LC2 debris impact: 500 N over any 50 x 50 mm patch (250 g tire debris at 50 m/s, equivalent static).\n- LC3 push test (T.9.4): 200 N at the rearmost extremity, mounts fixed.\nAlso require a linear-buckling factor >= 2.0 under LC1 and first three modes above 25 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FS Spain front-wing endplate (T800 CFRP quasi-iso)",
+    "brief": "Monolithic 320x280 endplate with integral footplate + gurney + clevis inserts; FS 2026 T.9 aero + Spain warm-climate.",
+    "geometric_constraints": {
+      "endplate_mm": {
+        "forward_aft": 320,
+        "height": 280,
+        "nominal_thickness": 2.0,
+        "reinforced_edge_thickness": 4.0
+      },
+      "clevis_inserts": {
+        "count": 2,
+        "diameter_mm": 25,
+        "depth_mm": 20,
+        "bore_mm": 8
+      },
+      "footplate_mm": {
+        "w": 70,
+        "l": 320,
+        "t": 2.0
+      },
+      "gurney_mm": {
+        "height": 15,
+        "l": 320,
+        "t": 2.0
+      },
+      "bounding_envelope_mm": {
+        "x": 320,
+        "y": 30,
+        "z": 290
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "T800/Epoxy quasi-isotropic CFRP (equivalent isotropic)",
+      "properties": {
+        "youngs_modulus_GPa": 55,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 1600,
+        "tensile_strength_MPa": 650,
+        "compressive_strength_MPa": 550,
+        "shear_strength_MPa": 80
+      }
+    },
+    "aero_basis": {
+      "peak_speed_kmh": 130,
+      "rho_kg_m3": 1.15,
+      "dyn_press_Pa": 749
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "aero_peak",
+        "surface_pressure_kPa": 1.5
+      },
+      {
+        "id": "LC2",
+        "name": "debris_impact",
+        "force_N": 500,
+        "patch_mm": [
+          50,
+          50
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "push_test_T9.4",
+        "force_N": 200
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_tensile_stress_per_case_MPa",
+        "max_deflection_per_case_mm",
+        "first_buckling_load_factor",
+        "first_three_freqs_Hz",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_tensile_stress",
+        "limit_MPa": 65,
+        "derivation": "tensile/10 (composite conservative SF for aero)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_deflection_aero",
+        "limit_mm": 15,
+        "derivation": "FS 2026 T.9.3 deflection rule",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_tensile_stress",
+        "limit_MPa": 130,
+        "derivation": "tensile/5 transient",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_deflection_push",
+        "limit_mm": 10,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.65,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "vibration_analysis",
+        "metric": "first_three_natural_frequencies",
+        "limit_Hz": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell or quasi-iso solid shell",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical ACP",
+        "Abaqus Standard composite"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling (LC1)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "CFD reduced to equivalent static pressure Cp envelope.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "True ply layup optimization",
+      "Bolted insert pull-out in laminate",
+      "Paint crack tolerance"
+    ]
+  },
+  "eval_coverage": [
+    "FS 2026 T.9.3 deflection rule",
+    "FS 2026 T.9.4 push test",
+    "composite endplate buckling",
+    "aero-induced modal frequency gate"
+  ]
+}

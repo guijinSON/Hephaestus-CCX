@@ -1,0 +1,184 @@
+{
+  "id": "297_i_sa1_formula_bharat_2026_main_hoop",
+  "source": {
+    "catalog_ref": "I-SA1 (cross-ref HV16)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_chassis_structural",
+  "part_class": "main_hoop_roll_cage_tube",
+  "full_prompt": "Design the single main-hoop tube for a collegiate formula-class racecar benchmark 2026 combustion-class car. Per collegiate formula-class racecar benchmark 2026 Rules v1.0 (collegiate formula-class racecar-derived) section T.3 chassis, the main hoop must be made from 1018 mild steel or equivalent with minimum OD 25.4 mm and minimum wall 2.4 mm (1 inch x 0.095 inch tubing), or equivalent alternative steels passing the Structural Equivalency Spreadsheet (SES) bending stiffness and yielding strength check. This spec targets the primary 25.4 mm x 2.4 mm 1018 steel tube option, bent into an inverted U that rises from the main roll-hoop bulkheads on each side of the driver to a peak above the driver's helmet. Geometry: tube OD 25.4 mm, wall 2.4 mm, total unbent length 2200 mm, with two symmetric 90 deg bends at R = 80 mm centerline bend radius leaving a top horizontal section of 450 mm and two vertical legs of 800 mm each; the lower ends of the two vertical legs are welded to the frame and are treated as fully fixed in this analysis. Indian competition local conditions fix ambient test temperature 28 +/- 5 C and relative humidity up to 85 %, so material properties are specified at this environment. Material: 1018 cold-drawn mild steel with Young's modulus 205 GPa, Poisson's ratio 0.29, density 7870 kg/m^3, yield strength 370 MPa, ultimate tensile strength 440 MPa, and the FB-mandated minimum bending stiffness E*I = 205e9 * pi/64 * (25.4e-3^4 - (25.4e-3 - 2*2.4e-3)^4) Nm^2 per the SES baseline. Load cases (per collegiate formula-class racecar T.3 + FB derived): LC1 (Front impact 6 g longitudinal) — 300 kg mass * 6 g = 17,658 N applied at the top of the main hoop in the forward direction, representative of driver + front-subframe inertia; LC2 (Rollover on main-hoop top) — 9 kN vertical downward at the top center of the hoop (collegiate formula-class racecar benchmark roll test surrogate); LC3 (Side impact 5 g lateral) — 300 kg * 5 g = 14,715 N applied laterally at hoop top; LC4 (Harness pull-up) — 13 kN upward force distributed on the top horizontal section from a 5-point harness anchor; LC5 (Combined rollover + side) — LC2 + LC3 simultaneous. Pass/fail: (R1) max von Mises under each LC must stay below 247 MPa (yield/1.5); (R2) max displacement at hoop apex under LC2 < 25 mm (collegiate formula-class racecar SES-equivalent stiffness requirement); (R3) first-mode linear buckling load factor under LC1 >= 2.0; (R4) energy absorbed before first-yield in LC2 >= 2000 J (collegiate formula-class racecar roll-hoop load test); (R5) tube wall thickness under any LC must not thin below 2.0 mm (no local necking). Primary verification: linear static structural FEA (LC1 to LC5) and linear buckling (LC1). Vibration, thermal, fluid, and radiation analyses are explicitly not required. Output one STEP AP242 single-body tube plus a report listing tube mass, max von Mises per case, apex deflection under LC2, buckling factor under LC1, and energy absorbed to first yield under LC2.",
+  "short_prompt": "Design the single main-hoop tube for a collegiate formula-class racecar benchmark 2026 combustion-class car per FB 2026 T.3 / SES. Baseline option: 1018 CD steel, 25.4 mm OD x 2.4 mm wall, inverted-U with two 90 deg bends at 80 mm centerline radius, 450 mm top horizontal, 800 mm vertical legs, lower ends welded to the frame and treated as fully fixed. Local test conditions 28 +/- 5 C, RH up to 85%.\n\nFactor regime: yield FoS 1.5; linear buckling eigenvalue under the frontal case >= 2.0; energy-absorption-to-first-yield target 2000 J on the rollover case; wall thinning allowable to 2.0 mm.\n\nLoad cases.\n- Front impact: 6 g longitudinal on 300 kg = 17,658 N forward at hoop top.\n- Rollover on hoop top: 9 kN vertical down at the hoop apex.\n- Side impact: 5 g lateral on 300 kg = 14,715 N at hoop top.\n- Harness pull-up: 13 kN upward distributed on the top horizontal section.\n- Combined rollover + side: LC2 + LC3 simultaneously.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-class racecar benchmark 2026 main hoop tube",
+    "brief": "1018 steel 25.4 x 2.4 mm main hoop meeting FB/collegiate formula-class racecar SES minimum bending stiffness, surviving 6 g front, 9 kN rollover, and 5 g side impact.",
+    "geometric_constraints": {
+      "tube_OD_mm": 25.4,
+      "wall_mm": 2.4,
+      "total_length_mm": 2200,
+      "bend_radius_mm": 80,
+      "top_span_mm": 450,
+      "leg_length_mm": 800,
+      "bend_count": 2
+    },
+    "material": {
+      "name": "1018 CD mild steel",
+      "youngs_modulus_GPa": 205,
+      "poissons_ratio": 0.29,
+      "density_kg_m3": 7870,
+      "yield_MPa": 370,
+      "UTS_MPa": 440
+    },
+    "environment": {
+      "ambient_T_C": 28,
+      "humidity_pct_max": 85
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "front_6g",
+        "force_N": 17658,
+        "direction": "longitudinal"
+      },
+      {
+        "id": "LC2",
+        "name": "rollover_top",
+        "force_N": 9000,
+        "direction": "vertical down"
+      },
+      {
+        "id": "LC3",
+        "name": "side_5g",
+        "force_N": 14715,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC4",
+        "name": "harness_pullup",
+        "force_N": 13000,
+        "direction": "vertical up"
+      },
+      {
+        "id": "LC5",
+        "name": "combined_rollover_side",
+        "vertical_N": 9000,
+        "lateral_N": 14715
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "tube_mass_g",
+        "max_von_mises_per_case_MPa",
+        "apex_deflection_LC2_mm",
+        "buckling_factor_LC1",
+        "energy_to_yield_LC2_J"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 247,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "apex_deflection",
+        "limit_mm": 25,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "energy_absorbed_to_first_yield",
+        "limit_J": 2000,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "wall_thickness_under_load",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "any"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid hex or shell",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "linear buckling (LC1)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not mandated.",
+      "thermal_analysis": "Environment T/H specified but within elastic regime.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Weld HAZ softening",
+      "SES spreadsheet submission itself"
+    ]
+  },
+  "eval_coverage": [
+    "collegiate formula-class racecar-inherited load battery",
+    "SES-equivalent stiffness criterion",
+    "buckling + energy criteria together"
+  ]
+}

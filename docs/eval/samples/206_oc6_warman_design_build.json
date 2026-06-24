@@ -1,0 +1,134 @@
+{
+  "id": "206_oc6_warman_design_build",
+  "source": {
+    "catalog_ref": "OC6",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "autonomous_mechanism_structural",
+  "part_class": "payload_delivery_robot_frame",
+  "full_prompt": "Design the primary structural frame of an autonomous payload-delivery machine benchmark intended to collect two payload objects from Zone A, transport them across an obstacle track, and deposit them in Zone B within 60 seconds. The entire machine must fit within a 600 mm x 600 mm x 600 mm starting cube at the start line and its total mass must not exceed 10 kg. The structural frame is built from 6061-T6 aluminum tube and plate (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3). Primary load cases: (LC1) payload lift: each of two steel payload cubes weighs 1.5 kg; lift both simultaneously from the front scoop arm at a 0.3 m horizontal moment arm forward of the front axle (total moment 8.83 Nm, total load 29.4 N down); (LC2) track obstacle: drive over a 30 mm step at 0.5 m/s, modeled as 3 g vertical impulse on the front axle with base mass 10 kg; (LC3) collision arrest: full machine travelling at 1.0 m/s decelerates from a fixed wall impact in 50 ms (2 m/s^2 = 20 g equivalent) applied to the front of the frame; (LC4) 60-second duty cycle at 1.5 Hz drivetrain oscillation between +/- nominal 29.4 N payload load (90 cycles total). Pass/fail: LC1-LC3 max von Mises stress below 184 MPa (276/1.5), front-arm deflection at 0.3 m arm tip below 5 mm under LC1, scoop motion must not violate the 600 mm starting envelope until after the start-line crossing. First natural frequency of the payload arm must exceed 15 Hz. Deliverables: STEP model, per-case FEA, modal, and a mass budget spreadsheet breaking out drive, structure, and mechanism mass.",
+  "short_prompt": "Design the primary structural frame of an autonomous payload-delivery machine that collects two payload cubes from Zone A, crosses an obstacle track, and deposits them in Zone B within 60 seconds. Material class: 6061-T6 aluminum tube and plate. No external standard is named in the source; design to a 1.5 FoS on yield.\n\nEnvelope: must fit inside a 600 mm cube at the start line and total mass <= 10 kg. Two steel payload cubes of 1.5 kg each.\n\nLoad cases.\n- LC1 payload lift: 29.4 N down + 8.83 Nm moment at the front scoop arm, 0.3 m forward of the front axle.\n- LC2 30 mm step at 0.5 m/s: 3 g vertical impulse on the front axle, 10 kg base mass.\n- LC3 wall collision: 20 g equivalent on the front of the frame (decel from 1.0 m/s in 50 ms).\n- LC4 duty cycle: 90 cycles of +/- 29.4 N at 1.5 Hz at the payload arm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Autonomous payload-delivery robot frame",
+    "brief": "Aluminum primary frame for a dual-payload delivery autonomous machine under a 10 kg + 600 mm cube constraint.",
+    "geometric_constraints": {
+      "starting_cube_mm": 600,
+      "total_mass_kg_max": 10,
+      "payload_count": 2,
+      "payload_mass_each_kg": 1.5
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "youngs_modulus_GPa": 68.9,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2700,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "payload_lift",
+        "F_N": 29.4,
+        "moment_Nm": 8.83,
+        "application": "front scoop arm at 0.3 m arm"
+      },
+      {
+        "id": "LC2",
+        "name": "30mm_step_impact",
+        "g": 3,
+        "application": "front axle"
+      },
+      {
+        "id": "LC3",
+        "name": "wall_collision",
+        "g": 20,
+        "application": "front of frame"
+      },
+      {
+        "id": "LC4",
+        "name": "duty_cycle",
+        "cycles": 90,
+        "frequency_Hz": 1.5,
+        "load_N": 29.4
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "total_mass_kg",
+        "frame_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "front_arm_tip_deflection_mm",
+        "first_arm_natural_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "front_arm_tip_deflection",
+        "limit_mm": 5.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 10,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_arm_natural_frequency",
+        "limit_Hz": 15,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

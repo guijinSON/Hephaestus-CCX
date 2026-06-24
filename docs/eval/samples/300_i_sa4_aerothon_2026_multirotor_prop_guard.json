@@ -1,0 +1,221 @@
+{
+  "id": "300_i_sa4_aerothon_2026_multirotor_prop_guard",
+  "source": {
+    "catalog_ref": "I-SA4",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_uav_structural",
+  "part_class": "propeller_guard_ring",
+  "full_prompt": "Design a single-piece propeller guard ring for one rotor of a SAE AeroTHON 2026 Track 1 multirotor UAS. Per AeroTHON 2026 Track 1 Rulebook Rev2 section 6.3, each rotor on a multirotor entry must be fully encircled by a guard that prevents contact between a spinning propeller tip and people or ground objects, while adding minimal mass penalty. The multirotor has MTOW 7 kg, four rotors with 15 inch (381 mm) diameter, 5000 rpm max, 2500 g per-motor max thrust. The guard is a single closed ring around one 381 mm propeller, with inner diameter 400 mm (leaving 9.5 mm radial clearance between propeller tip and guard inner face), outer diameter 430 mm (radial depth 15 mm), axial thickness (height) 25 mm, with three 60 mm x 8 mm mounting tabs at 120 deg spacing carrying a single M5 through-hole each, bolting directly to the arm's motor mount. Material: injection-molded glass-filled nylon 6 (PA6-GF30) with Young's modulus 9 GPa, Poisson's ratio 0.38, density 1360 kg/m^3, yield strength 130 MPa, ultimate tensile strength 155 MPa. Load cases: LC1 (Prop tip burst) — a single propeller blade fails at 5000 rpm and the tip strikes the guard inner face; simplified as a 20 g point mass at 100 m/s radial impact on the inner face; explicit dynamic; LC2 (Wall collision) — multirotor at 8 m/s horizontal impacts a wall, guard takes 1/2 of MTOW inertia = 280 N lateral distributed over a 90 deg arc of the guard; quasi-static equivalent; LC3 (Ground-drop) — drone dropped 1 m, guard tab region takes a peak reaction of 350 N at one tab; explicit or equivalent static 2 g amplification; LC4 (Bird strike surrogate) — 100 g soft body at 30 m/s into guard outer face; explicit dynamic; LC5 (Thermal + mounting) — ambient 40 C, solar heat soak to 60 C guard body, mount tabs fixed, evaluate thermal stress. Pass/fail: (R1) under LC1, max stress in guard ring < 87 MPa (yield/1.5) and no guard breakthrough (inner face displacement < 8 mm); (R2) under LC2, peak stress < 87 MPa; (R3) under LC3 tab region stress < 87 MPa; (R4) under LC4, no fragmentation (plastic strain < 0.05); (R5) under LC5 thermal, combined thermal + preload stress < 70 MPa; (R6) guard + tabs mass per rotor < 80 g so four-rotor set adds < 320 g to MTOW; (R7) first-mode linear buckling of guard ring in radial compression >= 3.0 under LC2. Primary verification: explicit dynamic FEA for LC1 and LC4; linear static for LC2, LC3, LC5; thermal-structural coupled for LC5; linear buckling for LC2. Vibration, fluid, and radiation analyses are not required. Output one STEP AP242 single-body guard plus a report listing per-rotor guard mass, max stress per case, inner-face displacement under LC1, buckling factor under LC2, and combined thermal stress under LC5.",
+  "short_prompt": "Design a single-piece propeller guard ring for one rotor of a SAE AeroTHON 2026 Track 1 multirotor per Rulebook Rev2 sec 6.3. Vehicle: MTOW 7 kg, 15 in (381 mm) rotors, 5000 rpm max, 2500 g per-motor max thrust.\n\nEnvelope: 400 mm ID (9.5 mm tip clearance), 430 mm OD, 25 mm axial; three 60 x 8 mm mounting tabs at 120 deg with a single M5 through-hole each; injection-molded PA6-GF30.\n\nFactor regime: yield FoS 1.5 for static/impact local stress; plastic strain < 0.05 under bird-strike surrogate (no fragmentation); combined thermal + preload < 70 MPa; linear buckling eigenvalue >= 3.0 under wall-collision radial compression.\n\nLoad cases.\n- Prop tip burst: 20 g tip at 100 m/s radial impact on the inner face (5000 rpm blade failure).\n- Wall collision at 8 m/s: 280 N lateral distributed over a 90 deg arc.\n- Ground-drop: 350 N peak at one tab (1 m drop, 2 g amplification).\n- Bird-strike surrogate: 100 g soft body at 30 m/s into the outer face.\n- Thermal + mounting: 40 C ambient soaking to 60 C guard body with tabs fixed.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_solver",
+        "reason": "LC1 and LC4 are high-rate impacts.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "AeroTHON 2026 Track 1 prop guard",
+    "brief": "PA6-GF30 injection-moulded prop guard for a 7 kg MTOW 15-inch multirotor; survives prop-tip burst, 8 m/s wall hit, 1 m drop, and a 40 C ambient soak.",
+    "geometric_constraints": {
+      "ID_mm": 400,
+      "OD_mm": 430,
+      "height_mm": 25,
+      "tab_count": 3,
+      "tab_mm": {
+        "L": 60,
+        "W": 8
+      },
+      "tab_bolt_size": "M5"
+    },
+    "material": {
+      "name": "PA6-GF30",
+      "youngs_modulus_GPa": 9,
+      "yield_MPa": 130,
+      "UTS_MPa": 155,
+      "density_kg_m3": 1360
+    },
+    "rotor": {
+      "diameter_in": 15,
+      "rpm_max": 5000,
+      "thrust_per_motor_N": 24.5,
+      "MTOW_kg": 7
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "prop_tip_burst",
+        "impactor_g": 20,
+        "velocity_m_s": 100
+      },
+      {
+        "id": "LC2",
+        "name": "wall_collision",
+        "distributed_force_N": 280
+      },
+      {
+        "id": "LC3",
+        "name": "ground_drop",
+        "tab_reaction_N": 350
+      },
+      {
+        "id": "LC4",
+        "name": "bird_strike_surrogate",
+        "mass_g": 100,
+        "velocity_m_s": 30
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_mount",
+        "temp_C": 60
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_stress_per_case_MPa",
+        "inner_face_disp_LC1_mm",
+        "buckling_factor_LC2",
+        "thermal_combined_stress_LC5_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_stress",
+        "limit_MPa": 87,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "inner_face_displacement",
+        "limit_mm": 8,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_stress",
+        "limit_MPa": 87,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tab_stress",
+        "limit_MPa": 87,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_plastic_strain",
+        "limit": 0.05,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "combined_thermal_preload_stress",
+        "limit_MPa": 70,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "LS-DYNA",
+        "Abaqus",
+        "ANSYS"
+      ],
+      "analysis_types": [
+        "explicit dynamic (LC1, LC4)",
+        "linear static (LC2, LC3)",
+        "thermal-structural (LC5)",
+        "linear buckling (LC2)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Guard not a rotor, modal not critical.",
+      "fluid_analysis": "Prop aero handled by motor spec.",
+      "radiation_analysis": "N/A."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "UV degradation of PA6-GF30",
+      "Whirl-test setup"
+    ]
+  },
+  "eval_coverage": [
+    "prop-tip burst containment",
+    "multirotor ground/air collision",
+    "thermal soak on polymer part",
+    "mass budget per rotor"
+  ]
+}

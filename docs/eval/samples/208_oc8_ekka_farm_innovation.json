@@ -1,0 +1,133 @@
+{
+  "id": "208_oc8_ekka_farm_innovation",
+  "source": {
+    "catalog_ref": "OC8",
+    "year": 2026,
+    "tier": "C"
+  },
+  "domain": "ag_implement_structural",
+  "part_class": "cattle_crush_chute_gate",
+  "full_prompt": "Design the primary load-bearing gate of a cattle handling crush chute for an agricultural implement benchmark, sized for a 1000 kg Bos taurus beef steer. The gate must swing from a hinge post, latch against a strike plate, and contain lateral and forward-back thrusting of the contained animal without exceeding the static and fatigue strength allowables of AS 5532 (Livestock-handling equipment). Gate frame material is hot-dipped galvanized AS/NZS 3679.1 Grade 300 steel square hollow section (SHS) 50 x 50 x 3.0 mm (Young's modulus 200 GPa, Poisson 0.30, yield 300 MPa, ultimate 440 MPa, density 7850 kg/m^3). Gate outer dimensions: 1.8 m height x 2.2 m length (swing direction). Load cases per AS 5532 default: (LC1) lateral animal push: 3500 N uniformly applied along the mid-height 0.5 m portion of the gate, hinge and latch both pinned; (LC2) forward lunge impact: 5000 N dynamic at the latch end, applied over 150 ms dwell, modeled quasi-statically; (LC3) operator load: 1000 N vertical on the top rail at mid-span representing a stockperson leaning over; (LC4) fatigue: 10,000 cycles of 2000 N lateral at mid-height, representing lifetime handling. Pass/fail: under LC1-LC3 max von Mises must remain below 200 MPa (300 / 1.5 yield FoS), latch-end lateral deflection must remain below 50 mm under LC1, and under LC4 alternating stress at welded joints must remain below the AS 4100 fatigue limit for category 80 of 36 MPa at 1e7 cycles scaled to 1e4 by Miner accumulation. Gate mass should remain below 45 kg for single-person operation. Deliverables: STEP, FEA per case, fatigue summary, and mass report.",
+  "short_prompt": "Design the primary load-bearing gate of a cattle-handling crush chute sized for a 1000 kg beef steer, compliant with AS 5532 (Livestock-handling equipment) static and fatigue provisions. Frame material class: hot-dipped galvanized structural steel SHS. Fatigue allowables follow AS 4100 weld categories; design static cases to a 1.5 FoS on yield.\n\nEnvelope: gate on the order of 1.8 m high x 2.2 m long (swing direction). Target gate mass <= 45 kg for one-person operation.\n\nLoad cases.\n- LC1 lateral animal push: 3500 N as a UDL over a 0.5 m strip at mid-height, hinge and latch pinned.\n- LC2 forward lunge: 5000 N dynamic at the latch end, 150 ms dwell, quasi-static.\n- LC3 operator load: 1000 N vertical at mid-span of the top rail.\n- LC4 fatigue: 10,000 cycles of 2000 N lateral at mid-height.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Cattle crush chute gate",
+    "brief": "Cattle crush chute swing gate for 1000 kg steer, compliant with AS 5532 livestock-handling loads.",
+    "geometric_constraints": {
+      "gate_mm": {
+        "H": 1800,
+        "L": 2200
+      },
+      "SHS_profile": "50x50x3.0 mm"
+    },
+    "material": {
+      "name": "AS/NZS 3679.1 Grade 300 steel",
+      "youngs_modulus_GPa": 200,
+      "poissons_ratio": 0.3,
+      "density_kg_m3": 7850,
+      "yield_strength_MPa": 300,
+      "ultimate_tensile_strength_MPa": 440
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "lateral_animal_push",
+        "F_N": 3500,
+        "distribution": "UDL over 0.5 m at mid-height"
+      },
+      {
+        "id": "LC2",
+        "name": "forward_lunge",
+        "F_N": 5000,
+        "application": "latch end"
+      },
+      {
+        "id": "LC3",
+        "name": "operator_lean",
+        "F_N": 1000,
+        "application": "top rail mid-span"
+      },
+      {
+        "id": "LC4",
+        "name": "fatigue",
+        "F_N": 2000,
+        "cycles": 10000,
+        "application": "mid-height"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "gate_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "latch_end_deflection_mm",
+        "weld_alt_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 200,
+        "derivation": "yield 300 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "latch_end_lateral_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "weld_alternating_stress_miner_scaled",
+        "limit_MPa": 36,
+        "derivation": "AS 4100 Cat 80 fatigue",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "gate_mass",
+        "limit_kg": 45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

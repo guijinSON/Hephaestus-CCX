@@ -1,0 +1,222 @@
+{
+  "id": "124_e14_ecocar_ev_motor_mount",
+  "source": {
+    "catalog_ref": "E14",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "automotive_powertrain_structural",
+  "part_class": "ev_traction_motor_mount",
+  "full_prompt": "Design a monolithic forged and machined 7075-T6 aluminum front traction-motor mount bracket for a collegiate EV powertrain integration benchmark (premium crossover EV platform), attaching a 180 kW permanent-magnet synchronous motor (mass 65 kg) to the vehicle front subframe. The bracket is a single forged body (no welds, no inserts, no bolted gussets) with 4 through-holes on the motor-side face and 3 through-holes on the subframe-side face. Motor-side pattern: four M12 clearance holes (13 mm diameter) on a 180 mm x 180 mm rectangular pattern, on a 25 mm thick flat flange 220 mm x 220 mm mating to the motor housing. Subframe-side pattern: three M14 clearance holes (15 mm diameter) on a triangle pattern with 110 mm base and 95 mm height, on a 20 mm thick flat flange 150 mm x 130 mm. Vertical distance (motor axis to subframe mating surface) 170 mm. Overall bounding envelope 260 mm x 240 mm x 200 mm. Material 7075-T6 with E 71.7 GPa, Poisson's ratio 0.33, density 2810 kg/m^3, yield 503 MPa, UTS 572 MPa. Three load cases derived from OEM body-structure loads spec for the vehicle platform (representative SAE J670 axis: x = longitudinal, y = lateral, z = vertical). Load Case 1 (peak torque reaction): 420 N-m peak motor torque reacted at the motor-side flange as a couple about the motor axis (x), combined with motor self-weight 65 kg * 2g vertical bump = 1276 N downward. Load Case 2 (crash pulse): 35g longitudinal (x-direction) deceleration per FMVSS 208 / OEM internal EV crash calibration, motor self-weight 65 kg produces 22.3 kN longitudinal force applied at the motor-side face centroid. Load Case 3 (NVH durability): modal input at the motor-side face with 10 g sinusoidal sweep 20-2000 Hz, to assess mount stiffness k_x, k_y, k_z as equivalent static deflections at 1 kN per axis. Pass/fail: (R1) under LC1 (operating) peak von Mises must not exceed 251 MPa (yield/2.0, standard OEM body-structure operating SF); (R2) under LC2 crash, peak stress must not exceed 335 MPa (yield/1.5 ultimate SF for crash, short transient); (R3) for NVH under LC3, the mount equivalent stiffness in each axis must be between 15-50 kN/mm (neither too soft to cause powertrain droop resonance nor too stiff to transmit whine), AND first six natural frequencies of the bracket + motor-mass system must have a margin of at least 15% around the 24x electric-motor rotor harmonic at rated speed 12000 rpm = 200 Hz and 200 x 24 = 4800 Hz (check the band 170-230 Hz and 4080-5520 Hz); (R4) a buckling eigenvalue analysis under LC2 compressive crash must yield a first-mode factor of at least 1.8 per OEM crash bracket criterion; (R5) mass of the bracket must not exceed 2.8 kg per BOM mass budget allocated by the benchmark cost-and-mass table; (R6) maximum displacement at the motor axis centerline under LC1 must not exceed 0.3 mm to avoid driveline half-shaft angular misalignment. Thermal, fluid, and radiation analyses are not required. Deliver STEP AP242 and Parasolid geometry plus report.",
+  "short_prompt": "Design a monolithic forged-and-machined 7075-T6 aluminum front traction-motor mount bracket for a collegiate EV powertrain integration benchmark (premium crossover), attaching a 180 kW PMSM (65 kg) to the vehicle front subframe. The bracket is a single forged body with two integral bolt-pattern flanges (motor-side 4-hole, subframe-side 3-hole triangle). Apply the usual yield/2.0 operating and yield/1.5 crash-transient safety factors (SAE J670 axes: x long, y lat, z vert).\n\nEnvelope: roughly 260 x 240 x 200 mm with a ~170 mm vertical distance from the motor axis to the subframe mating face.\n\nLoad cases.\n- LC1 peak torque + bump: 420 N-m peak motor torque reacted as a couple about the motor axis, superposed with 1.28 kN vertical (motor self-weight at 2 g bump).\n- LC2 crash pulse: 35 g longitudinal on the 65 kg motor mass = 22.3 kN longitudinal force at the motor-side flange centroid.\n- LC3 NVH / stiffness: 1 kN per axis at the motor-side face to extract equivalent mount stiffness, plus a modal check against the electric-motor 24x rotor harmonic at 12000 rpm (170-230 Hz and 4080-5520 Hz bands).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "7075-T6 traction motor mount for collegiate EV powertrain integration benchmark",
+    "brief": "Forged bracket linking 180 kW PMSM (65 kg) to vehicle front subframe; survive 35g crash + 420 N-m torque reaction; NVH-tuned stiffness.",
+    "geometric_constraints": {
+      "motor_flange_mm": {
+        "w": 220,
+        "h": 220,
+        "thickness": 25
+      },
+      "motor_bolt_pattern_mm": {
+        "pattern": "4 holes 180x180",
+        "hole_diameter_mm": 13
+      },
+      "subframe_flange_mm": {
+        "w": 150,
+        "h": 130,
+        "thickness": 20
+      },
+      "subframe_bolt_pattern_mm": {
+        "pattern": "3 holes triangle 110 base x 95 height",
+        "hole_diameter_mm": 15
+      },
+      "vertical_distance_mm": 170,
+      "bounding_envelope_mm": {
+        "x": 260,
+        "y": 240,
+        "z": 200
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 7075-T6",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2810,
+        "yield_MPa": 503,
+        "ultimate_tensile_strength_MPa": 572
+      }
+    },
+    "motor_data": {
+      "power_kW": 180,
+      "peak_torque_Nm": 420,
+      "mass_kg": 65,
+      "rated_speed_rpm": 12000,
+      "rotor_harmonic_order": 24
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "torque_plus_bump",
+        "torque_Nm_about_x": 420,
+        "vertical_force_N": 1276
+      },
+      {
+        "id": "LC2",
+        "name": "FMVSS208_crash_35g",
+        "longitudinal_force_N": 22300,
+        "duration_ms": 50
+      },
+      {
+        "id": "LC3",
+        "name": "NVH_sweep",
+        "g_input": 10,
+        "band_Hz": [
+          20,
+          2000
+        ]
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "mount_stiffness_kN_mm_xyz",
+        "first_six_freqs_Hz",
+        "first_buckling_load_factor",
+        "motor_axis_displacement_mm",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 251,
+        "derivation": "yield/2.0 OEM operating SF",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 335,
+        "derivation": "yield/1.5 crash",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "mount_stiffness_and_freq_margin",
+        "limit_stiffness_range_kN_mm": [
+          15,
+          50
+        ],
+        "limit_avoid_bands_Hz": [
+          [
+            170,
+            230
+          ],
+          [
+            4080,
+            5520
+          ]
+        ],
+        "applies_to": [
+          "design"
+        ],
+        "operator": "in_range_and_outside_bands"
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.8,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 2.8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "motor_axis_displacement",
+        "limit_mm": 0.3,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "explicit dynamic (LC2 crash)",
+        "modal + harmonic sweep (LC3)",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Mount is cooled by ambient; motor heat handled by coolant.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Bolt preload relaxation with coating creep",
+      "Corrosion protection spec",
+      "Road-load-durability (RLD) fatigue spectrum"
+    ]
+  },
+  "eval_coverage": [
+    "OEM body-structure operating vs crash SF",
+    "PMSM electric motor harmonic resonance avoidance",
+    "stiffness-in-range NVH gate",
+    "driveline angular misalignment deflection cap"
+  ]
+}

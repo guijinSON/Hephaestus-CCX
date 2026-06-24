@@ -1,0 +1,196 @@
+{
+  "id": "304_i_sa8_abu_robocon_2026_kung_fu_r1_chassis",
+  "source": {
+    "catalog_ref": "I-SA8",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "robotics_mobile_structural",
+  "part_class": "robot_chassis_base_plate",
+  "full_prompt": "Design the primary base chassis plate of an collegiate robotics benchmark 'Kung Fu Quest' R1 robot. Per the 2026 rulebook, R1 must fit a 1000 x 1000 x 1000 mm starting envelope, with extension allowed up to 1000 x 1800 x 1300 mm during play; pair transport envelope is 700 x 700 x 700 mm and pair total mass including R2 <= 57 kg, implying an R1 mass target of around 30 kg with a 150 mm-high lifting arm tower mounted on the chassis. The chassis base plate is the rigid plate to which four omni-wheel drive modules, one tower post, battery, and tool payload attach. Geometry: rectangular plate 950 mm (x) x 950 mm (y) x 6 mm (z) machined from 6061-T6 aluminium, with 4 corner wheel-module bolt patterns (each 100 mm x 100 mm, 4 x M6 through-holes), a central 150 mm diameter circular cutout for a tower-post feedthrough surrounded by a 200 mm OD ring of 8 x M8 bolt holes on a 180 mm bolt circle, a battery bay cutout of 400 mm x 200 mm centered 250 mm from the rear edge, and four electronics-mount pads on an 800 mm x 800 mm square pattern each with 4 x M4 threaded holes. Material: 6061-T6 (Young's 69 GPa, Poisson 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa). Load cases: LC1 (Static weight) — 30 kg total robot mass (electronics, wheels, tower, battery, tool payload of 10 kg) rest on the plate; modeled as 100 N at each wheel-module bolt pattern pushing up (reaction), 200 N at the tower-post ring pressing down (tower weight), and 100 N at the battery bay as distributed load; LC2 (Maximum tool arm extended) — tower arm fully extended forward; vertical 150 N downward plus 100 Nm moment about the tower-ring axis (representative of arm at 1 m reach with 10 kg tool); LC3 (Collision with opponent) — 20 g lateral shock in the worst orientation with all four wheel-module bolt patterns fixed; LC4 (Transport drop) — 0.8 m drop test with robot lying on its base plate; modeled as 15 g vertical shock with plate supported on edges; LC5 (Handle lift) — two edge handles at the plate's long edges each take 300 N vertical lift during manual handling, with wheel patterns unconstrained. Pass/fail: (R1) max von Mises under LC1, LC2, LC3, LC4, LC5 < 184 MPa (yield/1.5); (R2) max plate deflection under LC1 + LC2 superposed < 3 mm (to keep tower-post perpendicular for accurate tool placement); (R3) first-mode linear buckling under LC3 lateral (plate + mounted tower buckling) >= 2.0; (R4) plate mass < 5 kg so R1 stays under its 30 kg budget; (R5) under LC4, no permanent deflection > 1 mm at handles after event (linear-static elastic check surrogate); (R6) outer envelope under LC2 must not exceed 1000 x 1800 x 1300 mm. Primary verification: linear static for LC1, LC2, LC3, LC5; quasi-static with 15 g factor for LC4; linear buckling for LC3. Vibration, thermal, fluid, and radiation analyses are not required. Output one STEP AP242 single-body plate plus a report listing plate mass, max von Mises per case, max combined deflection LC1+LC2, buckling factor under LC3.",
+  "short_prompt": "Design the primary base chassis plate of a collegiate robotics benchmark 'Kung Fu Quest' R1 robot. R1 start envelope 1000 x 1000 x 1000 mm (extension allowed to 1000 x 1800 x 1300 mm during play), pair transport 700 x 700 x 700 mm, pair mass (R1 + R2) <= 57 kg with R1 target ~30 kg.\n\nEnvelope: 950 x 950 x 6 mm 6061-T6 plate with four 100 x 100 mm 4xM6 corner wheel-module patterns, a 150 mm central tower feedthrough surrounded by a 200 mm ring of 8 x M8 on a 180 mm bolt circle, a 400 x 200 mm battery-bay cutout 250 mm from the rear edge, and four 4xM4 electronics-mount pads on an 800 x 800 mm square pattern.\n\nFactor regime: yield FoS 1.5; tower-perpendicular deflection under combined LC1+LC2 < 3 mm; linear buckling eigenvalue under lateral collision >= 2.0; handle-lift residual < 1 mm.\n\nLoad cases.\n- Static weight: 100 N up per wheel-module pattern, 200 N down at the tower ring, 100 N battery-bay UDL.\n- Tool arm fully extended: 150 N down + 100 N-m moment about the tower axis.\n- Opponent collision: 20 g lateral with all four wheel patterns fixed.\n- Transport drop: 0.8 m drop on the base = 15 g vertical with plate edge-supported.\n- Handle lift: 300 N vertical at each of two edge handles with wheel patterns free.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate robotics benchmark R1 chassis base plate",
+    "brief": "6061-T6 950 x 950 x 6 mm chassis base plate for an R1 robot in the 2026 'Kung Fu Quest' rulebook, 30 kg robot mass, 10 kg tool payload, and tower-post central cutout.",
+    "geometric_constraints": {
+      "plate_mm": {
+        "L": 950,
+        "W": 950,
+        "t": 6
+      },
+      "wheel_patterns": 4,
+      "wheel_pattern_mm": 100,
+      "wheel_bolt_count": 4,
+      "wheel_bolt_size": "M6",
+      "tower_cutout_diameter_mm": 150,
+      "tower_ring_OD_mm": 200,
+      "tower_ring_bolt_count": 8,
+      "tower_ring_bolt_circle_mm": 180,
+      "battery_cutout_mm": {
+        "L": 400,
+        "W": 200
+      },
+      "electronics_pads": 4,
+      "electronics_pattern_mm": 800
+    },
+    "material": {
+      "name": "6061-T6",
+      "youngs_modulus_GPa": 69,
+      "yield_MPa": 276,
+      "UTS_MPa": 310,
+      "density_kg_m3": 2700
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_weight",
+        "robot_mass_kg": 30,
+        "tool_payload_kg": 10
+      },
+      {
+        "id": "LC2",
+        "name": "tool_extended",
+        "vertical_N": 150,
+        "moment_Nm": 100
+      },
+      {
+        "id": "LC3",
+        "name": "lateral_collision",
+        "shock_g": 20
+      },
+      {
+        "id": "LC4",
+        "name": "transport_drop",
+        "shock_g": 15
+      },
+      {
+        "id": "LC5",
+        "name": "handle_lift",
+        "per_handle_N": 300
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "plate_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "combined_deflection_LC1plusLC2_mm",
+        "buckling_factor_LC3"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "combined_deflection",
+        "limit_mm": 3,
+        "applies_to": [
+          "LC1+LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "plate_mass",
+        "limit_kg": 5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "permanent_deflection_proxy",
+        "limit_mm": 1,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "outer_envelope_under_load",
+        "limit_mm": "1000x1800x1300",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "within"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell",
+      "mesh_size_mm_in_critical_regions": 8,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "linear buckling (LC3)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Indoor venue, no modal req.",
+      "thermal_analysis": "Indoor ambient.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Tower-post weld HAZ at ring",
+      "Battery strap fastener fatigue"
+    ]
+  },
+  "eval_coverage": [
+    "large-plate multi-load mount",
+    "envelope check under extended tool",
+    "drop test approximated as static shock"
+  ]
+}

@@ -1,0 +1,230 @@
+{
+  "id": "144_hv20_not_a_boring_tbm_cutterhead",
+  "source": {
+    "catalog_ref": "HV20 (user-assigned tunneling-robotics benchmark; catalog HV19)",
+    "year": 2027,
+    "tier": "A"
+  },
+  "domain": "tunnel_boring_machine",
+  "part_class": "tbm_cutterhead_disc",
+  "full_prompt": "Design a monolithic AISI 4340 quenched-and-tempered alloy-steel cutterhead disc for a student-team micro TBM competing in the tunneling-robotics benchmark 2027, per Boring Company rules requiring a 30 m long x 500 mm diameter finished tunnel and scored on advance speed and bore-centerline accuracy. The cutterhead is the front rotating tool that excavates soft-to-medium ground (cohesive clay/silty-sand soil typical of competition site geology, SPT N=10-25, uniaxial unconfined compressive strength up to 1.5 MPa) and transfers torque + thrust from the drive shaft into the face. The cutterhead is a single monolithic forged + machined 4340 Q&T part (no welds, no bolted-on cutters for this prompt; integral 6 drag-bit pockets + integral central pilot + integral drive-shaft flange + integral muck-scoop ports). Geometry: 480 mm outer diameter x 60 mm thick circular disc (matching the 500 mm bore minus 10 mm radial over-cut allowance), with a 40 mm diameter central pilot cutter protruding 15 mm forward. Six integral drag-bit pockets arranged at 60 deg spacing on a 200 mm pitch radius; each pocket is 40 mm wide x 25 mm deep x 30 mm tall with an integral M16 (17 mm clearance) through-bolt hole for mechanical bit retention. Six integral muck-scoop ports (arc-shaped cutouts) between bit pockets, each 80 mm arc-length x 40 mm radial x full 60 mm thickness for spoil transport to the screw conveyor. Drive-shaft flange at the rear: 150 mm outer diameter x 20 mm thick circular flange with 8 M12 (13 mm clearance) bolt holes on a 110 mm bolt-circle-diameter for coupling to the hollow drive shaft. Overall bounding envelope 500 x 500 x 75 mm. Material AISI 4340 Q&T: E 205 GPa, nu 0.29, density 7850 kg/m^3, yield 860 MPa (Q&T to 30 HRC), UTS 1020 MPa, Charpy V-notch 40 J at -20 C, fatigue endurance 440 MPa at 1e6 cycles polished. Three load cases per typical EPB TBM cutterhead design practice. Load Case 1 (peak cutting torque): 2.5 kN-m applied as a torsional couple about the rotational axis at the drive-shaft flange, reacted at the six drag-bit pockets as tangential cutting forces (cutting load 1.4 kN per bit on the 200 mm radius), thrust load 15 kN axial distributed across the face (thrust cylinder reaction). Load Case 2 (bit impact / stall on buried cobble): 8 kN localized tangential impulse on a single drag-bit pocket (1 of 6), representing a partially buried cobble jamming a single cutter while the cutterhead is stopped; drive-shaft flange fully constrained. Load Case 3 (thrust overload / bulkhead collision): 45 kN axial compressive thrust load distributed across the cutterhead face with the drive-shaft flange fixed, representing the cutterhead briefly jamming against a hard inclusion while the main-thrust cylinders continue to push. Pass/fail: (R1) under LC1 peak cutting torque, peak von Mises must not exceed 430 MPa (yield/2.0); (R2) under LC2 single-bit impact, peak stress must not exceed 573 MPa (yield/1.5 transient); (R3) under LC3 thrust overload, peak stress 573 MPa; (R4) fatigue: each 30 m bore at ~50 mm/min advance with 10 rpm rotation gives ~6000 full rotations per bore, 1 kNm average cutting torque as R=0 spectrum; local stress range at any drag-bit pocket fillet must remain below 440 MPa endurance at 1e6 (10x safety over actual cycles); (R5) first six natural frequencies (spinning disc with 8 bolt connection at the drive flange) must exceed 25 Hz to avoid coupling with the 5-15 Hz thrust-cylinder pressure-ripple vibration and the 2-7 Hz soil-structure-interaction-driven lateral oscillation; (R6) a linear buckling analysis of the cutterhead under LC3 axial thrust must yield a first-mode load factor of at least 3.0 (disc is compact but thin in the muck-port areas); (R7) cutterhead mass must not exceed 85 kg to stay within the competition's ~500 kg overall TBM student-build mass budget; (R8) maximum face-axial deflection at the disc edge under LC3 must not exceed 1.5 mm to preserve clearance with the tunnel wall lining. Thermal, fluid, and radiation analyses are not required (soil-water interaction is carried through an equivalent face pressure in LC3). Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic AISI 4340 Q&T alloy-steel cutterhead disc for a student-team micro TBM (tunneling-robotics benchmark 2027, 30 m long x 500 mm diameter finished bore in cohesive clay / silty sand, UCS up to 1.5 MPa). The cutterhead is a single forged-and-machined 4340 Q&T part with a central pilot cutter, six integral drag-bit pockets at 60-degree spacing (each with an M16 retention-bolt bore), six integral muck-scoop ports between pockets, and a rear 8-bolt drive-shaft flange on 110 mm BCD. Apply yield/2.0 continuous and yield/1.5 transient safety factors per typical EPB TBM cutterhead practice.\n\nEnvelope: 500 x 500 x 75 mm (480 mm OD disc, 60 mm thick, plus 15 mm forward pilot).\n\nLoad cases.\n- LC1 peak cutting torque: 2.5 kN-m torsional couple about the rotation axis at the drive flange, reacted as 1.4 kN tangential per bit at 200 mm radius, plus 15 kN axial thrust distributed across the face.\n- LC2 single-bit cobble-stall impact: 8 kN tangential impulse on one bit pocket with the drive flange fully constrained.\n- LC3 thrust overload / bulkhead collision: 45 kN axial compressive thrust on the face, drive flange fixed.\nAlso check a 1e6-cycle fatigue margin at bit-pocket fillets, first six modes >25 Hz (clear 5-15 Hz thrust ripple and 2-7 Hz SSI), and a linear-buckling factor >=3 under LC3.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "tunneling-robotics benchmark 2027 micro-TBM cutterhead disc",
+    "brief": "4340 Q&T forged disc OD 480 x 60 mm; 6 drag-bit pockets + 6 muck ports; 2.5 kN-m cutting torque + 15 kN thrust.",
+    "geometric_constraints": {
+      "disc_mm": {
+        "od": 480,
+        "thickness": 60,
+        "pilot_od": 40,
+        "pilot_forward_mm": 15
+      },
+      "bit_pockets": {
+        "count": 6,
+        "pitch_radius_mm": 200,
+        "spacing_deg": 60,
+        "pocket_mm": {
+          "w": 40,
+          "d": 25,
+          "h": 30
+        },
+        "bolt_mm": 17
+      },
+      "muck_ports": {
+        "count": 6,
+        "arc_mm": 80,
+        "radial_mm": 40
+      },
+      "drive_flange_mm": {
+        "od": 150,
+        "thickness": 20,
+        "bcd_mm": 110,
+        "bolts": 8,
+        "hole_mm": 13
+      },
+      "bounding_envelope_mm": {
+        "x": 500,
+        "y": 500,
+        "z": 75
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "AISI 4340 Q&T",
+      "properties": {
+        "youngs_modulus_GPa": 205,
+        "poissons_ratio": 0.29,
+        "density_kg_m3": 7850,
+        "yield_MPa": 860,
+        "ultimate_tensile_strength_MPa": 1020,
+        "charpy_V_notch_J_minus20C": 40,
+        "endurance_1e6_MPa": 440
+      }
+    },
+    "tunnel_spec": {
+      "length_m": 30,
+      "diameter_mm": 500,
+      "soil_SPT_N": [
+        10,
+        25
+      ],
+      "UCS_MPa_max": 1.5
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "peak_cut_torque",
+        "torque_Nm": 2500,
+        "thrust_N": 15000
+      },
+      {
+        "id": "LC2",
+        "name": "single_bit_stall_cobble",
+        "tangential_N": 8000,
+        "location": "one_bit_pocket"
+      },
+      {
+        "id": "LC3",
+        "name": "thrust_overload",
+        "axial_N": 45000
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_six_freqs_Hz",
+        "first_buckling_load_factor",
+        "face_axial_deflection_mm",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 430,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 573,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 440,
+        "cycles": 1000000,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 85,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "face_axial_deflection",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 2.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal (spinning disc)",
+        "linear buckling",
+        "S-N fatigue"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Short-duration student bore; bit heating not governing.",
+      "fluid_analysis": "Soil-water interaction equivalent to face pressure.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Cutter-tool wear life",
+      "Steering articulation joint",
+      "Muck slurry transport back-end"
+    ]
+  },
+  "eval_coverage": [
+    "micro-TBM peak cutting torque + thrust",
+    "single-bit cobble-stall impulse",
+    "cutterhead disc buckling under axial overload",
+    "spinning disc modal decoupling"
+  ]
+}

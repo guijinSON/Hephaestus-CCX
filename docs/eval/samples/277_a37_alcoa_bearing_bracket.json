@@ -1,0 +1,177 @@
+{
+  "id": "277_a37_alcoa_bearing_bracket",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A37",
+    "year": 2014,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "monolithic_bearing_bracket",
+  "full_prompt": "Design a single-part, monolithic airplane bearing bracket per the aluminum-parts supplier / open-CAD platform Airplane Bearing Bracket Challenge (2014). The bracket supports a bearing pin connecting a fixed structure to a rotating accessory on a commercial aircraft. Objective: minimize mass while passing three independent static load cases at the bearing pin. Geometry: bounding envelope 150 mm x 100 mm x 150 mm (approximate challenge envelope). Top mounting face has 4x 6.35 mm (0.25 in) through-holes on a 60 mm x 40 mm rectangular pattern. Bearing pin hole at center-bottom, 15.875 mm (5/8 in) diameter, pin axis horizontal. Vertical offset from mounting plate to pin centerline 75 mm. Single monolithic body, no welds or fasteners; DfAM (Design for Additive Manufacturing) rules apply: all overhangs >= 45 deg, internal voids must include drain holes >= 2.5 mm. Material: PH 15-5 stainless steel (precipitation-hardened), E = 200 GPa, yield = 1000 MPa (145 ksi), ultimate = 1100 MPa (160 ksi), density = 7800 kg/m^3. Three challenge load cases applied at the pin hole (mounting face bolts fully fixed): LC1 Horizontal 1250 lbf (5,560 N) along engine axis; LC2 Inclined 1875 lbf (8,340 N) at 45 deg off-vertical; LC3 Vertical 2500 lbf (11,120 N) vertical up. Pass/fail: (R1) max von Mises under each case <= yield / 1.2 = 833 MPa (challenge stress limit); (R2) max displacement at pin center per case <= 0.5 mm; (R3) final mass <= 170 g with target >= 50% reduction vs published baseline 380 g (published challenge winners reached sub-170 g); (R4) linear buckling first-mode load factor under LC3 >= 2.5. Primary verification: structural FEA (linear static x3) + linear buckling. Vibration, thermal, fluid, radiation NOT required. Topology optimization is required as outer loop. Deliverables: STEP AP242 + Parasolid, DfAM build-orientation recommendation, and a report listing mass in g, max von Mises per case in MPa, pin displacement per case in mm, first buckling load factor.",
+  "short_prompt": "Design a single-part monolithic PH 15-5 stainless airplane bearing bracket per the aluminum-parts supplier open-CAD Airplane Bearing Bracket Challenge (2014). The bracket supports a bearing pin connecting a fixed structure to a rotating accessory on a commercial aircraft. Three challenge load cases are applied at the 15.875 mm (5/8 in) pin hole with the 4 x 6.35 mm top-flange bolt holes (60 x 40 mm pattern) fully fixed. Pin-center displacement <= 0.5 mm per case. DfAM rules apply (overhangs >= 45 deg; drain holes >= 2.5 mm in any internal voids). Topology optimization is required as the outer loop.\n\nEnvelope: bounding 150 x 100 x 150 mm; mounting-plate-to-pin vertical offset 75 mm.\n\nLoad cases.\n- LC1 horizontal along engine axis: 1250 lbf (5,560 N).\n- LC2 inclined 45 deg off-vertical: 1875 lbf (8,340 N).\n- LC3 vertical up: 2500 lbf (11,120 N).\n- LC4 linear buckling under LC3, first-mode load factor >= 2.5.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "50% mass reduction vs published baseline is the scoring driver.",
+        "examples": [
+          "Altair OptiStruct",
+          "nTopology",
+          "Ansys Mechanical Topology Optimization"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "aluminum-parts supplier Airplane Bearing Bracket",
+    "brief": "PH15-5 monolithic bracket, 3 challenge load cases (H 1250, incl 1875, V 2500 lbf), topology opt target <=170 g.",
+    "geometric_constraints": {
+      "bounding_envelope_mm": "150 x 100 x 150",
+      "mounting_bolt_holes": {
+        "count": 4,
+        "diameter_mm": 6.35,
+        "pattern_mm": "60 x 40"
+      },
+      "pin_hole_diameter_mm": 15.875,
+      "vertical_offset_mm": 75,
+      "monolithic": true,
+      "DfAM_overhang_min_deg": 45,
+      "DfAM_drain_hole_mm_min": 2.5
+    },
+    "material": {
+      "name": "PH 15-5 stainless",
+      "properties": {
+        "youngs_modulus_GPa": 200,
+        "yield_strength_MPa": 1000,
+        "ultimate_tensile_strength_MPa": 1100,
+        "density_kg_m3": 7800
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "horizontal",
+        "magnitude_N": 5560,
+        "magnitude_lbf": 1250
+      },
+      {
+        "id": "LC2",
+        "name": "inclined_45deg",
+        "magnitude_N": 8340,
+        "magnitude_lbf": 1875
+      },
+      {
+        "id": "LC3",
+        "name": "vertical",
+        "magnitude_N": 11120,
+        "magnitude_lbf": 2500
+      }
+    ],
+    "boundary_conditions": {
+      "mounting_face_bolts": "fully fixed",
+      "pin_hole": "bearing pressure over 180 deg arc"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "max_pin_displacement_per_case_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 833,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_pin_displacement",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 170,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Challenge is quasi-static.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Aero reduced to bearing.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "aluminum-parts supplier three static load cases",
+    "topology opt outer loop",
+    "DfAM geometric constraints"
+  ]
+}

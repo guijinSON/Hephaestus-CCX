@@ -1,0 +1,155 @@
+{
+  "id": "062_jp7_nhk_student_robocon",
+  "source": {
+    "catalog_ref": "JP7",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "robotics_structural",
+  "part_class": "robot_drivetrain_frame",
+  "full_prompt": "Design the drivetrain frame of a student-robotics competition robot for a 2025 edition. The robot must fit within a stowed-configuration envelope of approximately 1000 mm x 1000 mm x 1500 mm (L x W x H). The combined mass of all robots per team must not exceed 50 kg (if one robot, all mass budget applies; if manual+automatic robots, the combined mass must remain under 50 kg). The primary battery is limited to 24 V nominal. Any pneumatic actuators must operate at a gauge pressure no greater than 600 kPa (0.6 MPa) and must be supplied from a reservoir certified for that pressure. The drivetrain frame must carry (a) the robot's own self-weight (40 kg assumed for a single-robot design) under a 2 g vertical shock equivalent (80 kg equivalent) with no permanent yield, (b) a 200 N horizontal tipping-recovery force applied at the top of the robot, (c) four-point lifting via hand-holds or a gantry interface where each hand-hold carries 20 kg under 1.5 g shock, representing tournament handling. Primary verification is linear static structural FEA for the frame under the three load cases. Pneumatic reservoir pressure certification and voltage rating are regulatory / component-specification checks (non-FEA). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required at the mechanical design gate. Deliverables: STEP AP242 of the drivetrain frame, a mass budget, and a report listing total robot mass in kg, max von Mises stress per load case in MPa, and max frame deflection per load case in mm.",
+  "short_prompt": "Design the drivetrain frame of a student robotics competition robot for a 2025 edition. Stowed envelope approximately 1000 x 1000 x 1500 mm (L x W x H). Combined team robot mass <= 50 kg. Battery 24 V nominal; pneumatic actuators at <= 600 kPa gauge from a certified reservoir (component-certification check).\n\nLoad cases on the frame (quasi-static equivalents).\n- LC1 self-weight 2 g shock: 40 kg single-robot x 2 g vertical (~785 N).\n- LC2 tipping-recovery: 200 N horizontal at the top of the robot.\n- LC3 four-point lifting (tournament handling): 20 kg at each handhold x 1.5 g (~294 N per handhold).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "component_certification_check",
+        "reason": "24 V battery and 600 kPa pneumatic cert are catalog / datasheet lookups, not simulation.",
+        "examples": [
+          "component datasheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student robotics drivetrain frame",
+    "brief": "Design a drivetrain frame fitting 1 m x 1 m x 1.5 m, total robot mass ≤ 50 kg, 24 V battery, pneumatic ≤ 600 kPa.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 1000,
+        "W": 1000,
+        "H": 1500
+      },
+      "total_robot_mass_kg_max": 50,
+      "battery_V_max": 24,
+      "pneumatic_kPa_max": 600
+    },
+    "material": {
+      "typical": "aluminum extrusion 20x20 / 30x30 + laser-cut sheet",
+      "AL6063_T5_properties": {
+        "E_GPa": 68.9,
+        "yield_MPa": 145
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "self_weight_2g",
+        "magnitude_N": 785,
+        "description": "40 kg x 2 g vertical shock"
+      },
+      {
+        "id": "LC2",
+        "name": "tipping_recovery",
+        "magnitude_N": 200,
+        "description": "horizontal force at top"
+      },
+      {
+        "id": "LC3",
+        "name": "lifting_handhold",
+        "magnitude_N": 294,
+        "description": "20 kg x 1.5 g per handhold, 4 points"
+      }
+    ],
+    "boundary_conditions": {
+      "wheels": "fixed at contact for LC1, LC2",
+      "handholds": "fixed for LC3"
+    },
+    "objective": {
+      "minimize": "frame_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "total_robot_mass_kg",
+        "max_vm_stress_LC1_MPa",
+        "max_vm_stress_LC2_MPa",
+        "max_vm_stress_LC3_MPa",
+        "max_frame_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "total_robot_mass_kg",
+        "limit_kg": 50,
+        "derivation": "Rulebook combined team robot mass",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "envelope_largest_dim_mm",
+        "limit_mm": 1500,
+        "derivation": "Stowed envelope max dim",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 against yield",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in mechanical design gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "envelope + mass cap",
+    "tipping recovery static",
+    "handling / lifting static",
+    "component cert side-check"
+  ]
+}

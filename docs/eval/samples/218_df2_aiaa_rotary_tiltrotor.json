@@ -1,0 +1,152 @@
+{
+  "id": "218_df2_aiaa_rotary_tiltrotor",
+  "source": {
+    "catalog_ref": "DF2",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "rotorcraft_structural",
+  "part_class": "tiltrotor_proprotor_hub_arm",
+  "full_prompt": "Design one proprotor hub arm of a three-blade tiltrotor hub for a hybrid-electric tiltrotor benchmark, derived from the XV-15 baseline aerodynamics. Rotor diameter 7.62 m (25 ft), tip speed 237 m/s (778 ft/s) in helicopter mode and 190 m/s in airplane cruise mode. Aircraft DGW 6577 kg (14500 lb); single-rotor thrust at hover OGE with sea-level ISA +15 C = 35600 N per rotor; OEI hover ceiling 1220 m. Hub arm carries one blade root via a pitch-bearing retention with inboard coning-flap hinge 100 mm from hub centerline. Material: Ti-6Al-4V forged (Young's modulus 113.8 GPa, Poisson 0.342, yield 860 MPa, ultimate 950 MPa, density 4430 kg/m^3). Arm outer envelope 450 mm radial length x 120 mm wide x 80 mm thick with a central pitch bearing bore of 60 mm and an outboard blade-retention pin bore of 40 mm. Load cases: (LC1) hover thrust: 11,900 N axial (35,600 / 3 blades) steady plus 3x centrifugal force 150,000 N per blade from the 237 m/s tip speed (blade mass 85 kg at 2.4 m effective radius), applied at the outer pin bore; (LC2) conversion corridor pitch authority: cyclic control moment of 8000 N-m about the pitch axis applied over 2 seconds; (LC3) airplane-mode cruise: 7000 N axial + 50,000 N centrifugal at 190 m/s tip speed; (LC4) OEI hover at 1220 m: steady 12,500 N axial thrust at 95% of centrifugal; (LC5) gust/retreating-blade stall: +/- 4000 N alternating lift on pin bore at 4 Hz (1P) over 1x10^7 cycles for life-cycle fatigue per MIL-HDBK-516C. Pass/fail: (R1) max von Mises across LC1-LC4 <= 633 MPa (ultimate 950 / 1.5); (R2) at yield equivalent, <= 748 MPa; (R3) maximum radial growth at blade-retention pin bore under LC1 centrifugal below 0.2 mm; (R4) fatigue endurance: 10^7 cycle alternating stress at pitch bearing bore below 120 MPa (Ti-6Al-4V notched Kt=3); (R5) modal first in-plane bending of arm above 30 Hz to stay above 1P and below 3P resonance windows. Deliverables: STEP, FEA per case, fatigue, and modal report.",
+  "short_prompt": "Design one proprotor hub arm of a three-blade tiltrotor for a hybrid-electric aircraft with XV-15 baseline aerodynamics, rotor diameter 7.62 m, DGW 6577 kg, single-rotor hover thrust 35,600 N, helicopter-mode tip speed 237 m/s and airplane-cruise tip speed 190 m/s. Material class: Ti-6Al-4V forging. Qualify per MIL-HDBK-516C with ultimate FoS 1.5 and yield FoS 1.15; fatigue endurance at 1e7 cycles taken as a Ti-6Al-4V notched (Kt=3) allowable.\n\nEnvelope: arm on the order of 450 mm radial x 120 mm wide x 80 mm thick with 60 mm pitch-bearing bore and 40 mm blade-retention pin bore.\n\nLoad cases.\n- LC1 hover thrust: 11,900 N axial + 150,000 N centrifugal at the outer pin bore.\n- LC2 conversion pitch authority: 8000 N-m cyclic moment about the pitch axis over 2 s.\n- LC3 airplane cruise: 7000 N axial + 50,000 N centrifugal.\n- LC4 OEI hover at 1220 m: 12,500 N axial + 95% centrifugal.\n- LC5 fatigue: +/- 4000 N alternating on the pin bore at 4 Hz (1P) for 1e7 cycles.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Tiltrotor proprotor hub arm",
+    "brief": "Ti-6Al-4V hub arm for an XV-15-baseline 3-blade tiltrotor, DGW 6577 kg.",
+    "geometric_constraints": {
+      "arm_length_mm": 450,
+      "width_mm": 120,
+      "thickness_mm": 80,
+      "pitch_bearing_bore_mm": 60,
+      "pin_bore_mm": 40
+    },
+    "material": {
+      "name": "Ti-6Al-4V forging",
+      "youngs_modulus_GPa": 113.8,
+      "poissons_ratio": 0.342,
+      "density_kg_m3": 4430,
+      "yield_strength_MPa": 860,
+      "ultimate_tensile_strength_MPa": 950
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hover_thrust",
+        "F_axial_N": 11900,
+        "F_cf_N": 150000
+      },
+      {
+        "id": "LC2",
+        "name": "pitch_control_moment",
+        "moment_Nm": 8000
+      },
+      {
+        "id": "LC3",
+        "name": "airplane_cruise",
+        "F_axial_N": 7000,
+        "F_cf_N": 50000
+      },
+      {
+        "id": "LC4",
+        "name": "OEI_hover_1220m",
+        "F_axial_N": 12500
+      },
+      {
+        "id": "LC5",
+        "name": "fatigue_1e7",
+        "F_alt_N": 4000,
+        "freq_Hz": 4
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "arm_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "radial_bore_growth_mm",
+        "alt_stress_at_bore_MPa",
+        "first_in_plane_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 633,
+        "derivation": "ultimate 950 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit",
+        "limit_MPa": 748,
+        "derivation": "yield 860 / 1.15",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "radial_bore_growth_under_cf",
+        "limit_mm": 0.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "alt_stress_at_pitch_bearing_bore",
+        "limit_MPa": 120,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_in_plane_mode",
+        "limit_Hz": 30,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

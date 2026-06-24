@@ -1,0 +1,218 @@
+{
+  "id": "018_pt18_ted_machined_bracket",
+  "source": {
+    "catalog_ref": "PT18",
+    "year": 2024,
+    "tier": "B"
+  },
+  "domain": "civil_infrastructure",
+  "part_class": "mast_support_bracket",
+  "full_prompt": "Design a machined and welded carbon-steel bracket for a roadside CCTV/lighting mast support, per a representative European infrastructure procurement tender: mount a 30 kg CCTV head + housing on a 6 m pole, survive EN 1991-1-4 Eurocode wind loads, EN 1990 ULS + SLS load combinations, and EN 1090-2 execution class EXC2 fabrication quality. Envelope: 300 x 200 x 120 mm. Interfaces: pole-side 360-degree clamp onto a 76 mm OD pole with two U-bolts M12 class 8.8 through-holes; camera-side M10 x 4 bolt pattern on 120 x 80 mm rectangle. Material: S275JR structural steel per EN 10025-2 (yield 275 MPa, UTS 430 MPa, Young's modulus 210 GPa, Poisson 0.3, density 7850 kg/m^3, elongation 23%). Corrosion protection: hot-dip galvanized per EN ISO 1461, minimum coating thickness 85 um. Load cases per EN 1991-1-4 + EN 1993-1-1: LC1 permanent load (CCTV 30 kg = 294 N down); LC2 wind load Category II terrain, basic wind velocity v_b = 27 m/s (representative EU coastal), design wind pressure q_p(z) = 0.75 kN/m^2 at 6 m height with drag coefficient c_f = 1.0 on camera frontal area 0.2 m^2 = 150 N horizontal, plus wind on bracket itself ~= 30 N; LC3 ULS load combination 1.35*G + 1.5*Q = 1.35*294 + 1.5*180 = 667 N resultant; LC4 SLS load combination 1.0*G + 1.0*Q for deflection check; LC5 hailstone impact 20 mm dia at 30 m/s (EN 61730-2 Class 2 equivalent) = 5 J kinetic, treated as transient if modeled. Pass/fail per EN 1993-1-1 + EN 1993-1-8: (R1) max von Mises under LC3 ULS <= yield / gamma_M0 = 275 / 1.0 = 275 MPa; (R2) weld fillet stress <= f_u / (beta_w * gamma_M2) with beta_w = 0.85 for S275 and gamma_M2 = 1.25, giving allowable fillet weld normal stress 430 / (0.85 * 1.25) = 404 MPa; shear in weld throat <= f_u / (sqrt(3) * beta_w * gamma_M2) = 233 MPa; (R3) tip deflection at camera attach point under LC4 SLS <= L/250 = 200/250 = 0.8 mm (EN 1993-1-1 serviceability default for cantilever); (R4) U-bolt clamp friction + form lock must be sufficient to prevent rotation of bracket on pole at LC2 applied moment = 150 * 0.1 m = 15 N*m, given two M12 class 8.8 U-bolts at 60 N*m tightening torque and friction coefficient 0.3 on galvanized steel (preload ~= 25 kN per U-bolt, rotation capacity ~= 2 x 25 kN x 0.3 x 0.038 m arm = 570 N*m >> 15 N*m required); (R5) galvanized coating thickness >= 85 um per EN ISO 1461; (R6) mass <= 4 kg (tender-typical material cost envelope). Deliverables: STEP AP242 + EN ISO 128-compliant 2D drawing; weld schedule per EN ISO 2553; galvanizing specification per EN ISO 1461; FEA report with per-case stresses and deflections.",
+  "short_prompt": "Design a machined and welded carbon-steel bracket for a roadside CCTV/lighting mast support per a representative European infrastructure tender: mount a 30 kg CCTV head + housing on a 6 m pole, survive EN 1991-1-4 Eurocode wind loads, EN 1990 ULS + SLS combinations, and EN 1090-2 execution class EXC2 fabrication quality.\n\nEnvelope: 300 x 200 x 120 mm. Interfaces: pole-side 360-degree clamp onto a 76 mm OD pole with two M12 class 8.8 U-bolts; camera-side M10 pattern (4 bolts) on 120 x 80 mm.\n\nMaterial: S275JR per EN 10025-2. Corrosion protection: hot-dip galvanized per EN ISO 1461, coating >= 85 um.\n\nLoad cases per EN 1991-1-4 + EN 1993-1-1.\n- LC1 permanent load: 30 kg = 294 N down.\n- LC2 wind load: Category II terrain, v_b = 27 m/s, q_p(z) = 0.75 kN/m^2 at 6 m, c_f = 1.0 on 0.2 m^2 frontal area = 150 N horizontal, plus ~30 N on bracket.\n- LC3 ULS combo 1.35*G + 1.5*Q: resultant 667 N.\n- LC4 SLS combo 1.0*G + 1.0*Q for deflection.\n- LC5 hailstone impact 20 mm dia at 30 m/s (EN 61730-2 Class 2) = 5 J.\n\nPass criteria include EN 1993-1-1 ULS stress <= 275 MPa (gamma_M0 = 1.0); weld limits with beta_w = 0.85 and gamma_M2 = 1.25; SLS deflection <= L/250 = 0.8 mm; mass <= 4 kg.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "eurocode_wind_calculator",
+        "reason": "EN 1991-1-4 peak velocity pressure q_p(z) is a closed-form formula with tabulated terrain coefficients.",
+        "examples": [
+          "Eurocode wind spreadsheet",
+          "Python eurocodepy"
+        ]
+      },
+      {
+        "tool": "weld_fillet_calculator",
+        "reason": "EN 1993-1-8 fillet weld directional method is closed-form.",
+        "examples": [
+          "Excel worksheet",
+          "IDEA StatiCa"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "S275JR galvanized CCTV/lighting mast support bracket per EN 1993 + European infrastructure tender",
+    "brief": "Design a 300x200x120 mm machined+welded S275JR bracket clamping to a 76 mm pole and holding a 30 kg CCTV at 6 m height, per EN 1991-1-4 wind + EN 1993-1-1 ULS/SLS.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 300,
+        "y": 200,
+        "z": 120
+      },
+      "pole_interface": {
+        "pole_OD_mm": 76,
+        "u_bolts": 2,
+        "thread": "M12",
+        "grade": "8.8"
+      },
+      "camera_interface": {
+        "bolts": 4,
+        "thread": "M10",
+        "pattern_mm": {
+          "x": 120,
+          "y": 80
+        }
+      }
+    },
+    "material": {
+      "name": "S275JR per EN 10025-2",
+      "yield_MPa": 275,
+      "ultimate_MPa": 430,
+      "coating": "EN ISO 1461 HDG >= 85 um"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "permanent_G",
+        "force_N": 294
+      },
+      {
+        "id": "LC2",
+        "name": "wind_Q",
+        "force_N": 180,
+        "note": "v_b=27 m/s, c_f=1.0, A=0.2 m^2"
+      },
+      {
+        "id": "LC3",
+        "name": "ULS",
+        "force_N": 667,
+        "combination": "1.35G + 1.5Q"
+      },
+      {
+        "id": "LC4",
+        "name": "SLS",
+        "force_N": 474,
+        "combination": "1.0G + 1.0Q"
+      },
+      {
+        "id": "LC5",
+        "name": "hail_impact",
+        "energy_J": 5,
+        "note": "transient optional"
+      }
+    ],
+    "boundary_conditions": {
+      "pole_clamp": "U-bolts preloaded around pole",
+      "camera_attach": "load applied at CG of camera"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "PDF_drawing_EN_ISO_128"
+      ],
+      "report_fields": [
+        "max_von_mises_LC3_MPa",
+        "weld_fillet_stress_MPa",
+        "tip_deflection_LC4_mm",
+        "mass_kg",
+        "coating_thickness_um"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_ULS",
+        "limit_MPa": 275,
+        "derivation": "yield / gamma_M0 = 275 / 1.0 per EN 1993-1-1",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "weld_fillet_throat_normal_stress",
+        "limit_MPa": 404,
+        "derivation": "f_u / (beta_w * gamma_M2) = 430 / (0.85 * 1.25) per EN 1993-1-8 directional",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tip_deflection_SLS",
+        "limit_mm": 0.8,
+        "derivation": "L/250 with L = 200 mm cantilever per EN 1993-1-1 serviceability",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "u_bolt_clamp_rotation_capacity_vs_demand",
+        "limit_ratio": 10,
+        "derivation": "clamp torque capacity / wind moment demand >= 10 (tenderous safety)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "galvanized_coating_thickness",
+        "limit_um": 85,
+        "derivation": "EN ISO 1461 minimum for > 6 mm thick steel",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 4.0,
+        "derivation": "tender-typical cost envelope",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "EN 1990 + EN 1991-1-4 + EN 1993-1-1 + EN 1993-1-8 + EN 1090-2 EXC2 + EN ISO 1461 + EN ISO 2553",
+    "recommended_fea_setup": {
+      "element_type": "shell or TET10",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "IDEA StatiCa",
+        "Ansys Mechanical",
+        "SCIA Engineer"
+      ],
+      "analysis_types": [
+        "linear static ULS + SLS + EN 1993-1-8 weld check"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static Eurocode design governs; aeroelastic vortex shedding is out of scope for this bracket class.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Wind already reduced to pressure.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "EN 1993-1-1 and EN 1991-1-4 published coefficients; S275JR per EN 10025-2. v_b=27 m/s is a representative European coastal value, not a specific tender number."
+  },
+  "eval_coverage": [
+    "Eurocode ULS + SLS dual check",
+    "EN 1993-1-8 weld directional method",
+    "EN 1090-2 fabrication class deliverable",
+    "galvanizing specification"
+  ]
+}

@@ -1,0 +1,186 @@
+{
+  "id": "100_ng15_rwsn_india_mk2_cylinder",
+  "source": {
+    "catalog_ref": "NG15",
+    "year": 2022,
+    "tier": "A"
+  },
+  "domain": "humanitarian_wash",
+  "part_class": "india_mk2_pump_cylinder_rod_assembly",
+  "full_prompt": "Design one representative India Mark II deep-well handpump cylinder + pump-rod column assembly compliant with the Rural Water Supply Network (RWSN) / Skat India Mark II specification (2022). The pump operates at a nominal static head of 45 m (maximum design head), with a cylinder bore of 63.5 mm (2.5 inch), plunger stroke of 125 mm, delivering approximately 12-18 L/min at the handle rate of 40 strokes/min. The cylinder body is a seamless brass-lined (or stainless-lined) cast-iron tube 63.5 mm bore, 65 mm ID of liner, 85 mm OD overall, 450 mm long, fitted with a standard Mk II footvalve at the bottom and a plunger + upper check valve at the top, threaded to the rising main (32 mm GI pipe). The pump rod is a 12 mm diameter carbon-steel rod (AISI 1018, fy = 235 MPa, UTS = 370 MPa) in 3 m lengths coupled by hex couplings, hanging from the handle down to the plunger. Design axial rod load is the sum of (a) weight of water column in cylinder lifted per stroke = rho_w * g * h * A_bore = 1000 * 9.81 * 45 * pi/4 * 0.0635^2 = 1398 N per stroke, plus (b) weight of rod string itself (12 mm x 45 m x 7850 kg/m3 * 9.81 = 404 N), plus (c) dynamic inertia factor 1.3, giving design axial rod load ~2340 N at the top of the column. Rod must not buckle in the upstroke (rod in tension) or fail in compression of the rising main guide during downstroke. Corrosion allowance 0.5 mm on steel rod diameter per Mk II corrosion-service annex. Deliverable is a CAD assembly of cylinder body, plunger, footvalve, check valve, one 3 m rod segment with coupling, and the interface to the 32 mm rising main, suitable for linear static structural FEA of the rod under 2340 N and the cylinder body under internal pressure 441 kPa (45 m water head). Vibration, thermal, fluid, radiation analyses are NOT required. Buckling check on the long rod IS required because the 45 m rod column has a very high slenderness ratio.",
+  "short_prompt": "Design an India Mark II deep-well handpump cylinder + pump-rod column assembly (seamless brass/stainless-lined cast-iron cylinder tube, footvalve, plunger + upper check valve threaded to a 32 mm GI rising main, 12 mm AISI 1018 steel rod in 3 m lengths with hex couplings, hanging from the handle) per the RWSN / Skat India Mk II specification (2022). Cylinder bore 63.5 mm (2.5 in), stroke 125 mm, rated at 40 strokes/min. Corrosion allowance 0.5 mm on the rod per the Mk II corrosion-service annex. Rod SF 1.5 on yield; long-rod buckling SF 2.5.\n\nEnvelope: cylinder 85 mm OD x 450 mm long around a 63.5 mm bore; rod hanging from the handle at ~45 m depth.\n\nLoad cases.\n- LC1 axial rod design: 2340 N tension at the top of the rod (water column ~1398 N + rod weight ~404 N, inflated by 1.3 dynamic factor).\n- LC2 cylinder internal pressure: 441 kPa (45 m water head) on cylinder body.\n- LC3 rod downstroke compression: compression portion of the cycle, buckling-critical given rod slenderness at 45 m.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "India Mk II deep-well pump cylinder + rod assembly",
+    "brief": "Design a 63.5 mm bore India Mk II cylinder + 12 mm rod column for 45 m static head carrying 2340 N axial load with corrosion allowance 0.5 mm.",
+    "geometric_constraints": {
+      "cylinder_bore_mm": 63.5,
+      "cylinder_OD_mm": 85,
+      "cylinder_length_mm": 450,
+      "plunger_stroke_mm": 125,
+      "rod_diameter_mm": 12,
+      "rod_segment_length_m": 3,
+      "rising_main_nominal_mm": 32,
+      "max_static_head_m": 45
+    },
+    "material": {
+      "rod": {
+        "name": "AISI 1018 mild steel",
+        "yield_strength_MPa": 235,
+        "ultimate_tensile_strength_MPa": 370,
+        "E_GPa": 200
+      },
+      "cylinder_body": {
+        "name": "brass-lined cast iron (or stainless)",
+        "description": "per Mk II spec"
+      },
+      "corrosion_allowance_mm": 0.5
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "axial_rod_design",
+        "magnitude_N": 2340,
+        "derivation": "water column + rod weight + 1.3 dynamic factor",
+        "application": "axial tension in rod string"
+      },
+      {
+        "id": "LC2",
+        "name": "cylinder_internal_pressure",
+        "magnitude_kPa": 441,
+        "derivation": "45 m water head",
+        "application": "radial pressure on cylinder body"
+      },
+      {
+        "id": "LC3",
+        "name": "rod_downstroke_compression",
+        "application": "compression portion of cycle, buckling-critical"
+      }
+    ],
+    "boundary_conditions": {
+      "rod_top": "pinned at handle connection",
+      "rod_bottom": "pinned at plunger",
+      "cylinder_ends": "threaded to rising main + footvalve"
+    },
+    "objective": {
+      "primary": "pass structural + buckling checks"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "rod_axial_stress_MPa",
+        "rod_buckling_load_factor",
+        "cylinder_hoop_stress_MPa",
+        "assembly_mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "cylinder_bore_mm",
+        "limit_mm": 63.5,
+        "derivation": "India Mk II spec",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_static_head_m",
+        "limit_m": 45,
+        "derivation": "India Mk II rated depth",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "rod_axial_stress_MPa",
+        "limit_MPa": 157,
+        "derivation": "fy / 1.5 = 235 / 1.5 SF on rod",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "rod_buckling_load_factor",
+        "limit": 2.5,
+        "derivation": "long-rod buckling SF for deep-well handpump service",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "corrosion_allowance_mm",
+        "limit_mm": 0.5,
+        "derivation": "Mk II corrosion-service annex",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (rod) + solid (cylinder)",
+      "solver_hints": [
+        "Abaqus",
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling eigenvalue on rod"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Pump cycle is quasi-static at 40 strokes/min.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Pump hydraulic performance reduced to head + flow targets, no CFD required.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fatigue of handle bearings and linkage",
+      "Leather cup / O-ring wear",
+      "Hot-galvanised rising main corrosion"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "long-rod buckling eigenvalue",
+    "internal-pressure hoop check on cylinder",
+    "corrosion-allowance design constraint",
+    "humanitarian WASH pump scope",
+    "multi-part assembly (cylinder + rod + rising main)"
+  ]
+}

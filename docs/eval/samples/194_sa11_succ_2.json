@@ -1,0 +1,211 @@
+{
+  "id": "194_sa11_succ_2",
+  "source": {
+    "catalog_ref": "SA11",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cubesat_3u_primary_structure",
+  "full_prompt": "Design the primary structural chassis of a 3U CubeSat as an open-source 3U CubeSat primary structure benchmark. The CubeSat will be deployed from a NanoRacks-style 3U deployer on the ISS and performs Earth-observation imaging plus a secondary communications-relay payload.\n\nGeometry. The structure follows Cal Poly CubeSat Design Specification Rev 14.1 for 3U: external envelope 100 mm x 100 mm x 340.5 mm (nominal, with +/-0.1 mm tolerance on all faces). Rails are chamfered 1 mm x 45 deg and anodized black per NanoRacks ICD. Four +Z/-Z rails span the full 340.5 mm length with a minimum 8.5 mm wide mating surface contacting the deployer at a minimum 6.5 mm from each end. The structure is machined from 7075-T73 aluminum. Internal bulkheads at three locations (at Z = 85.1, 170.2, 255.4 mm) host three stacked PC/104 PCBs per unit (nine PCBs total) connected by a common 104-pin header. The -Z face carries the separation-spring interface and four deployment-switch cutouts; the +Z face is the payload aperture. Total structural envelope mass budget <= 450 g (leaves 3.55 kg for payload given the 4 kg 3U wet-mass cap).\n\nMaterial. 7075-T73 aluminum (Young's modulus 71.7 GPa, density 2810 kg/m^3, yield strength 435 MPa, ultimate tensile strength 505 MPa, CTE 23.6 um/m/K). Surface treatment hard-anodize per MIL-A-8625 Type III to 50 um thickness on rails. Standoffs and fasteners are Ti-6Al-4V for thermal-expansion matching with the PC/104 stack.\n\nLoad cases. (LC1) Launch quasi-static load: 12 g along each orthogonal axis applied to the full wet mass of 4 kg (per NanoRacks NROL CBAS 14.2). (LC2) Launch random vibration: 10.0 g-rms PSD 20-2000 Hz per ISS Cargo Integration ICD, applied to all three axes. (LC3) Launch sine vibration: 0-2000 Hz sweep with 2.5 g input below 50 Hz and 5 g above, per GEVS-STD-7000A. (LC4) Deployment spring release: 75 N peak force (NanoRacks deployer spring) applied to the -Z face separation bosses for 50 ms. (LC5) Thermal cycling on-orbit: -40 C to +80 C cycle inducing CTE-mismatch stress at the PC/104 standoff interfaces.\n\nPass/fail criteria. (R1) Maximum von Mises stress under LC1, LC4, and LC5 must not exceed 290 MPa (yield / 1.5 = 435 / 1.5). (R2) First natural frequency must be above 100 Hz per NanoRacks CBAS deployer requirement. (R3) Peak random-vibration RMS stress under LC2 must not exceed 145 MPa (3-sigma <= 435 MPa absolute). (R4) Structural mass must not exceed 450 g. (R5) Deployment switches must remain unobstructed through all deformation states (clearance check: displacement < 0.5 mm at switch locations). (R6) Rail dimensional compliance: rails must remain within +/-0.1 mm after all load cases per Cal Poly CDS rail tolerance. (R7) No plastic deformation permitted during thermal cycling (yield never exceeded in LC5).\n\nSolver and analysis expectations. Linear static structural FEA for LC1 and LC4. Random-vibration PSD analysis for LC2. Sine-sweep harmonic response analysis for LC3. Modal analysis for R2. Thermal-structural coupled analysis for LC5 (steady-state temperatures at extrema, linear CTE stress computation). Fluid analysis is not applicable. Radiation analysis for mission lifetime survivability is flagged as a non-FEA verification task requiring orbit-average dose calculation (SPENVIS or similar) but is not required for this structural deliverable.\n\nDeliverables. STEP (AP242) + Parasolid of the complete 3U chassis with rails, bulkheads, and PC/104 standoff points. Rail dimensional compliance report. Mass budget table. Structural report with LC1-LC5 stress extrema, first 10 modal frequencies, PSD 3-sigma stress, and thermal-CTE stress at the Ti-Al interface.",
+  "short_prompt": "Design a 3U CubeSat primary structural chassis for a NanoRacks-style ISS 3U deployment (Earth-observation plus secondary comms-relay). The structure follows Cal Poly CDS Rev 14.1: envelope 100 x 100 x 340.5 mm (+/-0.1 mm), four +Z/-Z rails with 1 mm x 45 deg chamfers, >=8.5 mm wide mating surface contacting the deployer at >=6.5 mm from each end, machined from 7075-T73 aluminum with hard-anodize MIL-A-8625 Type III 50 um on rails. Three internal bulkheads at Z = 85.1 / 170.2 / 255.4 mm host a 9-board PC/104 stack; -Z face has the separation-spring interface and deployment-switch cutouts; +Z is the payload aperture. Structural mass budget <=450 g against a 4 kg 3U wet-mass cap; standoffs / fasteners are Ti-6Al-4V.\n\nGoverning standards: Cal Poly CDS Rev 14.1, NanoRacks NROL CBAS ICD, GEVS-STD-7000A, MIL-A-8625 Type III.\n\nLoad cases.\n- LC1 launch quasi-static: 12 g along each orthogonal axis at 4 kg wet mass (NanoRacks CBAS 14.2).\n- LC2 launch random vibration: 10.0 GRMS PSD, 20-2000 Hz, all three axes (ISS Cargo Integration ICD).\n- LC3 launch sine sweep: 0-2000 Hz, 2.5 g below 50 Hz, 5 g above (GEVS-STD-7000A).\n- LC4 deployment spring release: 75 N peak on -Z face separation bosses, 50 ms.\n- LC5 on-orbit thermal cycling: -40 to +80 C, CTE mismatch at PC/104 standoff interfaces.\n\nFirst natural frequency must be >=100 Hz (NanoRacks CBAS); deployment-switch clearance and rail dimensional compliance (+/-0.1 mm post-load) are additional checks.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "orbital_radiation_dose_calculator",
+        "reason": "Mission-lifetime TID dose calculation (SPENVIS or OMERE) is not an FEA category. Required to confirm electronics survivability but is out of scope for the structural deliverable.",
+        "examples": [
+          "ESA SPENVIS",
+          "TRAD OMERE"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "3U CubeSat primary structure benchmark",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 100,
+        "y": 100,
+        "z": 340.5
+      },
+      "envelope_tolerance_mm": 0.1,
+      "rail_chamfer": "1 mm x 45 deg",
+      "rail_surface_treatment": "hard anodize per MIL-A-8625 Type III, 50 um",
+      "bulkhead_locations_mm": [
+        85.1,
+        170.2,
+        255.4
+      ],
+      "pcb_standard": "PC/104 104-pin header",
+      "pcb_count": 9,
+      "mass_budget_structure_g": 450
+    },
+    "material": {
+      "name": "Al-7075-T73",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "density_kg_m3": 2810,
+        "yield_strength_MPa": 435,
+        "ultimate_tensile_strength_MPa": 505,
+        "cte_um_m_K": 23.6
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_quasi_static",
+        "magnitude_g": 12,
+        "axes": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      {
+        "id": "LC2",
+        "name": "launch_random_vibration",
+        "spec": "ISS Cargo Integration ICD",
+        "g_rms": 10.0,
+        "frequency_Hz_range": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "launch_sine_sweep",
+        "spec": "GEVS-STD-7000A",
+        "below_50Hz_g": 2.5,
+        "above_50Hz_g": 5
+      },
+      {
+        "id": "LC4",
+        "name": "deployment_spring",
+        "magnitude_N": 75,
+        "duration_ms": 50,
+        "application": "-Z face"
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_cycling",
+        "min_C": -40,
+        "max_C": 80,
+        "cycles_required": 1
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 290,
+        "derivation": "yield / 1.5 = 435 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 100,
+        "derivation": "NanoRacks CBAS deployer",
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "random_vibration_3sigma_stress",
+        "limit_MPa": 435,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "structural_mass",
+        "limit_g": 450,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "deployment_switch_clearance",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "dimensional_compliance",
+        "metric": "rail_tolerance_postload",
+        "limit_mm": 0.1,
+        "applies_to": [
+          "LC1",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "thermal_analysis",
+        "metric": "thermal_cycle_peak_stress",
+        "limit_MPa": 435,
+        "derivation": "must stay below 7075-T73 yield 435 MPa (no plastic deformation)",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Vacuum orbit; no convective loads."
+    },
+    "governing_standards": [
+      "Cal Poly CDS Rev 14.1",
+      "NanoRacks NROL CBAS ICD",
+      "GEVS-STD-7000A",
+      "MIL-A-8625 Type III"
+    ]
+  },
+  "eval_coverage": [
+    "multi-standard compliance (Cal Poly + NanoRacks + GEVS)",
+    "PSD random vibration with 3-sigma stress criterion",
+    "thermal-structural coupling via CTE mismatch"
+  ]
+}

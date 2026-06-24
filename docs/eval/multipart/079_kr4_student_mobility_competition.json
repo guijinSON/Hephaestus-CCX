@@ -1,0 +1,425 @@
+{
+  "id": "079_kr4_student_mobility_competition",
+  "source": {
+    "catalog_ref": "KR4",
+    "year": 2025,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/079_kr4_student_mobility_competition.json",
+    "multipart_basis": "Decomposition inferred from the physical architecture of a 1500x900x800 mm, <=80 kg autonomous four-wheeled platform with a 10 kg 48 V battery pack and a LiDAR + camera sensor cage at 800 mm height: extruded aluminum space frame (longitudinal rails + crossmembers + A-pillar posts) + welded battery tray + sensor cage tower + firewall bulkhead + suspension mounts + skin panels. No rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "automotive_structural",
+  "part_class": "autonomous_vehicle_chassis_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the chassis and battery enclosure of an autonomous self-built mobility vehicle for a university creative-mobility benchmark. The vehicle is a small autonomous four-wheeled platform with external dimensions up to 1500 mm x 900 mm x 800 mm (L x W x H) and dry mass up to 80 kg. The powertrain is battery-electric with a 48 V nominal lithium-ion pack; the battery enclosure must be mechanically rigid (no deflection > 2 mm under a 5 g lateral shock with the pack at full mass) and must include a crush-resistant tray sized for a 24-cell lithium-ion pack with approximately 10 kg pack mass. A mechanical kill-switch must be reachable from outside the vehicle and from the driver's position (if the vehicle has a driver position for fallback control). The chassis must survive: (a) 2.5 g vertical gust under 80 kg gross vehicle mass (196 kg equivalent), (b) 1.5 g lateral cornering, (c) 8 g frontal impact equivalent (640 kg equivalent) — no intrusion of the battery enclosure or the sensor cage. Sensor cage must hold LiDAR + camera rig at 800 mm height and under 2 g vertical shock with sensor displacement < 2 mm (sensor pointing stability). Primary verification is linear static structural FEA for the four load cases plus a battery-enclosure short-circuit fire test (non-structural, regulatory). Tolerances on suspension mounts are per the rulebook (datasheet per PDF). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required at the structural design gate. Deliverables: STEP AP242 of the chassis + battery enclosure + sensor cage, a mass budget, and a report listing dry mass in kg, max chassis stress per case in MPa, battery tray deflection in mm, and sensor cage displacement at 2 g in mm.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe vehicle is delivered as a multi-part assembly: two longitudinal aluminum rails + four crossmembers forming the primary ladder frame, a forward firewall bulkhead that also doubles as the front crumple bulkhead protecting the battery, a welded / bolted battery tray sub-assembly sitting between the two inboard crossmembers, four suspension pickup brackets (one per corner) for the A-arm / wishbone mounts, a sensor cage tower extending to 800 mm with a top sensor platform carrying the LiDAR + camera rig, and outer sheet-metal skin panels (floor pan, side panels, nose cover). The load paths are: LC1/LC2 gross vehicle loads transferred through wheels -> suspension pickup brackets -> longitudinal rails -> crossmembers -> battery tray reaction; LC3 frontal impact propagates from nose skin -> front crossmember -> firewall bulkhead with the hard requirement that the battery tray back wall sees zero intrusion; LC4 battery lateral load reacts directly into the two inboard crossmembers that clamp the tray; LC5 sensor cage acceleration runs down the tower into its mounting flange on the upper rails. The final FEM verification runs on the ASSEMBLED model only; per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case (TIG weld allowables for Al 6061-T6 + bolted joint per RSIB). All inherited load magnitudes, material properties, and pass/fail thresholds from the original brief are preserved verbatim.",
+  "short_prompt": "Design a student single-seat electric mobility vehicle chassis as a multi-part assembly for the Korean student mobility competition.\n\nEnvelope 1500 x 900 x 800 mm, driver + vehicle mass <= 80 kg, 48 V drivetrain with 10 kg battery pack. Structure Al 6061-T6.\n\nLoad cases: LC1 2.5 g vertical bump; LC2 1.5 g cornering; LC3 8 g frontal impact; LC4 5 g lateral on battery pack; LC5 2 g on sensor mounts.\n\nPass/fail: no yield under any LC with SF 1.5; FEM at assembled level; connection DCR <= 1.0 at suspension mounts, battery clamps, and seat-belt anchors.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "battery_safety_cert",
+        "reason": "Short-circuit/fire rating is a regulatory battery-pack cert, not structural FEA.",
+        "examples": [
+          "IEC 62133 cert"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "University autonomous-mobility vehicle chassis (multi-part ladder frame + battery tray + sensor tower)",
+    "brief": "Design a 1.5 x 0.9 x 0.8 m, <=80 kg autonomous 48 V vehicle as an assembled 6061-T6 space frame: 2 longitudinal rails, 4 crossmembers, firewall bulkhead, welded battery tray for a 10 kg pack, 4 suspension pickup brackets, 800 mm sensor cage tower, skin panels. No battery-box or sensor-cage intrusion under 8 g frontal. FEM at assembled level; connection DCR <= 1.0 on every TIG weld and bolted interface.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 1500,
+        "W": 900,
+        "H": 800
+      },
+      "dry_mass_kg_max": 80,
+      "battery_V_nominal": 48,
+      "battery_pack_mass_kg": 10,
+      "sensor_cage_height_mm": 800,
+      "ladder_frame_topology": "2 longitudinal rails + 4 crossmembers (front-bumper, front-firewall, rear-inboard, rear-bumper)",
+      "battery_tray_location": "between crossmembers 2 (firewall) and 3 (rear-inboard), centered laterally",
+      "suspension_pickup_count": 4
+    },
+    "material": {
+      "typical": "Al 6061-T6 extrusion + sheet",
+      "Al6061_T6": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276
+      },
+      "weld_derating": "HAZ yield 0.6 x base for TIG-welded 6061-T6 per Aluminum Design Manual",
+      "battery_tray_liner": "FR-rated fiberglass or mica sheet (electrical + thermal barrier)"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical_2p5g",
+        "magnitude_N": 1961,
+        "description": "80 kg x 2.5 g vertical at all 4 suspension pickups"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_1p5g",
+        "magnitude_N": 1177,
+        "description": "80 kg x 1.5 g lateral cornering at outboard wheel pickups"
+      },
+      {
+        "id": "LC3",
+        "name": "frontal_8g",
+        "magnitude_N": 6278,
+        "description": "80 kg x 8 g forward applied at the nose crossmember; governs firewall + battery tray intrusion check"
+      },
+      {
+        "id": "LC4",
+        "name": "battery_5g_lateral",
+        "magnitude_N": 490,
+        "description": "10 kg pack x 5 g lateral applied at the pack CG inside the tray"
+      },
+      {
+        "id": "LC5",
+        "name": "sensor_cage_2g_vertical",
+        "magnitude_N": 98,
+        "description": "5 kg sensor mass x 2 g vertical applied at the 800 mm top platform"
+      }
+    ],
+    "boundary_conditions": {
+      "wheels": "fixed vertical + longitudinal reactions at each of the 4 suspension pickup brackets; lateral restraint at 2 contact patches per cornering case",
+      "sensor_cage_base": "bolted to upper longitudinal rails via 4x M8",
+      "battery_tray": "bolted to crossmembers 2 and 3 via 6x M8 with FR liner between tray and rail"
+    },
+    "objective": {
+      "minimize": "dry_mass",
+      "design_heuristic": "Keep primary extrusions to 40x40x2 mm or 50x25x2 mm Al 6061-T6 to stay below 80 kg with battery tray and sensor cage included."
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family (A-G)",
+        "instance_index",
+        "material_grade",
+        "weld_or_bolt_flag"
+      ],
+      "report_fields": [
+        "dry_mass_kg",
+        "max_stress_LC1_MPa",
+        "max_stress_LC2_MPa",
+        "max_stress_LC3_MPa",
+        "battery_tray_deflection_mm",
+        "sensor_cage_displacement_mm",
+        "connection_DCR_max",
+        "per_part_max_stress_MPa"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "longitudinal_rail",
+        "role": "primary load-carrying chassis member running the full 1500 mm length; forms the two sides of the ladder frame and anchors suspension brackets, battery tray, sensor cage, and skin panels",
+        "count_min": 2,
+        "geometric_constraints": {
+          "section_mm": "40x40x2 square tube or equivalent 6061-T6 extrusion",
+          "length_mm": 1500,
+          "orientation": "longitudinal (x-axis)",
+          "rail_pair_spacing_mm": 600
+        },
+        "material_hint": "Al 6061-T6 extrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "crossmember",
+        "role": "transverse member connecting the two longitudinal rails; the 4 crossmembers are (B1) front bumper crossmember, (B2) firewall/front-battery crossmember, (B3) rear-battery/rear-inboard crossmember, (B4) rear bumper crossmember",
+        "count_min": 4,
+        "geometric_constraints": {
+          "section_mm": "40x40x2 or 50x25x2 rectangular tube",
+          "length_mm_range": [
+            520,
+            600
+          ],
+          "orientation": "transverse (y-axis)",
+          "TIG_weld_joint_to_rail": true
+        },
+        "material_hint": "Al 6061-T6 extrusion (HAZ-derated at welds)",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "firewall_bulkhead",
+        "role": "vertical shear panel welded/bolted between crossmember B2 and the floor pan; isolates battery tray from the forward crumple zone and carries LC3 frontal impact load",
+        "count_min": 1,
+        "geometric_constraints": {
+          "sheet_thickness_mm_min": 2.0,
+          "panel_dim_mm": "580 W x 500 H",
+          "intrusion_limit_LC3_mm": 0,
+          "mounting": "bolted to crossmember B2 top flange + bolted to longitudinal rails"
+        },
+        "material_hint": "Al 6061-T6 sheet or A36 steel sheet with FR liner on battery side",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "battery_tray_subassembly",
+        "role": "welded aluminum box housing the 24-cell 48 V 10 kg lithium-ion pack between crossmembers B2 and B3; crush-resistant tray with FR liner; clamps pack vertically and laterally",
+        "count_min": 1,
+        "count_note": "Treated as a single sub-assembly (floor + 4 walls + lid) for the interface inventory.",
+        "geometric_constraints": {
+          "internal_pack_envelope_mm": "400 L x 350 W x 150 H",
+          "floor_thickness_mm_min": 3,
+          "wall_thickness_mm_min": 2,
+          "deflection_limit_LC4_mm": 2.0,
+          "intrusion_limit_LC3_mm": 0,
+          "mount_bolt_count_min": 6
+        },
+        "material_hint": "Al 6061-T6 welded box + FR liner; stainless steel bolts to rails",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "suspension_pickup_bracket",
+        "role": "corner bracket welded/bolted to a longitudinal rail that receives the A-arm or wishbone suspension mount; reacts vertical and lateral wheel loads into the ladder frame",
+        "count_min": 4,
+        "count_note": "One bracket per wheel corner (front-left, front-right, rear-left, rear-right).",
+        "geometric_constraints": {
+          "plate_thickness_mm_min": 4,
+          "bolt_pattern": "3x M8 to a-arm inner pivot pair",
+          "rulebook_tolerance": "per rulebook suspension-mount datasheet (inherited)",
+          "stress_limit_fraction_of_yield": 0.67
+        },
+        "material_hint": "Al 6061-T6 plate or A36 steel plate (teams choose; steel preferred for fatigue)",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "sensor_cage_tower",
+        "role": "slender vertical cage rising from the upper rails to 800 mm carrying a top platform that mounts the LiDAR + camera rig; pointing stability governs R5",
+        "count_min": 1,
+        "count_note": "Sub-assembly: 4 vertical legs + 2 horizontal braces + top sensor plate.",
+        "geometric_constraints": {
+          "height_mm": 800,
+          "leg_section_mm": "25x25x2 square tube",
+          "top_plate_mm": "200 x 200 x 4",
+          "displacement_limit_LC5_mm": 2.0,
+          "base_bolt_pattern": "4x M8 into longitudinal rails"
+        },
+        "material_hint": "Al 6061-T6 tube + Al 6061-T6 plate top",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "skin_panel",
+        "role": "non-structural outer covering panels (floor pan, 2 side panels, nose cover, rear cover) mounted to the ladder frame and crossmembers; carries only minor aerodynamic and debris loads",
+        "count_min": 4,
+        "geometric_constraints": {
+          "sheet_thickness_mm": 1.5,
+          "mounting": "riveted or bolted on 100 mm pitch",
+          "load_role": "non-primary"
+        },
+        "material_hint": "Al 5052 sheet",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_L_mm": 1500,
+      "overall_W_mm": 900,
+      "overall_H_mm": 800,
+      "ground_clearance_mm_min": 80,
+      "battery_tray_enclosed_by": [
+        "B2",
+        "B3",
+        "A",
+        "A (opposite)"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "dry_mass_kg",
+        "limit_kg": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 yield (base metal); HAZ allowable = 0.67 x 0.6 x 276 MPa at TIG weld zones",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "battery_enclosure_intrusion_mm",
+        "limit_mm": 0,
+        "derivation": "No battery-box intrusion under 8 g frontal (hard requirement; firewall C protects battery tray D)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "battery_tray_deflection_mm",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "sensor_cage_displacement_mm",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "type": "structural_analysis",
+        "metric": "connection_DCR_max",
+        "limit": 1.0,
+        "derivation": "TIG weld DCR per Aluminum Design Manual for HAZ-derated 6061-T6 and bolted-joint DCR per VDI 2230 on every rail-to-crossmember, crossmember-to-bracket, tray-to-rail, and sensor-cage-to-rail interface.",
+        "applies_to": [
+          "IF1",
+          "IF2",
+          "IF3",
+          "IF4",
+          "IF5",
+          "IF6"
+        ],
+        "operator": "<=",
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "type": "structural_analysis",
+        "metric": "battery_tray_lateral_shift_LC3_mm",
+        "limit_mm": 5.0,
+        "derivation": "Battery tray must not translate more than 5 mm inboard under LC3 frontal 8 g even after the firewall absorbs primary load; ensures no pack terminal contacts the firewall.",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<=",
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (rails + crossmembers) + shell (firewall, tray walls, sensor cage, skin) + solid (suspension pickup brackets)",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static x5"
+      ],
+      "contact_modeling": "tied for TIG weld beads; bolted preload with contact pair at every bolted flange"
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "TIG fillet weld around tube intersection (HAZ-derated 6061-T6)",
+      "load_path": "Vertical and lateral wheel loads from suspension into rail, then shear transfer across weld into crossmember"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted flange (4x M8) between firewall bulkhead and front-firewall crossmember B2",
+      "load_path": "LC3 frontal impact load from front bumper crossmember B1 -> rails -> B2 -> firewall bulkhead shear panel"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bolted joint (3x M8) plus TIG tack welds at suspension pickup bracket to rail",
+      "load_path": "Wheel reaction loads (LC1 vertical, LC2 lateral) from A-arm pivot into bracket and into longitudinal rail"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "D",
+        "B"
+      ],
+      "mediated_by": "bolted connection (6x M8 per tray wall) between battery tray subassembly and crossmembers B2, B3",
+      "load_path": "LC4 battery 5 g lateral reacts into the two inboard crossmembers; LC3 firewall reaction also enters tray via B2"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "bolted base flange (4x M8) of sensor cage tower to upper face of both longitudinal rails",
+      "load_path": "LC5 sensor mass x 2 g vertical + moment arm from 800 mm height into rail pair"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "G",
+        "A"
+      ],
+      "mediated_by": "pop rivets or M4 bolts on 100 mm pitch clamping skin panel to rails/crossmembers",
+      "load_path": "Non-primary aero/debris load; ensures panels do not detach under LC2 lateral"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "The no-intrusion requirement for the battery tray under 8 g frontal impact is an assembly-scope check that crosses the nose skin, front crossmember, firewall bulkhead, and tray walls; it cannot be verified by isolating any one part. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A 1.5 m autonomous mobility platform with a separable battery pack, swappable sensor rig, and welded aluminum ladder frame is inherently an assembly: the battery tray must be removable for pack service, the sensor tower must be removable for transport, and the suspension pickup brackets are local welded components that are machined separately.",
+    "speculation_caveats": "Exact extrusion section, crossmember positions, and bracket geometry are speculative; the topology (ladder frame + firewall + tray sub-assembly + sensor tower + pickups + skin) is the standard student-mobility architecture.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "Battery thermal is separate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    },
+    "original_sample_preserved_at": "docs/eval/samples/079_kr4_student_mobility_competition.json"
+  },
+  "eval_coverage": [
+    "autonomous vehicle chassis loads",
+    "battery enclosure integrity",
+    "sensor cage stiffness",
+    "frontal crash no-intrusion",
+    "welded ladder frame multi-part assembly",
+    "HAZ-derated TIG weld allowables on 6061-T6",
+    "bolted battery tray and sensor tower subassemblies"
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "id": "123_e13_bwc_battery_module_tray",
+  "source": {
+    "catalog_ref": "E13",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "ev_battery_structural",
+  "part_class": "battery_module_tray",
+  "full_prompt": "Design a monolithic die-cast A380 aluminum battery module tray for a cell-to-pack 800 V lithium-iron-phosphate (LFP) pack redesign of a commercial EV van platform as part of a collegiate EV-battery-pack redesign benchmark, meeting FMVSS No. 305a (electrolyte spillage and electric shock protection), SAE J2464 (EV battery abuse testing), and UN 38.3 (transport). The tray holds 26 prismatic cells arranged 2S13P, each cell 300 mm L x 100 mm W x 75 mm H and 5.2 kg, gross module energy 18.2 kWh. The tray is a single die-cast part (no inserts for the primary shell), with an integral cooling-plate channel network on the underside and integral cell-locating ribs on the top face. External footprint 1400 mm x 280 mm x 85 mm, wall 3.0 mm, integral cooling channels 8 mm square cross section with 4 serpentine passes, two liquid manifold ports (M14 threaded) on one short end, eight M8 through-holes on the four corners in a 2x4 pattern for pack-level bolting. Bounding envelope 1420 x 300 x 100 mm. Material die-cast A380 aluminum with Young's modulus 71 GPa, Poisson's ratio 0.33, density 2740 kg/m^3, yield 165 MPa, UTS 324 MPa; at 85 C yield derates to 158 MPa. Total cell payload mass 135.2 kg. Three load cases. Load Case 1 (FMVSS 305a crash): horizontal 30g deceleration longitudinally (500 ms half-sine), with the cells modeled as a lumped distributed mass of 135.2 kg on the cell-locating ribs and the eight mounting holes fully fixed. Load Case 2 (SAE J2464 mechanical shock): 50g vertical 11 ms half-sine pulse with the same lumped mass. Load Case 3 (coolant pressure + thermal): internal cooling channel pressure 300 kPa gauge at 60 C coolant (50/50 ethylene glycol/water) with external ambient 20 C; simultaneously the cells dissipate 300 W total (thermal loss during 1C charge) distributed on the cell-locating ribs. Pass/fail: (R1) under LC1 crash, peak von Mises in the tray must not exceed 82 MPa (yield/2.0) to protect cells from mechanical intrusion per FMVSS 305a; (R2) under LC2 shock, peak stress must not exceed 110 MPa (yield/1.5, transient); (R3) under LC3 coolant pressure + thermal, peak stress must not exceed 79 MPa (yield_85C/2.0) with proof-pressure headroom of at least 1.5x on the coolant channel; (R4) a steady-state thermal + CFD coupled analysis of LC3 with 20 L/min coolant flow must keep peak cell-contact surface temperature below 40 C (cell-OEM LFP safe operating upper limit for 1C continuous) and channel pressure drop below 50 kPa; (R5) a linear buckling eigenvalue analysis under LC1 longitudinal crash in-plane compression of the short ends must yield a first-mode factor of at least 2.0; (R6) mass of the empty tray must not exceed 18 kg (11% of loaded module weight budget); (R7) first six natural frequencies with cell mass attached must avoid the 25-250 Hz automotive powertrain band by at least 10% (so either < 22.5 Hz or > 275 Hz at the lowest critical mode). Radiation and fluid analyses beyond R4 coolant CFD are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic die-cast A380 aluminum battery module tray for a cell-to-pack 800 V LFP pack redesign on a commercial EV van platform, holding 26 prismatic cells arranged 2S13P (module 18.2 kWh) with integral cell-locating ribs on top, an integral serpentine liquid-cooling channel network on the underside with two threaded manifold ports, and perimeter bolt-down holes for pack-level fastening. Design to FMVSS No. 305a, SAE J2464, and UN 38.3, with the usual yield/2.0 (continuous) and yield/1.5 (transient) safety factors; apply the 85 C derated yield for coolant/thermal load cases.\n\nEnvelope: roughly 1400 x 280 x 85 mm, with bounding ~1420 x 300 x 100 mm.\n\nLoad cases.\n- LC1 FMVSS 305a crash: 30 g longitudinal (500 ms half-sine) with the 135.2 kg cell payload lumped on the locating ribs, mounting holes fixed.\n- LC2 SAE J2464 shock: 50 g vertical 11 ms half-sine with the same lumped mass.\n- LC3 coolant pressure + thermal: 300 kPa gauge internal coolant pressure at 60 C (50/50 EG/water), external ambient 20 C, and 300 W cell dissipation distributed on the ribs; include 1.5x proof-pressure margin and a coupled thermal/CFD check with 20 L/min coolant flow keeping the cell-contact surface below 40 C.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "A380 die-cast battery module tray for collegiate EV-battery-pack redesign benchmark",
+    "brief": "2S13P LFP 18.2 kWh module tray with integral coolant channels; FMVSS 305a + J2464 crash/shock + 300 kPa coolant proof.",
+    "geometric_constraints": {
+      "footprint_mm": {
+        "L": 1400,
+        "W": 280,
+        "H": 85
+      },
+      "wall_thickness_mm": 3.0,
+      "coolant_channel_mm": 8,
+      "coolant_passes": 4,
+      "cell_count": 26,
+      "cell_mm": {
+        "L": 300,
+        "W": 100,
+        "H": 75,
+        "mass_kg": 5.2
+      },
+      "mounting_holes": {
+        "count": 8,
+        "diameter_mm": 8,
+        "pattern": "2x4"
+      },
+      "bounding_envelope_mm": {
+        "x": 1420,
+        "y": 300,
+        "z": 100
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Die-cast A380 aluminum",
+      "properties": {
+        "youngs_modulus_GPa": 71,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2740,
+        "yield_20C_MPa": 165,
+        "yield_85C_MPa": 158,
+        "ultimate_tensile_strength_MPa": 324
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "FMVSS_305a_crash",
+        "deceleration_g": 30,
+        "duration_ms": 500,
+        "direction": "longitudinal"
+      },
+      {
+        "id": "LC2",
+        "name": "J2464_shock",
+        "acceleration_g": 50,
+        "duration_ms": 11,
+        "direction": "vertical"
+      },
+      {
+        "id": "LC3",
+        "name": "coolant_thermal",
+        "internal_kPa": 300,
+        "coolant_C": 60,
+        "cell_dissipation_W": 300,
+        "coolant_flow_L_min": 20
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "peak_cell_contact_temp_C",
+        "coolant_pressure_drop_kPa",
+        "first_mode_load_factor",
+        "first_six_freqs_Hz",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 82,
+        "derivation": "yield_20C/2.0 FMVSS 305a protective",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 110,
+        "derivation": "yield_20C/1.5 transient",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 79,
+        "derivation": "yield_85C/2.0",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "fluid_analysis",
+        "metric": "coolant_cell_contact_and_pressure_drop",
+        "limit_compound": {
+          "peak_cell_temp_C": 40,
+          "pressure_drop_kPa": 50
+        },
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "empty_mass",
+        "limit_kg": 18,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies_avoid_25_250Hz",
+        "limit_band_Hz": [
+          22.5,
+          275
+        ],
+        "applies_to": [
+          "design"
+        ],
+        "operator": "must_be_outside"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) with shell-solid at channels",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical + Fluent",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "explicit/implicit dynamic (LC1, LC2)",
+        "conjugate heat transfer CFD (LC3)",
+        "linear buckling",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "radiation_analysis": "Internal pack; not a radiation-dominant environment."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Cell-level thermal runaway containment per GB 38031",
+      "Electrical isolation to chassis per FMVSS 305a",
+      "Die-cast porosity QA"
+    ]
+  },
+  "eval_coverage": [
+    "FMVSS 305a crash + SAE J2464 shock multi-scenario",
+    "conjugate coolant CFD",
+    "NVH band avoidance",
+    "integrated die-cast cooling channels"
+  ]
+}

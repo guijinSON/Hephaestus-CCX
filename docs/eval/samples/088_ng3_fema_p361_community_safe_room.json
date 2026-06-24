@@ -1,0 +1,224 @@
+{
+  "id": "088_ng3_fema_p361_community_safe_room",
+  "source": {
+    "catalog_ref": "NG3",
+    "year": 2021,
+    "tier": "A+"
+  },
+  "domain": "humanitarian_civil",
+  "part_class": "community_tornado_safe_room",
+  "full_prompt": "Design one representative single-room community tornado safe room, 12.2 m x 12.2 m x 3.0 m clear interior (about 149 m2, occupancy ~320 persons at the FEMA P-361 standing-occupancy 0.46 m2/person / 5 sq ft/person rate), as a site-cast reinforced-concrete shear-wall box (RC walls, RC roof slab, RC floor slab) fully compliant with FEMA P-361 Safe Rooms for Tornadoes and Hurricanes (4th ed., 2021) and ICC 500. The shelter must resist a 250 mph (112 m/s) 3-second gust tornado design wind applied as ASCE 7 / ICC 500 equivalent static pressures on Exposure C; a tornado debris missile consisting of a 15-lb (6.8 kg) nominal Douglas-fir 2x4 traveling at 100 mph (44.7 m/s) horizontally against any wall and 67 mph (30.0 m/s) vertically against the roof, impacting at any location; and an alternate-load-path progressive-collapse check in which any single primary column or an equivalent 6 m length of primary wall is notionally removed and the remaining structure must bridge the removal without collapse under 1.2 Dead + 0.5 Live per GSA / DoD UFC 4-023-03 alternate-path procedure. Walls are 8.0 in (203 mm) thick normal-weight reinforced concrete with fc >= 4000 psi (27.6 MPa) and Grade 60 rebar (fy = 420 MPa); roof is 8.0 in (203 mm) RC two-way slab. The structure is anchored to a continuous RC mat foundation designed to resist all factored overturning and uplift from the design wind. Minimum three egress / entry openings are required per P-361 occupancy rules; each door opening is reinforced by RC jambs and a header, and the door assemblies themselves are separately tested (out of scope of this geometry design). Deliverable is a single assembled CAD model of the RC shell including walls, roof, floor, mat foundation, rebar cage, door openings with reinforcement, suitable for (a) linear + nonlinear static structural FEA under design wind, (b) explicit-dynamics debris-impact analysis, (c) alternate-load-path progressive-collapse analysis. Vibration, thermal, fluid, radiation, and buckling analyses are NOT required.",
+  "short_prompt": "Design a single-room community tornado safe room sized for ~320 standing occupants (FEMA P-361 0.46 m^2/person), built as a site-cast RC shear-wall box on an RC mat foundation with at least three egress openings, per FEMA P-361 (4th ed., 2021) and ICC 500. 8 in RC walls + 8 in two-way RC roof slab, 4000 psi concrete, Grade 60 rebar; tested ICC 500 door assemblies out of scope.\n\nEnvelope: 12.2 x 12.2 x 3.0 m clear interior (~149 m^2) with reinforced jambs at openings.\n\nLoad cases.\n- LC1 design wind: 250 mph 3-sec gust on Exposure C as ASCE 7 / ICC 500 equivalent static pressures on walls and roof.\n- LC2 debris missile horizontal: 15 lb 2x4 at 100 mph on any wall.\n- LC3 debris missile vertical: 15 lb 2x4 at 67 mph on the roof.\n- LC4 progressive-collapse alternate path: notionally remove one primary column or a 6 m length of primary wall and check stability under 1.2D + 0.5L per GSA 2016 / UFC 4-023-03.\n\nDebris-missile impact uses an explicit-dynamics solver; alternate-load-path uses a nonlinear static procedure.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_impact_solver",
+        "reason": "15-lb 2x4 missile impact at 100/67 mph requires transient dynamics with material damage; cannot be done with linear static FEA.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus/Explicit",
+          "Altair Radioss"
+        ]
+      },
+      {
+        "tool": "alternate_load_path_progressive_collapse",
+        "reason": "P-361 progressive-collapse / robustness check requires notional element removal + nonlinear static or nonlinear dynamic analysis (GSA / UFC 4-023-03).",
+        "examples": [
+          "SAP2000 nonlinear static",
+          "ETABS",
+          "Abaqus/Standard nonlinear static"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FEMA P-361 community tornado safe room (~320-occupant)",
+    "brief": "Design a 12.2 x 12.2 x 3.0 m RC community safe room to P-361 with 250 mph gust + 15-lb 2x4 debris at 100/67 mph + alternate-load-path progressive collapse.",
+    "geometric_constraints": {
+      "interior_clear_LxWxH_m": [
+        12.2,
+        12.2,
+        3.0
+      ],
+      "floor_area_m2": 148.8,
+      "occupant_count_persons": 320,
+      "area_per_person_m2": 0.46,
+      "area_per_person_sqft": 5,
+      "wall_thickness_in": 8,
+      "wall_thickness_mm": 203,
+      "roof_thickness_in": 8,
+      "min_door_openings": 3,
+      "door_opening_mm": [
+        914,
+        2032
+      ]
+    },
+    "material": {
+      "concrete": {
+        "min_fc_psi": 4000,
+        "min_fc_MPa": 27.6
+      },
+      "rebar": {
+        "grade": "ASTM A615 Gr 60",
+        "fy_MPa": 420
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "design_wind",
+        "gust_3s_mph": 250,
+        "gust_3s_m_s": 112,
+        "exposure": "C",
+        "application": "ICC 500 equivalent static wall + roof pressures"
+      },
+      {
+        "id": "LC2",
+        "name": "debris_missile_horizontal",
+        "impactor": "15 lb 2x4",
+        "velocity_mph": 100,
+        "application": "wall impact at any location"
+      },
+      {
+        "id": "LC3",
+        "name": "debris_missile_vertical",
+        "impactor": "15 lb 2x4",
+        "velocity_mph": 67,
+        "application": "roof impact"
+      },
+      {
+        "id": "LC4",
+        "name": "progressive_collapse_alternate_path",
+        "magnitude": "remove one primary column or 6 m primary wall segment; loading 1.2D + 0.5L",
+        "application": "notional element removal per GSA / UFC 4-023-03"
+      }
+    ],
+    "boundary_conditions": {
+      "foundation_interface": "mat foundation fully resisting wind uplift + overturning",
+      "door_openings": "reinforced jambs + headers"
+    },
+    "objective": {
+      "primary": "pass all pass/fail criteria"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "IFC"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_wall_demand_capacity_ratio",
+        "max_roof_demand_capacity_ratio",
+        "missile_perforation_yes_no",
+        "progressive_collapse_stable_yes_no",
+        "mat_uplift_SF",
+        "mat_overturning_SF"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "design_wind_3s_gust_mph",
+        "limit_mph": 250,
+        "derivation": "FEMA P-361 tornado design wind",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "wall_roof_demand_capacity_ratio",
+        "limit": 1.0,
+        "derivation": "ACI 318 factored ASCE 7 combos",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "debris_missile_perforation",
+        "limit": "no perforation",
+        "derivation": "FEMA P-361 / ICC 500 Section 305",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "alternate_load_path_stability",
+        "limit": "structure remains stable after notional element removal under 1.2D + 0.5L",
+        "derivation": "GSA 2016 / UFC 4-023-03 alternate-path procedure",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "area_per_person_m2",
+        "limit_m2": 0.46,
+        "derivation": "FEMA P-361 standing-occupancy density (5 sq ft / person)",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid (concrete) + embedded rebar + rigid impactor",
+      "solver_hints": [
+        "LS-DYNA",
+        "Abaqus/Explicit + Standard",
+        "SAP2000 nonlinear"
+      ],
+      "analysis_types": [
+        "linear/nonlinear static wind",
+        "explicit-dynamics impact",
+        "alternate-path progressive collapse"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not required by P-361.",
+      "thermal_analysis": "Not required.",
+      "fluid_analysis": "ICC 500 equivalent static pressures suffice.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Short thick RC walls not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Mechanical ventilation sizing for 320 occupants",
+      "Accessibility (ADA) paths and door forces",
+      "Fire egress code compliance"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "progressive-collapse alternate-load-path analysis",
+    "explicit-dynamics debris-impact",
+    "occupancy-driven geometry (area per person)",
+    "community-scale mat foundation uplift/overturning",
+    "FEMA P-361 exact numeric design envelope"
+  ]
+}

@@ -1,0 +1,227 @@
+{
+  "id": "035_s4_ecss_32_02c_propellant_tank",
+  "source": {
+    "catalog_ref": "S4",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "aerospace_pressure_vessel",
+  "part_class": "metallic_propellant_tank",
+  "full_prompt": "Design a small bipropellant monopropellant-compatible titanium spacecraft propellant tank (fuel side) sized for 12 kg of monomethyl hydrazine (MMH), governed by ECSS-E-ST-32-02C Rev.2 (11 December 2024). The tank is a seamless spun-and-welded Ti-6Al-4V (Grade 5) pressure vessel with a hemispherical-cap cylindrical body. Applicable design factors per Table 6-2 for non-hazardous-category metallic vessels: proof pressure = 1.5 x Maximum Design Pressure (MDP), burst pressure = 2.0 x MDP. The tank operates in a blow-down pressurization scheme with helium.\n\nGeometry. Inner diameter 320 mm, cylindrical body length 200 mm, two hemispherical end caps of radius 160 mm; internal volume = cylinder + 2 hemispheres = pi*(0.16)^2*0.2 + (4/3)*pi*(0.16)^3 ~= 0.0161 + 0.0172 = 0.0333 m^3 = 33.3 L. One 19 mm ID propellant outlet boss at one pole and one 12 mm ID pressurant inlet boss at the opposite pole. Tank wall thickness is a design variable bounded by manufacturing at 1.2 mm minimum (spun Ti). The tank mounts to the spacecraft via a 4-point skirt flange brazed at the cylindrical girth (thermally decoupled so the flange is out of the pressure boundary stress path).\n\nMaterial. Ti-6Al-4V Grade 5 annealed, E = 113.8 GPa, nu = 0.342, rho = 4430 kg/m^3, Fty = 860 MPa, Ftu = 950 MPa, fracture toughness K_IC = 75 MPa*m^0.5. Weld efficiency factor E_w = 0.85 for longitudinal girth weld; minimum-strength material properties required per ECSS.\n\nOperating envelope. Nominal operating pressure (NOP) at beginning-of-life = 22 bar (2.2 MPa). Maximum Design Pressure (MDP) per ECSS-E-ST-32-02C definition = NOP * 1.1 + margin for pressure regulator tolerance = 25.0 bar (2.5 MPa) enveloped. Proof pressure = 1.5 * MDP = 37.5 bar (3.75 MPa). Burst pressure = 2.0 * MDP = 50 bar (5.0 MPa). Design life: 20 pressurization cycles plus 4 proof cycles, with a safe-life factor of 4x per ECSS cycle requirements. Operating temperature range -10 C to +50 C.\n\nLoad cases. LC1 (proof pressure): internal 3.75 MPa, hydrostatic equivalent, applied at room temperature. The wall must not exceed Fty anywhere. LC2 (burst pressure): internal 5.0 MPa; the wall stress must not exceed Ftu anywhere (tank must not rupture before reaching this pressure). LC3 (launch quasi-static): MDP internal pressure 2.5 MPa simultaneously with 15 g axial + 8 g lateral on the 12 kg propellant mass plus 6 kg dry tank mass = ~18 kg inertial load at the skirt. LC4 (leak-before-burst): a semi-elliptical surface flaw of initial depth a_i = 0.3 mm and length 2c = 1.5 mm (minimum NDI detection per ECSS-Q-ST-70-12C) must not grow through the wall before unstable fracture under burst pressure. LC5 (cyclic life): 20 load cycles at MDP must be survived with a safe-life factor of 4 (so FEM must demonstrate fatigue survival of 80 equivalent cycles).\n\nPass/fail criteria. (R1) LC1 proof pressure: max von Mises stress must not exceed Fty = 860 MPa anywhere in the pressure boundary. (R2) LC2 burst pressure: max von Mises stress must not exceed Ftu * E_w = 950 * 0.85 = 807.5 MPa in weld regions and Ftu = 950 MPa in parent material; equivalently the tank must withstand 2.0 * MDP without rupture. (R3) LC3 combined MDP + launch: max von Mises at limit must satisfy sigma <= Fty / 1.25 = 688 MPa (ECSS metallic qualification yield) AND sigma <= Ftu / 1.25 = 760 MPa (ECSS metallic qualification ultimate). (R4) LC4 leak-before-burst: the critical flaw depth at burst pressure a_crit must exceed the wall thickness, i.e. the tank leaks before catastrophic burst; compute via K_I = Y * sigma * sqrt(pi*a) >= K_IC = 75 MPa*m^0.5 with Y = 1.12 for surface flaw. (R5) LC5 fatigue: crack growth from a_i = 0.3 mm over 80 cycles (4x safe-life of 20 service cycles) must not reach a_crit; use Paris law with Ti-6Al-4V constants C = 1e-11, m = 3.5 at R=0. (R6) Dry tank mass <= 7.5 kg.\n\nSolver and analysis expectations. Primary verification is axisymmetric or 3D linear-static pressure FEM for LC1-LC3 (TET10 or shell-of-revolution elements, 1 mm mesh in the girth weld region). LC4 requires linear elastic fracture mechanics (K-solution) either closed-form using Newman-Raju or via a J-integral FEM. LC5 requires Paris-law crack-growth integration, typically a hand calculation in a spreadsheet. Buckling analysis under external collapse is NOT required for this internally pressurized case. Vibration analysis is excluded. Thermal, fluid, and radiation analyses are excluded.\n\nDeliverables. STEP AP242 of tank and skirt, dry mass in kg, wall thickness in mm, max von Mises at proof / burst / launch in MPa, critical flaw depth at burst in mm, cycles-to-through-wall from Paris-law integration.",
+  "short_prompt": "Design a small titanium spacecraft propellant tank (fuel side) sized for 12 kg of monomethyl hydrazine (MMH), governed by ECSS-E-ST-32-02C Rev.2 (11 December 2024). The tank is a seamless spun-and-welded Ti-6Al-4V (Grade 5) pressure vessel with a hemispherical-cap cylindrical body operating in a blow-down helium pressurization scheme. Non-hazardous metallic vessel factors per Table 6-2: proof = 1.5 x MDP, burst = 2.0 x MDP.\n\nGeometry: inner diameter 320 mm, cylindrical body length 200 mm, two hemispherical end caps of radius 160 mm, internal volume ~33.3 L. 19 mm ID propellant outlet boss at one pole, 12 mm ID pressurant inlet boss at the opposite pole. Minimum wall thickness 1.2 mm (spun Ti). 4-point skirt flange brazed at the cylindrical girth (thermally decoupled, out of pressure-boundary stress path).\n\nMaterial: Ti-6Al-4V Grade 5 annealed, K_IC = 75 MPa*m^0.5, weld efficiency E_w = 0.85 for girth weld.\n\nOperating envelope: NOP = 22 bar (2.2 MPa); MDP = 25.0 bar (2.5 MPa); proof = 37.5 bar (3.75 MPa); burst = 50 bar (5.0 MPa). Design life 20 pressurization + 4 proof cycles with safe-life factor 4x. Operating temperature -10 C to +50 C.\n\nLoad cases.\n- LC1 proof: 3.75 MPa at room temperature.\n- LC2 burst: 5.0 MPa.\n- LC3 launch quasi-static: MDP 2.5 MPa + 15 g axial + 8 g lateral on ~18 kg inertial mass (12 kg propellant + 6 kg dry tank).\n- LC4 leak-before-burst: semi-elliptical surface flaw a_i = 0.3 mm, 2c = 1.5 mm (ECSS-Q-ST-70-12C minimum NDI) with K_I = Y * sigma * sqrt(pi*a), Y = 1.12.\n- LC5 cyclic life: 80 equivalent cycles (4 x 20 service) with Paris law C = 1e-11, m = 3.5, R = 0.\n\nDry tank mass <= 7.5 kg.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "linear_elastic_fracture_mechanics",
+        "reason": "LC4 leak-before-burst needs Newman-Raju or J-integral K-solution.",
+        "examples": [
+          "NASGRO",
+          "hand calc",
+          "Abaqus J-integral"
+        ]
+      },
+      {
+        "tool": "paris_law_cycle_integration",
+        "reason": "LC5 fatigue life from 0.3 mm initial flaw over 80 equivalent cycles.",
+        "examples": [
+          "spreadsheet",
+          "AFGROW",
+          "NASGRO"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Ti-6Al-4V spacecraft MMH propellant tank per ECSS-E-ST-32-02C",
+    "brief": "33.3 L Ti-6Al-4V bipropellant fuel tank, MDP 2.5 MPa, proof 1.5xMDP, burst 2.0xMDP, leak-before-burst mandatory.",
+    "geometric_constraints": {
+      "inner_diameter_mm": 320,
+      "cylindrical_length_mm": 200,
+      "hemispherical_cap_radius_mm": 160,
+      "internal_volume_L": 33.3,
+      "outlet_boss_ID_mm": 19,
+      "inlet_boss_ID_mm": 12,
+      "min_wall_thickness_mm": 1.2
+    },
+    "material": {
+      "name": "Ti-6Al-4V Grade 5 annealed",
+      "E_GPa": 113.8,
+      "nu": 0.342,
+      "density_kg_m3": 4430,
+      "Fty_MPa": 860,
+      "Ftu_MPa": 950,
+      "K_IC_MPa_sqrt_m": 75,
+      "weld_efficiency": 0.85
+    },
+    "operating_envelope": {
+      "NOP_bar": 22,
+      "MDP_bar": 25.0,
+      "proof_bar": 37.5,
+      "burst_bar": 50.0,
+      "service_cycles": 20,
+      "safe_life_factor": 4,
+      "temperature_C": {
+        "min": -10,
+        "max": 50
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof_pressure",
+        "internal_MPa": 3.75
+      },
+      {
+        "id": "LC2",
+        "name": "burst_pressure",
+        "internal_MPa": 5.0
+      },
+      {
+        "id": "LC3",
+        "name": "launch_MDP_plus_qs",
+        "internal_MPa": 2.5,
+        "axial_g": 15,
+        "lateral_g": 8,
+        "inertial_mass_kg": 18
+      },
+      {
+        "id": "LC4",
+        "name": "leak_before_burst",
+        "initial_flaw_depth_mm": 0.3,
+        "initial_flaw_length_mm": 1.5
+      },
+      {
+        "id": "LC5",
+        "name": "fatigue_cycles",
+        "equivalent_cycles": 80,
+        "C": 1e-11,
+        "m": 3.5,
+        "R": 0
+      }
+    ],
+    "boundary_conditions": {
+      "skirt_flange": "fixed at mount bolts"
+    },
+    "objective": {
+      "minimize": "dry_mass",
+      "target_kg_max": 7.5
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "ECSS-E-ST-32-02C Rev.2",
+      "revision": "11 December 2024"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_proof",
+        "limit_MPa": 860,
+        "derivation": "Fty at 1.5 x MDP proof per ECSS Table 6-2",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_burst",
+        "limit_MPa": 807.5,
+        "derivation": "Ftu * E_w = 950 * 0.85 in weld; 950 in parent; burst = 2.0 x MDP per ECSS Table 6-2",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit_combined",
+        "limit_MPa": 688,
+        "derivation": "Fty / 1.25 (ECSS metallic qualification yield)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "leak_before_burst_critical_depth_vs_wall",
+        "limit": 1.0,
+        "derivation": "a_crit / t_wall must be >=1 so tank leaks before rupture; K_I = 1.12*sigma*sqrt(pi*a) >= K_IC",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "cycles_to_through_wall_at_4x_safe_life",
+        "limit_cycles": 80,
+        "derivation": "Paris law a_i = 0.3 mm -> a_crit, C=1e-11, m=3.5; 4x 20-cycle service",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_kg": 7.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "axisymmetric or 3D TET10",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical",
+        "NASGRO for fracture"
+      ],
+      "analysis_types": [
+        "linear static pressure x3",
+        "LEFM K-solution",
+        "Paris-law integration"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Launch environment rolled into LC3 quasi-static.",
+      "thermal_analysis": "Temperature band imposed as bulk delta; no transient.",
+      "fluid_analysis": "Propellant is lumped as mass; slosh out of scope.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Internal pressure stabilizes the shell; external-collapse buckling is not a design driver."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Slosh baffle sizing",
+      "Propellant compatibility verification (chemical, not structural)",
+      "Hydrostatic proof-test fixturing"
+    ]
+  },
+  "eval_coverage": [
+    "proof + burst + launch combined-load checks",
+    "leak-before-burst fracture mechanics",
+    "safe-life 4x cycle integration",
+    "weld efficiency factor applied only to weld region"
+  ]
+}

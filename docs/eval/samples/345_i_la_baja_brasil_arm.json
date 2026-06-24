@@ -1,0 +1,203 @@
+{
+  "id": "345_i_la_baja_brasil_arm",
+  "source": {
+    "catalog_ref": "I-EU7 (I-LA thread collegiate off-road benchmark Brasil)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "baja_control_arm",
+  "full_prompt": "Design the front lower suspension control arm (A-arm) of a collegiate off-road benchmark Brasil 2026 entry (RATBSB Emenda 7). Vehicle curb mass 275 kg + driver 90 kg. Front weight distribution 42%, so front axle supports 0.42 x 365 = 153 kg, or 77 kg per front wheel. Suspension travel +/- 150 mm. The lower A-arm is welded from AISI 1018 DOM seamless steel tubing, 25.4 mm OD x 1.65 mm wall (secondary structural member per collegiate off-road benchmark T.9.2, given A-arm is secondary). Material: E 200 GPa, yield 370 MPa, ultimate 440 MPa, density 7850 kg/m^3. Arm geometry: trapezoidal planform with inner pivot axis length 320 mm, outer ball-joint mount extending 400 mm from inner pivot axis, two tubes forming an A at 30 deg included angle. Load cases (collegiate off-road benchmark structural analysis recommended in RATBSB scrutineering): (LC1) static 1 g on 77 kg corner = 755 N upward at ball-joint; (LC2) bump 3 g: 2266 N vertical at ball-joint; (LC3) cornering 1.5 g lateral + 1 g vertical: 1133 N lateral + 755 N vertical at ball-joint; (LC4) braking 1.2 g longitudinal decel + 1 g vertical: 906 N fore-aft + 755 N vertical at ball-joint (note longitudinal component creates additional couple at inner pivots); (LC5) landing from 1 m drop: 5 g vertical = 3776 N at ball-joint; (LC6) tie-down strap: 500 N static upward on outer ball-joint (transport handling). Pass/fail: (R1) max von Mises stress under LC1-LC4 must remain below 247 MPa (370 / 1.5 yield FoS); (R2) under LC5 landing drop, stress below 370 MPa (yield, no permanent bend); (R3) A-arm dry mass must not exceed 2.5 kg; (R4) first arm natural frequency must exceed 80 Hz to decouple from wheel hop (~15 Hz) and drivetrain (~60 Hz); (R5) ball-joint mount vertical deflection under LC2 bump must remain below 2 mm to preserve kinematic accuracy; (R6) weld-toe fatigue check over 1e5 bump cycles (LC2 amplitude): alternating stress at weld toe must remain below endurance limit of 180 MPa (approx 0.5 x yield for welded mild steel) with 1.3 margin = 138 MPa. Thermal, fluid, radiation, buckling analyses not primary. Deliverables: STEP AP242 A-arm with two tube bodies, weld map, FEA per load case, fatigue margin, modal, mass.",
+  "short_prompt": "Design the front lower suspension A-arm of a collegiate off-road benchmark Brasil 2026 entry (RATBSB Emenda 7). Curb 275 kg + 90 kg driver; front weight distribution 42% (77 kg per front wheel); suspension travel +/- 150 mm. Secondary structural member per Baja T.9.2: welded AISI 1018 DOM 25.4 mm OD x 1.65 mm wall tubing.\n\nEnvelope: trapezoidal planform with 320 mm inner pivot axis and 400 mm outer ball-joint mount (30 deg included A angle).\n\nFactor regime: yield FoS 1.5 (allowable 247 MPa) on LC1-LC4; LC5 drop limited to yield (370 MPa); dry mass <= 2.5 kg; first natural frequency > 80 Hz (decouple from wheel hop ~15 Hz and drivetrain ~60 Hz); ball-joint vertical deflection under bump < 2 mm; welded-mild-steel weld-toe endurance 180 MPa x 1/1.3 = 138 MPa over 1e5 bump cycles.\n\nLoad cases.\n- Static 1 g: 755 N up at the ball-joint.\n- 3 g bump: 2266 N vertical.\n- 1.5 g lateral + 1 g vertical cornering: 1133 N lateral + 755 N vertical.\n- 1.2 g long decel + 1 g vertical braking: 906 N fore-aft + 755 N vertical (couple at inner pivots).\n- 1 m landing drop: 5 g vertical = 3776 N at the ball-joint.\n- Tie-down handling: 500 N up on the outer ball-joint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "fatigue_post_processor",
+        "reason": "Weld-toe fatigue is a post-process using stress outputs from LC2.",
+        "examples": [
+          "nCode DesignLife",
+          "FE-SAFE"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate off-road benchmark Brasil 2026 Front Lower A-Arm",
+    "brief": "AISI 1018 DOM welded A-arm for 77 kg corner load, collegiate off-road benchmark impact + fatigue gates.",
+    "geometric_constraints": {
+      "tube_OD_mm": 25.4,
+      "tube_wall_mm": 1.65,
+      "inner_pivot_axis_mm": 320,
+      "outer_extension_mm": 400,
+      "tube_angle_deg_included": 30
+    },
+    "material": {
+      "name": "AISI 1018 DOM steel",
+      "properties": {
+        "E_GPa": 200,
+        "yield_MPa": 370,
+        "ultimate_MPa": 440,
+        "density_kg_m3": 7850,
+        "welded_endurance_MPa": 180
+      }
+    },
+    "corner_mass_kg": 77,
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_1g",
+        "magnitude_N": 755
+      },
+      {
+        "id": "LC2",
+        "name": "bump_3g",
+        "magnitude_N": 2266
+      },
+      {
+        "id": "LC3",
+        "name": "cornering",
+        "lateral_N": 1133,
+        "vertical_N": 755
+      },
+      {
+        "id": "LC4",
+        "name": "braking",
+        "longitudinal_N": 906,
+        "vertical_N": 755
+      },
+      {
+        "id": "LC5",
+        "name": "drop_5g",
+        "magnitude_N": 3776
+      },
+      {
+        "id": "LC6",
+        "name": "tie_down",
+        "magnitude_N": 500
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 2,
+      "report_fields": [
+        "arm_mass_kg",
+        "max_stress_LC1_LC4_MPa",
+        "max_stress_LC5_MPa",
+        "first_arm_freq_Hz",
+        "ball_joint_deflection_LC2_mm",
+        "weld_toe_fatigue_margin_LC2"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 247,
+        "derivation": "370 / 1.5 yield FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_drop",
+        "limit_MPa": 370,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "arm_dry_mass",
+        "limit_kg": 2.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_arm_freq",
+        "limit_Hz": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "ball_joint_deflection",
+        "limit_mm": 2,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "weld_toe_alternating_stress",
+        "limit_MPa": 138,
+        "derivation": "180 / 1.3 fatigue margin",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (BEAM188) for tubes, solid at weld-rich nodes",
+      "mesh_size_mm": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x6)",
+        "fatigue post-process (LC2)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "Not a gate.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Tubular A-arm; stress gate bounds."
+    }
+  },
+  "eval_coverage": [
+    "welded A-arm FEA",
+    "multi-scenario driving load",
+    "fatigue post-process",
+    "modal decoupling from wheel hop",
+    "collegiate off-road benchmark T.9.2 secondary-member traceability"
+  ]
+}

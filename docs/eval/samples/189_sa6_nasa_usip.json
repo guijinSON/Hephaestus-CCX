@@ -1,0 +1,202 @@
+{
+  "id": "189_sa6_nasa_usip",
+  "source": {
+    "catalog_ref": "SA6",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "sounding_rocket_payload",
+  "part_class": "sounding_rocket_payload_cylinder",
+  "full_prompt": "Design a sounding-rocket payload cylinder as an open-source sub-orbital instrument-carrier benchmark on a Black Brant IX-class vehicle, compliant with a standard Sounding Rocket Payload Users Guide (NSROC-class interface). The payload cylinder is a monolithic 17.26 inch (438 mm) outer diameter 7075-T6 aluminum alloy ring of 12 inches (305 mm) axial length and 0.25 inch (6.35 mm) wall thickness, bolting to the adjacent vehicle sections via the standard 72-bolt circumferential pattern (0.25-28 bolts on a 17.02 inch BCD). The cylinder must support an internal science instrument stack of mass 25 kg distributed over three 9.25 in (235 mm) instrument decks. Qualification loads per NSROC: (LC1) quasi-static 25 g axial + 5 g lateral at motor burnout, (LC2) sine vibration 5 g at 5-2000 Hz per NASA GSFC GEVS, (LC3) random vibration GRMS 14.1 at 20-2000 Hz for 1 minute per axis, (LC4) shock 2500 g peak 100-10000 Hz at staging events, (LC5) thermal soak -20 to +60 C pre-launch. Material 7075-T6 (yield 503 MPa, E 71.7 GPa, density 2810 kg/m^3). Pass/fail: (R1) quasi-static max von Mises stress must not exceed 251 MPa (7075-T6 yield 503 / SF 2.0 per NASA-STD-5001B), (R2) first natural frequency must be at least 50 Hz per NSROC secondary-mode separation, (R3) total payload cylinder mass at or below 6.5 kg (empty, without instrument stack), (R4) a linear buckling analysis under 25 g axial must yield a first-mode load factor of at least 1.5, and (R5) thermal soak combined with mechanical must keep max von Mises below 251 MPa. Vibration (modal) is required for R2. Thermal is required for R5. Fluid and radiation analyses are not required. Deliver a STEP AP242 solid body of the cylinder plus a structural + thermal report.",
+  "short_prompt": "Design a sounding-rocket payload cylinder for a Black Brant IX-class sub-orbital vehicle, to a standard NSROC-class interface. The cylinder is a monolithic 7075-T6 aluminum ring, 17.26 inch (438 mm) OD x 12 inch (305 mm) axial length x 0.25 inch (6.35 mm) wall, bolted to adjacent vehicle sections via the standard 72-bolt circumferential pattern (0.25-28 bolts on a 17.02 inch / 432.3 mm BCD), supporting a 25 kg internal instrument stack on three instrument decks. Bolt flanges are preloaded joints at both ends; decks mount the instrument stack.\n\nQualification per NSROC Sounding Rocket Payload Users Guide with a NASA-STD-5001B Category A SF of 2.0.\n\nLoad cases.\n- LC1 quasi-static: 25 g axial + 5 g lateral at motor burnout.\n- LC2 sine vibration: 5 g, 5-2000 Hz per GEVS.\n- LC3 random vibration: 14.1 GRMS, 20-2000 Hz, 1 min/axis.\n- LC4 shock: 2500 g peak, 100-10000 Hz, at staging.\n- LC5 thermal soak: -20 to +60 C pre-launch.\n\nFirst natural frequency floor is 50 Hz for NSROC mode separation; buckling check under 25 g axial requires a 1.5x first-mode load factor.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "bolt_preload_torque_calc",
+        "reason": "72-bolt circumferential joint preload is computed per NASA-STD-5020B bolted-joint procedure, which is closed-form.",
+        "examples": [
+          "NASA-STD-5020B worksheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Sub-orbital Black Brant IX-class payload cylinder",
+    "brief": "Design a 7075-T6 17.26-inch OD payload cylinder (305 mm tall, 6.35 mm wall) for a Black Brant IX-class sub-orbital payload, passing NSROC-class 25 g axial + 5 g lateral, modal >=50 Hz, thermal -20/+60 C, and 1.5x buckling margin.",
+    "geometric_constraints": {
+      "OD_mm": 438,
+      "axial_length_mm": 305,
+      "wall_thickness_mm": 6.35,
+      "bolt_count": 72,
+      "BCD_mm": 432.3,
+      "bolt_size": "1/4-28"
+    },
+    "material": {
+      "name": "Aluminum 7075-T6",
+      "yield_MPa": 503,
+      "E_GPa": 71.7,
+      "density_kg_m3": 2810
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static",
+        "axial_g": 25,
+        "lateral_g": 5
+      },
+      {
+        "id": "LC2",
+        "name": "sine_vib",
+        "g": 5,
+        "freq_Hz": [
+          5,
+          2000
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "random_vib",
+        "GRMS": 14.1,
+        "freq_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "shock",
+        "peak_g": 2500,
+        "freq_Hz": [
+          100,
+          10000
+        ]
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_soak",
+        "T_min_C": -20,
+        "T_max_C": 60
+      }
+    ],
+    "boundary_conditions": {
+      "bolt_flanges": "72-bolt preloaded joints both ends",
+      "internal_deck_mounts": "25 kg instrument stack on 3 decks"
+    },
+    "objective": {
+      "primary": "pass NSROC QT + NASA-STD-5001B",
+      "secondary": "minimize cylinder mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_MPa",
+        "first_natural_frequency_Hz",
+        "cylinder_mass_kg",
+        "first_buckling_load_factor",
+        "thermal_soak_combined_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 251,
+        "derivation": "7075-T6 yield 503 / SF 2.0 per NASA-STD-5001B",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 50,
+        "derivation": "NSROC mode separation",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "cylinder_mass",
+        "limit_kg": 6.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "thermal_soak_combined_stress",
+        "limit_MPa": 251,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for cylinder, solid for flanges",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "random vibration",
+        "linear buckling",
+        "thermal-stress"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "External aero is handled by the launch-range flight-dynamics team, not in payload scope.",
+      "radiation_analysis": "Sub-orbital dose negligible."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Bolt preload per NASA-STD-5020B full work-up",
+      "Payload recovery and parachute shock",
+      "Telemetry band allocation"
+    ]
+  },
+  "eval_coverage": [
+    "NSROC sounding-rocket qualification envelope",
+    "NASA-STD-5001B Category A SF 2.0",
+    "buckling + modal + thermal combined",
+    "72-bolt circumferential preloaded joint"
+  ]
+}

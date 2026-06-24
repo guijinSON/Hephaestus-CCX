@@ -1,0 +1,186 @@
+{
+  "id": "079_kr4_student_mobility_competition",
+  "source": {
+    "catalog_ref": "KR4",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "autonomous_vehicle_chassis",
+  "full_prompt": "Design the chassis and battery enclosure of an autonomous self-built mobility vehicle for a university creative-mobility benchmark. The vehicle is a small autonomous four-wheeled platform with external dimensions up to 1500 mm x 900 mm x 800 mm (L x W x H) and dry mass up to 80 kg. The powertrain is battery-electric with a 48 V nominal lithium-ion pack; the battery enclosure must be mechanically rigid (no deflection > 2 mm under a 5 g lateral shock with the pack at full mass) and must include a crush-resistant tray sized for a 24-cell lithium-ion pack with approximately 10 kg pack mass. A mechanical kill-switch must be reachable from outside the vehicle and from the driver's position (if the vehicle has a driver position for fallback control). The chassis must survive: (a) 2.5 g vertical gust under 80 kg gross vehicle mass (196 kg equivalent), (b) 1.5 g lateral cornering, (c) 8 g frontal impact equivalent (640 kg equivalent) — no intrusion of the battery enclosure or the sensor cage. Sensor cage must hold LiDAR + camera rig at 800 mm height and under 2 g vertical shock with sensor displacement < 2 mm (sensor pointing stability). Primary verification is linear static structural FEA for the four load cases plus a battery-enclosure short-circuit fire test (non-structural, regulatory). Tolerances on suspension mounts are per the rulebook (datasheet per PDF). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required at the structural design gate. Deliverables: STEP AP242 of the chassis + battery enclosure + sensor cage, a mass budget, and a report listing dry mass in kg, max chassis stress per case in MPa, battery tray deflection in mm, and sensor cage displacement at 2 g in mm.",
+  "short_prompt": "Design the chassis, battery enclosure, and sensor cage of a small autonomous four-wheeled mobility vehicle for a university creative-mobility benchmark. Envelope up to 1500 x 900 x 800 mm (L x W x H); dry mass <= 80 kg. Powertrain battery-electric 48 V nominal lithium-ion with ~10 kg pack (24 cells). Mechanical kill switch reachable from outside and from any driver position. Sensor cage holds LiDAR + camera at 800 mm height. Battery-pack fire/short-circuit certification is a separate regulatory check (IEC 62133) - not FEA.\n\nLoad cases on the gross 80 kg vehicle (+ driver where applicable).\n- LC1 vertical 2.5 g gust: ~1,961 N.\n- LC2 lateral 1.5 g cornering: ~1,177 N.\n- LC3 frontal 8 g impact equivalent: ~6,278 N with no intrusion into the battery enclosure or sensor cage.\n- LC4 battery-pack lateral 5 g shock: 10 kg pack x 5 g (~490 N); battery-tray deflection <= 2 mm.\n- LC5 sensor-cage vertical 2 g shock: 5 kg sensor x 2 g (~98 N); sensor displacement <= 2 mm (pointing stability).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "battery_safety_cert",
+        "reason": "Short-circuit/fire rating is a regulatory battery-pack cert, not structural FEA.",
+        "examples": [
+          "IEC 62133 cert"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "University autonomous-mobility vehicle chassis",
+    "brief": "Design a 1.5 x 0.9 x 0.8 m, ≤ 80 kg autonomous 48 V vehicle chassis with battery enclosure and sensor cage per a national autonomous-mobility rulebook.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 1500,
+        "W": 900,
+        "H": 800
+      },
+      "dry_mass_kg_max": 80,
+      "battery_V_nominal": 48,
+      "battery_pack_mass_kg": 10,
+      "sensor_cage_height_mm": 800
+    },
+    "material": {
+      "typical": "Al 6061-T6 extrusion + sheet",
+      "Al6061_T6": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical_2p5g",
+        "magnitude_N": 1961,
+        "description": "80 kg x 2.5 g vertical"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_1p5g",
+        "magnitude_N": 1177,
+        "description": "80 kg x 1.5 g lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "frontal_8g",
+        "magnitude_N": 6278,
+        "description": "80 kg x 8 g forward"
+      },
+      {
+        "id": "LC4",
+        "name": "battery_5g_lateral",
+        "magnitude_N": 490,
+        "description": "10 kg pack x 5 g"
+      },
+      {
+        "id": "LC5",
+        "name": "sensor_cage_2g_vertical",
+        "magnitude_N": 98,
+        "description": "5 kg sensor x 2 g"
+      }
+    ],
+    "boundary_conditions": {
+      "wheels": "fixed vertical + longitudinal reactions"
+    },
+    "objective": {
+      "minimize": "dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "dry_mass_kg",
+        "max_stress_LC1_MPa",
+        "max_stress_LC2_MPa",
+        "max_stress_LC3_MPa",
+        "battery_tray_deflection_mm",
+        "sensor_cage_displacement_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "dry_mass_kg",
+        "limit_kg": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 yield",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "battery_enclosure_intrusion_mm",
+        "limit_mm": 0,
+        "derivation": "No battery-box intrusion under 8 g frontal",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "battery_tray_deflection_mm",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "sensor_cage_displacement_mm",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + beam",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static x5"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "Battery thermal is separate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "autonomous vehicle chassis loads",
+    "battery enclosure integrity",
+    "sensor cage stiffness",
+    "frontal crash no-intrusion"
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "id": "190_sa7_unam_cansat_mundial",
+  "source": {
+    "catalog_ref": "SA7",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_primary_structure",
+  "full_prompt": "Design the primary aluminum structural chassis of a CanSat payload as a CanSat-class primary structure benchmark. The chassis houses the flight computer, GPS receiver, sensors, radio, battery, and parachute recovery system and must survive launch on a sounding rocket and subsequent parachute descent from approximately 1 km AGL.\n\nGeometry. The CanSat primary structure is a thin-walled cylindrical enclosure with outer diameter 66 mm and total length 115 mm, sized to fit inside the standard 350 ml aluminum beverage-can envelope used as the reference form factor. Wall thickness is 1.2 mm. The cylinder closes with a circular base plate (thickness 2.0 mm) and a removable top plate (thickness 2.0 mm) held in place with four M3 stainless-steel socket-head cap screws. Internal bulkheads carry the electronics stack (two PCBs, 58 mm x 58 mm) and a 3.7 V 1500 mAh LiPo cell. The parachute attachment point is a single central eyelet on the top plate tapped for an M4 bolt with an engineered shear zone.\n\nMaterial. The primary structure is machined from 6061-T6 aluminum alloy (Young's modulus 68.9 GPa, density 2700 kg/m^3, yield strength 276 MPa, ultimate tensile strength 310 MPa). PCBs are modeled as 1.6 mm FR-4 with lumped component masses for non-structural analyses. Analyses are performed at 20 C.\n\nLoad cases. (LC1) Launch axial acceleration of 20 g (196.1 m/s^2) applied along the cylinder axis while the CanSat is clamped at its base by the carrier deployer. (LC2) Launch lateral vibration qualification: sine sweep 5-100 Hz at 2 g input applied laterally on the chassis. (LC3) Parachute deployment shock: 30 g 11 ms half-sine applied through the top-plate attachment point after the main chute opens at 300 m AGL. (LC4) Ground-impact hard landing: 40 g 5 ms half-sine applied through the base plate.\n\nPass/fail criteria. (R1) Maximum von Mises stress in the aluminum chassis must not exceed 184 MPa (yield / 1.5) for every load case. (R2) Maximum lateral displacement at mid-span must not exceed 1.5 mm (clearance to internal electronics). (R3) Total CanSat payload mass must not exceed 350 g as required by the CanSat-class rulebook. (R4) The first natural frequency of the chassis with populated electronics must be at least 120 Hz to avoid coupling with the rocket airframe fundamental. (R5) Under the 30 g deployment shock, the M4 parachute-attachment boss must transfer load without permanent deformation (plastic strain < 0.002).\n\nSolver and analysis expectations. The primary verification is linear static structural FEA for LC1, LC3, and LC4. Modal (vibration) analysis is required to compute the natural frequency in R4. Harmonic response for LC2 may be approximated as a sine-sweep check on modal participation. Thermal and fluid analyses are not required. Radiation analysis is not applicable.\n\nDeliverables. STEP (AP242) + Parasolid of the full primary structure, a mass budget table, and a report with the four stress extrema, the first three natural frequencies, and the deployment-shock stress concentration at the eyelet.",
+  "short_prompt": "Design the primary aluminum structural chassis of a CanSat payload for a sounding-rocket launch and parachute descent from ~1 km AGL. The chassis is a thin-walled cylindrical 6061-T6 enclosure, 66 mm OD x 115 mm long (fits the 350 mL soda-can reference), 1.2 mm wall, with a 2.0 mm base plate and a removable 2.0 mm top plate held by four M3 SHCS. Internal bulkheads carry two 58 x 58 mm PCBs and a 3.7 V 1500 mAh LiPo; the top plate has a central M4 parachute eyelet with an engineered shear zone.\n\nChassis is clamped at the base by the carrier deployer for LC1. Load cases.\n- LC1 launch axial: 20 g (196.1 m/s^2) along the cylinder axis.\n- LC2 launch lateral sine sweep: 5-100 Hz at 2 g input, lateral.\n- LC3 parachute-deployment shock: 30 g half-sine, 11 ms, through the top-plate eyelet at 300 m AGL.\n- LC4 ground-impact hard landing: 40 g half-sine, 5 ms, through the base plate.\n\nTotal mass must stay within the CanSat class 350 g cap; first natural frequency (chassis + populated electronics) must clear the rocket-airframe fundamental.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CanSat-class primary structure benchmark",
+    "geometric_constraints": {
+      "form_factor": "CanSat 350 ml reference (66 mm OD x 115 mm length)",
+      "wall_thickness_mm": 1.2,
+      "base_plate_thickness_mm": 2.0,
+      "top_plate_thickness_mm": 2.0,
+      "fasteners": "4x M3 SHCS on top plate"
+    },
+    "material": {
+      "name": "Al-6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_axial",
+        "magnitude_g": 20
+      },
+      {
+        "id": "LC2",
+        "name": "launch_lateral_sine",
+        "frequency_Hz_range": [
+          5,
+          100
+        ],
+        "amplitude_g": 2
+      },
+      {
+        "id": "LC3",
+        "name": "parachute_shock",
+        "peak_g": 30,
+        "duration_ms": 11,
+        "shape": "half_sine"
+      },
+      {
+        "id": "LC4",
+        "name": "ground_impact",
+        "peak_g": 40,
+        "duration_ms": 5,
+        "shape": "half_sine"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield / 1.5 = 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_lateral_displacement",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_g": 350,
+        "derivation": "CanSat class mass cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 120,
+        "derivation": "avoid coupling with rocket airframe fundamental (typ 60-90 Hz)",
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "plastic_strain_at_eyelet",
+        "limit": 0.002,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Short mission duration; thermal loads minor.",
+      "fluid_analysis": "Parachute deploy is modeled as shock load, not CFD.",
+      "radiation_analysis": "Not applicable to sub-orbital CanSat."
+    }
+  },
+  "eval_coverage": [
+    "CanSat-class envelope compliance",
+    "multi-load-case structural + modal FEA",
+    "shock load through discrete attachment point"
+  ]
+}

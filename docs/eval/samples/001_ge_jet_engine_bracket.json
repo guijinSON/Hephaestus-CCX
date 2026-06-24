@@ -1,0 +1,246 @@
+{
+  "id": "001_ge_jet_engine_bracket",
+  "source": {
+    "catalog_ref": "PT1",
+    "year": 2013,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "monolithic_bracket",
+  "full_prompt": "Design a single-part, monolithic titanium mounting bracket that connects a jet engine casing to an external accessory (actuator, harness support, or similar). The bracket must transfer load from the external accessory into the casing without permanent deformation under transient post-FBO (Fan Blade Out) conditions. The final objective is to minimize the mass of the bracket while passing four independent static load cases.\n\nGeometry. The part must fit within a bounding envelope of 203 mm x 152 mm x 102 mm (8 x 6 x 4 inches). The top of the part is a flat planar flange that sits flush against the outer skin of the engine casing; the flange carries four through-holes for 1/2-inch bolts (hole diameter 12.7 mm) arranged on a rectangular pattern with 76.2 mm x 76.2 mm spacing (3 x 3 inches). The bottom of the part carries a single horizontal pin hole of diameter 25.4 mm (1 inch); the pin axis runs perpendicular to the engine axis. The vertical distance from the top flange mating surface to the pin hole centerline is 120 mm. The bracket must be a single solid body (monolithic) with no fasteners, threaded inserts, welded joints, or bonded joints anywhere in the geometry.\n\nMaterial. The part is manufactured from Ti-6Al-4V (Grade 5, annealed) with Young's modulus 113.8 GPa, Poisson's ratio 0.342, density 4430 kg/m^3, yield strength 860 MPa, and ultimate tensile strength 950 MPa. All analyses are performed at room temperature (20 C) with these nominal properties.\n\nLoad cases. The bracket must independently survive four static load cases, each applied as a bearing pressure on the inner surface of the pin hole while the four top-flange bolt holes are held fully fixed (all six degrees of freedom constrained). Load Case 1 (Vertical): 35,586 N (8,000 lbf) acting vertically upward on the pin. Load Case 2 (Horizontal): 37,810 N (8,500 lbf) acting horizontally along the engine axis on the pin. Load Case 3 (42-degree off-axis): 42,258 N (9,500 lbf) acting at 42 degrees from vertical, tilted toward the engine axis. Load Case 4 (Torsion): a pure torque of approximately 5,650 N*m about the pin axis (equivalent to 5,000 lbf applied at a 0.5 ft moment arm). Load Case 3 is expected to produce the largest compressive component in the structure.\n\nPass/fail criteria. Every load case must satisfy all of the following simultaneously. (R1) Maximum von Mises stress in the part must not exceed 633 MPa, which equals the ultimate tensile strength divided by the CS-25 airframe ultimate safety factor of 1.5 (950 / 1.5 = 633 MPa); this is the binding stress limit. (R2) Maximum von Mises stress must also not exceed 748 MPa, which equals the yield strength divided by a yield safety factor of 1.15 (860 / 1.15 = 748 MPa); this is retained for traceability but is looser than R1. (R3) Maximum displacement at the pin hole center must not exceed 1.0 mm. (R4) Final part mass must not exceed 1.0 kg, and must be at least 40% lighter than a bulk-block baseline fully filling the 203 x 152 x 102 mm envelope. (R5) A linear buckling eigenvalue analysis performed under Load Case 3 must yield a first-mode load factor of at least 2.0.\n\nSolver and analysis expectations. The primary verification is linear static structural FEA run separately for each of the four load cases (supported solvers include ANSYS Mechanical, Abaqus Standard, and CalculiX). Meshes in critical regions should use second-order tetrahedral (TET10) or hexahedral elements with a characteristic size of 3 mm or finer. In addition, a linear buckling eigenvalue analysis must be performed for Load Case 3 to evaluate R5. Vibration analysis (modal, harmonic, random), thermal analysis, fluid analysis, and radiation analysis are explicitly NOT required for this benchmark. Reaching the mass target R4 in practice requires an outer topology-optimization or shape-optimization loop (for example Altair OptiStruct, nTopology, or Ansys Mechanical Topology Optimization) that calls the structural FEA described above; topology optimization is a solver requirement, not an FEA category.\n\nDeliverables. Output the final geometry as a single solid body in both STEP (AP242) and Parasolid formats, together with a report that lists the total mass in grams, the maximum von Mises stress per load case in MPa, the maximum displacement at the pin hole center per load case in mm, and the first buckling load factor from the Load Case 3 eigenvalue analysis.",
+  "short_prompt": "Design a single-part, monolithic titanium mounting bracket that connects a jet engine casing to an external accessory, transferring load without permanent deformation under transient post-FBO (Fan Blade Out) conditions. The objective is to minimize mass while passing four independent static load cases. The bracket is a single solid body with no fasteners, inserts, welded joints, or bonded joints.\n\nEnvelope: 203 mm x 152 mm x 102 mm (8 x 6 x 4 inches). Top face is a planar flange against the engine casing with four 12.7 mm bolt holes on a 76.2 x 76.2 mm rectangular pattern; bottom face carries a 25.4 mm diameter horizontal pin hole 120 mm below the flange mating surface.\n\nMaterial: Ti-6Al-4V (Grade 5, annealed) at 20 C.\n\nDesign per CS-25 with an ultimate safety factor of 1.5 and a yield safety factor of 1.15.\n\nLoad cases (bearing pressure on the pin hole inner surface, top-flange bolt holes fully fixed).\n- LC1 vertical: 35,586 N (8,000 lbf) acting vertically upward.\n- LC2 horizontal: 37,810 N (8,500 lbf) along the engine axis.\n- LC3 off-axis: 42,258 N (9,500 lbf) at 42 degrees from vertical, tilted toward the engine axis (largest compressive component).\n- LC4 torsion: pure torque 5,650 N*m about the pin axis (5,000 lbf at 0.5 ft arm).\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "Mass target R4 (>=40% reduction vs bulk block) is practically unreachable without topo-opt. Runs as an outer loop calling the structural FEA inside. Not an FEA category itself.",
+        "examples": [
+          "Altair OptiStruct",
+          "nTopology",
+          "Ansys Mechanical Topology Optimization"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Titanium mounting bracket for jet engine casing",
+    "brief": "Design a single-part, monolithic titanium mounting bracket that connects a jet engine casing to an external accessory (actuator, harness support, etc.). The bracket must transfer load without permanent deformation under transient post-FBO (Fan Blade Out) conditions. The objective is to minimize mass while passing four independent static load cases.",
+    "geometric_constraints": {
+      "top_flange": {
+        "bolt_holes": {
+          "count": 4,
+          "diameter_mm": 12.7,
+          "bolt_size": "1/2 inch",
+          "pattern": "rectangular",
+          "spacing_mm": {
+            "x": 76.2,
+            "y": 76.2
+          },
+          "pattern_inches": "3 x 3"
+        },
+        "mating_surface": "planar, flush against engine casing outer skin"
+      },
+      "pin_hole": {
+        "diameter_mm": 25.4,
+        "pin_size": "1 inch",
+        "axis": "horizontal, perpendicular to engine axis"
+      },
+      "vertical_distance_flange_to_pin_mm": 120,
+      "bounding_envelope_mm": {
+        "x": 203,
+        "y": 152,
+        "z": 102
+      },
+      "bounding_envelope_inches": {
+        "x": 8,
+        "y": 6,
+        "z": 4
+      },
+      "monolithic": true,
+      "prohibited": [
+        "fasteners",
+        "inserts",
+        "welds",
+        "bonded joints"
+      ]
+    },
+    "material": {
+      "name": "Ti-6Al-4V",
+      "grade": "Grade 5, annealed",
+      "properties": {
+        "youngs_modulus_GPa": 113.8,
+        "poissons_ratio": 0.342,
+        "density_kg_m3": 4430,
+        "yield_strength_MPa": 860,
+        "ultimate_tensile_strength_MPa": 950
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical",
+        "magnitude_N": 35586,
+        "magnitude_lbf": 8000,
+        "direction": "vertical upward",
+        "application": "bearing pressure on pin hole inner surface"
+      },
+      {
+        "id": "LC2",
+        "name": "horizontal",
+        "magnitude_N": 37810,
+        "magnitude_lbf": 8500,
+        "direction": "horizontal, along engine axis",
+        "application": "bearing pressure on pin hole inner surface"
+      },
+      {
+        "id": "LC3",
+        "name": "off_axis_42deg",
+        "magnitude_N": 42258,
+        "magnitude_lbf": 9500,
+        "direction": "42 degrees from vertical, tilted toward engine axis",
+        "application": "bearing pressure on pin hole inner surface"
+      },
+      {
+        "id": "LC4",
+        "name": "torsion",
+        "magnitude_Nm": 5650,
+        "equivalent": "5000 lbf * 0.5 ft moment arm",
+        "direction": "pure torque about pin axis",
+        "application": "torque about pin hole centerline"
+      }
+    ],
+    "boundary_conditions": {
+      "top_flange_bolt_holes": "fully fixed, all 6 DOF constrained",
+      "pin_hole_inner_surface": "bearing load applied over 180 deg arc consistent with load direction"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_mass_reduction_vs_bulk_block_pct_min": 40
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "max_displacement_per_case_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 633,
+        "derivation": "ultimate_strength / 1.5 = 950 / 1.5 (CS-25 airframe ultimate safety factor)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 748,
+        "derivation": "yield_strength / 1.15 = 860 / 1.15",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<=",
+        "note": "R1 is the binding constraint since 633 < 748. R2 retained for traceability."
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_displacement_at_pin_hole_center",
+        "limit_mm": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.0,
+        "secondary": "at least 40% lighter than bulk-block baseline filling the bounding envelope",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">=",
+        "rationale": "LC3 has the largest compressive component"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) or hexahedral",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x4 cases)",
+        "linear buckling eigenvalue (LC3)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Problem is defined as quasi-static. FBO modal/harmonic analysis is out of scope for this benchmark.",
+      "thermal_analysis": "Room-temperature (20 C) Ti-6Al-4V properties are fixed. No thermal gradient imposed.",
+      "fluid_analysis": "Aero loads are already reduced to pin-bearing forces.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fatigue S-N evaluation (mandatory in airframe certification, omitted here)",
+      "Manufacturing constraints (AM build orientation, support minimization)",
+      "Bolt preload in the mounting interface"
+    ]
+  },
+  "eval_coverage": [
+    "multi-scenario FEA (4 independent load cases must all pass)",
+    "absolute stress limit AND safety-factor check simultaneously",
+    "outer topology-optimization loop around structural FEA",
+    "linear buckling eigenvalue extraction",
+    "monolithic single-body output with STEP/Parasolid conformance"
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "id": "033_s2_ecss_32_10c_spacecraft_panel",
+  "source": {
+    "catalog_ref": "S2",
+    "year": 2019,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "sandwich_panel",
+  "full_prompt": "Design a rectangular aluminum-honeycomb sandwich equipment panel for a European telecom spacecraft bus. The panel is a sandwich of two AA 2024-T3 face sheets bonded to an Al 5056 honeycomb core with a 3/16-inch cell and 2.3 lb/ft^3 density. The governing standard is ECSS-E-ST-32-10C Rev.2 (15 May 2019). For qualification metallic hardware at design loads, ECSS Table 4-3 prescribes a design yield factor KY = 1.25 and a design ultimate factor KU = 1.25 applied on limit loads, with an additional model factor KM = 1.2 if analysis correlation is not demonstrated; this brief assumes a correlated FEM so KM = 1.0.\n\nGeometry. Panel planform 1200 mm x 800 mm. Total thickness 25.4 mm, face-sheet thickness 0.4 mm per face, core thickness 24.6 mm. The four long edges are supported by aluminum edge-close-out frames bolted to the spacecraft primary cylinder at 48 M5 titanium fasteners on a 100 mm pitch around the perimeter. Eight equipment-box hard points (potted inserts, each 20 mm diameter, 24.6 mm deep through the core) are distributed on a nominal 400 mm x 300 mm grid. Each hard point carries a lumped mass of 3 kg representing an avionics unit. Inserts are modeled per ECSS-E-HB-32-22A pull-out / shear allowables but that standard is out of scope for pass/fail here — only the face-sheet and core structural state is judged.\n\nMaterials. Face sheets: AA 2024-T3, E = 73.1 GPa, nu = 0.33, rho = 2780 kg/m^3, Fty = 290 MPa, Ftu = 435 MPa. Core: Al 5056 honeycomb 3/16-5056-.0007 nominal, effective shear strength L-direction 1.93 MPa, W-direction 1.17 MPa, bare compressive strength 2.55 MPa, density 36.8 kg/m^3.\n\nLoad cases. LC1 (quasi-static launch): simultaneous 12.5 g axial + 8 g lateral applied at each of the eight 3 kg equipment masses (total lumped mass 24 kg) with the perimeter fasteners fully fixed. LC2 (random vibration Miles-equivalent): 20 g out-of-plane applied to each equipment mass, enveloping a 0.2 g^2/Hz random input at the panel first mode (~80 Hz assumed). LC3 (thermoelastic): a uniform DeltaT of +80 C and -100 C between face sheets (front-sun / back-shade orbit case); only bending-stress margin is judged. LC4 (buckling): compressive in-plane load of 4000 N/m applied along the long edges (worst-case launch panel compression from flexure of the adjacent primary cylinder).\n\nPass/fail criteria. (R1) Face-sheet maximum von Mises stress at limit load times KY = 1.25 must not exceed Fty = 290 MPa, i.e. stress at limit must be <= 232 MPa. (R2) Face-sheet maximum von Mises stress at limit load times KU = 1.25 must not exceed Ftu = 435 MPa, i.e. stress at limit must be <= 348 MPa. (R3) Honeycomb core shear stress at limit load times KU = 1.25 must not exceed the L-direction allowable of 1.93 MPa, i.e. shear at limit must be <= 1.54 MPa. (R4) Global linear buckling eigenvalue under LC4 must be >= 1.25 (ECSS ultimate FoS for stability of a correlated metallic structure, Table 4-3). (R5) Panel fundamental frequency with equipment masses attached must be >= 70 Hz to decouple from launcher primary modes (typical project gate; not mandated by 32-10C itself). (R6) Panel areal density must not exceed 4.5 kg/m^2 including inserts and edge frame.\n\nSolver and analysis expectations. Primary analysis is a sandwich-shell linear static FEM (ESL laminate or solid-face-sheet + solid-core) for LC1, LC2, LC3, LC4. A linear buckling eigenvalue must be computed for LC4 and a constrained modal analysis for R5. Thermal analysis is limited to imposing the uniform DeltaT; no transient heat-transfer solution is required. Fluid and radiation analyses are excluded.\n\nDeliverables. STEP AP242 of panel + edge frame, areal density in kg/m^2, max face-sheet von Mises per case in MPa, max core shear per case in MPa, first buckling load factor for LC4, first five modes in Hz.",
+  "short_prompt": "Design a rectangular aluminum-honeycomb sandwich equipment panel for a European telecom spacecraft bus. The panel is AA 2024-T3 face sheets bonded to an Al 5056 honeycomb core (3/16-inch cell, 2.3 lb/ft^3 density), carrying eight 3 kg equipment masses with perimeter fasteners fully fixed. Design to ECSS-E-ST-32-10C Rev.2 (15 May 2019), assuming a correlated FEM (KM = 1.0) with KY = 1.25 and KU = 1.25 on limit loads.\n\nEnvelope: planform 1200 mm x 800 mm, total thickness 25.4 mm, face-sheet 0.4 mm per face, core 24.6 mm. Four long edges supported by aluminum edge-close-out frames bolted to the spacecraft primary cylinder at 48 M5 titanium fasteners on a 100 mm pitch. Eight 20 mm diameter potted inserts on a nominal 400 x 300 mm grid.\n\nLoad cases.\n- LC1 quasi-static launch: simultaneous 12.5 g axial + 8 g lateral at each 3 kg equipment mass.\n- LC2 random vibration Miles-equivalent: 20 g out-of-plane at each mass, enveloping 0.2 g^2/Hz at the ~80 Hz first mode.\n- LC3 thermoelastic: uniform DeltaT of +80 C / -100 C between face sheets.\n- LC4 in-plane compression: 4000 N/m along the long edges.\n\nAdditional gates: panel fundamental frequency with equipment masses >= 70 Hz; areal density <= 4.5 kg/m^2 including inserts and edge frame.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Aluminum-honeycomb equipment panel under ECSS-E-ST-32-10C factors",
+    "brief": "1200x800x25.4 mm Al-sandwich panel carrying eight 3 kg avionics units; ECSS KY=1.25 and KU=1.25 applied to face-sheet and core allowables.",
+    "geometric_constraints": {
+      "planform_mm": {
+        "x": 1200,
+        "y": 800
+      },
+      "total_thickness_mm": 25.4,
+      "face_sheet_thickness_mm": 0.4,
+      "core_thickness_mm": 24.6,
+      "perimeter_fasteners": {
+        "count": 48,
+        "size": "M5 Ti",
+        "pitch_mm": 100
+      },
+      "insert_hard_points": {
+        "count": 8,
+        "diameter_mm": 20,
+        "grid_mm": {
+          "x": 400,
+          "y": 300
+        }
+      }
+    },
+    "material": {
+      "face_sheet": {
+        "name": "AA 2024-T3",
+        "E_GPa": 73.1,
+        "nu": 0.33,
+        "density_kg_m3": 2780,
+        "Fty_MPa": 290,
+        "Ftu_MPa": 435
+      },
+      "core": {
+        "name": "Al 5056 3/16-5056-.0007",
+        "shear_L_MPa": 1.93,
+        "shear_W_MPa": 1.17,
+        "compressive_MPa": 2.55,
+        "density_kg_m3": 36.8
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static_launch",
+        "axial_g": 12.5,
+        "lateral_g": 8
+      },
+      {
+        "id": "LC2",
+        "name": "random_vib_miles_equiv",
+        "out_of_plane_g": 20,
+        "source_PSD_g2_Hz": 0.2,
+        "assumed_first_mode_Hz": 80
+      },
+      {
+        "id": "LC3",
+        "name": "thermoelastic",
+        "deltaT_C_hot": 80,
+        "deltaT_C_cold": -100,
+        "description": "front-sun / back-shade orbit"
+      },
+      {
+        "id": "LC4",
+        "name": "in_plane_compression",
+        "line_load_N_per_m": 4000,
+        "edge": "long edges"
+      }
+    ],
+    "boundary_conditions": {
+      "perimeter_fasteners": "fully fixed",
+      "hard_points": "lumped 3 kg each, rigid to face sheets"
+    },
+    "objective": {
+      "minimize": "areal_density",
+      "target_kg_m2_max": 4.5
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "ECSS-E-ST-32-10C Rev.2",
+      "revision": "15 May 2019"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "face_sheet_max_von_mises_at_limit",
+        "limit_MPa": 232,
+        "derivation": "Fty / KY = 290 / 1.25 (ECSS Table 4-3 metallic qualification yield)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "face_sheet_max_von_mises_at_limit",
+        "limit_MPa": 348,
+        "derivation": "Ftu / KU = 435 / 1.25 (ECSS Table 4-3 metallic qualification ultimate)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "core_max_shear_stress_at_limit",
+        "limit_MPa": 1.54,
+        "derivation": "tau_core_L / KU = 1.93 / 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.25,
+        "derivation": "ECSS-E-ST-32-10C Table 4-3 stability ultimate FoS",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "fundamental_natural_frequency",
+        "limit_Hz": 70,
+        "derivation": "Project decoupling gate (not mandated by 32-10C)",
+        "applies_to": [
+          "constrained_modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "areal_density",
+        "limit_kg_m2": 4.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "ESL composite shell or solid face + solid core",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "Nastran",
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "linear buckling LC4",
+        "constrained modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Ionizing-radiation degradation not judged; only structural state.",
+      "thermal_transient": "Only uniform DeltaT imposed; transient orbital heat-transfer out of scope."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Insert pull-out / shear per ECSS-E-HB-32-22A",
+      "Bolt preload / slip per ECSS-E-ST-32-01C",
+      "Core fatigue under random vibration"
+    ]
+  },
+  "eval_coverage": [
+    "sandwich-specific face-sheet AND core allowables",
+    "multiple ECSS FoS applied at identical limit state",
+    "thermoelastic DeltaT load case",
+    "buckling + modal + static in one brief"
+  ]
+}

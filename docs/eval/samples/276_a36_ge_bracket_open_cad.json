@@ -1,0 +1,195 @@
+{
+  "id": "276_a36_ge_bracket_open_cad",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A36",
+    "year": 2013,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "monolithic_bracket",
+  "full_prompt": "Design a single-part, monolithic titanium mounting bracket based on the jet-engine OEM / open-CAD platform Jet Engine Bracket Challenge (2013 open CAD challenge). The bracket connects a jet engine casing to an external accessory and must transfer load without permanent deformation under transient post-FBO (Fan Blade Out) conditions. The objective is to minimize mass while passing four independent static load cases that are baked into the open-CAD challenge page. Geometry: bounding envelope 203 mm x 152 mm x 102 mm (8 x 6 x 4 inches). Top flange has 4x through-holes 12.7 mm (1/2 in) on a 76.2 x 76.2 mm (3 x 3 in) rectangular pattern; bottom carries a 25.4 mm (1 in) pin-hole horizontal. Vertical distance top-to-pin 120 mm. Single monolithic body, no welds/fasteners/inserts. Material Ti-6Al-4V (E = 113.8 GPa, nu = 0.342, yield 860 MPa, ultimate 950 MPa, density 4430 kg/m^3). Four challenge load cases applied as bearing pressure on the pin-hole inner surface with the top-flange bolt holes fully fixed: LC1 vertical 35,586 N (8000 lbf) upward; LC2 horizontal 37,810 N (8500 lbf) along engine axis; LC3 42,258 N (9500 lbf) at 42 deg off-vertical; LC4 torque 5650 N*m about pin axis (5000 lbf * 0.5 ft). Pass/fail (binding numbers): (R1) max von Mises <= ultimate / 1.5 = 633 MPa; (R2) max displacement at pin hole <= 1.0 mm; (R3) final mass <= 1.0 kg AND >= 40% lighter than bulk-block baseline; (R4) buckling first-mode load factor at LC3 >= 2.0. Primary verification is structural FEA (linear static x4 load cases) + linear buckling eigenvalue for LC3. Thermal, fluid, radiation, vibration NOT required. Topology optimization is the outer loop required to reach R3. Deliverables: STEP AP242 + Parasolid, and a report with mass in g, max von Mises per case, max pin-hole displacement per case, first buckling load factor.",
+  "short_prompt": "Design a single-part monolithic Ti-6Al-4V mounting bracket per the jet-engine OEM open-CAD Jet Engine Bracket Challenge (2013). The bracket connects an engine casing to an external accessory and must transfer load without permanent deformation under transient post-FBO (Fan Blade Out) conditions. Four challenge load cases are applied as bearing pressure on the 1 in (25.4 mm) pin-hole inner surface, with the 4 x 12.7 mm top-flange bolt holes (76.2 x 76.2 mm pattern) fully fixed. Pin-hole displacement <= 1.0 mm per case. Topology optimization is required as the outer loop.\n\nEnvelope: bounding 203 x 152 x 102 mm (8 x 6 x 4 in); top-flange-to-pin vertical distance 120 mm.\n\nLoad cases.\n- LC1 vertical: 35,586 N (8000 lbf) upward.\n- LC2 horizontal along engine axis: 37,810 N (8500 lbf).\n- LC3 42 deg off-vertical: 42,258 N (9500 lbf).\n- LC4 torque about pin axis: 5650 N*m (5000 lbf * 0.5 ft).\n- LC5 linear buckling under LC3, first-mode load factor >= 2.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "Achieving >=40% mass reduction vs bulk block is the GE benchmark; outer topology optimization loop around the structural FEA.",
+        "examples": [
+          "Altair OptiStruct",
+          "nTopology",
+          "Ansys Mechanical Topology Optimization"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "GE Jet Engine Bracket (open-CAD platform open challenge)",
+    "brief": "Canonical open-CAD platform bracket; four static load cases + topology optimization for >= 40% mass reduction in Ti-6Al-4V.",
+    "geometric_constraints": {
+      "bounding_envelope_mm": "203 x 152 x 102",
+      "flange_bolt_holes": {
+        "count": 4,
+        "diameter_mm": 12.7,
+        "pattern_mm": "76.2 x 76.2"
+      },
+      "pin_hole_diameter_mm": 25.4,
+      "vertical_flange_to_pin_mm": 120,
+      "monolithic": true
+    },
+    "material": {
+      "name": "Ti-6Al-4V Grade 5 annealed",
+      "properties": {
+        "youngs_modulus_GPa": 113.8,
+        "poissons_ratio": 0.342,
+        "yield_strength_MPa": 860,
+        "ultimate_tensile_strength_MPa": 950,
+        "density_kg_m3": 4430
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical",
+        "magnitude_N": 35586,
+        "direction": "vertical up on pin"
+      },
+      {
+        "id": "LC2",
+        "name": "horizontal",
+        "magnitude_N": 37810,
+        "direction": "along engine axis"
+      },
+      {
+        "id": "LC3",
+        "name": "off_axis_42deg",
+        "magnitude_N": 42258,
+        "direction": "42 deg off vertical"
+      },
+      {
+        "id": "LC4",
+        "name": "torsion",
+        "magnitude_Nm": 5650,
+        "direction": "torque about pin axis"
+      }
+    ],
+    "boundary_conditions": {
+      "top_flange": "4 bolt holes fully fixed",
+      "pin_hole": "bearing pressure over 180 deg arc"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_reduction_vs_baseline_pct_min": 40
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "max_pin_displacement_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 633,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_pin_displacement",
+        "limit_mm": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3a",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3b",
+        "type": "structural_analysis",
+        "metric": "mass_reduction_vs_bulk_block_pct",
+        "limit": 40,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static benchmark.",
+      "thermal_analysis": "Room temperature only.",
+      "fluid_analysis": "Aero reduced to bearing loads.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "canonical open-CAD platform bracket",
+    "four independent load cases + buckling",
+    "topology-optimization outer loop"
+  ]
+}

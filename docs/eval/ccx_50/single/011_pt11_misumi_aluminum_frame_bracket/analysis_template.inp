@@ -1,0 +1,58 @@
+**
+** Misumi HBLFSNB8-class L-bracket verification - analysis template
+** (mesh + NSETs spliced in by wire_bcs.py from the agent's STEP)
+**
+** This template is the FEM corroboration that the bracket itself stays
+** elastic at the per-bracket reaction force; the authoritative pass/fail
+** for R1..R6 (catalog allowables, extrusion deflection/stress, T-nut
+** pull-out) is evaluated as closed-form computations in check.py.
+**
+** Units: mm, N, MPa, t (tonne)
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIXED  - vertical-leg bolt-down face (mates to vertical 40x40 extrusion)
+**   NLOAD   - horizontal-leg end face (per-bracket reaction from cantilever)
+**
+** *SOLID SECTION uses ELSET=Eall (auto-built from gmsh's volume sets).
+**
+*MATERIAL, NAME=AL6063T5
+*ELASTIC
+68900.0, 0.33
+*DENSITY
+2.7e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=AL6063T5
+**
+** ----------------------------------------------------------------
+** Boundary: fully fix the vertical-leg bolt-down face (the bracket
+** is bolted into the vertical extrusion's slots through this face).
+** ----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ----------------------------------------------------------------
+** Step 1: per-bracket reaction force, applied in -Y on NLOAD.
+** CalculiX *CLOAD with an NSET applies the listed magnitude to EACH
+** node of the set (it does NOT auto-distribute). We therefore use a
+** representative per-node value scaled small so the FEM is a
+** corroborating elasticity check, not a calibrated reaction study;
+** the authoritative R1..R6 pass/fail is closed-form in check.py per
+** the spec's `requires_non_fea_solver` (frame stiffness calculator).
+** Per spec, the per-bracket reaction is 1500 N total; meshed NLOAD
+** faces typically carry tens of nodes, so a 30 N/node nominal load
+** keeps peak von Mises in a meaningful but elastic range.
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD
+NLOAD, 2, -30.0
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP

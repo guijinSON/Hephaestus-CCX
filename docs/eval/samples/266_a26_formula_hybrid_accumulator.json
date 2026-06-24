@@ -1,0 +1,196 @@
+{
+  "id": "266_a26_formula_hybrid_accumulator",
+  "source": {
+    "catalog_ref": "A26",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "formula_hybrid_accumulator_container",
+  "full_prompt": "Design the accumulator container (battery enclosure) for a 2026 collegiate hybrid formula-class racecar benchmark + Electric competition vehicle. The container inherits collegiate formula-class racecar benchmark / collegiate formula-class racecar chassis and IA rules but must additionally satisfy collegiate hybrid formula-class racecar benchmark accumulator rules: (1) tractive system voltage <= 300 V DC; (2) isolation resistance between tractive system and grounded container >= 500 ohm/V; (3) the container shall survive the same 40 g forward / 20 g side / 20 g vertical inertial envelope as collegiate formula-class racecar. Accumulator cells: Li-ion 18650, 288 cells in 12S24P configuration, pack mass 15 kg, nominal voltage 43.2 V (module) or 216 V (full tractive system). The container is a welded aluminum 6061-T6 box, wall thickness 3 mm typical, E = 68.9 GPa, yield = 276 MPa, ultimate = 310 MPa, density = 2700 kg/m^3. Outer bounding box 400 mm (X) x 300 mm (Y) x 150 mm (Z). Mounted to chassis via 4x M8 Grade 8.8 bolts on 350 mm x 250 mm rectangular pattern. Load cases: (R1) Forward 40 g on 15 kg pack = 40 x 15 x 9.81 = 5,886 N; max von Mises <= yield / 1.1 = 251 MPa. (R2) Side 20 g = 2,943 N; max von Mises <= 251 MPa. (R3) Vertical 20 g = 2,943 N (both +Z and -Z); max von Mises <= 251 MPa. (R4) Isolation-resistance constraint: no bolt hole or structural path shall create a metal-to-metal contact between the cells and the chassis-bonded container (insulating liner >= 1 mm PET, ensured by geometric keep-out >= 2 mm from each cell envelope); this is a geometric constraint, not a stress test. (R5) Container mass <= 5 kg. (R6) First modal frequency >= 40 Hz. (R7) If a cell vents, the container shall have >= 300 mm^2 total vent area on the top to release pressure (safety requirement). Primary verification: structural FEA (linear static x3) + modal. Vibration secondary via R6. Thermal, fluid, radiation NOT required. Deliverables: STEP AP242 welded container, weld map, insulation/vent callouts, and a report listing container mass in kg, max von Mises per load case in MPa, first modal frequency in Hz, vent area in mm^2.",
+  "short_prompt": "Design the accumulator container (battery enclosure) for a 2026 collegiate hybrid formula-class racecar, inheriting collegiate formula-class racecar benchmark chassis / IA rules plus hybrid-class accumulator rules: tractive-system voltage <= 300 V DC, isolation resistance between tractive system and grounded container >= 500 ohm/V, 40 g forward / 20 g side / 20 g vertical inertial envelope. Container is a welded 6061-T6 aluminum box (~3 mm walls), mounted via 4 x M8 Grade 8.8 on a 350 x 250 mm rectangular pattern. Accumulator: Li-ion 18650, 288 cells in 12S24P, pack mass 15 kg, module 43.2 V / system 216 V nominal.\n\nEnvelope: outer bounding 400 x 300 x 150 mm (X x Y x Z). Isolation liner >= 1 mm PET with >= 2 mm keep-out from each cell envelope.\n\nLoad cases (inertial loads on the 15 kg pack).\n- LC1 forward 40 g: 5,886 N.\n- LC2 side 20 g: 2,943 N.\n- LC3 vertical 20 g (+Z and -Z): 2,943 N.\n- LC4 modal: first frequency >= 40 Hz.\n- LC5 safety venting: if a cell vents, total top-face vent area >= 300 mm^2 (geometric).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate hybrid formula-class racecar benchmark accumulator container",
+    "brief": "6061-T6 welded accumulator box, 15 kg Li-ion pack, inherits collegiate formula-class racecar 40/20/20 g envelope plus isolation + vent area constraints.",
+    "geometric_constraints": {
+      "outer_bounding_box_mm": "400 x 300 x 150",
+      "pack_mass_kg": 15,
+      "mount_bolts": {
+        "count": 4,
+        "size": "M8",
+        "pattern_mm": "350 x 250"
+      },
+      "tractive_system_voltage_max_V": 300,
+      "isolation_resistance_ohm_per_V_min": 500,
+      "insulating_liner_mm_min": 1,
+      "vent_area_mm2_min": 300
+    },
+    "material": {
+      "name": "Al 6061-T6 welded",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "forward_40g",
+        "force_N": 5886,
+        "direction": "+X"
+      },
+      {
+        "id": "LC2",
+        "name": "side_20g",
+        "force_N": 2943,
+        "direction": "+Y"
+      },
+      {
+        "id": "LC3",
+        "name": "vertical_20g",
+        "force_N": 2943,
+        "direction": "+/-Z"
+      },
+      {
+        "id": "LC4",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "four M8 bolt bosses fully fixed",
+      "internal_mass": "15 kg lumped at pack interior"
+    },
+    "objective": {
+      "minimize": "container_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "container_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "first_modal_frequency_Hz",
+        "vent_area_mm2"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 251,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 251,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 251,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "cell_to_container_keep_out",
+        "limit_mm": 2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "container_mass",
+        "limit_kg": 5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 40,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "vent_area",
+        "limit_mm2": 300,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell or solid-shell",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Thermal runaway out of scope at this gate.",
+      "fluid_analysis": "Vent area check is geometric.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not driving."
+    }
+  },
+  "eval_coverage": [
+    "inherited collegiate formula-class racecar 40/20/20 g envelope",
+    "isolation keep-out geometry",
+    "vent area safety minimum"
+  ]
+}

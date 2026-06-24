@@ -1,0 +1,201 @@
+{
+  "id": "157_cn7_aisc_acsa_steel",
+  "source": {
+    "catalog_ref": "CN7",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "civil_structural",
+  "part_class": "long_span_steel_roof",
+  "full_prompt": "Design one long-span steel roof bay for a community dance center where the long-span space must provide a column-free dance floor at least 24.4 m (80 ft) by 18.3 m (60 ft) with a clear height of 9.1 m (30 ft) beneath a steel roof. The structure must be steel-primary using ASTM A992 wide-flange members (Fy 345 MPa, Fu 450 MPa) for primary girders and columns and ASTM A500 Grade C HSS (Fy 345 MPa) for lateral bracing, supporting a lightweight metal-deck-plus-concrete-topping roof. The bay must carry simultaneously a roof dead load of 1.2 kPa from the metal deck, insulation, and roofing; a roof live load of 0.96 kPa per IBC; a snow load of 1.2 kPa using a reference climate mapped as ground snow 1.44 kPa via ASCE 7-22 flat-roof conversion; a wind uplift of 1.0 kPa on the roof per ASCE 7-22 components and cladding; and a lateral wind of 1.0 kPa on the long elevation applied as equivalent static pressure. All pass/fail criteria must be satisfied: (R1) every primary girder, column, and brace must achieve AISC 360-22 demand-to-capacity ratio at or below 1.0 under ASCE 7-22 LRFD combinations, (R2) mid-span roof girder deflection under 1.0 dead plus 1.0 live must not exceed span/240 which is 76.2 mm for the 18.3 m short direction, (R3) inter-story lateral drift at the roof under wind must not exceed H/400 which is 22.8 mm, (R4) a linear buckling eigenvalue analysis of the primary long-span girder under 1.0 dead plus 1.0 snow must yield a first-mode load factor of at least 2.0 against lateral-torsional buckling, and (R5) the total structural steel tonnage in the column-free bay must not exceed 12.0 metric tons as an efficiency target. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly with a cut list of wide-flange and HSS sections, plus a structural report with AISC 360-22 DCR maxima, mid-span deflection, lateral drift, buckling load factor, and total steel tonnage.",
+  "short_prompt": "Design one long-span steel roof bay for a community dance center providing a column-free 24.4 x 18.3 m (80 x 60 ft) floor with 9.1 m (30 ft) clear height. Primary girders and columns are ASTM A992 wide-flange; lateral bracing is ASTM A500 Grade C HSS; the roof is lightweight metal deck plus concrete topping. Design per AISC 360-22 under ASCE 7-22 LRFD combinations (DCR <= 1.0 on every primary member and brace).\n\nLoad cases applied simultaneously.\n- Roof dead 1.2 kPa (deck, insulation, roofing).\n- Roof live 0.96 kPa (IBC).\n- Snow 1.2 kPa (ASCE 7-22 flat-roof from 1.44 kPa ground).\n- Roof wind uplift 1.0 kPa (ASCE 7-22 C&C).\n- Lateral wind 1.0 kPa on the long elevation (equivalent static).\nAlso require midspan girder deflection under 1.0D+1.0L <= span/240 (76.2 mm on the 18.3 m short direction), roof drift under wind <= H/400 (22.8 mm), a linear-buckling factor >= 2.0 on the primary long-span girder under 1.0D+1.0S against LTB, and total structural steel tonnage <= 12.0 t.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "AISC_360_22_member_check",
+        "reason": "AISC 360-22 Chapter F/H member checks (LTB with Cb, HSS P-M, shear Vn) are spreadsheet closed-form on top of FEA demands.",
+        "examples": [
+          "RISA-3D with AISC 360-22",
+          "SAP2000 Steel Design",
+          "hand spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Long-span steel roof bay for community dance center",
+    "brief": "Design a 24.4 m x 18.3 m column-free steel roof bay with 9.1 m clear height, meeting AISC 360-22 DCR, deflection, drift, LTB buckling, and tonnage targets.",
+    "geometric_constraints": {
+      "long_span_m": 24.4,
+      "short_span_m": 18.3,
+      "clear_height_m": 9.1,
+      "column_free": true
+    },
+    "material": {
+      "wide_flange": "ASTM A992 Fy 345 MPa",
+      "HSS_braces": "ASTM A500 Grade C Fy 345 MPa"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "roof_dead",
+        "magnitude_kPa": 1.2,
+        "application": "uniform on roof"
+      },
+      {
+        "id": "LC2",
+        "name": "roof_live",
+        "magnitude_kPa": 0.96,
+        "application": "uniform on roof"
+      },
+      {
+        "id": "LC3",
+        "name": "snow",
+        "magnitude_kPa": 1.2,
+        "derivation": "1.44 kPa ground to flat-roof per ASCE 7-22",
+        "application": "uniform on roof"
+      },
+      {
+        "id": "LC4",
+        "name": "wind_uplift",
+        "magnitude_kPa": 1.0,
+        "application": "upward on roof"
+      },
+      {
+        "id": "LC5",
+        "name": "wind_lateral",
+        "magnitude_kPa": 1.0,
+        "application": "equivalent static on long elevation"
+      }
+    ],
+    "boundary_conditions": {
+      "column_bases": "fixed to foundation"
+    },
+    "objective": {
+      "primary": "pass all AISC 360-22 DCR and serviceability limits",
+      "secondary": "minimize total steel tonnage"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_member_DCR",
+        "mid_span_deflection_mm",
+        "lateral_drift_mm",
+        "first_buckling_load_factor",
+        "total_steel_tonnage_t"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_member_DCR",
+        "limit": 1.0,
+        "derivation": "AISC 360-22 LRFD",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mid_span_deflection",
+        "limit_mm": 76.2,
+        "derivation": "span/240 for 18.3 m short direction",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "lateral_drift",
+        "limit_mm": 22.8,
+        "derivation": "H/400 for 9.1 m height",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "derivation": "LTB guard under 1.0D+1.0S",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_steel_tonnage",
+        "limit_t": 12.0,
+        "derivation": "efficiency target for column-free bay",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam for girders/columns, truss for braces, shell for deck",
+      "mesh_size_mm_in_critical_regions": 300,
+      "solver_hints": [
+        "RISA-3D",
+        "SAP2000",
+        "ETABS"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling eigenvalue"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Floor vibration not scored.",
+      "thermal_analysis": "Thermal expansion handled by expansion joints, not FEA.",
+      "fluid_analysis": "Wind is ASCE 7-22 static.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Connection design per AISC 360-22 Chapter J",
+      "Fire-protection rating",
+      "Acoustic performance of the dance floor"
+    ]
+  },
+  "eval_coverage": [
+    "AISC 360-22 DCR closed-form check over linear FEA",
+    "LTB eigenvalue buckling check",
+    "long-span column-free architectural envelope",
+    "tonnage efficiency target"
+  ]
+}

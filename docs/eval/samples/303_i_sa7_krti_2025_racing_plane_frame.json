@@ -1,0 +1,196 @@
+{
+  "id": "303_i_sa7_krti_2025_racing_plane_frame",
+  "source": {
+    "catalog_ref": "I-SA7",
+    "year": 2025,
+    "tier": "A+",
+    "language_note": "Rulebook in Bahasa Indonesia; numerics reproduced in SI."
+  },
+  "domain": "aerospace_uav_structural",
+  "part_class": "racing_quadcopter_main_frame",
+  "full_prompt": "Design the primary carbon-fibre main-frame top plate of a KRTI 2025 Racing-Plane (RP) class racing quadcopter. Panduan KRTI 2025 RP class sets MTOW <= 2500 g, airframe is an X-configuration quadrotor with 5-inch (127 mm) propellers, 2207-size brushless motors producing up to 20 N thrust each, 6S LiPo battery. The main-frame top plate is the structural backbone that arm plates bolt to. Geometry: top plate is a flat rectangular CFRP sheet with rounded corners; overall envelope 180 mm (length) x 130 mm (width); thickness 2 mm; 20 mm holes at each corner for arm-bolt access (four arms attach via 4 x M3 bolts each in a 20 mm square pattern); central camera mount is a 40 mm diameter circular relief; flight controller mount is a 30.5 x 30.5 mm square pattern of four M3 through-holes at the plate centroid; battery strap slots are two 80 mm x 8 mm longitudinal slots on the plate centerline spaced 40 mm apart. Material: CFRP woven [0/90]s quasi-isotropic laminate with Ex = Ey = 55 GPa, Gxy = 4 GPa, nu_xy = 0.05, density 1550 kg/m^3, tensile allowable 600 MPa, compressive 550 MPa, ILSS 55 MPa. Load cases: LC1 (Hover reaction) — four motor-arm bolt patterns pulled vertically upward by 20 N each = 80 N total against the plate mass + battery hanging below (~900 g), centered; apply the 80 N vertical as a distributed upward force at each arm pattern, with a 9 N downward gravity force at plate centroid representing battery pack + FC + camera; LC2 (4 g pitch-up maneuver) — 4x LC1 forces: 80 N at each arm, 36 N downward at centroid; LC3 (Crash impact) — 15 g lateral shock with one arm pattern fully fixed (robot landed on one corner); LC4 (Battery retention) — 100 N tension in each of the two battery straps pulling upward through the slots; LC5 (Vibration-surrogate static amplification) — rotor-pass frequency estimate 100 Hz at hover; apply a 3x amplification factor on LC1 loads. Pass/fail: (R1) max stress under LC1, LC2, LC3, LC5 < 400 MPa (composite tensile allowable / 1.5); (R2) under LC1, max vertical deflection at plate centroid < 1.5 mm (maintain camera line-of-sight); (R3) first-mode linear buckling load factor under LC2 >= 3.0 (rotor-arm attachment area); (R4) under LC3, max stress at the fixed corner < 400 MPa and no crack initiation (peak plastic strain proxy < 0.01 in a linear model treating allowable as elastic limit); (R5) under LC4 battery tension, plate material stress < 300 MPa (local bearing); (R6) top plate mass < 35 g so airframe full frame (top + bottom + 4 arms) stays under 220 g total within the 2500 g MTOW budget. Primary verification: linear static structural FEA for all five LCs; linear buckling for LC2. Vibration modal, thermal, fluid, and radiation analyses are not explicitly required (vibration is approximated via LC5 amplification on LC1). Output one STEP AP242 single-body plate plus a report listing plate mass, max stress per case, centroid deflection under LC1, buckling factor under LC2.",
+  "short_prompt": "Design the primary CFRP main-frame top plate of a KRTI 2025 Racing-Plane (RP) class racing quadcopter. Panduan KRTI 2025 RP class: MTOW <= 2500 g, X-config quadrotor with 5 in (127 mm) props, 2207 motors (up to 20 N thrust each), 6S LiPo.\n\nEnvelope: 180 x 130 mm x 2 mm CFRP [0/90]s plate with rounded corners; 20 mm arm-access corner holes each clamping a 20 mm square 4 x M3 arm bolt pattern; 40 mm camera relief at center; 30.5 x 30.5 mm FC mount; two 80 x 8 mm battery-strap slots on centerline at 40 mm spacing.\n\nFactor regime: composite tensile FoS 1.5 (allowable 400 MPa) across all linear cases; linear buckling eigenvalue >= 3.0 at arm attachment under LC2; LC4 local bearing < 300 MPa; LC5 rotor-pass amplification is 3x on the hover loads.\n\nLoad cases.\n- Hover: 20 N up at each of four arm patterns + 9 N down at the centroid (battery + FC + camera mass).\n- 4 g pitch-up: 80 N up at each arm + 36 N down at centroid.\n- Crash: 15 g lateral with one arm pattern fully fixed (landed on one corner).\n- Battery retention: 100 N tension in each of two straps pulling upward through the slots.\n- Vibration surrogate: 3x amplification of the LC1 forces (rotor-pass ~100 Hz).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "KRTI 2025 Racing-Plane main frame top plate",
+    "brief": "CFRP [0/90]s top plate 180 x 130 x 2 mm for a 5-inch FPV racing quadcopter in KRTI 2025 RP class with 2500 g MTOW.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 180,
+        "W": 130
+      },
+      "thickness_mm": 2,
+      "arm_bolt_hole_count": 16,
+      "arm_bolt_pattern_mm": 20,
+      "arm_bolt_size": "M3",
+      "camera_mount_relief_mm": 40,
+      "FC_mount_pattern_mm": 30.5,
+      "FC_bolt_size": "M3",
+      "battery_slot_mm": {
+        "L": 80,
+        "W": 8
+      },
+      "battery_slot_count": 2
+    },
+    "material": {
+      "name": "CFRP [0/90]s woven",
+      "Ex_GPa": 55,
+      "Ey_GPa": 55,
+      "Gxy_GPa": 4,
+      "density_kg_m3": 1550,
+      "tension_MPa": 600,
+      "compression_MPa": 550,
+      "ILSS_MPa": 55
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hover_reaction",
+        "arm_lift_N": 20,
+        "centroid_mass_N": 9
+      },
+      {
+        "id": "LC2",
+        "name": "4g_pitch_up",
+        "arm_lift_N": 80,
+        "centroid_mass_N": 36
+      },
+      {
+        "id": "LC3",
+        "name": "crash_impact",
+        "shock_g": 15
+      },
+      {
+        "id": "LC4",
+        "name": "battery_retention",
+        "strap_tension_N": 100
+      },
+      {
+        "id": "LC5",
+        "name": "vibe_surrogate",
+        "amplification": 3
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "plate_mass_g",
+        "max_stress_per_case_MPa",
+        "centroid_deflection_LC1_mm",
+        "buckling_factor_LC2"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_composite_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "centroid_deflection",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "peak_plastic_strain_surrogate",
+        "limit": 0.01,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "local_bearing_stress",
+        "limit_MPa": 300,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "plate_mass",
+        "limit_g": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "composite shell",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "linear buckling (LC2)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Replaced by LC5 amplification surrogate to simplify rulebook-derived eval.",
+      "thermal_analysis": "Battery temp handled separately.",
+      "fluid_analysis": "Prop aero captured by thrust spec.",
+      "radiation_analysis": "N/A."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Actual modal analysis at rotor-pass frequencies",
+      "FC vibration isolation"
+    ]
+  },
+  "eval_coverage": [
+    "composite flat plate with many cutouts",
+    "vibration amplification surrogate",
+    "tight mass budget"
+  ]
+}

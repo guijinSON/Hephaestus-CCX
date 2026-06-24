@@ -1,0 +1,199 @@
+{
+  "id": "286_i_ea1_abu_robocon_2025_transport_crate",
+  "source": {
+    "catalog_ref": "I-EA1",
+    "year": 2025,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/286_i_ea1_abu_robocon_2025_transport_crate.json",
+    "multipart_basis": "Decomposition inferred from a welded-aluminium stackable transport crate architecture (floor plate + four side walls + lid + corner reinforcement angles + handles + casters) sized to the collegiate robotics benchmark pit-stop envelope. No rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "robotics_logistics_structural",
+  "part_class": "transport_crate_frame_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a stackable transport crate, delivered as a multi-part welded/bolted assembly, that carries both collegiate robotics benchmark 'Basketball' robots (robot R1 plus robot R2 for one team) from a team's home lab to the competition venue, sized exactly to the rulebook pit-stop transport limit. The external envelope of the loaded crate, including handles, casters, and any protrusions, must fit inside a rectangular box of 1000 mm (length) x 1800 mm (width) x 800 mm (height); the internal cavity must accept both robots with their deployed base footprints retracted, each base a circular plate of diameter 800 mm and overall height up to 2400 mm folded to 800 mm transport height. The loaded crate gross mass including both robots, spare parts, and battery packs must not exceed 240 kg; the empty crate (frame plus panels plus casters) must not exceed 55 kg so that the 185 kg robot + accessory payload fits inside the 240 kg ceiling. The frame shall be welded 6061-T6 aluminium square tube with Young's modulus 69 GPa, Poisson's ratio 0.33, density 2700 kg/m^3, yield strength 276 MPa, and ultimate tensile strength 310 MPa; side panels are 4 mm birch plywood in sliding tracks and are not considered load-bearing. The crate must independently satisfy four load cases: Load Case 1 (Forklift lift) — 185 kg payload applied as a uniformly distributed load on the internal floor while the bottom of the frame is supported only at two 900 mm-spaced forklift tine pockets of 150 mm width each; Load Case 2 (Stack) — a second fully loaded crate (240 kg) placed on top of this crate, distributed evenly across the top frame rails, while the bottom frame is fully fixed; Load Case 3 (Crane lift) — four symmetric lift eyes pulled vertically, each carrying 1/4 of the 240 kg gross plus a 1.5 dynamic amplification factor; Load Case 4 (Side impact) — a horizontal shove of 0.5 g (approximately 1180 N) applied to the midpoint of one long side with opposite long-side bottom rail fixed. Pass/fail criteria: (R1) maximum von Mises stress in any frame member must stay below 184 MPa; (R2) maximum deflection of the internal floor under LC1 must stay below 8 mm; (R3) maximum deflection of the top rail under LC2 must stay below 5 mm; (R4) first-mode linear buckling load factor under LC2 must be at least 2.5; (R5) total empty-crate mass must be less than or equal to 55 kg. Primary verification: linear static structural FEA of four load cases plus linear buckling eigenvalue extraction for LC2. Vibration, thermal, fluid, and radiation analyses are explicitly not required.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe crate is decomposed into: (A) one 1000 x 1800 mm floor plate (6061-T6 plate welded into a perimeter channel); (B) four side walls (two long 1800 x 800 mm walls and two short 1000 x 800 mm walls, each a welded square-tube frame with sliding birch-plywood infill); (C) one lid plate 1000 x 1800 mm; (D) four vertical corner reinforcement angles 800 mm long at each vertical edge; (E) two handle brackets on the short walls (carry-handle pads); (F) four wheel casters (swivel + brake) at the floor-plate corners; (G) four lift eyes welded to the top corners of the frame; (H) fastener set (M10 corner-angle bolts + M8 caster bolts + lid latches). Interfaces: IF1 floor plate welded to perimeter bottom rail; IF2 side walls bolted to corner angles; IF3 lid plate latched/bolted to top rail (removable); IF4 casters bolted to floor plate corners; IF5 handle brackets bolted to short walls; IF6 lift eyes welded to top corners. FEM verification runs on the ASSEMBLED multi-body model only — per-part stress is reported but does not gate pass/fail. Inter-part connection DCR must be <= 1.0 under the governing load case (LC2 stack compression). All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a stackable transport crate as a multi-part welded/bolted assembly carrying two collegiate 'Basketball' robots (robot R1 plus robot R2) from home lab to venue, sized to the rulebook pit-stop transport limit.\n\nExternal envelope 1000 mm x 1800 mm x 800 mm; internal cavity accepts two robots (base diameter 800 mm, transport height 800 mm). Gross mass <= 240 kg; empty crate <= 55 kg. Frame: welded 6061-T6 aluminium square tube, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3.\n\nLoad cases: LC1 forklift lift with 185 kg payload on floor, supported at two 900 mm-spaced tine pockets of 150 mm width; LC2 second 240 kg loaded crate stacked on top; LC3 crane lift, four lift eyes at 1/4 gross x 1.5 dynamic factor; LC4 side impact 0.5 g (approximately 1180 N) at midpoint of one long side.\n\nPass/fail: (R1) von Mises <= 184 MPa; (R2) floor deflection under LC1 <= 8 mm; (R3) top-rail deflection under LC2 <= 5 mm; (R4) buckling factor under LC2 >= 2.5; (R5) empty mass <= 55 kg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ABU Robocon 2025 paired-robot transport crate (multi-part welded/bolted assembly)",
+    "brief": "Welded-aluminium 6061-T6 stackable transport crate (1000 x 1800 x 800 mm) for two collegiate robots at 240 kg gross: floor plate + 4 side walls + lid + 4 corner reinforcement angles + 2 handle brackets + 4 wheel casters + 4 lift eyes + fasteners. FEM verification at assembled level only; connection DCR <= 1.0 under LC2 governing stack load.",
+    "geometric_constraints": {
+      "external_envelope_mm": { "length": 1000, "width": 1800, "height": 800 },
+      "internal_payload": { "robots": 2, "robot_base_diameter_mm": 800, "robot_folded_height_mm": 800 },
+      "forklift_tine_pockets": { "count": 2, "spacing_mm": 900, "width_mm": 150 },
+      "lift_eyes": 4,
+      "side_panel_material": "4 mm birch plywood (non-structural)"
+    },
+    "material": {
+      "name": "6061-T6 aluminium",
+      "properties": {
+        "youngs_modulus_GPa": 69,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "load_cases": [
+      { "id": "LC1", "name": "forklift_lift", "payload_kg": 185, "support": "two 150 mm tine pockets, 900 mm apart" },
+      { "id": "LC2", "name": "stack", "payload_kg": 240, "description": "second fully loaded crate on top" },
+      { "id": "LC3", "name": "crane_lift", "per_eye_kg": 60, "dynamic_amplification": 1.5 },
+      { "id": "LC4", "name": "side_impact", "lateral_force_N": 1180, "direction": "horizontal at mid-height" }
+    ],
+    "boundary_conditions": {
+      "mounting": "LC1: two tine pockets support only; LC2: bottom rail fully fixed; LC3: four lift-eye vertical pulls; LC4: opposite long-side bottom rail fixed",
+      "loads": "uniform distributed on floor, top rail, lift eyes, or lateral shove"
+    },
+    "objective": { "minimize": "empty_crate_mass" },
+    "mass_limits": { "empty_crate_max_kg": 55, "gross_max_kg": 240 },
+    "output_format": {
+      "geometry": ["STEP_AP242"],
+      "report_fields": [
+        "empty_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "floor_deflection_LC1_mm",
+        "top_rail_deflection_LC2_mm",
+        "buckling_load_factor_LC2",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": ["part_family", "instance_index"]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "floor_plate",
+        "role": "welded 6061-T6 floor plate in perimeter channel carrying the 185 kg robot payload",
+        "count_min": 1,
+        "geometric_constraints": { "footprint_mm": "1000 x 1800", "thickness_mm": 4, "perimeter_channel": "40 x 40 x 3 sq tube" },
+        "material_hint": "6061-T6 plate + square tube",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side_wall",
+        "role": "welded square-tube side wall with sliding plywood infill (2 long + 2 short walls)",
+        "count_min": 4,
+        "geometric_constraints": { "long_wall_mm": "1800 x 800", "short_wall_mm": "1000 x 800", "tube_mm": "40 x 40 x 3" },
+        "material_hint": "6061-T6 square tube + birch plywood infill",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "lid_plate",
+        "role": "removable lid plate latching to top rail",
+        "count_min": 1,
+        "geometric_constraints": { "footprint_mm": "1000 x 1800", "thickness_mm": 4 },
+        "material_hint": "6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "corner_reinforcement_angle",
+        "role": "vertical corner reinforcement angle at each of 4 vertical edges carrying LC2 stack compression",
+        "count_min": 4,
+        "geometric_constraints": { "length_mm": 800, "cross_section": "L 50 x 50 x 5" },
+        "material_hint": "6061-T6 extruded angle",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "handle_bracket",
+        "role": "carry-handle bracket on each short wall",
+        "count_min": 2,
+        "geometric_constraints": { "grip_length_mm": 200, "mount_mm": "100 x 40 x 4" },
+        "material_hint": "6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "wheel_caster",
+        "role": "swivel + brake caster at each floor-plate corner (non-structural for LC1-LC2, structural for ground roll)",
+        "count_min": 4,
+        "geometric_constraints": { "wheel_OD_mm": 125, "mount_plate_mm": "100 x 100", "bolt_pattern": "4 x M8" },
+        "material_hint": "steel wheel + PU tread",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "lift_eye",
+        "role": "crane-lift eye welded to each of 4 top corners for LC3",
+        "count_min": 4,
+        "geometric_constraints": { "ID_mm": 40, "thickness_mm": 10 },
+        "material_hint": "6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "fastener_set",
+        "role": "M10 corner-angle bolts + M8 caster bolts + lid latches",
+        "count_min": 32,
+        "geometric_constraints": { "threads": ["M8", "M10"], "grade": "A2-70" },
+        "material_hint": "A2-70 stainless",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "1000 x 1800 x 800 mm external envelope incl. handles and casters",
+      "coordinate_system": "+Z up (stack direction), +X long axis 1800 mm, +Y short axis 1000 mm"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      { "id": "R1", "type": "structural_analysis", "metric": "max_von_mises_stress", "limit_MPa": 184, "derivation": "yield_strength / 1.5 = 276 / 1.5", "applies_to": ["LC1", "LC2", "LC3", "LC4"], "operator": "<=" },
+      { "id": "R2", "type": "structural_analysis", "metric": "floor_midspan_deflection", "limit_mm": 8, "applies_to": ["LC1"], "operator": "<=" },
+      { "id": "R3", "type": "structural_analysis", "metric": "top_rail_deflection", "limit_mm": 5, "applies_to": ["LC2"], "operator": "<=" },
+      { "id": "R4", "type": "buckling_analysis", "metric": "first_mode_load_factor", "limit": 2.5, "applies_to": ["LC2"], "operator": ">=" },
+      { "id": "R5", "type": "structural_analysis", "metric": "empty_mass", "limit_kg": 55, "applies_to": ["design"], "operator": "<=" },
+      { "id": "R_asm1", "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces <= 1.0 under the governing load case (LC2 stack).", "metric": "max DCR across IF1..IF6", "threshold": 1.0, "scope": "assembled_only" }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "linear/quadratic beam + shell mix",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "linear buckling (LC2)"
+      ]
+    }
+  },
+  "interfaces": [
+    { "id": "IF1", "between": ["A", "B"], "mediated_by": "welded (fillet) + bolted (M10 at corners)", "load_path": "floor reaction + wall base moments into floor-plate perimeter channel" },
+    { "id": "IF2", "between": ["B", "D"], "mediated_by": "bolted (6x M10 per corner)", "load_path": "stack compression flowing from top rails down through corner angles into floor" },
+    { "id": "IF3", "between": ["B", "C"], "mediated_by": "latched + bolted (4x M8 latches)", "load_path": "lid restraint against LC4 side impact" },
+    { "id": "IF4", "between": ["A", "F"], "mediated_by": "bolted (4x M8 per caster)", "load_path": "ground reaction into floor-plate corner bosses" },
+    { "id": "IF5", "between": ["B", "E"], "mediated_by": "bolted (4x M8 per handle)", "load_path": "manual lift load into short wall frame" },
+    { "id": "IF6", "between": ["B", "G"], "mediated_by": "welded", "load_path": "LC3 crane-lift vertical pull into top corner frame" }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. The governing LC2 stack compression loads the 4 corner-angle bolted columns in series with the welded floor/top rails, so assembly-level DCR is required; per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A stackable robotics transport crate of this class is fabricated from a welded floor plate, 4 bolted side walls with corner reinforcement angles, a removable lid, handles, casters, and lift eyes rather than a single weldment; the LC2 stack compression flows through bolted corner columns that require assembly-level DCR.",
+    "speculation_caveats": "Corner-angle count (4), handle-bracket count (2 on short walls), caster count (4), and lift-eye count (4) are programmatic speculation consistent with the envelope and load cases; loads, material, and pass/fail thresholds inherit the original brief verbatim.",
+    "original_sample_preserved_at": "docs/eval/samples/286_i_ea1_abu_robocon_2025_transport_crate.json"
+  },
+  "rulebook_citations": []
+}

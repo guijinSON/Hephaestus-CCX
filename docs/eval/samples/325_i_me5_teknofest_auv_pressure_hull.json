@@ -1,0 +1,188 @@
+{
+  "id": "325_i_me5_teknofest_auv_pressure_hull",
+  "source": {
+    "catalog_ref": "I-ME5 (I-TF9)",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "marine_structural",
+  "part_class": "auv_pressure_hull",
+  "full_prompt": "Design the main electronics pressure hull of an AUV competing in the national aerospace student benchmark 2025 İnsansız Su Altı Sistemleri Yarışması finals, which are held in an indoor pool of maximum depth 5 m. Design depth for structural qualification must include a factor of safety over mission depth, so the hull must survive an external hydrostatic pressure equivalent to 20 m of fresh water (1.96 bar gauge, 2.96 bar absolute) per ABS-style proof pressure of 4 x operational depth. The hull is a horizontal cylindrical pressure vessel with outer diameter 150 mm, total length 400 mm (excluding end-cap seals), and two removable flat end caps sealed by double radial o-rings (Parker 2-150 profile, Buna-N, 70 Shore A). The cylindrical shell is 6082-T6 aluminum alloy (Young's modulus 70 GPa, yield 260 MPa, ultimate 310 MPa, density 2700 kg/m^3). End caps are the same alloy, 12 mm thick before sealing flange. The hull houses a 4-cell 14.8 V Li-ion pack, a navigation IMU, a Jetson Orin Nano compute module, and penetrators for 4 external thrusters (tether-less autonomous mission). Load cases: (LC1) external hydrostatic 1.96 bar gauge uniform on cylinder + end caps (normal mission); (LC2) proof pressure 7.84 bar gauge external (4 x normal mission) applied uniformly - hull must not yield; (LC3) burst-margin check at 9.8 bar external (5 x normal) - hull must not collapse in buckling mode; (LC4) 5 g impact on one end-cap bolt pattern (pool-wall collision); (LC5) thermal expansion from 5 C (pool water) to 25 C (surface air) with end caps fully bolted - thermal stress induced by material mismatch between aluminum hull and steel fasteners. Pass/fail criteria: (R1) maximum von Mises stress under LC1 normal operation must remain below 87 MPa (260 / 3 operational FoS); (R2) under LC2 proof pressure, stress must remain below 260 MPa yield (no permanent deformation); (R3) linear buckling eigenvalue under LC3 external pressure must exceed load factor 2.0 to confirm shell stability margin; (R4) end-cap o-ring groove face deflection must remain below 0.05 mm under LC1 to preserve seal integrity; (R5) hull dry mass must not exceed 1.8 kg; (R6) under LC5 thermal case, bolt preload must not exceed 70% of bolt yield, computed via linear thermo-structural analysis. Vibration, fluid (external hydrodynamic drag sizing), and radiation analyses are not structural pass/fail gates. Thermal is limited to LC5 bolted-joint stress, not transient heat transfer. Deliverables: STEP AP242 assembly with cylinder and two end caps as separate bodies plus bolt/o-ring reference models, FEA report with stress for LC1/LC2/LC4/LC5, linear buckling for LC3, seal-groove deflection under LC1, and mass + FoS summary.",
+  "short_prompt": "Design the main electronics pressure hull of a national aerospace student benchmark 2025 AUV (indoor pool, 5 m max depth). Per ABS-style rules, qualify to 20 m-equivalent external head (1.96 bar gauge) = 4 x operational proof.\n\nEnvelope: horizontal cylinder 150 mm OD x 400 mm long with two flat 12 mm 6082-T6 end caps sealed by double radial Buna-N o-rings (Parker 2-150, 70 Shore A); penetrators for 4 external thrusters; tether-less.\n\nFactor regime: yield FoS 3 at normal operation (allowable 87 MPa), yield at proof (260 MPa), linear buckling eigenvalue >= 2.0 on the burst-margin external case; o-ring seal-face deflection <= 0.05 mm at operating pressure; bolt preload <= 70% of bolt yield under thermal.\n\nLoad cases.\n- Normal hydrostatic: 1.96 bar gauge external.\n- Proof: 7.84 bar gauge external (4x normal), no yield.\n- Burst margin: 9.8 bar gauge external (5x normal), buckling-stability check.\n- End-cap bolt-pattern impact: 5 g at one end cap (pool-wall collision).\n- Thermal: 5 C pool water to 25 C surface air with caps bolted (Al hull / steel-fastener mismatch).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark 2025 AUV Main Electronics Pressure Hull",
+    "brief": "Aluminum cylindrical pressure hull for AUV, 150 mm OD x 400 mm L, rated for 2 m mission / 20 m proof, o-ring sealed flat end caps.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 150,
+      "length_mm": 400,
+      "end_cap_thickness_mm": 12,
+      "seal_profile": "double Parker 2-150 Buna-N o-rings",
+      "penetrator_count": 4
+    },
+    "material": {
+      "name": "Aluminum 6082-T6",
+      "properties": {
+        "youngs_modulus_GPa": 70,
+        "yield_strength_MPa": 260,
+        "ultimate_tensile_strength_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "mission_depth_m": 5,
+    "design_depth_m": 20,
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "mission_hydrostatic",
+        "magnitude_bar_gauge": 1.96,
+        "application": "uniform external"
+      },
+      {
+        "id": "LC2",
+        "name": "proof_pressure",
+        "magnitude_bar_gauge": 7.84,
+        "application": "uniform external, 4x mission"
+      },
+      {
+        "id": "LC3",
+        "name": "burst_margin",
+        "magnitude_bar_gauge": 9.8,
+        "application": "uniform external, buckling check"
+      },
+      {
+        "id": "LC4",
+        "name": "impact_5g",
+        "magnitude_g": 5,
+        "application": "one end-cap bolt pattern"
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_delta_20C",
+        "delta_C": 20,
+        "application": "bolted-joint thermal stress"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 3,
+      "report_fields": [
+        "hull_mass_kg",
+        "stress_LC1_MPa",
+        "stress_LC2_MPa",
+        "buckling_factor_LC3",
+        "seal_groove_deflection_LC1_mm",
+        "bolt_stress_LC5_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_mission",
+        "limit_MPa": 87,
+        "derivation": "260 / 3 operational FoS",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_proof",
+        "limit_MPa": 260,
+        "derivation": "yield, no permanent deformation",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "seal_groove_face_deflection",
+        "limit_mm": 0.05,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "hull_dry_mass",
+        "limit_kg": 1.8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "thermal_analysis",
+        "metric": "bolt_stress_fraction_of_yield_under_thermal",
+        "limit_pct": 70,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "axisymmetric shell + 3D solid (TET10) for end caps",
+      "mesh_size_mm": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (LC1, LC2, LC4)",
+        "linear buckling (LC3)",
+        "thermo-structural (LC5)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "vibration_analysis": "Thruster excitation is below 50 Hz and well below hull shell modes.",
+      "fluid_analysis": "Hydrodynamic drag is vehicle-level, not hull-wall structural.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "pressure-vessel FEA",
+    "proof + burst factor",
+    "buckling eigenvalue",
+    "sealing-surface deflection check",
+    "thermo-structural coupled"
+  ]
+}

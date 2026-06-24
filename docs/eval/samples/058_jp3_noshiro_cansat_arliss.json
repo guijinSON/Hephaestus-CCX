@@ -1,0 +1,166 @@
+{
+  "id": "058_jp3_noshiro_cansat_arliss",
+  "source": {
+    "catalog_ref": "JP3",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_structure",
+  "full_prompt": "Design the primary structural chassis of a CanSat for a small-form-factor CanSat benchmark including Runback/Flyback/Mission classes. The complete CanSat including structure, electronics, battery, parachute, and payload must fit inside a reference 350 ml beverage-can envelope of outside diameter 66 mm and height 130 mm for the Runback/Flyback/Mission classes. The total CanSat mass must not exceed 1050 g for the Open class (and 350 g for the standard tight-envelope class if targeted). The chassis must survive a 20 G static-equivalent shock applied in all three principal axes, representing the deployment shock from the carrier rocket. Electronics and battery placement inside the chassis must be fixed by captive mounts such that no component shifts by more than 2 mm under 20 G axial loading. Telemetry transmission is on the 430 MHz amateur radio band, so the chassis must not fully enclose the antenna in conductive material: an antenna window, a slot, or an RF-transparent panel must be provided. For the flyback/runback classes, the CanSat is deployed from an amateur high-power rocket at approximately 4 km apogee, and the ground-arrival accuracy target is within 50 m of a designated landing waypoint; the chassis must therefore provide mounts for GPS, IMU, and either a paraglider riser or a driven wheel axle depending on class. Primary verification is structural FEA for the 20 G deployment shock treated as a quasi-static equivalent (linear static, static-g loading per MIL-STD-810 / NASA GEVS practice). Modal analysis is recommended to verify the first natural frequency is above 100 Hz to decouple from rocket motor burn frequencies, making vibration analysis a secondary requirement. Thermal, fluid, and radiation analyses are explicitly NOT required at this design gate. Deliverables: STEP AP242 of the chassis, a mass budget, and a report listing total mass in grams, maximum bracket stress at 20 G axial in MPa, maximum component displacement in mm, and the first modal frequency in Hz.",
+  "short_prompt": "Design the primary structural chassis of a CanSat (Runback/Flyback/Mission classes) benchmark. The entire CanSat (structure + electronics + battery + parachute + payload) must fit a 350 ml beverage-can envelope of 66 mm OD x 130 mm height. Total mass <= 1050 g (Open class). Telemetry on the 430 MHz amateur band, so an antenna window / slot / RF-transparent panel is required. Captive component mounts must hold every internal component within 2 mm under 20 G axial.\n\nLoad cases.\n- LC1 deployment shock X: 20 G axial.\n- LC2 deployment shock Y: 20 G lateral.\n- LC3 deployment shock Z: 20 G lateral.\n- First natural frequency >= 100 Hz to decouple from the rocket motor burn frequency.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Small-form-factor CanSat structural chassis",
+    "brief": "Design a 350 ml beverage-can envelope CanSat chassis that survives 20 G deployment shock, stays under 1050 g, and hosts 430 MHz telemetry.",
+    "geometric_constraints": {
+      "envelope_diameter_mm_max": 66,
+      "envelope_height_mm_max": 130,
+      "RF_window_required": true,
+      "antenna_band_MHz": 430
+    },
+    "material": {
+      "typical": "Al 6061-T6 sheet/machined plus FR4 decks",
+      "properties_Al6061T6": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "deployment_shock_X",
+        "magnitude_g": 20,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "deployment_shock_Y",
+        "magnitude_g": 20,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "deployment_shock_Z",
+        "magnitude_g": 20,
+        "direction": "lateral"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "carrier-rocket deployer rail / ejection spring interface fixed"
+    },
+    "objective": {
+      "minimize": "mass",
+      "total_mass_g_max": 1050
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "total_mass_g",
+        "max_bracket_stress_MPa",
+        "max_component_displacement_mm",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "envelope_fit",
+        "limit_mm": 66,
+        "derivation": "350 ml beverage can OD",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "envelope_height_mm",
+        "limit_mm": 130,
+        "derivation": "350 ml beverage can height",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass_g",
+        "limit_g": 1050,
+        "derivation": "Open class mass cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_component_displacement_mm_at_20g",
+        "limit_mm": 2.0,
+        "derivation": "Captive-mount rigidity requirement",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency_Hz",
+        "limit_Hz": 100,
+        "derivation": "Decouple from rocket motor burn frequency",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran"
+      ],
+      "analysis_types": [
+        "linear static (20 G x3)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Short flight, no explicit thermal gradient target in rules.",
+      "fluid_analysis": "Parachute dynamics treated by kinematic sizing, not CFD.",
+      "radiation_analysis": "Sub-orbital flight, not applicable."
+    }
+  },
+  "eval_coverage": [
+    "tight envelope fit (can form factor)",
+    "20 G deployment shock",
+    "first modal frequency above burn band",
+    "RF window requirement"
+  ]
+}

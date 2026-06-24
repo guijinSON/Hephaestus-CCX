@@ -1,0 +1,95 @@
+**
+** KiboCUBE / J-SSOD 1U CubeSat structural verification - analysis template
+** (mesh + NSETs spliced in by wire_bcs.py from the agent's STEP)
+**
+** Spec: 186_sa3_kibocube
+**   JAXA J-SSOD / KiboCUBE 1U CubeSat primary structure.
+**   Envelope 100 x 100 x 113.5 mm, four 8.5 x 8.5 mm corner deployer
+**   rails per Cal Poly CDS Rev 14, Al 6061-T6 monolithic chassis,
+**   mass cap 1.33 kg. Qualification per JX-ESPC-100134 (J-SSOD).
+**
+** Units: mm, N, MPa, t (tonne), s
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIXED  - deployer-aft rail end (z = z_min) of all four corner
+**             rails. Idealised as a fully-encastred patch representing
+**             the J-SSOD rail interface (spec requires >=75 % rail
+**             contact along 113.5 mm; we conservatively clamp the
+**             aft face only).
+**   NALL    - every node, used by *INITIAL CONDITIONS, TYPE=TEMPERATURE
+**             and by the *TEMPERATURE field in the thermal step.
+**
+** *SOLID SECTION uses ELSET=Eall (auto-built from gmsh's volume sets
+** by wire_bcs.py). The chassis is treated as a single monolithic Al
+** 6061-T6 body for the purposes of this benchmark.
+**
+** Three steps mapped to spec.json requirements:
+**   STEP 1 - *STATIC,    LC1 quasi-static 9 g along +X via *DLOAD GRAV  -> R1
+**   STEP 2 - *FREQUENCY, 5 modes (first natural frequency)              -> R2
+**   STEP 3 - *STATIC,    thermal field +50 C (DT = +30 K from 20 C ref) -> R4
+**
+** R3 (mass <= 1.33 kg) is computed from element/material density by
+** check.py (closed-form on the *ELEMENT volumes); R5 (linear buckling
+** load factor >= 2.0) is intentionally SKIP because LC1 stress is
+** ~1 % of yield, making buckling a non-credible failure mode.
+**
+*MATERIAL, NAME=AL6061T6
+*ELASTIC
+69000.0, 0.33
+*DENSITY
+2.7e-9
+*EXPANSION, ZERO=20.0
+23.6e-6
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=AL6061T6
+**
+*INITIAL CONDITIONS, TYPE=TEMPERATURE
+NALL, 20.0
+**
+** ----------------------------------------------------------------
+** Boundary: deployer-aft rail face fully encastred (J-SSOD rails).
+** ----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ================================================================
+** STEP 1: LC1 quasi-static 9 g along +X via gravity body load.
+**   GRAV magnitude = 9 * 9810 = 88290 mm/s^2.  Direction (1, 0, 0).
+**   -> max von Mises stress reported for R1 (limit 138 MPa).
+** ================================================================
+*STEP
+*STATIC
+*DLOAD
+Eall, GRAV, 88290.0, 1.0, 0.0, 0.0
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ================================================================
+** STEP 2: Modal - 5 modes, fixed boundary as STEP 1.
+**   -> first natural frequency reported for R2 (limit >= 135 Hz).
+** ================================================================
+*STEP
+*FREQUENCY
+5
+*NODE FILE
+U
+*END STEP
+**
+** ================================================================
+** STEP 3: Thermal - hot-case soak DT = +30 K (ref 20 C -> 50 C).
+**   Rails clamped (NFIXED) so axial expansion is restrained at the
+**   deployer interface; chassis is otherwise free.
+**   -> max von Mises stress reported for R4 (limit 138 MPa).
+** ================================================================
+*STEP
+*STATIC
+*TEMPERATURE
+NALL, 50.0
+*NODE FILE
+U, NT
+*EL FILE
+S
+*END STEP

@@ -1,0 +1,201 @@
+{
+  "id": "271_a31_robosub_pressure_hull",
+  "source": {
+    "catalog_ref": "A31",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "marine_structural",
+  "part_class": "auv_pressure_hull_cylinder",
+  "full_prompt": "Design a single-part monolithic cylindrical pressure hull for a 2026 collegiate AUV benchmark AUV, compliant with the 2026 collegiate AUV benchmark Team Handbook. The hull houses electronics and is rated for submerged operation to 10 m depth with a 2.5x safety factor. Geometry: cylindrical barrel 200 mm OD x 700 mm long, with two machined flanges (integral to the barrel) at each end accepting removable end caps. Each flange carries 16x M6 bolts on a 180 mm PCD. Wall thickness to be sized. The hull is rotationally symmetric, spin-formed or machined from a single billet (no welds). Material: 6061-T6 aluminum, E = 68.9 GPa, yield = 276 MPa, ultimate = 310 MPa, density = 2700 kg/m^3. Operating conditions: external pressure at 10 m depth = 100 kPa differential; design external pressure with 2.5x factor = 250 kPa. Load cases: (R1) Operating external pressure 100 kPa; max von Mises <= yield / 3.0 = 92 MPa; ovalization / radial deflection <= 0.5 mm. (R2) Design external pressure 250 kPa (2.5x operating); max von Mises <= yield / 1.5 = 184 MPa. (R3) Critical buckling pressure: the hull shall buckle at >= 4.0 x operating differential = 400 kPa; linear buckling eigenvalue under 100 kPa external pressure shall be >= 4.0. (R4) End-cap bolt interface: each flange carries up to 16 x 2 kN = 32 kN axial from cap pre-load at assembly + operating differential; bolt hole bearing stress <= yield / 1.5 = 184 MPa. (R5) Thruster mount boss: the hull includes 6 integral thruster mount bosses each carrying a 30 N lateral thrust; max local stress <= yield / 2.0 = 138 MPa. (R6) Hull mass <= 3.0 kg. (R7) Linear buoyancy: at operating depth with 3 kg dry + cap-plus-internals average total displaced volume must give +- 50 g trim margin (geometric check, not FEA). Primary verification: linear static + linear buckling. Vibration, thermal, fluid, radiation NOT required (internal electronics thermal is a separate gate). Deliverables: STEP AP242 monolithic hull, bolt pattern drawing, and a report listing hull mass in kg, max von Mises at operating and design pressures, first buckling load factor, bolt-hole bearing stress.",
+  "short_prompt": "Design a single-part monolithic cylindrical 6061-T6 aluminum pressure hull for a 2026 collegiate AUV benchmark vehicle, compliant with its 2026 Team Handbook. Hull is rotationally symmetric, spin-formed or machined from a single billet (no welds); two integral end flanges each carry 16 x M6 bolts on a 180 mm PCD for removable end caps. Rated for 10 m submerged operation with a 2.5 x design-pressure safety factor. Six integral thruster mount bosses each carry 30 N lateral thrust. Neutral-trim margin +-50 g at operating depth.\n\nEnvelope: 200 mm OD x 700 mm long barrel, wall thickness to be sized.\n\nLoad cases.\n- LC1 operating external pressure: 100 kPa differential; radial ovalization <= 0.5 mm.\n- LC2 design external pressure: 2.5 x operating = 250 kPa.\n- LC3 buckling: linear buckling eigenvalue under 100 kPa external >= 4.0 (hull buckles at >= 400 kPa).\n- LC4 end-cap bolt interface: each flange carries up to 32 kN axial (16 x 2 kN) from preload + operating differential; bolt-hole bearing check.\n- LC5 thruster mount boss: 30 N lateral at each of 6 bosses, local stress check.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate AUV benchmark 2026 10 m AUV pressure hull",
+    "brief": "6061-T6 monolithic cylindrical hull; 100 kPa operating / 250 kPa design; buckling eigenvalue >= 4.0.",
+    "geometric_constraints": {
+      "OD_mm": 200,
+      "length_mm": 700,
+      "flange_bolts": {
+        "count_per_flange": 16,
+        "size": "M6",
+        "PCD_mm": 180
+      },
+      "thruster_mount_bosses": 6,
+      "monolithic": true,
+      "prohibited": [
+        "welds"
+      ]
+    },
+    "material": {
+      "name": "6061-T6 aluminum",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "operating_10m",
+        "external_pressure_kPa": 100
+      },
+      {
+        "id": "LC2",
+        "name": "design_2.5x",
+        "external_pressure_kPa": 250
+      },
+      {
+        "id": "LC3",
+        "name": "buckling_eigenvalue",
+        "external_pressure_kPa": 100
+      },
+      {
+        "id": "LC4",
+        "name": "bolt_preload",
+        "bolt_force_N": 2000,
+        "total_bolts": 32
+      },
+      {
+        "id": "LC5",
+        "name": "thruster_mount",
+        "force_per_mount_N": 30
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "axial support via internal mounting feet; end flanges sealed with caps",
+      "loads": "uniform external pressure on outside; internal atmospheric"
+    },
+    "objective": {
+      "minimize": "hull_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "hull_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "first_buckling_load_factor",
+        "bolt_hole_bearing_MPa",
+        "thruster_mount_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 92,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "radial_ovalization",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 4.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bolt_hole_bearing",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "thruster_mount_stress",
+        "limit_MPa": 138,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "hull_mass",
+        "limit_kg": 3.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "axisymmetric or 3D hex",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (external pressure, preload)",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Submerged, neutral buoyancy vehicle.",
+      "thermal_analysis": "Internal electronics thermal is a separate gate.",
+      "fluid_analysis": "External pressure is hydrostatic.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "external-pressure buckling (critical failure mode)",
+    "multi-case preload + pressure + thruster",
+    "radial ovalization serviceability"
+  ]
+}

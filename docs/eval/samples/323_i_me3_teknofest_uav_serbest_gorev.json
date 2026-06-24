@@ -1,0 +1,190 @@
+{
+  "id": "323_i_me3_teknofest_uav_serbest_gorev",
+  "source": {
+    "catalog_ref": "I-ME3 (I-TF6)",
+    "year": 2022,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "uav_wing_spar",
+  "full_prompt": "Design the primary wing-spar and wing-fuselage carry-through assembly of a fixed-wing UAV competing in the national aerospace student benchmark Uluslararası Serbest Görev İHA (International Free-Mission UAV) category. Maximum take-off weight (MTOW) of the complete aircraft including 2.0 kg mission payload must not exceed 25 kg. The wing is a constant-chord rectangular planform with span 3.2 m, chord 0.35 m, and NACA 4415 airfoil. Cruise speed is 22 m/s at 1500 m altitude (ISA standard density 1.058 kg/m^3). The spar is a rectangular-section hollow beam running the full span, joined at the root to a carbon-fiber carry-through that bolts into the fuselage frame via a 4-bolt pattern using M6 A4-70 stainless bolts. The spar and carry-through are fabricated from aerospace-grade carbon-fiber unidirectional laminate (T700/epoxy) with longitudinal Young's modulus 130 GPa, transverse modulus 8 GPa, in-plane shear modulus 4.5 GPa, ultimate tensile strength 2150 MPa (fiber direction), ultimate compressive strength 1200 MPa, interlaminar shear 70 MPa, and density 1550 kg/m^3. Limit load factor is +4 g / -2 g per STANAG 4703 light-UAS airworthiness. Ultimate safety factor is 1.5 per the same standard. Load cases: (LC1) +4 g pull-up applied as an elliptical lift distribution across the full span on the 25 kg MTOW (total lift 981 N distributed, quarter-chord line of action); (LC2) -2 g push-over with inverted elliptical lift (total 490 N downward); (LC3) asymmetric roll maneuver with 2.5 g on one half-span and 1.0 g on the other (combined lift 428 N unbalanced); (LC4) hard-landing 3 g vertical at the main landing-gear root attachment on the fuselage frame while wings are in static 1 g trim; (LC5) ground gust on parked aircraft applying 250 N drag load at wingtip. Pass/fail criteria: (R1) under every limit load case, maximum Tsai-Wu composite failure index must remain below 1.0 at ultimate = 1.5 x limit (so the solver must apply factor 1.5 to LC1-LC5 and then check index <= 1.0); (R2) wing-tip vertical deflection at 1 g steady flight must remain below 2% of half-span (32 mm); (R3) first wing bending natural frequency must exceed 8 Hz to clear the control-system bandwidth; (R4) total wing-spar + carry-through dry mass must not exceed 2.2 kg; (R5) bolt-bearing stress at the carry-through interface must remain below 350 MPa at ultimate load per STANAG 4703 fastener gate. Vibration analysis limited to modal for R3; no random PSD required. Thermal, fluid, radiation, and buckling analyses are not primary verification gates. Deliverables: STEP AP242 solid model with spar, carry-through, and 4 bolts as separate bodies, composite layup schedule, FEA report with Tsai-Wu index for each ultimate load case, modal report, and mass table.",
+  "short_prompt": "Design the primary wing spar + wing-fuselage carry-through of a fixed-wing UAV in the national aerospace student benchmark International Free-Mission UAV category. MTOW <= 25 kg with 2.0 kg mission payload, rectangular 3.2 m span x 0.35 m chord NACA 4415, cruise 22 m/s at 1500 m altitude (ISA density 1.058 kg/m^3).\n\nEnvelope: hollow rectangular UD T700/epoxy spar running the full span, bolted into a CFRP carry-through at the root with 4 x M6 A4-70 stainless bolts. Limit load +4 g / -2 g per STANAG 4703; ultimate FoS 1.5.\n\nFactor regime: Tsai-Wu failure index <= 1.0 at ultimate (1.5 x limit); wingtip deflection at 1 g trim <= 2% of half-span (32 mm); first wing-bending mode >= 8 Hz; bolt-bearing stress <= 350 MPa at ultimate.\n\nLoad cases.\n- +4 g elliptical pull-up: 981 N total lift.\n- -2 g push-over: 490 N inverted lift.\n- Asymmetric roll: 2.5 g on one half + 1.0 g on the other (428 N unbalanced).\n- 3 g hard landing at the main-landing-gear root with wings in static 1 g trim.\n- Parked ground gust: 250 N drag at wingtip.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark Free-Mission UAV Wing Spar + Carry-Through",
+    "brief": "CFRP wing spar + carry-through for 25 kg MTOW free-mission UAV, 3.2 m span, +4/-2 g limit, STANAG 4703 FoS 1.5.",
+    "geometric_constraints": {
+      "wing_span_m": 3.2,
+      "chord_m": 0.35,
+      "airfoil": "NACA 4415",
+      "spar_type": "hollow rectangular section full span",
+      "carry_through_bolts": {
+        "count": 4,
+        "size": "M6",
+        "grade": "A4-70"
+      }
+    },
+    "material": {
+      "name": "T700/epoxy UD CFRP",
+      "properties": {
+        "E_long_GPa": 130,
+        "E_trans_GPa": 8,
+        "G_12_GPa": 4.5,
+        "Xt_MPa": 2150,
+        "Xc_MPa": 1200,
+        "ILSS_MPa": 70,
+        "density_kg_m3": 1550
+      }
+    },
+    "airworthiness_reference": "STANAG 4703 / AEP-83 (limit +4g / -2g, ultimate = 1.5 x limit)",
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pullup_+4g",
+        "magnitude_N": 981,
+        "application": "elliptical lift across span, quarter-chord"
+      },
+      {
+        "id": "LC2",
+        "name": "pushover_-2g",
+        "magnitude_N": 490,
+        "application": "inverted elliptical lift"
+      },
+      {
+        "id": "LC3",
+        "name": "asymmetric_roll",
+        "magnitude_N": 428,
+        "application": "unbalanced half-span lift"
+      },
+      {
+        "id": "LC4",
+        "name": "hard_landing_3g",
+        "magnitude_g": 3,
+        "application": "MLG root on fuselage, wings in 1g trim"
+      },
+      {
+        "id": "LC5",
+        "name": "ground_gust",
+        "magnitude_N": 250,
+        "application": "wingtip drag"
+      }
+    ],
+    "MTOW_kg": 25,
+    "payload_kg": 2.0,
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 6,
+      "report_fields": [
+        "spar_mass_kg",
+        "tsai_wu_index_per_case",
+        "tip_deflection_1g_mm",
+        "first_bending_freq_Hz",
+        "bolt_bearing_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_failure_index_ultimate",
+        "limit": 1.0,
+        "derivation": "applied load = 1.5 x limit per STANAG 4703",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "wingtip_deflection_1g",
+        "limit_mm": 32,
+        "derivation": "2% of half-span (1600 mm)",
+        "applies_to": [
+          "steady_1g"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_wing_bending_freq",
+        "limit_Hz": 8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "spar_plus_carrythrough_mass",
+        "limit_kg": 2.2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "bolt_bearing_stress_ultimate",
+        "limit_MPa": 350,
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell for spar webs/flanges; solid TET10 for carry-through block",
+      "mesh_size_mm": 5,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Composite"
+      ],
+      "analysis_types": [
+        "linear static (x5 at ultimate = 1.5 x limit)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "Cruise at 1500 m ISA, no thermal gradient imposed.",
+      "fluid_analysis": "Aero loads reduced to elliptical lift distribution per LC1-LC3.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Composite failure criterion covers compressive instability at laminate level for this slenderness."
+    }
+  },
+  "eval_coverage": [
+    "composite FEA with Tsai-Wu",
+    "limit + ultimate factor application",
+    "airworthiness standard traceability",
+    "modal check",
+    "fastener bearing gate"
+  ]
+}

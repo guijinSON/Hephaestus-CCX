@@ -1,0 +1,477 @@
+{
+  "id": "094_ng9_ose_ceb_liberator_press",
+  "source": {
+    "catalog_ref": "NG9",
+    "year": 2020,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/094_ng9_ose_ceb_liberator_press.json",
+    "multipart_basis": "Decomposition matches the CAD assembly already named in the original brief ('two columns + top + bottom crossplates + cylinder mount + mold box + upper platen + lower platen'), expanded with the additional primary families visible in OSE Liberator documentation (welded square-tube base frame, soil hopper, pivot pin brackets for the mold drawer, side cover plates, and the bolted tie-rods/fasteners family). Rulebook citations inherited verbatim; no new citations added."
+  },
+  "domain": "open_hardware_agriculture",
+  "part_class": "hydraulic_ceb_press_main_frame_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design one representative main compression frame for the Open Source Ecology (OSE) CEB Liberator Compressed Earth Block press, compliant with the published OSE documentation. The press produces a compressed earth block of 305 mm x 145 mm x 90 mm nominal dimensions by compacting raw soil at a compaction pressure of 10 MPa using a single hydraulic cylinder delivering 150 kN axial force. The main frame is a welded mild-steel (ASTM A36, yield 250 MPa) plate-and-tube structure that reacts the full 150 kN compaction force between the upper platen (fixed to the frame) and the movable lower platen driven by the cylinder rod, across the block mold cavity. Frame envelope 1500 mm (H) x 900 mm (W) x 700 mm (D). Main vertical reaction columns are two channel sections C 150 x 19 or equivalent, tied by horizontal top and bottom cross-plates of 20 mm thick steel. The mold box is a 305 x 145 mm internal-cavity steel box with 15 mm wall thickness, reinforced against hoop burst during compaction (compaction pressure 10 MPa acts radially as well as axially on the mold walls through the soil plug, so hoop-direction stress must be checked). The compression cylinder is an off-the-shelf hydraulic cylinder sized to at least 150 kN at the system pressure. Deliverable is a CAD assembly of the main compression frame (two columns + top + bottom crossplates + cylinder mount + mold box + upper platen + lower platen) suitable for linear static FEA under the 150 kN compaction load case. In addition, the LifeTrac interface (30 kN drawbar capacity) is out of scope for this sample and is tracked separately. Vibration, thermal, fluid, radiation analyses are NOT required. A linear buckling check on the two vertical compression columns IS required because they are slender enough to potentially buckle under 150 kN.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a welded/bolted multi-part assembly. The decomposition mirrors the component list in the original brief and adds the supporting families observed in OSE documentation: two vertical compression columns (P1, C150x19 or equivalent); a 20 mm top cross-plate (P2) reacting the 150 kN upper-platen load; a 20 mm bottom cross-plate (P3) carrying the hydraulic-cylinder mount reaction; a welded cylinder-mount saddle (P4) bolted to P3; a 305x145 mm internal mold box (P5) with 15 mm walls that must resist 10 MPa radial compaction pressure; an upper platen plate (P6) fixed to P2 and a lower platen plate (P7) driven by the cylinder rod; a welded square-tube base frame (P8) that ties the lower ends of the columns and supports the base on the ground; a soil hopper (P9) that feeds raw soil into the mold between cycles; pivot pin brackets (P10) for the mold drawer/ejector linkage; two side cover plates (P11) that seal the column channels laterally; and a bolted fastener/tie-rod family (P12) of M16 Grade 8.8 bolts and tie rods clamping crossplates to columns. The final FEM verification runs on the ASSEMBLED model only - per-part stress is reported but does not gate pass/fail. Inter-part connection DCR at the welded column-to-cross-plate joints, the cylinder-mount bolted interface, and the mold-box-to-cross-plate interface must be <= 1.0 under the 150 kN compaction load (LC1) and the 10 MPa hoop-pressure load (LC2). All inherited load magnitudes (150 kN, 10 MPa), material properties (A36 steel, 250 MPa yield), and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design an Open Source Ecology CEB Liberator compressed-earth-block press as a multi-part welded-steel assembly. Peak compaction force 150 kN develops a block pressure of 10 MPa in a 305 x 145 x 90 mm block cavity. Primary structure ASTM A36 steel with yield 250 MPa; main column 1500 mm tall.\n\nLoad cases: LC1 150 kN compaction at block cavity; LC2 asymmetric loading at column top. Pass/fail: no yield under LC1/LC2; column buckling SF >= 3.0; FEM at assembled level; bolted and welded joint DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "OSE CEB Liberator main compression frame (multi-part welded assembly)",
+    "brief": "Design a welded A36 steel main frame that reacts 150 kN hydraulic compaction force over a 305 x 145 x 90 mm earth-block mold at 10 MPa compaction pressure. [Multi-part assembly] compression columns (x2), top cross-plate (x1), bottom cross-plate (x1), cylinder-mount saddle (x1), mold box (x1), upper platen (x1), lower platen (x1), welded base frame (x1), soil hopper (x1), pivot pin brackets (x2), side cover plates (x2), fastener/tie-rod family (x8). FEM verification at assembled level only; column-to-crossplate welded joint DCR <= 1.0 under LC1.",
+    "geometric_constraints": {
+      "frame_envelope_mm": [
+        1500,
+        900,
+        700
+      ],
+      "block_size_mm": [
+        305,
+        145,
+        90
+      ],
+      "mold_wall_thickness_mm": 15,
+      "column_section": "C 150 x 19 or equivalent",
+      "top_bottom_plate_thickness_mm": 20
+    },
+    "material": {
+      "name": "ASTM A36 mild steel",
+      "yield_strength_MPa": 250,
+      "ultimate_tensile_strength_MPa": 400,
+      "E_GPa": 200,
+      "density_kg_m3": 7850
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "compaction",
+        "magnitude_N": 150000,
+        "direction": "axial between platens",
+        "application": "uniform pressure on lower platen; reaction on upper platen"
+      },
+      {
+        "id": "LC2",
+        "name": "mold_hoop",
+        "magnitude_MPa": 10,
+        "application": "radial pressure on mold-box interior walls"
+      }
+    ],
+    "boundary_conditions": {
+      "cylinder_mount": "fixed to bottom cross-plate",
+      "upper_platen": "rigidly fixed to top cross-plate",
+      "lower_platen": "reacts cylinder force uniformly"
+    },
+    "objective": {
+      "primary": "pass all criteria",
+      "secondary": "minimize frame mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "max_von_mises_frame_MPa",
+        "max_von_mises_mold_wall_MPa",
+        "column_buckling_load_factor",
+        "frame_mass_kg",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "P1",
+        "name": "compression column",
+        "role": "vertical reaction column carrying the full 150 kN compaction force between top and bottom cross-plates; buckling-critical slender member (R4)",
+        "count_min": 2,
+        "geometric_constraints": {
+          "section": "C 150 x 19 channel",
+          "length_mm": 1500,
+          "orientation": "vertical, web facing inward to mold cavity"
+        },
+        "material_hint": "ASTM A36 hot-rolled channel",
+        "speculation": true
+      },
+      {
+        "part_id": "P2",
+        "name": "top cross-plate",
+        "role": "horizontal 20 mm plate welded across top of both columns; reacts 150 kN upward platen thrust under LC1",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plate_thickness_mm": 20,
+          "plan_dimensions_mm": [
+            900,
+            400
+          ]
+        },
+        "material_hint": "ASTM A36 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "P3",
+        "name": "bottom cross-plate",
+        "role": "horizontal 20 mm plate welded across bottom of both columns; carries hydraulic cylinder mounting reaction under LC1",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plate_thickness_mm": 20,
+          "plan_dimensions_mm": [
+            900,
+            400
+          ]
+        },
+        "material_hint": "ASTM A36 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "P4",
+        "name": "cylinder-mount saddle",
+        "role": "welded/bolted saddle bracket on bottom cross-plate that locates and constrains the hydraulic cylinder barrel; transmits 150 kN cylinder reaction into P3",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plate_thickness_mm": 15,
+          "bolt_pattern": "4x M16 flange",
+          "cylinder_bore_mm_range": [
+            80,
+            100
+          ]
+        },
+        "material_hint": "ASTM A36 fabricated bracket",
+        "speculation": true
+      },
+      {
+        "part_id": "P5",
+        "name": "mold box",
+        "role": "305 x 145 mm internal cavity 4-wall box that contains the soil during compaction; must resist 10 MPa radial hoop pressure from compacted soil (LC2)",
+        "count_min": 1,
+        "geometric_constraints": {
+          "internal_cavity_mm": [
+            305,
+            145
+          ],
+          "wall_thickness_mm": 15,
+          "height_mm": 130
+        },
+        "material_hint": "ASTM A36 welded steel box (optionally wear-liner)",
+        "speculation": true
+      },
+      {
+        "part_id": "P6",
+        "name": "upper platen",
+        "role": "thick plate that caps the top of the mold cavity; fixed to P2 and provides the stationary compaction face",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plate_thickness_mm": 25,
+          "plan_dimensions_mm": [
+            305,
+            145
+          ]
+        },
+        "material_hint": "ASTM A36 plate (optionally hardened wear-face)",
+        "speculation": true
+      },
+      {
+        "part_id": "P7",
+        "name": "lower platen",
+        "role": "moving plate driven by the hydraulic cylinder rod up into the mold cavity; applies 150 kN to the soil plug",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plate_thickness_mm": 25,
+          "plan_dimensions_mm": [
+            305,
+            145
+          ],
+          "rod_connection": "threaded rod-end clevis"
+        },
+        "material_hint": "ASTM A36 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "P8",
+        "name": "welded square-tube base frame",
+        "role": "ground-contact base frame of square HSS tubing that supports the columns, carries operating weight to the floor, and provides forklift-handling pockets",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tube_section": "HSS 75 x 75 x 5 or equivalent",
+          "plan_footprint_mm": [
+            900,
+            700
+          ]
+        },
+        "material_hint": "ASTM A500 Grade B or A36 equivalent",
+        "speculation": true
+      },
+      {
+        "part_id": "P9",
+        "name": "soil hopper",
+        "role": "sheet-metal hopper above the mold box that feeds raw soil into the cavity between compaction strokes; non-load-bearing during LC1 (mass only)",
+        "count_min": 1,
+        "geometric_constraints": {
+          "sheet_thickness_mm": 3,
+          "opening_area_mm2": 120000,
+          "form": "sloped 4-side funnel welded to top cross-plate"
+        },
+        "material_hint": "ASTM A36 sheet",
+        "speculation": true
+      },
+      {
+        "part_id": "P10",
+        "name": "pivot pin bracket",
+        "role": "welded bracket pair carrying the pivot pin for the mold-drawer / ejector linkage; reacts the transverse eject force",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plate_thickness_mm": 12,
+          "pin_bore_mm": 25,
+          "pin_centerline_height_mm": 800
+        },
+        "material_hint": "ASTM A36 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "P11",
+        "name": "side cover plate",
+        "role": "left/right sheet-metal cover plates welded across the open side of each column channel; provide torsional closure and shield the mold cavity",
+        "count_min": 2,
+        "geometric_constraints": {
+          "sheet_thickness_mm": 3,
+          "panel_dimensions_mm": [
+            1500,
+            150
+          ]
+        },
+        "material_hint": "ASTM A36 sheet",
+        "speculation": true
+      },
+      {
+        "part_id": "P12",
+        "name": "fastener / tie-rod family",
+        "role": "M16 Grade 8.8 bolts clamping the cylinder-mount saddle to the bottom cross-plate and retaining the upper platen; tie rods for optional bolted column-to-crossplate alternate",
+        "count_min": 8,
+        "geometric_constraints": {
+          "thread": "M16",
+          "grade": "8.8",
+          "length_range_mm": [
+            40,
+            120
+          ]
+        },
+        "material_hint": "medium-carbon alloy steel, black oxide",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox_mm": [
+        900,
+        700,
+        1500
+      ],
+      "coordinate_system": "origin at ground-plane center of base frame; +Z up along compaction axis, +X along mold long dimension"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "compaction_force_kN",
+        "limit_kN": 150,
+        "derivation": "OSE CEB Liberator spec",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "compaction_pressure_MPa",
+        "limit_MPa": 10,
+        "derivation": "OSE compaction pressure",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 166,
+        "derivation": "yield / 1.5 = 250 / 1.5 (machine-frame SF)",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor_of_columns",
+        "limit": 3.0,
+        "derivation": "machine-frame buckling SF",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "block_nominal_size_mm",
+        "limit": "305 x 145 x 90",
+        "derivation": "OSE CEB Liberator block geometry",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection demand-to-capacity ratio (DCR) across the welded column-to-crossplate joints (IF1, IF2), the cylinder-mount bolted interface (IF3), and the mold-box-to-cross-plate interface (IF5) <= 1.0 under LC1 (150 kN compaction) and LC2 (10 MPa hoop).",
+        "metric": "max DCR across IF1..IF9",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Axial column-to-column spread (relative lateral displacement of the two P1 column tops) under LC1 shall not exceed 2.0 mm so that the 305 x 145 mm mold cavity alignment is maintained during compaction.",
+        "metric": "column_top_spread_mm under LC1",
+        "threshold": 2.0,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (plates) + beam (columns) + solid (mold box + platens)",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "CalculiX",
+        "Abaqus",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling eigenvalue"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "P1",
+        "P2"
+      ],
+      "mediated_by": "full-penetration fillet weld (column web/flange to underside of top cross-plate)",
+      "load_path": "Top cross-plate P2 transfers 150 kN upper-platen reaction into the two compression columns P1"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "P1",
+        "P3"
+      ],
+      "mediated_by": "full-penetration fillet weld",
+      "load_path": "Columns P1 transfer cylinder reaction from bottom cross-plate P3 back up to the top"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "P3",
+        "P4"
+      ],
+      "mediated_by": "bolted (4x M16 Grade 8.8 from fastener family P12)",
+      "load_path": "Hydraulic cylinder reaction (150 kN) transfers from cylinder-mount saddle P4 into bottom cross-plate P3"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "P4",
+        "P7"
+      ],
+      "mediated_by": "threaded clevis on cylinder rod tip",
+      "load_path": "Cylinder rod drives lower platen P7 upward against mold contents (soil plug) with 150 kN"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "P2",
+        "P5"
+      ],
+      "mediated_by": "bolted (4x M16 Grade 8.8) from fastener family P12",
+      "load_path": "Mold box P5 is bolted to underside of top cross-plate P2; 10 MPa hoop pressure reacts radially in P5 walls, vertical reaction passes into P2"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "P2",
+        "P6"
+      ],
+      "mediated_by": "bolted (upper platen retention) from fastener family P12",
+      "load_path": "Upper platen P6 bolted to underside of top cross-plate P2, carries direct 150 kN face-compression from soil plug"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "P1",
+        "P8"
+      ],
+      "mediated_by": "fillet-welded column base to HSS base frame",
+      "load_path": "Column base reaction transfers to HSS base frame P8 and then to ground"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "P2",
+        "P9"
+      ],
+      "mediated_by": "fillet-welded sheet-metal funnel skirt",
+      "load_path": "Soil-hopper P9 self-weight reacts into top cross-plate P2 (non-governing mass load only)"
+    },
+    {
+      "id": "IF9",
+      "between": [
+        "P1",
+        "P10"
+      ],
+      "mediated_by": "fillet-welded bracket to column web",
+      "load_path": "Pivot pin bracket P10 transmits mold-drawer eject force transversely into columns P1"
+    },
+    {
+      "id": "IF10",
+      "between": [
+        "P1",
+        "P11"
+      ],
+      "mediated_by": "plug or stitch weld (sheet-metal cover to column flange)",
+      "load_path": "Side cover plate P11 closes column channel torsionally; secondary load path"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Linear-static FEA and linear-buckling eigenvalue analysis are performed on the full welded/bolted frame assembly with the 150 kN cylinder force applied between the lower platen and upper platen. Per-part stress (columns, plates, mold box, saddle) is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The original brief explicitly enumerates a seven-component CAD assembly (two columns + two cross-plates + cylinder mount + mold box + upper/lower platens). Modeling the press as a single solid body would misrepresent welded-joint stress and obscure the column buckling mode that R4 explicitly tests.",
+    "speculation_caveats": "Additional families (base frame P8, soil hopper P9, pivot pin brackets P10, side cover plates P11) and exact fastener counts are speculation consistent with OSE Liberator documentation; they are not rulebook-prescribed.",
+    "original_sample_preserved_at": "docs/eval/samples/094_ng9_ose_ceb_liberator_press.json"
+  }
+}

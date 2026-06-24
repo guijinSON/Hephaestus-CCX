@@ -1,0 +1,211 @@
+{
+  "id": "335_i_eu3_esa_cansat_europe",
+  "source": {
+    "catalog_ref": "I-EU3",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_primary_structure",
+  "full_prompt": "Design the primary structural assembly of a CanSat entry for ESA CanSat Europe 2025-26, compliant with the ESERO CanSat Competition Guidelines. The CanSat must fit within a cylindrical envelope of 115 mm height by 66 mm outer diameter; total wet mass must be exactly 350 g (-0/+10 g). The structure comprises a CFRP outer shell (wound 2-ply UD, nominal 0.8 mm wall), a 3D-printed PA12 top nose cap, a 3D-printed PA12 bottom base plate with parachute attachment eyelet, and two internal PCB-mount bulkheads at 30 mm and 75 mm from the base. Material properties: CFRP shell (E 70 GPa, tensile 600 MPa, density 1550 kg/m^3); PA12 (E 1.6 GPa, tensile 45 MPa, density 1010 kg/m^3). The CanSat deploys from a carrier rocket at approximately 1000 m AGL and descends under a parachute rated for minimum 1000 N deployment shock. Descent rate is 8-11 m/s per ESERO rulebook. Load cases: (LC1) launch qualification 20 g axial on 350 g wet mass (applied as distributed body force); (LC2) lateral qualification 5 g on 350 g; (LC3) parachute deployment shock: 1000 N axial at the base-plate eyelet (per rulebook minimum spec); (LC4) ground impact at 10 m/s descent rate: 15 g equivalent static deceleration on the base; (LC5) scrutineering pre-launch handling: 1 kg applied axially at the top nose cap (representing stack weight during integration). Pass/fail: (R1) max von Mises stress (or composite Tsai-Wu index for CFRP) must remain below material-appropriate limits: CFRP < 300 MPa (600 / 2.0 FoS), PA12 < 22.5 MPa (45 / 2.0 FoS), across LC1-LC5; (R2) eyelet pull-out: local stress in PA12 near the eyelet insert under LC3 must remain below 22.5 MPa; (R3) structural dry mass (shell + nose + base + bulkheads only, excluding PCBs, battery, parachute) must not exceed 120 g; (R4) first natural frequency must exceed 80 Hz to avoid coupling with carrier rocket motor burn; (R5) envelope compliance: no point of the structure may exceed the 66 mm x 115 mm envelope under any static load case (rigid check). Thermal, fluid, radiation, and buckling analyses not required for this basic structural benchmark. Deliverables: STEP AP242 assembly with shell, nose, base, two bulkheads as separate bodies; composite layup schedule; FEA report per load case; modal report; mass budget.",
+  "short_prompt": "Design the primary structural assembly of an ESA CanSat Europe 2025-26 entry per ESERO Guidelines. Wet mass exactly 350 g (-0/+10 g) in a 115 x 66 mm cylindrical envelope; deployed from a carrier rocket at ~1000 m AGL, descent 8-11 m/s.\n\nEnvelope: 2-ply UD CFRP wound outer shell (~0.8 mm wall); 3D-printed PA12 conical nose cap and base plate with parachute eyelet; two PA12 internal PCB-mount bulkheads at 30 and 75 mm above the base.\n\nFactor regime: material FoS 2.0 (CFRP 300 MPa / PA12 22.5 MPa) via von Mises or Tsai-Wu index; structural dry mass <= 120 g; first natural frequency > 80 Hz; envelope 66 x 115 mm rigid under any static load.\n\nLoad cases.\n- Launch qualification 20 g axial on 350 g wet, distributed body force.\n- Lateral qualification 5 g on 350 g.\n- Parachute deployment shock: 1000 N axial at the base-plate eyelet (rulebook minimum).\n- Ground impact at 10 m/s: 15 g equivalent static decel on the base.\n- Scrutineering pre-launch handling: 1 kg axial at the nose cap (integration stack).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ESA CanSat Europe 2025-26 Primary Structure",
+    "brief": "Compliant 66x115 mm 350 g CanSat with CFRP shell + PA12 nose/base, 20 g launch + 1000 N parachute shock.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 66,
+      "height_mm": 115,
+      "shell_wall_mm": 0.8,
+      "internal_bulkheads_count": 2,
+      "bulkhead_positions_mm_from_base": [
+        30,
+        75
+      ]
+    },
+    "material": {
+      "shell": {
+        "name": "CFRP UD 2-ply",
+        "E_GPa": 70,
+        "tensile_MPa": 600,
+        "density_kg_m3": 1550
+      },
+      "nose_base": {
+        "name": "PA12 SLS",
+        "E_GPa": 1.6,
+        "tensile_MPa": 45,
+        "density_kg_m3": 1010
+      }
+    },
+    "mission": {
+      "deploy_altitude_m_AGL": 1000,
+      "descent_rate_mps": [
+        8,
+        11
+      ],
+      "parachute_min_shock_N": 1000
+    },
+    "mass_spec_g": {
+      "min": 350,
+      "max": 360
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_20g_axial",
+        "magnitude_g": 20
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_5g",
+        "magnitude_g": 5
+      },
+      {
+        "id": "LC3",
+        "name": "parachute_shock",
+        "magnitude_N": 1000
+      },
+      {
+        "id": "LC4",
+        "name": "ground_impact_15g",
+        "magnitude_g": 15
+      },
+      {
+        "id": "LC5",
+        "name": "handling_stack_load",
+        "magnitude_kg_axial_on_nose": 1
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 5,
+      "report_fields": [
+        "structural_dry_mass_g",
+        "max_stress_CFRP_per_case_MPa",
+        "max_stress_PA12_per_case_MPa",
+        "first_natural_freq_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "CFRP_max_stress",
+        "limit_MPa": 300,
+        "derivation": "600 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "PA12_max_stress",
+        "limit_MPa": 22.5,
+        "derivation": "45 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "eyelet_local_stress_PA12",
+        "limit_MPa": 22.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "structural_dry_mass",
+        "limit_g": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_freq",
+        "limit_Hz": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "envelope_protrusion",
+        "limit_mm": 0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell for CFRP; TET10 for PA12 nose/base",
+      "mesh_size_mm": 1.5,
+      "solver_hints": [
+        "ANSYS ACP + Mechanical",
+        "Abaqus Composite"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "modal (first 10 modes)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "Short mission (< 10 min) at sea-level conditions.",
+      "fluid_analysis": "Descent aero captured via parachute shock LC3.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Thin shell covered by stress gate at this scale."
+    }
+  },
+  "eval_coverage": [
+    "multi-material FEA (CFRP + PA12)",
+    "mandated parachute shock",
+    "launch-qual quasi-static",
+    "modal + mass budget",
+    "ESA ESERO compliance"
+  ]
+}

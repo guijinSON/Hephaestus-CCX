@@ -1,0 +1,222 @@
+{
+  "id": "089_ng4_fema_p499_coastal_pile_home",
+  "source": {
+    "catalog_ref": "NG4",
+    "year": 2019,
+    "tier": "A"
+  },
+  "domain": "humanitarian_civil",
+  "part_class": "coastal_elevated_pile_foundation",
+  "full_prompt": "Design one representative elevated single-family coastal home pile foundation + lateral force resisting system for a Zone V (coastal high hazard area) site, fully compliant with FEMA P-499 Home Builder's Guide to Coastal Construction (2019 reprint). The structure above is a two-story wood-frame home with 10 m x 12 m (~120 m2) footprint elevated to a bottom-of-lowest-horizontal-structural-member elevation at the design flood elevation (DFE) plus freeboard, supported on a 4x5 grid (20 total) of Class C 250x250 mm (10x10 in nominal) southern yellow pine timber piles or equivalent square RC piles driven into sandy coastal soil. The site is on the Gulf Coast at ASCE 7 ultimate design wind speed Vult = 160 mph (71.5 m/s) 3-second gust (within the P-499 130-180 mph coastal band), Exposure D, Risk Category II. Each pile must develop its required vertical bearing and tension (uplift) capacity from embedment per the P-499 pile embedment tables for sandy soil and provide lateral capacity against the combined wind + wave + current loading of a design-event hurricane with breaking waves at the stillwater depth ds = 1.2 m (4 ft) per FEMA P-499 V-zone wave loading equations (Fbrkp = 1.1 Cp gamma_w ds^2 per unit width on vertical piles, plus impulsive Cp coefficient). The continuous vertical load path (roof sheathing -> rafter-to-wall connection -> wall stud -> wall-to-floor -> floor-to-pile cap -> pile anchorage) must be closed using Simpson Strong-Tie or equivalent hurricane connectors whose rated uplift capacities per P-499 connector tables exceed the ASCE 7 factored uplift demand with a safety factor >= 1.0 at every joint. Deliverable is a single assembled CAD model of the pile grid, pile caps, floor framing, LFRS (lateral force resisting system) shear-wall layout, and connector locations (represented as placed components), sized so the model can run linear static FEA for wind + wave and a connector demand/capacity check. Vibration, thermal, fluid CFD, radiation, and buckling analyses are NOT required; waves are applied as equivalent static loads per FEMA equations; pile lateral capacity uses p-y non-FEA geotech solver.",
+  "short_prompt": "Design the pile foundation + continuous vertical load-path for a two-story wood-frame single-family coastal home on a Zone V (coastal high hazard) Gulf Coast site, per FEMA P-499 Home Builder's Guide to Coastal Construction (2019 reprint). Structural system is a 4x5 grid (20 total) of Class C timber (or equivalent square RC) piles driven into sandy soil; the home is elevated to DFE + freeboard, and hurricane connectors carry the uplift load path from roof through studs, floor, pile caps and pile anchorage.\n\nEnvelope: 10 x 12 m (~120 m^2) footprint, 250 x 250 mm (10x10 in) piles at 3.0 m spacing, elevated >= 0.6 m above BFE.\n\nLoad cases.\n- LC1 design wind: ASCE 7 Vult 160 mph 3-sec gust, Exposure D (within the P-499 130-180 mph coastal band).\n- LC2 V-zone breaking wave: stillwater depth ds = 1.2 m, Fbrkp = 1.1 Cp gamma_w ds^2 per unit width on vertical piles and on the bottom of the lowest horizontal structural member.\n- LC3 dead + live: tributary gravity loads from the two-story wood frame.\n- LC4 uplift: ASCE 7 0.6D + W combination along the continuous load path; every connector joint must meet demand/capacity >= 1.0 vs. tested manufacturer tables.\n\nPile lateral capacity is sized with a p-y geotech analysis; connector capacities come from tested tables.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "p-y_geotech_pile_analysis",
+        "reason": "Lateral pile capacity in sand is a soil-structure interaction problem solved with p-y curves (Reese, API), not standard structural FEA.",
+        "examples": [
+          "LPILE",
+          "GROUP (Ensoft)",
+          "PLAXIS 2D"
+        ]
+      },
+      {
+        "tool": "connector_capacity_table_lookup",
+        "reason": "Simpson Strong-Tie / USP connector capacities come from published tested load tables, not FEA.",
+        "examples": [
+          "Simpson Strong-Tie catalog",
+          "USP connector catalog"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FEMA P-499 Zone V elevated pile foundation for coastal home",
+    "brief": "Design a 4x5 pile foundation + load path for a 10 x 12 m two-story coastal home at Vult = 160 mph with V-zone 1.2 m breaking waves and continuous connector load path.",
+    "geometric_constraints": {
+      "footprint_LxW_m": [
+        10,
+        12
+      ],
+      "pile_grid": [
+        4,
+        5
+      ],
+      "pile_count": 20,
+      "pile_section_mm": [
+        250,
+        250
+      ],
+      "pile_section_in": [
+        10,
+        10
+      ],
+      "pile_spacing_m": 3.0,
+      "min_elevation_above_BFE_m": 0.6
+    },
+    "material": {
+      "piles": "southern yellow pine (or equivalent square RC) Class C timber pile",
+      "connectors": "galvanized steel hurricane connectors per Simpson Strong-Tie / equivalent tested tables"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "design_wind",
+        "Vult_mph": 160,
+        "Vult_m_s": 71.5,
+        "exposure": "D",
+        "application": "ASCE 7 pressures on envelope"
+      },
+      {
+        "id": "LC2",
+        "name": "breaking_wave_Vzone",
+        "stillwater_depth_m": 1.2,
+        "stillwater_depth_ft": 4,
+        "equation": "Fbrkp = 1.1 Cp gamma_w ds^2 per unit width (FEMA P-499)",
+        "application": "horizontal force on each pile and on bottom of lowest structural member"
+      },
+      {
+        "id": "LC3",
+        "name": "dead_plus_live",
+        "application": "tributary loads from wood-frame home"
+      },
+      {
+        "id": "LC4",
+        "name": "uplift",
+        "application": "ASCE 7 0.6D + W wind uplift combination along load path"
+      }
+    ],
+    "boundary_conditions": {
+      "pile_tips": "fixed bearing in sand per p-y analysis output",
+      "ground_elevation": "stillwater level and scour per P-499"
+    },
+    "objective": {
+      "primary": "pass all criteria",
+      "secondary": "minimize pile embedment depth within allowable"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "IFC"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_pile_axial_kN",
+        "max_pile_lateral_kN",
+        "required_embedment_depth_m",
+        "min_connector_uplift_DC_ratio",
+        "max_floor_diaphragm_shear_kN_per_m"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "design_wind_Vult_mph",
+        "limit_mph": 160,
+        "limit_range_mph": [
+          130,
+          180
+        ],
+        "derivation": "FEMA P-499 coastal band",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "breaking_wave_stillwater_depth_m",
+        "limit_m": 1.2,
+        "derivation": "FEMA P-499 V-zone design ds",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "pile_axial_capacity_vs_demand_ratio",
+        "limit": 1.0,
+        "derivation": "factored demand per ASCE 7 vs capacity from P-499 embedment table",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "pile_lateral_capacity_vs_demand_ratio",
+        "limit": 1.0,
+        "derivation": "p-y analysis vs combined wind + wave + current shear",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "connector_uplift_capacity_vs_demand_ratio_each_joint",
+        "limit": 1.0,
+        "derivation": "Simpson / USP tested allowable uplift vs ASCE 7 0.6D + W",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (piles, floor framing), shell (diaphragms), spring (connectors + soil)",
+      "solver_hints": [
+        "SAP2000",
+        "ETABS",
+        "LPILE + ETABS coupling"
+      ],
+      "analysis_types": [
+        "linear static wind + wave",
+        "p-y nonlinear pile-soil interaction"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not required by P-499.",
+      "thermal_analysis": "Not required.",
+      "fluid_analysis": "Wave loads are reduced to equivalent static per P-499 equations; no CFD.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Pile buckling is envelope-checked by embedment tables; not a governing separate analysis here."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Scour depth at piles",
+      "Corrosion / marine-borer allowance",
+      "Flood debris impact on piles"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "coupled structural FEA + p-y geotech non-FEA solver",
+    "continuous load-path connector demand/capacity check",
+    "V-zone breaking wave static equivalents",
+    "ASCE 7 uplift combination evaluation",
+    "humanitarian coastal-resilience scope"
+  ]
+}

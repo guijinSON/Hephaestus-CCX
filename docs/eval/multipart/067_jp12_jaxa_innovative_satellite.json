@@ -1,0 +1,441 @@
+{
+  "id": "067_jp12_jaxa_innovative_satellite",
+  "source": {
+    "catalog_ref": "JP12",
+    "year": 2025,
+    "tier": "A+",
+    "original_sample": "docs/eval/samples/067_jp12_jaxa_innovative_satellite.json",
+    "multipart_basis": "Decomposition inferred from 50 kg-class microsatellite primary structure practice (RAPIS-1, Hodoyoshi, Innovative Satellite Technology Demonstration series): four corner rails, six wall panels, top/bottom deck plates, internal midplate for payload tray, launch-vehicle adapter ring, separation switch bracket, and M4/M5 fasteners. Load magnitudes, material properties, and pass/fail thresholds inherit verbatim from the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "microsatellite_primary_structure_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary structure of a 50 kg class microsatellite for a student-demonstration microsatellite slot. The envelope is the published 50 kg class volume for the microsatellite program (approximately 500 mm x 500 mm x 500 mm with attachment ring); the total wet mass must not exceed 50 kg. The launch environment is defined per the program launch vehicle: random vibration 14.1 Grms (NASA GEVS qualification-style spectrum, 20-2000 Hz), and shock response spectrum 1000 G peak in the 1000-10000 Hz band at the separation plane. A quasi-static limit load of 20 g axial and 10 g lateral is applied at the spacecraft CG. The primary structure must carry and survive all three environments: quasi-static, random vibration, and pyroshock. Natural-frequency requirement: the first longitudinal mode must be above 110 Hz and the first lateral mode must be above 45 Hz, consistent with the launch vehicle decoupling requirement. Stress allowables follow NASA-STD-5001B: yield FoS 1.25, ultimate FoS 1.4. Material is typically Al 7075-T7351 or Al 6061-T6 for the primary structure. Primary verification is structural FEA (linear static for quasi-static; random-vibration harmonic response with 3-sigma stress evaluation; modal analysis for first-mode frequency). Vibration analysis is a primary gate here, not secondary. Thermal and fluid analyses are explicitly NOT required at this specific structural-qualification gate (thermal survival is verified at a separate thermal gate). Radiation analysis is explicitly NOT required since the student demo orbit is LEO. Deliverables: STEP AP242 of the primary structure, a mass budget, and a report listing wet mass in kg, first longitudinal mode in Hz, first lateral mode in Hz, max quasi-static stress in MPa with FoS, 3-sigma random-vibration peak stress in MPa, and shock-response displacement at critical mounting interfaces.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis satellite primary structure is delivered as a multi-part bolted-panel assembly reflecting typical 50 kg-class microsatellite architecture. The speculative part decomposition is: (A) four corner rails running in the launch axis direction, (B) six side-wall panels (two per large face, plus +/-Y and +/-Z covers), (C) top and bottom deck plates, (D) internal midplate forming a payload tray, (E) launch-vehicle adapter ring at the separation plane, (F) separation-switch bracket, (G) solar-panel hinge brackets on +/-X faces, and (H) M4/M5 titanium fastener set. Inter-family interfaces: rails-to-panels bolted, panels-to-decks bolted, deck-to-midplate bolted, rails-to-adapter-ring bolted. FEM verification runs on the ASSEMBLED model only — per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) at bolted joints must be ≤ 1.0 under all four load cases; adapter-ring bolts must survive LC4 pyroshock without slip. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design the primary structure of a 50 kg-class microsatellite for a student-demonstration microsatellite slot, delivered as a bolted-panel multi-part assembly: four corner rails (launch-axis direction) + six side-wall panels + top and bottom deck plates + internal payload-tray midplate + launch-vehicle adapter ring + separation-switch bracket + solar-panel hinge brackets + M4/M5 titanium fastener set. Envelope ~500 x 500 x 500 mm (with attachment ring); wet mass <= 50 kg. Material typically Al 7075-T7351 or Al 6061-T6. Stress allowables per NASA-STD-5001B: yield FoS 1.25, ultimate FoS 1.4.\n\nLoad cases.\n- LC1 quasi-static: 20 g axial + 10 g lateral at CG.\n- LC2 random vibration: 14.1 Grms NASA GEVS qualification-style 20-2000 Hz.\n- LC3 pyroshock SRS: 1000 G peak in the 1000-10000 Hz band at the separation plane.\n- LC4 modal: first longitudinal mode > 110 Hz, first lateral mode > 45 Hz.\n\nAdapter-ring bolts must survive LC4 pyroshock without slip. Bolted-joint DCR <= 1.0 under all four load cases.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "50 kg-class microsatellite primary structure (multi-part assembly)",
+    "brief": "Design a 50 kg-class microsatellite bolted-panel primary structure comprising four corner rails, six side panels, top/bottom decks, internal payload midplate, launch-vehicle adapter ring, separation-switch bracket, solar-panel hinges, and titanium fasteners. Survives 14.1 Grms random vib, 1000 G shock SRS, 20 g axial quasi-static; first modes ≥ 110 Hz long / ≥ 45 Hz lat. FEM verification at assembled level only; connection DCR ≤ 1.0 under all governing load cases.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "X": 500,
+        "Y": 500,
+        "Z": 500
+      },
+      "wet_mass_kg_max": 50,
+      "separation_plane": "spacecraft-to-launcher adapter ring"
+    },
+    "material": {
+      "primary_structure": "Al 7075-T7351 or Al 6061-T6",
+      "Al7075_T7351": {
+        "E_GPa": 71.7,
+        "yield_MPa": 435,
+        "ultimate_MPa": 505
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static_20g_axial",
+        "magnitude_g": 20,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "quasi_static_10g_lateral",
+        "magnitude_g": 10,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "random_vibration",
+        "Grms": 14.1,
+        "band_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "pyroshock_SRS",
+        "peak_G": 1000,
+        "band_Hz": [
+          1000,
+          10000
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "adapter_ring": "fixed at separation plane"
+    },
+    "objective": {
+      "minimize": "primary_structure_mass",
+      "first_long_mode_Hz_min": 110,
+      "first_lat_mode_Hz_min": 45
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "wet_mass_kg",
+        "first_long_mode_Hz",
+        "first_lat_mode_Hz",
+        "max_quasi_static_stress_MPa",
+        "three_sigma_random_stress_MPa",
+        "shock_response_displacement_mm",
+        "assembly_deflection_mm",
+        "connection_DCR",
+        "per_part_max_stress_MPa",
+        "bolt_preload_loss_percent"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "corner rail",
+        "role": "primary launch-axis load-carrying longeron at each vertical edge of the satellite, transfers axial quasi-static load from deck to adapter ring",
+        "count_min": 4,
+        "geometric_constraints": {
+          "cross_section_mm": "L or T profile, ~30 mm leg",
+          "length_mm": 500,
+          "wall_thickness_mm_range": [
+            3,
+            6
+          ]
+        },
+        "material_hint": "Al 7075-T7351, machined from plate",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side-wall panel",
+        "role": "thin-walled panel closing lateral faces, carries shear and provides mounting surface for avionics and solar cells",
+        "count_min": 6,
+        "geometric_constraints": {
+          "panel_size_mm": [
+            500,
+            500
+          ],
+          "plate_thickness_mm_range": [
+            2.0,
+            4.0
+          ],
+          "stiffener_pitch_mm_range": [
+            80,
+            150
+          ]
+        },
+        "material_hint": "Al 6061-T6 plate, optional milled pocket stiffening",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "deck plate",
+        "role": "top and bottom closure plates carrying equipment mounts and transferring lateral loads into corner rails",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plate_size_mm": [
+            500,
+            500
+          ],
+          "plate_thickness_mm_range": [
+            4.0,
+            8.0
+          ],
+          "insert_pattern_pitch_mm": 50
+        },
+        "material_hint": "Al 7075-T7351 plate with PEM or Heli-Coil inserts",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "internal midplate / payload tray",
+        "role": "interior horizontal plate forming payload tray, stiffens structure and decouples payload from launch environment",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plate_size_mm": [
+            480,
+            480
+          ],
+          "plate_thickness_mm_range": [
+            3.0,
+            6.0
+          ],
+          "cutout_area_fraction_max": 0.35
+        },
+        "material_hint": "Al 6061-T6 or honeycomb sandwich with Al facesheets",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "launch-vehicle adapter ring",
+        "role": "interfaces bottom of spacecraft to launch vehicle payload adapter, reacts pyroshock at separation",
+        "count_min": 1,
+        "geometric_constraints": {
+          "ring_od_mm_range": [
+            380,
+            460
+          ],
+          "ring_id_mm_range": [
+            300,
+            360
+          ],
+          "flange_thickness_mm_range": [
+            8,
+            14
+          ]
+        },
+        "material_hint": "Al 7075-T7351, machined; bolt circle per LV ICD",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "separation-switch bracket",
+        "role": "holds deployment-switch microswitch, triggers spacecraft power-on at separation",
+        "count_min": 1,
+        "geometric_constraints": {
+          "bracket_envelope_mm": [
+            40,
+            40,
+            30
+          ],
+          "plate_thickness_mm": 2.0
+        },
+        "material_hint": "Al 6061-T6 sheet, bent",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "solar-panel hinge bracket",
+        "role": "mounts deployable solar-panel hinges to +/-X side panels, transfers deployed-panel inertia into primary structure",
+        "count_min": 4,
+        "geometric_constraints": {
+          "bracket_envelope_mm": [
+            60,
+            40,
+            40
+          ],
+          "pin_hole_diameter_mm": 4,
+          "plate_thickness_mm_range": [
+            2.0,
+            4.0
+          ]
+        },
+        "material_hint": "Al 7075-T7351, machined",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "fastener set (M4/M5)",
+        "role": "titanium bolts with locking features securing rails, panels, decks, midplate, and adapter ring",
+        "count_min": 80,
+        "geometric_constraints": {
+          "bolt_diameters_mm": [
+            4,
+            5
+          ],
+          "min_edge_distance_mm": 8,
+          "preload_torque_Nm_range": [
+            2.5,
+            6.0
+          ]
+        },
+        "material_hint": "Ti-6Al-4V with silver-plated threads per NASA-STD-5020B, self-locking feature required",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox_mm": {
+        "X": 500,
+        "Y": 500,
+        "Z": 500
+      },
+      "coordinate_system": "origin at adapter-ring center on separation plane, Z along launch axis"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "wet_mass_kg",
+        "limit_kg": 50,
+        "derivation": "Student slot class cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_quasi_static_stress_MPa",
+        "limit_fraction_of_yield": 0.8,
+        "derivation": "NASA-STD-5001B yield FoS 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_long_mode_Hz",
+        "limit_Hz": 110,
+        "derivation": "Launch vehicle decoupling",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_lat_mode_Hz",
+        "limit_Hz": 45,
+        "derivation": "Launch vehicle decoupling",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "three_sigma_random_stress_MPa",
+        "limit_fraction_of_yield": 0.8,
+        "derivation": "3-sigma peak random response < 0.8 x yield",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Bolted-joint demand-to-capacity ratio (DCR) across rail-panel, panel-deck, deck-midplate, and rail-adapter interfaces ≤ 1.0 under the governing load case (typically LC1 combined with LC3 3-sigma).",
+        "metric": "max DCR across IF1..IF6",
+        "threshold": 1.0,
+        "scope": "assembled_only",
+        "operator": "<="
+      },
+      {
+        "id": "R_asm2",
+        "description": "No bolt preload loss > 10% after LC4 pyroshock (evaluated per NASA-STD-5020B preload-loss check on the assembled model).",
+        "metric": "bolt_preload_loss_percent",
+        "threshold": 10.0,
+        "scope": "assembled_only",
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "random vibration harmonic response",
+        "shock response (SRS analysis)"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "Corner rail transfers axial load into side-wall panel via bolted attachment along rail leg"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "Corner rail reacts deck-plate reaction at top/bottom through bolted cap"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "Side-wall panel transfers shear into deck plate via perimeter bolts"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "Deck plate supports internal midplate via threaded standoffs carrying payload-tray reactions"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "Corner rails bolt to launch-vehicle adapter ring, reacting axial and lateral loads through separation plane"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "B",
+        "F"
+      ],
+      "mediated_by": "riveted",
+      "load_path": "Separation-switch bracket riveted to -Z side panel, transfers only its own small inertia"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "B",
+        "G"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "Solar-panel hinge bracket bolted to +/-X side panel, transfers deployed-panel inertia into primary structure"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Microsatellite modal decoupling and 3-sigma random response depend on contact and bolted-joint stiffness between rails, panels, decks, and adapter ring; per-part FEA cannot capture the first-mode frequency that gates launch-vehicle compatibility.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A 50 kg-class spacecraft primary structure is inherently a bolted-panel assembly: mass optimisation and accessibility during integration preclude a monolithic design. Corner-rail architecture is the dominant approach in JAXA's Innovative Satellite Technology Demonstration selections.",
+    "speculation_caveats": "parts[] counts, interface bolt patterns, and dimensional ranges are inferred from public RAPIS-1/Hodoyoshi design disclosures and NASA-STD-5020B bolted-joint practice. The specific microsatellite slot may impose additional adapter-ring constraints not captured here.",
+    "original_sample_preserved_at": "docs/eval/samples/067_jp12_jaxa_innovative_satellite.json"
+  }
+}

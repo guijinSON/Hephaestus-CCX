@@ -1,0 +1,210 @@
+{
+  "id": "086_ng1_b2p_suspended_footbridge",
+  "source": {
+    "catalog_ref": "NG1",
+    "year": 2018,
+    "tier": "A+"
+  },
+  "domain": "humanitarian_civil",
+  "part_class": "pedestrian_suspended_footbridge",
+  "full_prompt": "Design one representative 80 m clear-span suspended (non-stiffened) pedestrian footbridge for a rural river crossing in a low-resource community, fully compliant with the Bridges to Prosperity (B2P) Bridge Builder Manual Vol. 1 (Suspended). The bridge must carry a uniformly distributed pedestrian live load of 4.07 kPa applied over the full 1.06 m clear walkway width, a lateral wind pressure of 1.44 kPa applied to the bridge envelope (deck + handrail mesh), and the self-weight of timber decking, suspender cables, steel handrail cables, and cross-bracing. The main carrying members are two main cables running from anchor block to anchor block over two masonry or reinforced concrete towers, and two handrail cables that also act as secondary load-bearing members. The main cable sag at mid-span under full dead + live load must fall between 5.0 percent and 6.0 percent of the clear span (i.e. 4.0 m to 4.8 m vertical sag for an 80 m span). Each main cable must be a 6x19 or 6x36 IWRC galvanized steel wire rope sized so that the maximum axial tension under factored dead + live + wind does not exceed one third of the cable minimum breaking load (cable safety factor >= 3.0 per B2P). The timber deck planks are 50 mm thick hardwood, spanning 1.06 m between crossbeams spaced 500 mm on center along the bridge length. Towers are 4.5-6.0 m tall masonry or reinforced concrete saddles anchored to a foundation block, and the back anchor blocks are mass-gravity concrete blocks sized from the anchor volume tables in the manual to resist the full horizontal + vertical cable pull with a sliding and overturning safety factor of at least 2.0. Deliverable is a single assembled bridge CAD model covering the full span (cables, towers, anchor blocks, deck, suspenders, handrails) with enough geometric detail to run a cable-catenary structural analysis and an anchor-block stability check. Vibration, thermal, fluid (CFD of wind), and radiation analyses are NOT required; the wind load is applied as an equivalent static pressure per manual. Mandatory cable-catenary analysis is a non-FEA solver (closed-form catenary + equilibrium) used in addition to the linear-elastic FEA on the deck, towers, anchors and suspenders.",
+  "short_prompt": "Design a single 80 m clear-span non-stiffened suspended pedestrian footbridge for a rural river crossing in a low-resource community, to the Bridges to Prosperity (B2P) Bridge Builder Manual Vol. 1 (Suspended). The bridge comprises two main galvanized wire-rope cables over masonry/RC tower saddles anchored to gravity back-anchor blocks, a 1.06 m wide tropical-hardwood deck hung from suspenders between crossbeams, and two handrail cables acting as secondary structural members. Main-cable sag at mid-span under dead + live must fall between 5% and 6% of the clear span. Cable safety factor >= 3.0 on MBL; anchor-block sliding and overturning SF >= 2.0.\n\nLoad cases.\n- LC1 pedestrian live: 4.07 kPa uniform over the deck.\n- LC2 wind: 1.44 kPa lateral pressure on the bridge envelope.\n- LC3 dead: self-weight of cables, deck, suspenders, handrails, towers and anchors.\n\nA closed-form cable-catenary analysis (per the B2P manual / Irvine cable theory) is required alongside structural FEA of the deck, towers, anchors and suspenders.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "cable_catenary_solver",
+        "reason": "Main cable tension, sag, and anchor reactions on a non-stiffened suspended footbridge are solved by closed-form catenary + equilibrium per B2P manual, not by linear-elastic FEA.",
+        "examples": [
+          "B2P design spreadsheet",
+          "hand calc per Irvine cable theory"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "80 m B2P suspended pedestrian footbridge",
+    "brief": "Design a single 80 m clear-span B2P-compliant suspended footbridge (cables + timber deck + masonry towers + gravity anchors) carrying pedestrian live 4.07 kPa and wind 1.44 kPa with cable SF >= 3 and sag 5-6%.",
+    "geometric_constraints": {
+      "clear_span_m": 80,
+      "walkway_clear_width_m": 1.06,
+      "deck_plank_thickness_mm": 50,
+      "crossbeam_spacing_mm": 500,
+      "main_cable_sag_pct_of_span_min": 5.0,
+      "main_cable_sag_pct_of_span_max": 6.0,
+      "tower_height_m_range": [
+        4.5,
+        6.0
+      ],
+      "handrail_height_mm": 1100
+    },
+    "material": {
+      "main_cables": "6x19 or 6x36 IWRC galvanized steel wire rope, nominal UTS 1770 MPa",
+      "handrail_cables": "galvanized steel wire rope",
+      "deck": "tropical hardwood, design bending stress per B2P Table",
+      "towers_and_anchors": "reinforced concrete or mortared masonry"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pedestrian_live",
+        "magnitude_kPa": 4.07,
+        "application": "uniform over deck area"
+      },
+      {
+        "id": "LC2",
+        "name": "wind_lateral",
+        "magnitude_kPa": 1.44,
+        "application": "lateral pressure on bridge envelope"
+      },
+      {
+        "id": "LC3",
+        "name": "dead",
+        "magnitude": "self-weight of cables, deck, towers, anchors, suspenders, handrails",
+        "application": "gravity"
+      }
+    ],
+    "boundary_conditions": {
+      "main_cables": "anchored at back-anchor blocks; pass over tower saddles as frictionless supports",
+      "anchor_blocks": "founded on soil, resisting horizontal + vertical cable pull",
+      "deck": "simply supported on transverse crossbeams hung from suspenders"
+    },
+    "objective": {
+      "primary": "pass all pass/fail criteria",
+      "secondary": "minimize concrete volume of anchor blocks and towers"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_cable_tension_kN",
+        "cable_SF",
+        "midspan_sag_pct",
+        "anchor_block_sliding_SF",
+        "anchor_block_overturning_SF",
+        "max_deck_bending_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "main_cable_safety_factor",
+        "limit": 3.0,
+        "derivation": "B2P Bridge Builder Manual minimum cable SF vs MBL",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "main_cable_midspan_sag_pct_of_span",
+        "limit_min": 5.0,
+        "limit_max": 6.0,
+        "derivation": "B2P suspended-bridge geometric window for pedestrian comfort and cable stress",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "pedestrian_live_load_pressure_kPa",
+        "limit_kPa": 4.07,
+        "derivation": "B2P specified pedestrian live load",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "wind_design_pressure_kPa",
+        "limit_kPa": 1.44,
+        "derivation": "B2P specified lateral wind load",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "anchor_block_sliding_safety_factor",
+        "limit": 2.0,
+        "derivation": "B2P anchor-block stability SF",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "anchor_block_overturning_safety_factor",
+        "limit": 2.0,
+        "derivation": "B2P anchor-block stability SF",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "cable elements (main + suspenders), beam elements (crossbeams), shell (deck), solid (anchor block)",
+      "solver_hints": [
+        "SAP2000 cable element",
+        "midas Civil",
+        "OpenSees"
+      ],
+      "analysis_types": [
+        "cable-catenary closed form",
+        "linear static deck + anchor stability"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "B2P suspended footbridges are sized by static live + wind; pedestrian-induced vibration is mitigated by geometric sag/span limits, not by modal FEA in the manual.",
+      "thermal_analysis": "Cable thermal expansion is covered by construction pre-tension rules, not a thermal FEA.",
+      "fluid_analysis": "Wind is applied as equivalent static 1.44 kPa per manual; no CFD required.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Scour and flood freeboard above 100-year flood elevation",
+      "Pedestrian-induced lateral and vertical vibration (Eurocode 5 Annex B)",
+      "Corrosion allowance for decades of field exposure"
+    ]
+  },
+  "eval_coverage": [
+    "cable-catenary non-FEA solver coupled with structural FEA",
+    "explicit load values (4.07 kPa / 1.44 kPa) baked in",
+    "anchor-block stability with sliding + overturning SF",
+    "geometric-window pass/fail (sag 5-6% of span)",
+    "humanitarian civil scope (low-resource materials, masonry + steel rope + hardwood)"
+  ]
+}

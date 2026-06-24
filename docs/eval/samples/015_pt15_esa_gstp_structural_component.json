@@ -1,0 +1,263 @@
+{
+  "id": "015_pt15_esa_gstp_structural_component",
+  "source": {
+    "catalog_ref": "PT15",
+    "year": 2024,
+    "tier": "A+"
+  },
+  "domain": "aerospace_space",
+  "part_class": "satellite_equipment_mounting_bracket",
+  "full_prompt": "Design an aluminum 7075-T7351 mounting bracket for a satellite equipment panel, per a representative European space-structural-component invitation to tender, satisfying ECSS-E-ST-32C structural requirements. The bracket mounts a 4 kg avionics box onto a satellite equipment panel. Envelope 200 x 150 x 60 mm. Interfaces: top-face avionics box pattern of four M5 inserts on 140 x 90 mm rectangle; bottom-face panel pattern of four M6 bolts on 180 x 130 mm rectangle. Material: aluminum 7075-T7351 with ECSS-E-HB-32-20C A-basis allowables (yield 434 MPa, UTS 496 MPa, Young's modulus 71.7 GPa, Poisson 0.33, density 2810 kg/m^3, elongation 8%). Load cases per ECSS-E-HB-32-26A Spacecraft Mechanical Loads Analysis Handbook and a representative ECSS-compliant ITT envelope: LC1 quasi-static 20 g along each principal axis applied to 4 kg lumped mass (= 785 N per axis); LC2 sine vibration 20 g 0-peak 5-100 Hz at base (per European launcher user manual envelope); LC3 random vibration PSD: 0.01 g^2/Hz from 20-100 Hz, +3 dB/oct to 0.04 g^2/Hz at 500 Hz, flat to 1000 Hz, -6 dB/oct to 0.01 g^2/Hz at 2000 Hz (total Grms approximately 7.3 g per typical ECSS ITT); LC4 thermal cycle -40 C to +80 C (delta-T = 120 K) with alpha_Al = 23.6e-6/K; LC5 acoustic load Lp = 140 dB OASPL 31.5-8000 Hz (typical European launcher fairing) - treated via Miles / modal if the agent chooses to include. Pass/fail per ECSS-E-ST-32C: (R1) max von Mises under any quasi-static case <= 496 / 1.25 = 397 MPa (ECSS ultimate SF 1.25); (R2) max von Mises <= 434 / 1.1 = 394.5 MPa (ECSS yield SF 1.1); (R3) random-vibration 3-sigma von Mises <= 397 MPa; (R4) first natural mode >= 140 Hz (ECSS typical bracket decoupling from spacecraft-bus primary modes); (R5) thermal-gradient + residual stress von Mises <= 397 MPa; (R6) mass <= 400 g (typical ECSS ITT target envelope mass for this class); (R7) margin-of-safety computed per ECSS-E-ST-32C section 4.3: MS = (allowable / (FOS * actual)) - 1 >= 0 for each load case. Deliverables: STEP AP242 + IGES, CAD neutral format for European space procurement; report with per-load-case MS, first mode frequency, random 3-sigma stress, mass, and compliance matrix against ECSS-E-ST-32C.",
+  "short_prompt": "Design an aluminum 7075-T7351 mounting bracket for a satellite equipment panel, satisfying ECSS-E-ST-32C structural requirements. The bracket mounts a 4 kg avionics box onto a satellite equipment panel.\n\nEnvelope: 200 x 150 x 60 mm. Top-face avionics pattern: four M5 inserts on 140 x 90 mm. Bottom-face panel pattern: four M6 bolts on 180 x 130 mm.\n\nMaterial: 7075-T7351 per ECSS-E-HB-32-20C A-basis allowables.\n\nDesign per ECSS-E-ST-32C with ultimate SF 1.25 and yield SF 1.1.\n\nLoad cases per ECSS-E-HB-32-26A.\n- LC1 quasi-static 20 g along each principal axis on 4 kg mass = 785 N per axis.\n- LC2 sine vibration 20 g 0-peak 5-100 Hz at base (European launcher user-manual envelope).\n- LC3 random vibration PSD: 0.01 g^2/Hz from 20-100 Hz, +3 dB/oct to 0.04 g^2/Hz at 500 Hz, flat to 1000 Hz, -6 dB/oct to 0.01 g^2/Hz at 2000 Hz (total ~7.3 Grms).\n- LC4 thermal cycle -40 C to +80 C (delta-T = 120 K) with alpha_Al = 23.6e-6/K.\n- LC5 acoustic load Lp = 140 dB OASPL 31.5-8000 Hz (optional, Miles or modal).\n\nAdditional gates: first natural mode >= 140 Hz; mass <= 400 g; margin-of-safety MS >= 0 for each load case per ECSS-E-ST-32C section 4.3.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ecss_margin_of_safety_worksheet",
+        "reason": "MS = allowable/(FOS*actual) - 1 is closed-form post-FEA.",
+        "examples": [
+          "Excel MS workbook",
+          "Python script"
+        ]
+      },
+      {
+        "tool": "acoustic_miles_equivalent",
+        "reason": "LC5 acoustic can be reduced to equivalent quasi-static via Miles approximation if acoustic FEM not run.",
+        "examples": [
+          "MATLAB Miles' eq",
+          "Excel"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "7075-T7351 avionics mounting bracket per European space-structural ITT (ECSS-E-ST-32C)",
+    "brief": "Design an aluminum bracket carrying a 4 kg avionics box on a satellite equipment panel, passing ECSS-E-ST-32C quasi-static, sine, random, thermal, and first-mode requirements with mass <= 400 g.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 200,
+        "y": 150,
+        "z": 60
+      },
+      "top_interface_M5": {
+        "count": 4,
+        "pattern_mm": {
+          "x": 140,
+          "y": 90
+        }
+      },
+      "bottom_interface_M6": {
+        "count": 4,
+        "pattern_mm": {
+          "x": 180,
+          "y": 130
+        }
+      }
+    },
+    "material": {
+      "name": "7075-T7351",
+      "yield_MPa": 434,
+      "ultimate_MPa": 496,
+      "youngs_modulus_GPa": 71.7,
+      "density_kg_m3": 2810,
+      "alpha_thermal_per_K": 2.36e-05
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "qs_20g",
+        "force_N_per_axis": 785,
+        "axes": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      {
+        "id": "LC2",
+        "name": "sine_20g",
+        "amplitude_g": 20,
+        "band_Hz": [
+          5,
+          100
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "random_PSD",
+        "grms": 7.3,
+        "band_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_cycle",
+        "range_C": [
+          -40,
+          80
+        ],
+        "delta_T_K": 120
+      },
+      {
+        "id": "LC5",
+        "name": "acoustic",
+        "OASPL_dB": 140,
+        "band_Hz": [
+          31.5,
+          8000
+        ],
+        "note": "may be reduced via Miles"
+      }
+    ],
+    "boundary_conditions": {
+      "panel_interface": "4 x M6 fully constrained",
+      "avionics_mass": "4 kg lumped at CG above bracket top face"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_mass_g_max": 400
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "IGES"
+      ],
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_mode_Hz",
+        "random_3sigma_von_mises_MPa",
+        "thermal_stress_MPa",
+        "mass_g",
+        "MS_per_case",
+        "ecss_compliance_matrix"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 397,
+        "derivation": "UTS / 1.25 = 496 / 1.25 per ECSS-E-ST-32C ultimate",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 394.5,
+        "derivation": "yield / 1.1 = 434 / 1.1 per ECSS-E-ST-32C yield",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_von_mises",
+        "limit_MPa": 397,
+        "derivation": "3-sigma <= ultimate/1.25",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 140,
+        "derivation": "ECSS typical bracket decoupling from spacecraft primary modes",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "thermal_plus_mechanical_von_mises",
+        "limit_MPa": 397,
+        "derivation": "ECSS ult / 1.25 under delta-T 120 K",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 400,
+        "derivation": "ECSS ITT target mass envelope for this class",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "margin_of_safety",
+        "limit": 0,
+        "derivation": "MS = allowable/(FOS*actual) - 1 per ECSS-E-ST-32C 4.3",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "ECSS-E-ST-32C + ECSS-E-HB-32-20C (material allowables) + ECSS-E-HB-32-26A (loads handbook) + European launcher user manuals",
+    "recommended_fea_setup": {
+      "element_type": "TET10 or HEX20",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "MSC Nastran",
+        "Abaqus",
+        "Ansys Mechanical",
+        "Samcef"
+      ],
+      "analysis_types": [
+        "linear static x3 QS",
+        "sine sweep",
+        "random PSD",
+        "thermal-structural"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Space vacuum.",
+      "radiation_analysis": "Radiation material degradation out of scope."
+    },
+    "numeric_source": "ECSS-E-ST-32C, ECSS-E-HB-32-26A loads handbook; European launcher user manuals; 7075-T7351 A-basis allowables (MMPDS-2019 / ECSS-E-HB-32-20C)."
+  },
+  "eval_coverage": [
+    "ECSS safety factor framework",
+    "multi-phase QS + sine + random + thermal",
+    "Margin of Safety computation",
+    "first-mode decoupling"
+  ]
+}

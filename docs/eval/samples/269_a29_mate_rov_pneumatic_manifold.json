@@ -1,0 +1,191 @@
+{
+  "id": "269_a29_mate_rov_pneumatic_manifold",
+  "source": {
+    "catalog_ref": "A29",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "marine_structural",
+  "part_class": "rov_pneumatic_manifold",
+  "full_prompt": "Design a single-part monolithic pneumatic manifold for a 2026 MATE ROV Explorer Class vehicle. Per the 2026 EXPLORER manual, pneumatic supply pressure is capped at 40 psi (276 kPa) with all lines and fittings rated to at least 2.5 x supply = 100 psi (690 kPa). The manifold distributes regulated air from a single 1/4 inch (6.35 mm) NPT inlet to four output ports each with 1/8 NPT (3.17 mm) outlets, delivering actuation air to four double-acting pneumatic grippers. Internal bore diameters: 8 mm main gallery, 4 mm branch ports. Overall bounding box 100 mm x 60 mm x 25 mm. The manifold is mounted to the ROV frame via four M4 through-holes on an 80 mm x 40 mm rectangular pattern. Material: Delrin (acetal homopolymer) machined; E = 3.1 GPa, yield = 69 MPa, ultimate = 80 MPa, density = 1410 kg/m^3. Operating environment: submerged to 10 m (external pressure 0.1 MPa differential). Load cases: (R1) Pressure test: internal pressure of 2.5 x MEOP = 100 psi (690 kPa) applied to all gallery walls; max von Mises <= yield / 2.0 = 34 MPa (polymer factor of safety 2.0). (R2) Burst margin: internal pressure of 4.0 x MEOP = 160 psi (1.1 MPa); max von Mises <= ultimate / 2.0 = 40 MPa. (R3) External pressure at 10 m depth (100 kPa) plus internal MEOP (276 kPa): net internal = 276 - 100 = 176 kPa; nominal operating case, max von Mises <= yield / 3.0 = 23 MPa. (R4) Thread pull-out at NPT ports: 50 N axial tension pulling each port; local bearing/thread stress <= yield / 2.0 = 34 MPa. (R5) Mass <= 120 g. (R6) Linear buckling eigenvalue at external crush 2 bar (depth 20 m margin) >= 3.0. Primary verification: linear static structural FEA for R1-R4 + buckling for R6. Vibration, thermal, fluid, radiation NOT required (internal flow is static pressure, not CFD). Deliverables: STEP AP242 monolithic manifold, port drawing, and a report listing mass in g, max von Mises per load case, first buckling load factor.",
+  "short_prompt": "Design a single-part monolithic pneumatic manifold for a 2026 MATE ROV Explorer Class vehicle, compliant with the 2026 EXPLORER manual. Supply pressure capped at 40 psi (276 kPa); all lines and fittings rated to at least 2.5 x supply = 100 psi (690 kPa). One 1/4 NPT inlet feeds a main gallery that branches to four 1/8 NPT outlets for four double-acting grippers. Material is machined Delrin (acetal homopolymer). Operating environment: submerged to 10 m (external differential ~100 kPa).\n\nEnvelope: bounding 100 x 60 x 25 mm. 8 mm main gallery, 4 mm branches. Mounts via four M4 through-holes on an 80 x 40 mm rectangular pattern.\n\nLoad cases.\n- LC1 pressure test: 2.5 x MEOP = 690 kPa internal on all gallery walls.\n- LC2 burst margin: 4.0 x MEOP = 1.1 MPa internal.\n- LC3 nominal operating at 10 m depth: 276 kPa internal minus 100 kPa external = 176 kPa net.\n- LC4 thread pull-out: 50 N axial tension on each NPT port.\n- LC5 external crush at 20 m depth (2 bar external), linear buckling eigenvalue >= 3.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "MATE ROV Explorer pneumatic manifold",
+    "brief": "Delrin 4-port manifold, MEOP 40 psi, rated 2.5x + 4x burst per MATE 2026 Explorer rules.",
+    "geometric_constraints": {
+      "bounding_box_mm": "100 x 60 x 25",
+      "inlet_port": "1/4 NPT",
+      "outlet_ports": 4,
+      "outlet_thread": "1/8 NPT",
+      "main_gallery_ID_mm": 8,
+      "branch_ID_mm": 4,
+      "mount_bolts": {
+        "count": 4,
+        "size": "M4",
+        "pattern_mm": "80 x 40"
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Delrin (acetal homopolymer) machined",
+      "properties": {
+        "youngs_modulus_GPa": 3.1,
+        "yield_strength_MPa": 69,
+        "ultimate_tensile_strength_MPa": 80,
+        "density_kg_m3": 1410
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof_2.5x_MEOP",
+        "internal_pressure_kPa": 690
+      },
+      {
+        "id": "LC2",
+        "name": "burst_4x_MEOP",
+        "internal_pressure_kPa": 1100
+      },
+      {
+        "id": "LC3",
+        "name": "operating_submerged",
+        "net_internal_kPa": 176,
+        "depth_m": 10
+      },
+      {
+        "id": "LC4",
+        "name": "thread_pullout",
+        "force_per_port_N": 50
+      },
+      {
+        "id": "LC5",
+        "name": "crush_buckling",
+        "external_pressure_kPa": 200
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "four M4 holes fixed",
+      "internal_pressure": "uniform on all gallery surfaces"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 34,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 40,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 23,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 34,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Manifold is pressure qualified.",
+      "thermal_analysis": "Water ambient.",
+      "fluid_analysis": "Static pressure only.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "polymer pressure containment with safety factor 2.0",
+    "submerged operating differential",
+    "thread pull-out local check"
+  ]
+}

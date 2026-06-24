@@ -1,0 +1,169 @@
+{
+  "id": "214_af2_sasol_solar_challenge",
+  "source": {
+    "catalog_ref": "AF2",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "solar_ev_structural",
+  "part_class": "challenger_monocoque_rollcage",
+  "full_prompt": "Design the primary driver-cell monocoque and roll-cage structure of a Challenger-class cross-country solar-EV benchmark targeting the 6 m^2 silicon array sub-class. Vehicle overall length must not exceed 5 m, width must not exceed 2.2 m, height must not exceed 1.8 m per road-law annex. Total vehicle mass excluding driver must not exceed 500 kg. The solar array footprint must be <= 6.0 m^2 projected horizontal area of silicon cells. Roll cage is mandatory per cross-country solar-EV standard, constructed from 4130 chromoly steel tubing (Young's modulus 205 GPa, Poisson 0.29, yield 435 MPa, ultimate 670 MPa, density 7850 kg/m^3), minimum outer diameter 31.75 mm x wall 1.65 mm, with a main hoop over the driver's head providing at least 50 mm clearance above the helmet. Driver cell monocoque is carbon/epoxy sandwich with quasi-isotropic 1.5 mm CFRP skins (E = 55 GPa, strength 600 MPa), 20 mm aluminum honeycomb core (E3 = 0.8 GPa, shear strength 1.2 MPa, density 50 kg/m^3). Load cases (cross-country solar-EV structural inheritance): (LC1) main hoop vertical 6 kN + lateral 5 kN + longitudinal 9 kN simultaneously at the top of the hoop with base fixed; (LC2) front bulkhead: 6000 N axial applied at the bulkhead centerline representing front-impact equivalent load; (LC3) side intrusion: 7000 N normal to the side-impact structure at mid-height; (LC4) harness/belt anchor: 13,500 N at each of the 5-point harness anchors per FIA 8854/98-equivalent at the most adverse angle; (LC5) roof solar array downforce + aerodynamic lift: aero lift 800 N uniformly distributed over the 6 m^2 array footprint at 100 km/h race speed. Pass/fail: (R1) no tube or laminate element exceeds yield/first-ply-failure across LC1-LC4 (435 MPa steel, 600 MPa CFRP), (R2) deflection of main hoop top toward helmet under LC1 below 50 mm, (R3) CFRP skin strain under LC5 below 0.4%, (R4) core shear below 0.8 MPa under LC5, (R5) first global torsional mode above 10 Hz. Deliverables: STEP, layup table, FEA per case, modal report, and full mass budget separating cage/skin/core/array.",
+  "short_prompt": "Design the driver-cell monocoque and roll cage of a Challenger-class cross-country solar-EV targeting the 6 m^2 silicon array sub-class. The cage is 4130 chromoly steel tubing; the driver cell is a carbon/epoxy sandwich with CFRP skins and aluminum honeycomb core. Qualify to the cross-country solar-EV structural inheritance (tube gates from the main hoop + side + bulkhead + harness set, with FIA 8854/98-equivalent harness load), targeting yield/first-ply-failure.\n\nEnvelope: vehicle L <= 5 m, W <= 2.2 m, H <= 1.8 m; vehicle mass (no driver) <= 500 kg; PV array <= 6.0 m^2 projected; cage tube OD >= 31.75 mm, wall >= 1.65 mm, main hoop >= 50 mm above helmet.\n\nLoad cases.\n- LC1 main hoop: 6 kN vertical + 5 kN lateral + 9 kN longitudinal simultaneous at the top of the hoop, base fixed.\n- LC2 front bulkhead: 6000 N axial at the bulkhead centerline.\n- LC3 side intrusion: 7000 N normal to the side-impact structure at mid-height.\n- LC4 harness anchors: 13,500 N at each of five 5-point harness anchors in the most adverse direction.\n- LC5 aero lift: 800 N up as UDL over the 6 m^2 array at 100 km/h.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Challenger-class solar EV monocoque + roll cage",
+    "brief": "Challenger-class 6 m^2 solar EV with cross-country inherited cage and CFRP sandwich monocoque.",
+    "geometric_constraints": {
+      "length_m_max": 5.0,
+      "width_m_max": 2.2,
+      "height_m_max": 1.8,
+      "mass_no_driver_kg_max": 500,
+      "array_m2_max": 6.0,
+      "cage_tube_od_mm_min": 31.75,
+      "cage_tube_wall_mm_min": 1.65,
+      "helmet_clearance_mm_min": 50
+    },
+    "material": {
+      "cage": {
+        "name": "4130 chromoly steel",
+        "youngs_modulus_GPa": 205,
+        "yield_MPa": 435,
+        "ultimate_MPa": 670,
+        "density_kg_m3": 7850
+      },
+      "skin": {
+        "name": "CFRP QI",
+        "E_GPa": 55,
+        "strength_MPa": 600,
+        "skin_thickness_mm": 1.5
+      },
+      "core": {
+        "name": "Al honeycomb",
+        "E3_GPa": 0.8,
+        "shear_strength_MPa": 1.2,
+        "density_kg_m3": 50,
+        "thickness_mm": 20
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "main_hoop",
+        "F_V_kN": 6,
+        "F_L_kN": 5,
+        "F_long_kN": 9,
+        "application": "top of hoop"
+      },
+      {
+        "id": "LC2",
+        "name": "front_bulkhead",
+        "F_N": 6000,
+        "application": "bulkhead centerline"
+      },
+      {
+        "id": "LC3",
+        "name": "side_intrusion",
+        "F_N": 7000,
+        "application": "SIS mid-height"
+      },
+      {
+        "id": "LC4",
+        "name": "harness_anchors",
+        "F_N_per_anchor": 13500,
+        "application": "5-point harness, adverse angle"
+      },
+      {
+        "id": "LC5",
+        "name": "aero_lift",
+        "F_N": 800,
+        "distribution": "6 m^2 array UDL at 100 km/h"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "total_mass_kg",
+        "cage_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "skin_strain_pct",
+        "core_shear_MPa",
+        "first_torsional_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_cage_stress",
+        "limit_MPa": 435,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_hoop_deflection_toward_helmet",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "skin_strain",
+        "limit_pct": 0.4,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "core_shear",
+        "limit_MPa": 0.8,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 10,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

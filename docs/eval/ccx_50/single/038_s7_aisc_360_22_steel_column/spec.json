@@ -1,0 +1,198 @@
+{
+  "id": "038_s7_aisc_360_22_steel_column",
+  "source": {
+    "catalog_ref": "S7",
+    "year": 2022,
+    "tier": "A+"
+  },
+  "domain": "civil_structural_steel",
+  "part_class": "portal_frame_column",
+  "full_prompt": "Design a W-shape structural steel column for a single-story portal-frame industrial building, governed by ANSI/AISC 360-22 (2022). The column carries a factored axial load and factored moment resulting from gravity plus lateral wind under ASCE 7-22 LRFD load combinations. All checks use LRFD resistance factors phi_c = 0.90 for compression yield and phi_b = 0.90 for flexural yield per AISC 360-22 Chapters E and F.\n\nGeometry. The column clear height between base plate and roof beam connection is 6.0 m (19.7 ft). The base is a fixed moment connection (anchor bolts sized separately, out of scope). The top is a rigid moment connection to the roof beam, so effective length factor Kx = 1.2 in the strong-axis plane of the frame (sidesway uninhibited) and Ky = 1.0 in the weak axis (braced by wall girts every 1.5 m => Lb = 1.5 m). Candidate section: W10x49 (d=10.0 in, bf=10.0 in, tf=0.56 in, tw=0.34 in, Ix=272 in^4, Iy=93.4 in^4, rx=4.35 in, ry=2.54 in, Zx=60.4 in^3, Zy=28.3 in^3, Sx=54.6 in^3, Sy=18.7 in^3, A=14.4 in^2). Designer may select any W-shape from the AISC Manual 15th edition.\n\nMaterial. ASTM A992 structural steel: Fy = 50 ksi (345 MPa), Fu = 65 ksi (448 MPa), E = 29,000 ksi (200 GPa).\n\nLoad cases (already factored per ASCE 7-22 LRFD combinations). LC1 (gravity-dominant, Combo 2: 1.2D + 1.6L + 0.5Lr): Pu = 450 kN axial, Mux = 85 kN*m about strong axis at top of column, Muy = 0. LC2 (wind-dominant, Combo 4: 1.2D + 1.0W + 0.5L): Pu = 280 kN, Mux = 210 kN*m, Muy = 15 kN*m. LC3 (uplift, Combo 6: 0.9D + 1.0W): Pu = -40 kN (tension), Mux = 195 kN*m, Muy = 10 kN*m.\n\nPass/fail criteria per AISC 360-22. (R1) Compression strength Pn: compute phi_c * Pn per Chapter E using the governing of flexural buckling about the strong axis with KxL = 1.2 * 6000 = 7200 mm and the weak axis with KyLb = 1.0 * 1500 = 1500 mm. For W10x49 the weak axis governs with slenderness KL/r = 1500 / (2.54*25.4) = 23.2, elastic buckling Fe = pi^2 * E / (KL/r)^2 = pi^2 * 200000 / 23.2^2 = 3662 MPa, so Fcr = (0.658^(Fy/Fe)) * Fy = 0.658^(345/3662) * 345 = 0.658^0.0942 * 345 = 0.961 * 345 = 332 MPa. phi_c * Pn = 0.90 * 332 * 14.4*645.16 = 0.90 * 332 * 9290 = 2,775,000 N = 2775 kN. (R2) Flexural strength phi_b * Mnx per Chapter F2 considering LTB with Lb = 1.5 m. For W10x49 Lp ~= 2.63 m so Lb < Lp and full plastic moment governs: Mp = Zx * Fy = 60.4 * 16387 * 345 = 341,544 N*mm = 341.5 kN*m actually with unit care: 60.4 in^3 = 989,768 mm^3, Mp = 989,768 * 345 = 341.5 kN*m. phi_b * Mnx = 0.90 * 341.5 = 307.4 kN*m. (R3) Flexural strength about weak axis phi_b * Mny = 0.90 * Zy * Fy = 0.90 * 28.3 in^3 * 345 MPa = 0.90 * 463,773 mm^3 * 345 = 144.0 kN*m. (R4) Combined axial + biaxial flexure interaction per Chapter H Eq. H1-1a (Pu/phi_c*Pn >= 0.2) or H1-1b (< 0.2): for each load case, unity ratio <= 1.0. LC1 Pu/phiPn = 450/2775 = 0.162 < 0.2 -> use H1-1b: 0.162/2 + (85/307.4 + 0/144) = 0.081 + 0.276 = 0.357 <= 1.0 OK. LC2: 280/2775 = 0.101 < 0.2 -> H1-1b: 0.050 + (210/307.4 + 15/144) = 0.050 + 0.683 + 0.104 = 0.837 <= 1.0 OK. LC3 Pu tension: combined axial tension + flexure per H1-2: |Pu|/phi_t*Pn + Mux/phi_b*Mnx + Muy/phi_b*Mny <= 1.0. phi_t * Pn = 0.90 * Fy * A = 0.90 * 345 * 14.4*645.16 = 2,885,000 N = 2885 kN. LC3: 40/2885 + 195/307.4 + 10/144 = 0.014 + 0.634 + 0.069 = 0.717 <= 1.0 OK. (R5) Deflection at top of column under LC2 service wind (unfactored, take W/1.0) must be <= H/400 = 6000/400 = 15 mm (typical AISC serviceability recommendation; not mandated by 360-22 itself but widely cited by the AISC Design Guide 3). (R6) Column weight per meter <= 75 kg/m (roughly W14x48 upper bound; lighter is better).\n\nSolver and analysis expectations. Primary verification is closed-form AISC 360-22 Chapter E, F, H equations (hand calc or RAM/SAP2000 chapter-based section check). A linear static FEM (beam element) is acceptable for cross-check. Buckling, modal, thermal, fluid, and radiation analyses are NOT required. Seismic analysis is excluded (governed by AISC 341, out of scope).\n\nDeliverables. Chosen W-shape designation, axial and flexural capacity summary in kN and kN*m, all three load-case unity ratios, serviceability deflection in mm, and column mass kg/m.",
+  "short_prompt": "Design a W-shape structural steel column for a single-story portal-frame industrial building, governed by ANSI/AISC 360-22 (2022). The column carries factored axial load and moment from gravity plus lateral wind under ASCE 7-22 LRFD combinations. Resistance factors: phi_c = 0.90 for compression yield and phi_b = 0.90 for flexural yield per AISC 360-22 Chapters E and F.\n\nGeometry: clear height 6.0 m (19.7 ft). Base fixed moment connection (anchor bolts out of scope); top rigid moment connection to roof beam. Effective lengths Kx = 1.2 (strong-axis sidesway uninhibited), Ky = 1.0 (weak axis braced by girts every 1.5 m, Lb = 1.5 m). Candidate section: W10x49 (designer may choose any AISC Manual 15th-edition W-shape).\n\nMaterial: ASTM A992, Fy = 50 ksi (345 MPa), Fu = 65 ksi (448 MPa), E = 29,000 ksi (200 GPa).\n\nLoad cases (already factored per ASCE 7-22 LRFD).\n- LC1 gravity (1.2D + 1.6L + 0.5Lr): Pu = 450 kN, Mux = 85 kN*m, Muy = 0.\n- LC2 wind (1.2D + 1.0W + 0.5L): Pu = 280 kN, Mux = 210 kN*m, Muy = 15 kN*m.\n- LC3 uplift (0.9D + 1.0W): Pu = -40 kN (tension), Mux = 195 kN*m, Muy = 10 kN*m.\n\nChapter H unity ratio <= 1.0 per H1-1a/H1-1b (axial+flexure) or H1-2 (tension+flexure). Serviceability deflection at top under LC2 service wind <= H/400 = 15 mm. Column weight <= 75 kg/m.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "AISC_360_chapter_check",
+        "reason": "Primary LRFD pass/fail is closed-form chapter equations.",
+        "examples": [
+          "hand calc",
+          "RAM Elements",
+          "SAP2000 steel design",
+          "RISA-3D"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "W-shape steel portal-frame column per AISC 360-22 LRFD",
+    "brief": "6.0 m A992 W-shape column under gravity + wind + uplift; pass all Chapter H unity ratios <= 1.0 with phi_c=0.90 and phi_b=0.90.",
+    "geometric_constraints": {
+      "clear_height_m": 6.0,
+      "strong_axis_K": 1.2,
+      "weak_axis_K": 1.0,
+      "weak_axis_Lb_m": 1.5,
+      "candidate_section": "W10x49 (selectable)"
+    },
+    "material": {
+      "name": "ASTM A992",
+      "Fy_MPa": 345,
+      "Fu_MPa": 448,
+      "E_GPa": 200
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "gravity_LRFD_1.2D+1.6L",
+        "Pu_kN": 450,
+        "Mux_kNm": 85,
+        "Muy_kNm": 0
+      },
+      {
+        "id": "LC2",
+        "name": "wind_LRFD_1.2D+1.0W",
+        "Pu_kN": 280,
+        "Mux_kNm": 210,
+        "Muy_kNm": 15
+      },
+      {
+        "id": "LC3",
+        "name": "uplift_LRFD_0.9D+1.0W",
+        "Pu_kN": -40,
+        "Mux_kNm": 195,
+        "Muy_kNm": 10
+      }
+    ],
+    "boundary_conditions": {
+      "base": "fixed moment connection",
+      "top": "rigid beam connection"
+    },
+    "objective": {
+      "minimize": "self_weight",
+      "target_kg_m_max": 75
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "ANSI/AISC 360-22",
+      "revision": "2022"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "phi_c_Pn_compression_capacity",
+        "limit_kN": 2775,
+        "derivation": "AISC 360-22 Chapter E with phi_c=0.90 for W10x49; recompute for selected section",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": ">=",
+        "note": "Demand Pu must be <= this capacity via Chapter H unity check"
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "phi_b_Mnx_flexural_strong_axis",
+        "limit_kNm": 307.4,
+        "derivation": "AISC 360-22 Chapter F2 with phi_b=0.90",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "phi_b_Mny_flexural_weak_axis",
+        "limit_kNm": 144.0,
+        "derivation": "AISC 360-22 Chapter F6",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "H1_unity_ratio",
+        "limit": 1.0,
+        "derivation": "AISC 360-22 Chapter H combined axial + biaxial flexure (H1-1a/b, H1-2 for tension)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "service_wind_top_deflection",
+        "limit_mm": 15,
+        "derivation": "H/400 serviceability (AISC Design Guide 3 recommendation)",
+        "applies_to": [
+          "LC2_service"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "section_weight_per_meter",
+        "limit_kg_m": 75,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "N/A (closed-form AISC chapter check)",
+      "solver_hints": [
+        "hand calc",
+        "RAM Elements",
+        "SAP2000 steel design",
+        "RISA-3D"
+      ],
+      "analysis_types": [
+        "Chapter E compression",
+        "Chapter F flexure",
+        "Chapter H interaction"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static wind only; dynamic amplification not considered.",
+      "thermal_analysis": "Ambient construction; no fire design (that is AISC Appendix 4).",
+      "fluid_analysis": "Wind is reduced to static forces.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Chapter E already embeds flexural buckling closed-form."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Seismic design per AISC 341",
+      "Fatigue per AISC Appendix 3",
+      "Base plate and anchor rod design per AISC Design Guide 1"
+    ]
+  },
+  "eval_coverage": [
+    "Chapter E compression closed-form",
+    "Chapter F LTB and plastic moment",
+    "Chapter H combined axial + biaxial flexure",
+    "serviceability deflection gate"
+  ]
+}

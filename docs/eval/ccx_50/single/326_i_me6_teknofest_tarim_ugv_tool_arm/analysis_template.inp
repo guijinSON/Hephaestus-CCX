@@ -1,0 +1,152 @@
+**
+** TEKNOFEST Tarımsal İKA - Cantilevered Tool Arm - analysis template
+** (mesh + NSETs spliced in by wire_bcs.py from the agent's STEP)
+**
+** Authoritative pass/fail (R1..R5) lives in check.py:
+**   - R1 : peak vM in arm under LC1..LC4 (this FEM)
+**   - R2 : tip deflection magnitude under LC1 (this FEM)
+**   - R3 : closed-form Goodman fatigue check on LC5 alt-stress at root
+**          (uses geometric M*c/I; spec calls fatigue a separate post-step)
+**   - R4 : closed-form box-section dry mass from spec.json geometry
+**   - R5 : first eigenfrequency from this FEM (*FREQUENCY)
+**
+** Units: mm, N, MPa, t (tonne) -- consistent with gmsh-meshed STEP in mm.
+** 6061-T6 (welded): E=68900 MPa, nu=0.33, rho=2700 kg/m^3 = 2.7e-9 t/mm^3
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIXED : shoulder-flange face at x=0 (4-bolt M10 mount to UGV chassis)
+**   NLOAD  : tip face at x=800 mm (interchangeable implement attachment)
+**
+** Required ELSET:
+**   Eall   : auto-built by wire_bcs.py from gmsh's C3D* volume sets.
+**            Solid C3D mesh on the cadquery STEP (replaces the legacy B32R
+**            beam idealisation; the long-cantilever geometry produces
+**            equivalent first-mode and tip-deflection values, with
+**            slightly higher local fibre stresses at the root than the
+**            integration-point beam stresses).
+**
+*MATERIAL, NAME=AL6061T6
+*ELASTIC
+68900.0, 0.33
+*DENSITY
+2.7e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=AL6061T6
+**
+** ----------------------------------------------------------------
+** Boundary: clamp the shoulder flange face (4-bolt M10 mount).
+** All 3 translational DOFs pinned across the NFIXED face.
+** ----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ================================================================
+** STEP 1: LC1 - Static gravity, 5 kg implement at 0.8 m cantilever
+** F = 5 * 9.81 = 49.05 N along -z, distributed across NLOAD nodes.
+** ================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD
+NLOAD, 3, -49.05
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ================================================================
+** STEP 2: LC2 - 2 g curb-drop shock (effective 10 kg static-equiv)
+** F = 10 * 9.81 = 98.1 N along -z.
+** ================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD, OP=NEW
+NLOAD, 3, -98.1
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ================================================================
+** STEP 3: LC3 - 15 deg slope, combined bending + slight torsion
+** Vertical : 5 * 9.81 * cos(15) = 47.38 N along -z
+** Lateral  : 5 * 9.81 * sin(15) = 12.69 N along +y
+** (torsion proxy from offset is negligible vs. bending; lateral load
+** alone produces the spec's combined bend+slight-torsion response on
+** the asymmetric solid cross-section.)
+** ================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD, OP=NEW
+NLOAD, 2, 12.69
+NLOAD, 3, -47.38
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ================================================================
+** STEP 4: LC4 - Implement-ground impact, 150 N horizontal at tip
+** ================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD, OP=NEW
+NLOAD, 2, 150.0
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ================================================================
+** STEP 5: LC5 - Fatigue alternating amplitude, 50 N at tip in -z
+** (Linear scaling; check.py uses Goodman correction on geometric
+**  root-fibre stress for the R3 fatigue gate.)
+** ================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD, OP=NEW
+NLOAD, 3, -50.0
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ================================================================
+** STEP 6: Modal - first cantilever frequency (R5 >= 25 Hz)
+** Loads cleared so the eigensolve sees only the clamped structure.
+** ================================================================
+*STEP
+*FREQUENCY, STORAGE=YES
+4
+*NODE FILE
+U
+*END STEP

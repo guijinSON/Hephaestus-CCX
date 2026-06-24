@@ -1,0 +1,191 @@
+{
+  "id": "153_cn3_asce_sustainable_solutions",
+  "source": {
+    "catalog_ref": "CN3",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "civil_structural",
+  "part_class": "data_center_hall_module",
+  "full_prompt": "Design one representative structural bay of a hyperscale data center main hall. The bay must be a single rectangular steel frame module 18.3 m (60 ft) by 12.2 m (40 ft) in plan and 7.6 m (25 ft) floor to underside of roof, built from ASTM A992 wide-flange steel primary columns and beams with a 150 mm thick reinforced concrete composite slab on metal deck at the roof carrying mechanical penthouse equipment. The bay must carry simultaneously a raised-floor equipment live load of 12.0 kPa across the full tenant floor to represent IT rack rows, a roof superimposed dead load of 2.4 kPa from mechanical and electrical equipment plus MEP distribution, a ground snow load of 1.44 kPa mapped to a roof snow of 1.0 kPa per ASCE 7-22 flat-roof conversion, a basic wind speed of 51 m/s (115 mph) applied as equivalent static pressure on the long elevation per ASCE 7-22 simplified method yielding a design wind pressure of 1.15 kPa, and a seismic lateral force equal to 10% of seismic weight applied at the roof level to represent a Site Class D Moderate seismicity design base shear coefficient of 0.10. Members are ASTM A992 with yield 345 MPa and ultimate 450 MPa, and the composite slab uses normal-weight concrete fc' of 27.6 MPa (4000 psi). All pass/fail criteria must be satisfied: (R1) steel member stress ratios per AISC 360-22 DCR must not exceed 1.0 under any load combination in ASCE 7-22 Section 2.3, (R2) roof slab midspan deflection under 1.0 live plus 1.0 dead must not exceed span/360 which is 34 mm for the 12.2 m short direction, (R3) inter-story lateral drift at the roof under seismic plus wind must not exceed H/400 which is 19 mm, (R4) the bay must meet a sustainability target of at least 50% steel recycled content and embodied carbon at or below 300 kg CO2e per square meter of floor. Vibration, thermal, fluid, and radiation analyses are not required; wind is applied as ASCE 7-22 equivalent static pressure and seismic as equivalent lateral force. Deliver a STEP AP242 assembly of the bay plus an energy and carbon report listing member DCR maxima, roof deflection, lateral drift, recycled content, and embodied carbon per square meter.",
+  "short_prompt": "Design one representative 18.3 x 12.2 m (60 x 40 ft) plan x 7.6 m (25 ft) floor-to-underside-of-roof structural bay of a hyperscale data-center main hall, built from ASTM A992 wide-flange primary columns and beams with a 150 mm reinforced-concrete composite slab on metal deck at the roof. Design per AISC 360-22 (DCR <= 1.0 under ASCE 7-22 Section 2.3 load combinations).\n\nLoad cases applied simultaneously.\n- Raised-floor equipment live load 12.0 kPa across the tenant floor (IT rack rows).\n- Roof superimposed dead 2.4 kPa (mechanical/MEP).\n- Roof snow 1.0 kPa (ASCE 7-22 flat-roof conversion from 1.44 kPa ground snow).\n- Wind: basic wind speed 51 m/s (115 mph) per ASCE 7-22 simplified method = 1.15 kPa equivalent static on the long elevation.\n- Seismic: equivalent lateral force = 10% of seismic weight at the roof (Site Class D moderate seismicity, base-shear coefficient 0.10).\nAlso require roof slab midspan deflection under 1.0D+1.0L <= span/360 (34 mm on the 12.2 m short direction), roof drift under seismic+wind <= H/400 (19 mm), >=50% steel recycled content, and embodied carbon <= 300 kg CO2e / m^2 floor.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "embodied_carbon_ledger",
+        "reason": "Embodied carbon per floor area is computed from material EPDs via the sustainability rubric, not by FEA.",
+        "examples": [
+          "EC3 tool",
+          "OneClickLCA",
+          "SketchUp + EPD spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Hyperscale data center bay 18.3 m x 12.2 m",
+    "brief": "Design one structural bay of a hyperscale data center main hall (18.3 m x 12.2 m x 7.6 m) in ASTM A992 steel with a composite roof slab, meeting ASCE 7-22 gravity/wind/seismic demand and an embodied-carbon target.",
+    "geometric_constraints": {
+      "bay_length_m": 18.3,
+      "bay_width_m": 12.2,
+      "clear_height_m": 7.6,
+      "roof_slab_thickness_mm": 150
+    },
+    "material": {
+      "primary_steel": "ASTM A992, Fy 345 MPa, Fu 450 MPa",
+      "concrete": "normal-weight, fc' 27.6 MPa",
+      "recycled_content_pct_min": 50
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "IT_rack_live",
+        "magnitude_kPa": 12.0,
+        "application": "uniform on tenant floor"
+      },
+      {
+        "id": "LC2",
+        "name": "roof_MEP_dead",
+        "magnitude_kPa": 2.4,
+        "application": "uniform on roof slab"
+      },
+      {
+        "id": "LC3",
+        "name": "snow",
+        "magnitude_kPa": 1.0,
+        "derivation": "ground 1.44 kPa converted to flat-roof per ASCE 7-22",
+        "application": "uniform on roof slab"
+      },
+      {
+        "id": "LC4",
+        "name": "wind",
+        "magnitude_kPa": 1.15,
+        "derivation": "51 m/s basic wind at ASCE 7-22 simplified",
+        "application": "equivalent static on long elevation"
+      },
+      {
+        "id": "LC5",
+        "name": "seismic_ELF",
+        "base_shear_coefficient": 0.1,
+        "application": "roof-level lateral force"
+      }
+    ],
+    "boundary_conditions": {
+      "column_bases": "fixed to foundation",
+      "roof_slab": "composite action with steel beams"
+    },
+    "objective": {
+      "primary": "pass all code DCRs and drift limits",
+      "secondary": "minimize embodied carbon per floor area"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_member_DCR",
+        "roof_midspan_deflection_mm",
+        "roof_lateral_drift_mm",
+        "recycled_steel_pct",
+        "embodied_carbon_kgCO2e_per_m2"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_member_DCR",
+        "limit": 1.0,
+        "derivation": "AISC 360-22 demand-to-capacity",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "roof_midspan_deflection",
+        "limit_mm": 34,
+        "derivation": "span/360 for 12.2 m short direction",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "roof_lateral_drift",
+        "limit_mm": 19,
+        "derivation": "H/400 for 7.6 m height",
+        "applies_to": [
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "embodied_carbon_intensity",
+        "limit_kgCO2e_per_m2": 300,
+        "derivation": "sustainability rubric target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam for columns and girders, shell for slab",
+      "mesh_size_mm_in_critical_regions": 300,
+      "solver_hints": [
+        "SAP2000",
+        "ETABS",
+        "RAM Structural System"
+      ],
+      "analysis_types": [
+        "linear static gravity",
+        "equivalent lateral force"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not a vibration-sensitive lab floor at this stage.",
+      "thermal_analysis": "Thermal envelope sizing handled separately, not structural pass/fail.",
+      "fluid_analysis": "Wind is applied as static per ASCE 7-22 simplified method.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Progressive collapse and disproportionate collapse",
+      "CFD for hot/cold aisle containment",
+      "Site-specific response spectrum"
+    ]
+  },
+  "eval_coverage": [
+    "ASCE 7-22 multi-load combination gravity+wind+seismic",
+    "AISC 360-22 member DCR check",
+    "embodied-carbon ledger as sustainability pass/fail",
+    "data-center operational floor live load 12 kPa"
+  ]
+}

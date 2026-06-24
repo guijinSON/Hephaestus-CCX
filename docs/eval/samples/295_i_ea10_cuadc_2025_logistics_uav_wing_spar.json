@@ -1,0 +1,199 @@
+{
+  "id": "295_i_ea10_cuadc_2025_logistics_uav_wing_spar",
+  "source": {
+    "catalog_ref": "I-EA10",
+    "year": 2025,
+    "tier": "A",
+    "language_note": "Rulebook Chinese; values restated in SI.",
+    "needs_rulebook_fetch": false
+  },
+  "domain": "aerospace_uav_structural",
+  "part_class": "wing_main_spar",
+  "full_prompt": "Design the single-piece main wing spar for a CUADC 2025 methanol-engine logistics UAV in the non-geared engine class (6.5 cc methanol, MTOW ~12 kg, cruise speed 20 m/s, wing span 2.4 m). The spar is the primary bending member of the wing and carries bending + torsion introduced by aerodynamic lift distribution, payload mass, and maneuver load factor. Geometry: spar is a straight hollow rectangular-section tube of external height 40 mm, external width 20 mm, wall thickness to be designed but capped at 3 mm, running the full 2400 mm span from wingtip to wingtip and passing through the fuselage via a carry-through fitting. The fuselage carry-through is a single central 100 mm-long span where the spar is bolted to the fuselage with 4 x M6 bolts through the spar web in a 80 mm x 30 mm rectangular pattern; the remainder of the spar is cantilevered out to each wingtip. Ribs attach to the spar at 8 stations spaced 300 mm apart; payload drop bay imposes a 2 kg point load at station 3 from the root (900 mm outboard) on each wing. Material is pultruded CFRP with Ex = 130 GPa, Ey = 9 GPa, Gxy = 5 GPa, nu_xy = 0.3, density 1500 kg/m^3, tensile allowable 1500 MPa (fibre direction), compressive 900 MPa, ILSS 45 MPa. Load cases: LC1 (Level 1 g cruise) — lift distribution on each wing integrates to 60 N total (half of 12 kg x 9.81 / 2), modeled as elliptical distribution along the half-span; fuselage carry-through fully fixed; LC2 (3 g maneuver pull-up) — 180 N per wing lift; LC3 (Payload drop transient) — 20 g vertical shock on the 2 kg payload point load during release (simulating bay door failure); LC4 (Torsion) — an aerodynamic pitching moment of 4 Nm/m distributed along the half-span (representative of reflexed airfoil at max q); LC5 (Ground handling) — a 50 N wingtip upward force (technician lifting by tip), fuselage fixed. Pass/fail: (R1) under LC1, LC2, LC4, LC5 (linear static), max composite stress < 1000 MPa (tensile allowable / 1.5); (R2) under LC3 (dynamic transient), peak stress < 1250 MPa; (R3) max tip deflection under LC2 < 80 mm (span / 30); (R4) first-mode linear buckling of compressed wall under LC2 >= 4.0; (R5) single-piece spar mass <= 450 g so airframe mass budget of ~2.5 kg is preserved; (R6) under LC4 torsion, twist rate at wingtip < 2 deg. Primary verification: linear static structural FEA (LC1, LC2, LC4, LC5), linear buckling (LC2), and transient structural FEA (LC3). Vibration modal, thermal, fluid, and radiation analyses are not required. Output one STEP AP242 single-body spar plus a report listing spar mass, max stress per case, tip deflection under LC2, buckling factor under LC2, and tip twist under LC4.",
+  "short_prompt": "Design the single-piece main wing spar for a CUADC 2025 methanol-engine logistics UAV (6.5 cc methanol, MTOW ~12 kg, 20 m/s cruise, 2.4 m span).\n\nEnvelope: hollow rectangular pultruded CFRP tube 40 x 20 mm external with <= 3 mm wall, 2400 mm tip-to-tip; central 100 mm fuselage carry-through with 4 x M6 on an 80 x 30 mm rectangular pattern through the web; rib stations at 0, 300, 600, ..., 2100 mm; 2 kg payload-bay point load at station 3 (900 mm outboard) on each wing.\n\nFactor regime: FoS 1.5 on fiber-direction tensile allowable for linear cases; transient peak allowed up to 1250 MPa; linear buckling eigenvalue on the compressed wall under 3 g >= 4.0; wingtip twist under the torsion case < 2 deg.\n\nLoad cases.\n- Level 1 g cruise: elliptical lift integrating to 60 N per half-wing, carry-through fixed.\n- 3 g pull-up: 180 N per half-wing lift.\n- Payload-drop transient: 20 g vertical shock at the payload point during release.\n- Torsion: 4 N-m/m distributed pitching moment along each half-span.\n- Ground handling: 50 N wingtip upward (technician lift), fuselage fixed.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CUADC 2025 methanol logistics UAV wing spar",
+    "brief": "Pultruded CFRP rectangular-section main spar for a 12 kg MTOW, 2.4 m span logistics UAV with a 2 kg payload bay drop at 900 mm outboard.",
+    "geometric_constraints": {
+      "span_mm": 2400,
+      "section_outer_mm": {
+        "h": 40,
+        "w": 20
+      },
+      "wall_thickness_max_mm": 3,
+      "rib_spacing_mm": 300,
+      "payload_station_from_root_mm": 900,
+      "carry_through_length_mm": 100,
+      "carry_through_bolts": 4,
+      "bolt_size": "M6",
+      "bolt_pattern_mm": {
+        "x": 80,
+        "y": 30
+      }
+    },
+    "material": {
+      "name": "pultruded CFRP",
+      "Ex_GPa": 130,
+      "Ey_GPa": 9,
+      "Gxy_GPa": 5,
+      "density_kg_m3": 1500,
+      "tension_MPa": 1500,
+      "compression_MPa": 900,
+      "ILSS_MPa": 45
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "1g_cruise",
+        "per_wing_lift_N": 60
+      },
+      {
+        "id": "LC2",
+        "name": "3g_maneuver",
+        "per_wing_lift_N": 180
+      },
+      {
+        "id": "LC3",
+        "name": "payload_drop_transient",
+        "shock_g": 20,
+        "payload_kg": 2
+      },
+      {
+        "id": "LC4",
+        "name": "pitching_torsion",
+        "moment_Nm_per_m": 4
+      },
+      {
+        "id": "LC5",
+        "name": "tip_ground_handling",
+        "tip_force_N": 50
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "spar_mass_g",
+        "max_stress_per_case_MPa",
+        "tip_deflection_LC2_mm",
+        "buckling_factor_LC2",
+        "tip_twist_LC4_deg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_composite_stress",
+        "limit_MPa": 1000,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_dynamic_stress",
+        "limit_MPa": 1250,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tip_deflection",
+        "limit_mm": 80,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 4.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "spar_mass",
+        "limit_g": 450,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "tip_twist",
+        "limit_deg": 2,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "linear buckling (LC2)",
+        "transient (LC3)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not imposed.",
+      "thermal_analysis": "Methanol engine kept aft of firewall.",
+      "fluid_analysis": "Lift pre-computed.",
+      "radiation_analysis": "N/A."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Flutter analysis at VD",
+      "Carry-through bolt bearing"
+    ]
+  },
+  "eval_coverage": [
+    "bending + torsion + buckling",
+    "wing-spar tip deflection and twist limits",
+    "payload-drop transient",
+    "mass budget"
+  ]
+}

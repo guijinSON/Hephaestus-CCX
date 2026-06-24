@@ -1,0 +1,187 @@
+{
+  "id": "241_a1_euroc_pressure_vessel",
+  "source": {
+    "catalog_ref": "A1",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_pressure_vessel",
+  "part_class": "srad_cylindrical_pressure_vessel",
+  "full_prompt": "Design a single-part, monolithic student-researched-and-developed cylindrical pressure vessel for use in a liquid or hybrid rocket propulsion feed system of the 9 km apogee category. The vessel is a cylindrical aluminum-alloy tank with two hemispherical end caps machined as part of a single forged billet (no welds, no threaded joints). Internal volume shall be 5.0 L, internal diameter 120 mm, barrel length (cylinder portion excluding hemispherical caps) 350 mm, single fill/vent port on one end cap threaded to AS5202-06 (9/16-18 UNF) sealed with an elastomer o-ring. Working fluid is gaseous nitrogen at a Maximum Expected Operating Pressure (MEOP) of 200 bar (20 MPa). Material is 6061-T6 aluminum alloy with Young's modulus 68.9 GPa, Poisson's ratio 0.33, density 2700 kg/m^3, yield strength 276 MPa, and ultimate tensile strength 310 MPa, all at 20 C. Pressure-vessel qualification rules: (R1) the vessel shall not yield at proof pressure of 1.5 x MEOP = 300 bar held for at least 2 minutes, so maximum von Mises stress at 1.5 x MEOP must not exceed yield / 1.1 = 251 MPa; (R2) the vessel shall not burst at burst pressure of 2.0 x MEOP = 400 bar (metallic student-developed tank factor), so maximum von Mises stress at 2.0 x MEOP must not exceed ultimate / 1.25 = 248 MPa with a leak-before-burst crack arrest check; (R3) a linear buckling eigenvalue analysis performed with external crush loading (atmospheric descent after recovery) must return a first-mode load factor of at least 4.0 under 1 bar external differential; (R4) dry mass must not exceed 2.5 kg; (R5) mode-1 axial resonance must be above 250 Hz (hard-mounted at the forward boss) to avoid coupling with airframe modes. Primary verification is linear static structural FEA at proof (300 bar) and burst (400 bar) internal pressure with the forward port-boss fixed, plus a separate modal analysis for R5 and a linear buckling eigenvalue solve for R3. Thermal, fluid and radiation analyses are explicitly NOT required at this gate. Deliverables: STEP AP242 geometry, a materials certificate, and a report listing wall thickness in mm, dry mass in kg, max von Mises at proof and burst in MPa, first modal frequency in Hz, and first buckling load factor.",
+  "short_prompt": "Design a single-part, monolithic cylindrical aluminum pressure vessel for a student-built liquid/hybrid rocket feed system (9 km apogee class). The vessel is a seamless forged cylinder with two integral hemispherical end caps and a single AS5202-06 (9/16-18 UNF) fill/vent port on one cap; working fluid is gaseous nitrogen.\n\nEnvelope: internal volume 5.0 L, internal diameter 120 mm, cylindrical barrel length 350 mm. Qualify by proof + burst factors appropriate for a metallic student-developed tank.\n\nLoad cases.\n- LC1 proof pressure: 1.5 x MEOP = 300 bar internal, held for at least 2 minutes, forward port boss fixed.\n- LC2 burst pressure: 2.0 x MEOP = 400 bar internal, forward port boss fixed.\n- LC3 external crush: 1 bar external differential (atmospheric descent after recovery), linear buckling eigenvalue check.\n- LC4 modal: hard-mounted at the forward port boss, first axial mode must avoid airframe coupling.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student-developed cylindrical pressure vessel (9 km apogee class)",
+    "brief": "Design a single-part 5 L aluminum pressure vessel for 9 km apogee class sounding rocket, MEOP 200 bar. Must pass proof 1.5x MEOP, burst 2.0x MEOP, first mode >= 250 Hz, and dry mass <= 2.5 kg.",
+    "geometric_constraints": {
+      "internal_volume_L": 5.0,
+      "internal_diameter_mm": 120,
+      "cylindrical_barrel_length_mm": 350,
+      "end_caps": "two hemispherical, machined integral to barrel (monolithic)",
+      "port": {
+        "count": 1,
+        "thread": "AS5202-06 (9/16-18 UNF)",
+        "seal": "elastomer o-ring"
+      },
+      "monolithic": true,
+      "prohibited": [
+        "welds",
+        "threaded body joints",
+        "bonded joints"
+      ]
+    },
+    "material": {
+      "name": "6061-T6 aluminum",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof_pressure",
+        "internal_pressure_bar": 300,
+        "hold_time_s": 120,
+        "description": "1.5 x MEOP proof"
+      },
+      {
+        "id": "LC2",
+        "name": "burst_pressure",
+        "internal_pressure_bar": 400,
+        "description": "2.0 x MEOP burst (metallic student-developed)"
+      },
+      {
+        "id": "LC3",
+        "name": "external_crush",
+        "external_pressure_bar": 1.0,
+        "description": "atmospheric recovery differential"
+      },
+      {
+        "id": "LC4",
+        "name": "modal",
+        "description": "free-free or fixed-at-forward-boss modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "fixed at forward port boss for structural and modal",
+      "internal_pressure": "uniform pressure on inner wall"
+    },
+    "objective": {
+      "minimize": "dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "wall_thickness_mm",
+        "dry_mass_kg",
+        "max_von_mises_proof_MPa",
+        "max_von_mises_burst_MPa",
+        "first_modal_frequency_Hz",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 251,
+        "derivation": "yield / 1.1 at 1.5 x MEOP",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 248,
+        "derivation": "ultimate / 1.25 at 2.0 x MEOP (metallic burst factor)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 4.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_kg": 2.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 250,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order hexahedral or axisymmetric shell",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (internal pressure)",
+        "linear buckling (external crush)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Isothermal 20 C qualification; propellant-thermal transient out of scope at this gate.",
+      "fluid_analysis": "Static pressure only; feed-line fluid dynamics handled separately.",
+      "radiation_analysis": "Not applicable to sub-orbital student rocketry mission."
+    }
+  },
+  "eval_coverage": [
+    "dual static proof + burst load cases",
+    "buckling under external differential",
+    "modal frequency floor",
+    "monolithic forged-body constraint"
+  ]
+}

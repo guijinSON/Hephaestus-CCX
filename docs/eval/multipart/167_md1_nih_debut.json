@@ -1,0 +1,437 @@
+{
+  "id": "167_md1_nih_debut",
+  "source": {
+    "catalog_ref": "MD1",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/167_md1_nih_debut.json",
+    "multipart_basis": "Decomposition reflects NIH DEBUT neonatal incubator architecture: welded steel chassis frame (base platform + vertical columns + top rail), PMMA canopy enclosing infant compartment, heater/humidifier module tray, O2 sensor array mount, locking casters, and canopy-to-frame gasket seal."
+  },
+  "domain": "medical_device",
+  "part_class": "neonatal_incubator_chassis_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a low-cost neonatal incubator chassis targeting low- and middle-income-country clinical deployment. The device must maintain a neonate thermal environment of 32.0 to 37.0 C +/- 0.5 C within an enclosed 720 mm x 370 mm x 300 mm infant compartment (PMMA canopy on structural chassis) against a worst-case ambient of 20 C, with a target parts cost under $400 per unit. The structural chassis is a single welded carbon steel powder-coated frame 860 mm x 500 mm x 1100 mm tall, supported on four 75 mm lockable casters, and must carry a payload of 5.0 kg (neonate + mattress + bedding) plus an integrated 15 kg heater/humidifier module plus a 1.0 kg O2 sensor array, all operating concurrently. The chassis must simultaneously satisfy these pass/fail criteria: (R1) maximum von Mises stress in the steel frame under 1.0 g vertical plus 0.3 g lateral IEC 60601-1 transport load combination with 21 kg payload must not exceed 167 MPa (yield 250 MPa / SF 1.5 per IEC 60601-1 Clause 9), (R2) chassis top-rail deflection under the full 21 kg payload must not exceed 2 mm to protect the PMMA canopy seal, (R3) thermal steady-state analysis must show that a 100 W convective heater can maintain 35 C +/- 0.5 C inside the 80 L infant compartment against a 20 C ambient, (R4) device tip-over stability angle must be at least 10 degrees per IEC 60601-1 Clause 9.4, and (R5) the chassis must withstand a linear buckling analysis under 4x combined payload with a first-mode load factor of at least 2.0. Thermal analysis is required for R3. Vibration, fluid CFD, and radiation analyses are not required. Deliver a STEP AP242 assembly of the chassis + casters + canopy interface plus a design history file entry listing maximum von Mises stress, top-rail deflection, steady-state compartment temperature with rise time, tip-over stability angle, and first buckling load factor.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a multi-part assembly rather than a single solid body. The decomposition comprises (A) welded steel base platform, (B) vertical column set (x4 corner columns), (C) top rail frame sealing to canopy, (D) PMMA canopy enclosing infant compartment, (E) heater/humidifier module tray, (F) O2 sensor array mount bracket, (G) lockable casters (x4), (H) canopy-to-frame gasket seal. The final FEM verification runs on the ASSEMBLED model only — per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a low-cost neonatal incubator chassis as a multi-part welded-steel + PMMA canopy assembly (base platform, four vertical columns, top rail frame, PMMA canopy, heater/humidifier tray, O2 sensor mount, four locking casters, canopy-to-frame gasket).\n\nChassis 860 mm x 500 mm x 1100 mm; infant compartment 720 mm x 370 mm x 300 mm; four 75 mm casters. Carbon steel frame yield 250 MPa; PMMA canopy.\n\nLoad cases: LC1 transport 1.0 g vertical + 0.3 g lateral with 21 kg payload per IEC 60601-1; LC2 thermal steady at 20 C ambient, target 35 C +/- 0.5 C compartment with 100 W heater; LC3 tip-over at 10 deg per IEC 60601-1 Clause 9.4; LC4 buckling under combined payload 15 kg + 5.0 kg.\n\nPass/fail: max von Mises <= 167 MPa (yield 250 / 1.5); top-rail deflection <= 2 mm; compartment temperature near 37.0 C per IEC 60601-2-19; tip-over angle >= 10 deg; first buckling factor >= 2.0; FEM at assembled level; connection DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "bill_of_materials_cost_ledger",
+        "reason": "Parts-cost ceiling ($400) is a BOM rollup, not an FEA.",
+        "examples": [
+          "Excel BOM + supplier quotes"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Low-cost neonatal incubator chassis (LMIC) — multi-part assembly",
+    "brief": "Design a welded steel neonatal incubator chassis (860 x 500 x 1100 mm) with lockable casters, 21 kg payload, 100 W heater maintaining 35 C +/- 0.5 C in 80 L compartment, meeting IEC 60601-1/2-19 and a $400 BOM ceiling. [Multi-part assembly] base_platform (x1), vertical_columns (x4), top_rail_frame (x1), pmma_canopy (x1), heater_humidifier_tray (x1), o2_sensor_mount (x1), locking_casters (x4), canopy_gasket (x1). FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "chassis_mm": [
+        860,
+        500,
+        1100
+      ],
+      "infant_compartment_mm": [
+        720,
+        370,
+        300
+      ],
+      "caster_count": 4,
+      "caster_dia_mm": 75
+    },
+    "material": {
+      "frame": "Carbon steel, yield 250 MPa, E 200 GPa, powder-coated",
+      "canopy": "PMMA 6 mm"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "transport_vector",
+        "vertical_g": 1.0,
+        "lateral_g": 0.3,
+        "payload_kg": 21,
+        "application": "mounted on casters"
+      },
+      {
+        "id": "LC2",
+        "name": "thermal_steady_state",
+        "ambient_C": 20,
+        "target_compartment_C": 35,
+        "tolerance_C": 0.5,
+        "heater_W": 100,
+        "compartment_L": 80
+      },
+      {
+        "id": "LC3",
+        "name": "tip_over",
+        "tilt_angle_deg_req": 10
+      },
+      {
+        "id": "LC4",
+        "name": "buckling_4x",
+        "payload_kg": 84
+      }
+    ],
+    "boundary_conditions": {
+      "chassis_base": "four casters on rigid floor",
+      "heater": "internal convective at top of compartment"
+    },
+    "objective": {
+      "primary": "pass IEC 60601-1/2-19",
+      "secondary": "keep BOM cost <= $400"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "top_rail_deflection_mm",
+        "compartment_steady_state_C",
+        "tip_over_stability_angle_deg",
+        "first_buckling_load_factor",
+        "BOM_cost_USD",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "base_platform",
+        "role": "welded steel lower platform receiving caster loads and mounting the heater tray",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            860,
+            500
+          ],
+          "member_profile_mm": [
+            40,
+            40,
+            2
+          ],
+          "deck_plate_thickness_mm": 1.5
+        },
+        "material_hint": "Carbon steel SHS 40x40x2 + 1.5 mm deck plate, fy 250 MPa, powder-coated",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "vertical_columns",
+        "role": "four corner columns transferring top-rail + payload loads to base platform",
+        "count_min": 4,
+        "geometric_constraints": {
+          "height_mm": 1060,
+          "profile_mm": [
+            40,
+            40,
+            2
+          ],
+          "corner_spacing_mm": [
+            780,
+            420
+          ]
+        },
+        "material_hint": "Carbon steel SHS 40x40x2, fy 250 MPa, MIG-welded to base and top rail",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "top_rail_frame",
+        "role": "upper perimeter frame sealing to canopy; deflection governs canopy seal integrity",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            860,
+            500
+          ],
+          "rail_profile_mm": [
+            40,
+            40,
+            2
+          ],
+          "canopy_seat_width_mm": 20
+        },
+        "material_hint": "Carbon steel SHS 40x40x2 with machined canopy seat, fy 250 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "pmma_canopy",
+        "role": "transparent cover enclosing 720 x 370 x 300 mm infant compartment",
+        "count_min": 1,
+        "geometric_constraints": {
+          "internal_LxWxH_mm": [
+            720,
+            370,
+            300
+          ],
+          "wall_thickness_mm": 6,
+          "access_door_count": 2
+        },
+        "material_hint": "PMMA 6 mm thermoformed/bonded, tensile strength 70 MPa, E 3.2 GPa",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "heater_humidifier_tray",
+        "role": "subchassis carrying the 15 kg heater/humidifier module; contributes to thermal path for LC2",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tray_LxW_mm": [
+            600,
+            400
+          ],
+          "rail_height_mm": 50,
+          "mass_supported_kg": 15
+        },
+        "material_hint": "1.5 mm carbon steel folded tray, powder-coated, with M6 mounting grid",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "o2_sensor_mount",
+        "role": "bracket holding 1.0 kg O2 sensor array near canopy ventilation port",
+        "count_min": 1,
+        "geometric_constraints": {
+          "mount_LxW_mm": [
+            120,
+            80
+          ],
+          "thickness_mm": 2,
+          "bolt_pattern_mm": [
+            60,
+            40
+          ]
+        },
+        "material_hint": "2 mm carbon steel bracket, powder-coated, M4 fastening",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "locking_casters",
+        "role": "four 75 mm lockable casters providing mobility + parked stability for LC3 tip-over",
+        "count_min": 4,
+        "geometric_constraints": {
+          "wheel_diameter_mm": 75,
+          "load_rating_kg": 50,
+          "lock_type": "total_lock_pedal"
+        },
+        "material_hint": "Polyurethane wheel on zinc-plated steel yoke, M10 stem or top-plate",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "canopy_gasket",
+        "role": "elastomer seal between top rail frame and PMMA canopy to maintain thermal compartment",
+        "count_min": 1,
+        "geometric_constraints": {
+          "perimeter_mm": 2720,
+          "cross_section_mm": [
+            10,
+            5
+          ],
+          "compression_pct": 25
+        },
+        "material_hint": "Medical-grade silicone D-section gasket, Shore A 50",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "see original brief",
+      "coordinate_system": "inherit from original"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 167,
+        "derivation": "yield 250 / 1.5 per IEC 60601-1 Clause 9",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "top_rail_deflection",
+        "limit_mm": 2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "compartment_steady_state_temperature",
+        "limit_C_lower": 34.5,
+        "limit_C_upper": 35.5,
+        "derivation": "IEC 60601-2-19 Clause 201.12.1.108 (35 C +/- 0.5 C)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "tip_over_stability_angle",
+        "limit_deg": 10,
+        "derivation": "IEC 60601-1 Clause 9.4",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across all inter-part interfaces (welds, bolts, canopy seat) <= 1.0 under LC1 transport vector.",
+        "metric": "max DCR across IF1..IFn",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Canopy-to-rail gasket compression must remain within 20-35 percent under LC1 deflection to preserve thermal seal.",
+        "metric": "gasket compression range pct",
+        "threshold_min": 20,
+        "threshold_max": 35,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam/shell for chassis, solid for casters",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SolidWorks Simulation",
+        "Onshape Simulation"
+      ],
+      "analysis_types": [
+        "linear static",
+        "steady-state thermal",
+        "linear buckling"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "welded",
+      "load_path": "vertical columns B transfer payload + lateral loads into base platform A via MIG fillet welds at each corner"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "welded",
+      "load_path": "top rail frame C is welded to vertical columns B; carries canopy deflection path"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "PMMA canopy D seats on top rail frame C via bolted hold-down strips with elastomer gasket"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "heater/humidifier tray E is M6-bolted to base platform A, transferring 15 kg module weight"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "C",
+        "F"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "O2 sensor mount F is M4-bolted to the top rail frame C near a ventilation port"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "threaded",
+      "load_path": "casters G thread via M10 stem or bolt to base platform A, transferring all payload reactions to floor"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "C",
+        "H"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "silicone gasket H is bonded to the top-rail canopy seat, providing compression seal under canopy D"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "D",
+        "H"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "canopy D compresses gasket H against top rail C; load path is gasket-mediated contact"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Top-rail deflection, canopy seal integrity, and tip-over stability require the full assembled chassis including casters, canopy, gasket, and heater mass; per-part checks cannot validate IEC 60601-1 criteria in isolation.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "An incubator chassis is inherently a welded steel frame + PMMA canopy + heater/humidifier module + casters + sensor mount + seal — multi-body by construction.",
+    "speculation_caveats": "parts[] counts and interfaces[] reflect DEBUT competition-style LMIC incubator references but are speculative; no specific NIH DEBUT rulebook part list is cited.",
+    "original_sample_preserved_at": "docs/eval/samples/167_md1_nih_debut.json"
+  }
+}

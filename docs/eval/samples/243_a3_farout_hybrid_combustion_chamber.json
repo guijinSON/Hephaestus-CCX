@@ -1,0 +1,186 @@
+{
+  "id": "243_a3_farout_hybrid_combustion_chamber",
+  "source": {
+    "catalog_ref": "A3",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_propulsion",
+  "part_class": "hybrid_rocket_combustion_chamber",
+  "full_prompt": "Design a single-part, monolithic combustion chamber (case) for a student-researched hybrid rocket motor intended for 30 km (30,000 ft) apogee. Oxidizer is nitrous oxide (N2O); fuel grain is HTPB. The chamber is a seamless, spin-formed or machined monolithic cylinder with two integral bosses: a forward injector-bulkhead interface (8x M6 bolt pattern on a 120 mm PCD) and an aft nozzle-retention interface (12x M8 bolt pattern on a 140 mm PCD). Internal diameter 140 mm, internal length 700 mm, wall thickness to be sized. Material is 6061-T6 aluminum with derating for hot-fire temperature 150 C (ablative liner protects the wall): Young's modulus 65 GPa at 150 C, yield strength 240 MPa at 150 C, ultimate strength 276 MPa at 150 C, density 2700 kg/m^3. Maximum Expected Operating Pressure (MEOP) is 60 bar (6 MPa) chamber pressure with a transient pressure spike allowance of 1.1 x MEOP = 66 bar. Structural requirements: (R1) proof pressure at 1.5 x MEOP = 90 bar held for 2 minutes, max von Mises <= yield (hot) / 1.1 = 218 MPa; (R2) burst pressure 2.5 x MEOP = 150 bar with ultimate margin >= ultimate (hot) / 1.25 = 221 MPa max von Mises; (R3) the emergency depressurization burst disk port must be integral to the chamber wall and sized to vent chamber to <= 10% MEOP = 6 bar within 5 seconds following activation; (R4) dry mass of the chamber case <= 3.5 kg; (R5) external thermal boundary wall temperature must not exceed 150 C during 6.0 s nominal burn with an ablative liner of EPDM/silica-phenolic (this thermal constraint is the binding design driver, not pure structural). Verification: primary structural FEA with the hot-derated properties at proof and burst; secondary thermal analysis (transient 1D conduction through ablative liner + chamber wall) to confirm R5; vibration and buckling secondary if explicitly requested. Fluid (CFD) and radiation not required at this gate. Deliverables: STEP AP242, materials certificate, and a report listing wall thickness in mm, dry mass in kg, max von Mises at proof and burst in MPa, emergency-vent time in s, peak external wall temperature in C during burn.",
+  "short_prompt": "Design a single-part, monolithic N2O/HTPB hybrid-rocket combustion chamber case for a student sounding rocket targeting 30,000 ft. The case is a seamless aluminum cylinder (spin-formed or machined) with two integral bolted bosses: forward injector-bulkhead interface and aft nozzle-retention interface. An ablative liner (EPDM/silica-phenolic) protects the hot side, so the metal is design-derated to a 150 C hot-wall condition.\n\nEnvelope: internal diameter 140 mm, internal length 700 mm. MEOP 60 bar chamber pressure with a 1.1 x MEOP transient spike allowance.\n\nLoad cases.\n- LC1 proof: 1.5 x MEOP = 90 bar held for 2 minutes at 150 C wall.\n- LC2 burst: 2.5 x MEOP = 150 bar at 150 C wall.\n- LC3 emergency depressurization: integral burst-disk port must vent chamber to <= 10% MEOP within 5 s.\n- LC4 thermal: nominal 6.0 s burn, external wall temperature must stay <= 150 C with the ablative liner (this is the binding driver).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student-developed hybrid combustion chamber (30 kft apogee class)",
+    "brief": "6061-T6 monolithic hybrid chamber, 60 bar MEOP, N2O oxidizer, 6 s nominal burn. Must pass 1.5x proof, 2.5x burst, emergency burst-disk integration, and wall temp <= 150 C.",
+    "geometric_constraints": {
+      "internal_diameter_mm": 140,
+      "internal_length_mm": 700,
+      "forward_bulkhead_interface": {
+        "bolt_count": 8,
+        "bolt_size": "M6",
+        "PCD_mm": 120
+      },
+      "aft_nozzle_interface": {
+        "bolt_count": 12,
+        "bolt_size": "M8",
+        "PCD_mm": 140
+      },
+      "emergency_burst_disk_port": "integral to chamber sidewall",
+      "monolithic": true,
+      "prohibited": [
+        "welds",
+        "brazed joints"
+      ]
+    },
+    "material": {
+      "name": "6061-T6 aluminum (hot-derated to 150 C)",
+      "properties": {
+        "youngs_modulus_GPa": 65,
+        "yield_strength_MPa_at_150C": 240,
+        "ultimate_tensile_strength_MPa_at_150C": 276,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof",
+        "internal_pressure_bar": 90,
+        "hold_time_s": 120
+      },
+      {
+        "id": "LC2",
+        "name": "burst",
+        "internal_pressure_bar": 150
+      },
+      {
+        "id": "LC3",
+        "name": "emergency_vent",
+        "description": "vent from MEOP to <=10% MEOP within 5 s"
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_burn",
+        "burn_time_s": 6.0,
+        "chamber_gas_T_K": 2800,
+        "external_wall_T_limit_C": 150
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "aft nozzle interface fixed",
+      "pressure": "uniform on chamber inner wall",
+      "thermal": "convection + ablative liner on inner wall, free convection outside"
+    },
+    "objective": {
+      "minimize": "dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "wall_thickness_mm",
+        "dry_mass_kg",
+        "max_von_mises_proof_MPa",
+        "max_von_mises_burst_MPa",
+        "emergency_vent_time_s",
+        "peak_external_wall_T_C"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 218,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 221,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "emergency_vent_time",
+        "limit_s": 5.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_kg": 3.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "peak_external_wall_T",
+        "limit_C": 150,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "axisymmetric or 3D second-order solid",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (proof, burst)",
+        "transient thermal (6 s burn)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Chamber internal combustion CFD is out of scope; gas-side boundary is reduced to uniform pressure + convective film coefficient.",
+      "radiation_analysis": "Radiative load absorbed into film coefficient on inner wall.",
+      "vibration_analysis": "Not required at this gate.",
+      "buckling_analysis": "Pressurized shell; no external crush load."
+    }
+  },
+  "eval_coverage": [
+    "coupled proof + burst pressure",
+    "thermal derating of metallic properties",
+    "integral emergency venting geometry",
+    "transient thermal wall-temp limit"
+  ]
+}

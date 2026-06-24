@@ -1,0 +1,231 @@
+{
+  "id": "024_pt24_toyota_patent_engine_mount",
+  "source": {
+    "catalog_ref": "PT24",
+    "year": 2019,
+    "tier": "B"
+  },
+  "domain": "automotive",
+  "part_class": "automotive_engine_mount_bracket",
+  "needs_patent_fetch": true,
+  "full_prompt": "Design an automotive engine mount bracket for a 4-cylinder 2.0 L passenger-vehicle engine in the spirit of a canonical automotive-engine-mount patent (US10189326B2-style), with dual targets: (a) vibration isolation tuned to NVH-favorable frequencies and (b) crash-load structural integrity per FMVSS 301. Envelope: 200 x 150 x 100 mm. Interfaces: engine-block side has two M10 x 1.25 bolts on 70 mm spacing at the top; body-side (subframe/rail) has three M12 x 1.25 bolts in a triangle 120 x 60 mm. The bracket carries a cast-in elastomer isolator (NR rubber, durometer 60 Shore A) as an over-molded center element, with the bracket being the metallic load path. Metal: AlSi10Mg die-cast or cast aluminum AA319-T6 (yield 165 MPa, UTS 230 MPa, E 74 GPa, density 2700 kg/m^3). Engine mass supported by three mounts; this one carries 1/3 of a 160 kg powertrain = 53 kg + fuel-tank harmonic resonance consideration. Load cases: LC1 static engine weight 1/3 x 160 kg x 9.81 = 523 N downward at isolator; LC2 engine torque reaction at 2x max torque 400 N*m -> at 100 mm arm gives 4 kN transverse; LC3 automotive NVH design target first-mode natural frequency of the bracket metal-only structure >= 350 Hz (classical rule: engine idle rotational frequency ~30 Hz, combustion 2nd order ~60 Hz, driver-audible NVH peak avoid 250-300 Hz, so first bracket mode >=350 Hz to avoid audible excitation); LC4 FMVSS 301 rear-impact 50 km/h crash deceleration 40 g applied to engine mass = 53 * 40 * 9.81 = 20.8 kN; LC5 FMVSS 214 side impact 25 g = 13 kN lateral. Pass/fail: (R1) max von Mises at LC1+LC2 static-operational combined <= yield / 2.0 = 82.5 MPa (automotive chassis SF 2.0 on yield, ISO 16750-3 analog); (R2) max von Mises at LC4 crash <= UTS / 1.2 = 192 MPa (crash SF 1.2 on UTS per FMVSS 301 energy-management practice); (R3) first natural frequency of metal bracket >= 350 Hz; (R4) elastomer isolator Shore A 60 stiffness chosen such that mount system natural frequency in the vertical direction is 10-15 Hz (away from idle 30 Hz + 1st-order 17 Hz and body natural 5-7 Hz); (R5) mass <= 1.2 kg; (R6) fatigue life 10^7 cycles at LC2 amplitude using AlSi10Mg cast S-N (fatigue limit ~80 MPa for AA319-T6 at 10^7). Deliverables: STEP AP242 + over-mold elastomer geometry; FEA (static + modal + crash) + NVH frequency report.",
+  "short_prompt": "Design an automotive engine mount bracket for a 4-cylinder 2.0 L passenger-vehicle engine in the spirit of a canonical automotive-engine-mount patent (US10189326B2-style), with dual targets: NVH-tuned vibration isolation and FMVSS 301 crash-load structural integrity.\n\nEnvelope: 200 x 150 x 100 mm. Engine-block side: two M10 x 1.25 bolts on 70 mm spacing. Body-side: three M12 x 1.25 bolts in a triangle 120 x 60 mm. An over-molded cast-in elastomer isolator (NR rubber, Shore A 60) sits at the center element; the bracket is the metallic load path.\n\nMaterial: AlSi10Mg die-cast or AA319-T6.\n\nEngine mass: 1/3 of 160 kg powertrain = 53 kg on this mount.\n\nLoad cases.\n- LC1 static engine weight: 1/3 x 160 kg x 9.81 = 523 N at isolator.\n- LC2 engine torque reaction at 2x max torque 400 N*m -> 4 kN transverse at 100 mm arm.\n- LC3 bracket metal-only first-mode natural frequency >= 350 Hz.\n- LC4 FMVSS 301 rear-impact 50 km/h crash: 40 g x 53 kg = 20.8 kN.\n- LC5 FMVSS 214 side impact: 25 g = 13 kN lateral.\n\nAdditional gates: mount-system vertical natural frequency 10-15 Hz (avoiding idle 30 Hz, 1st-order 17 Hz, body 5-7 Hz); mass <= 1.2 kg; fatigue life 10^7 cycles at LC2 amplitude (AA319-T6 S-N limit ~80 MPa at 10^7).\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "nvh_frequency_tuner",
+        "reason": "Elastomer stiffness + mass -> system frequency is a 1-DOF closed-form.",
+        "examples": [
+          "Excel spreadsheet",
+          "Python SciPy"
+        ]
+      },
+      {
+        "tool": "crash_transient_simulator",
+        "reason": "LC4/LC5 crash events are explicit transient with large deformation, outside classical linear FEA.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Cast aluminum engine mount bracket with elastomer isolator (automotive-engine-mount patent US10189326B2 style)",
+    "brief": "Design a 200x150x100 mm AA319-T6 engine mount with NR-rubber isolator; tune 1st metal mode >=350 Hz and mount-system vertical mode 10-15 Hz; survive FMVSS 301 40 g crash.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 200,
+        "y": 150,
+        "z": 100
+      },
+      "engine_interface": {
+        "bolts": 2,
+        "thread": "M10 x 1.25",
+        "spacing_mm": 70
+      },
+      "body_interface": {
+        "bolts": 3,
+        "thread": "M12 x 1.25",
+        "pattern_mm": {
+          "x": 120,
+          "y": 60
+        }
+      },
+      "isolator": {
+        "material": "NR rubber",
+        "durometer_ShoreA": 60,
+        "over_molded": true
+      }
+    },
+    "material": {
+      "bracket": {
+        "name": "AA319-T6 cast aluminum",
+        "yield_MPa": 165,
+        "ultimate_MPa": 230,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_weight",
+        "force_N": 523
+      },
+      {
+        "id": "LC2",
+        "name": "torque_reaction",
+        "force_N": 4000
+      },
+      {
+        "id": "LC3",
+        "name": "nvh_target",
+        "target_Hz_min": 350
+      },
+      {
+        "id": "LC4",
+        "name": "rear_crash_40g",
+        "force_N": 20800
+      },
+      {
+        "id": "LC5",
+        "name": "side_impact_25g",
+        "force_N": 13000
+      }
+    ],
+    "boundary_conditions": {
+      "body_interface": "3 M12 fully constrained",
+      "engine_interface": "engine mass lumped on isolator, elastomer stiffness modeled"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "assembly_bodies": [
+        "bracket",
+        "elastomer_over_mold"
+      ],
+      "report_fields": [
+        "max_von_mises_static_MPa",
+        "max_von_mises_crash_MPa",
+        "first_metal_mode_Hz",
+        "system_vertical_mode_Hz",
+        "mass_kg",
+        "fatigue_life_cycles"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_static",
+        "limit_MPa": 82.5,
+        "derivation": "yield / 2.0 = 165 / 2.0 (automotive chassis SF)",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_crash",
+        "limit_MPa": 192,
+        "derivation": "UTS / 1.2 = 230 / 1.2 (FMVSS 301 energy management)",
+        "applies_to": [
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency_metal",
+        "limit_Hz": 350,
+        "derivation": "NVH avoid audible 250-300 Hz peak",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "system_vertical_mode",
+        "limit_Hz_range": [
+          10,
+          15
+        ],
+        "derivation": "away from idle 30 Hz + body natural 5-7 Hz",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "in_range"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "fatigue_life_at_LC2",
+        "limit_cycles": 10000000,
+        "derivation": "AA319-T6 fatigue limit 80 MPa at 10^7",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "FMVSS 301 + FMVSS 214 + automotive NVH practice (public-domain framework) + SAE J1099",
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "LS-DYNA (crash)",
+        "Abaqus Standard + Explicit"
+      ],
+      "analysis_types": [
+        "linear static + modal + crash transient + fatigue post-proc"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Engine bay ambient up to 100 C is within AA319 working range.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "patent_fetch": "US10189326B2 specific values not confirmed. Natural frequency 350 Hz and 10-15 Hz system mode are industry-typical NVH targets.",
+    "numeric_source": "FMVSS 301/214 crash envelopes + SAE J1099 fatigue + AA319-T6 allowables."
+  },
+  "eval_coverage": [
+    "NVH first-mode tuning + system frequency range",
+    "crash impulse loading",
+    "elastomer + metal composite assembly",
+    "static + fatigue + crash trifecta"
+  ]
+}

@@ -1,0 +1,215 @@
+{
+  "id": "333_i_eu1_esa_rexus_experiment_module",
+  "source": {
+    "catalog_ref": "I-EU1",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "sounding_rocket_experiment_module",
+  "full_prompt": "Design the primary structure of an ESA REXUS student experiment module installed on the Improved Orion sounding rocket to reach a nominal apogee of 82 km (maximum 90 km) with 290 kg propellant mass. The module is a cylindrical section bolted between adjacent REXUS service module rings. The module has an internal diameter of 348 mm and outer diameter of 356 mm (8 mm wall skin allowance), axial height 220 mm. Experiment wet mass is up to 40 kg allocated into this module. The primary structure must bolt through the REXUS standard 24-bolt flange pattern on M5 A2-70 stainless bolts at each end ring. Structure material is 6061-T6 aluminum alloy (E 68.9 GPa, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3). Environmental specification per the REXUS User Manual v7-17: (a) quasi-static axial acceleration peak of 17 g at motor burnout, with -5 g deceleration at apogee; (b) lateral quasi-static 2.5 g during spin-up phase; (c) spin rate up to 4 Hz producing centrifugal load on CoM offsets; (d) sine sweep qualification 5-100 Hz at 1.5 g amplitude; (e) random vibration qualification 20-2000 Hz, 6.1 g RMS per NASA-HDBK-7005 style envelope; (f) thermal cycle: pre-launch soak at ambient 20 C, skin temperature climbs to 60 C during ascent aero-heating (duration < 60 s), re-entry skin temperature climbs to 150 C during descent (duration < 120 s). Load cases: (LC1) 17 g axial + 2.5 g lateral simultaneously, applied to the 40 kg experiment mass; (LC2) static preload: 24 M5 bolts each at 5.0 kN preload, verify gap opening of flange under LC1 (no gap permitted at joint interface per ECSS-E-ST-32-10C); (LC3) spin load at 4 Hz with CoM offset 5 mm; (LC4) random vibration at 6.1 g RMS - use Miles' equation or PSD response analysis to estimate 3-sigma stress; (LC5) thermal transient: 150 C outer skin, 20 C inner mounting bosses at end of re-entry; linear thermo-structural check. Pass/fail criteria: (R1) under LC1, maximum von Mises stress must stay below yield/1.25 = 220 MPa for protoflight metallic (NASA-STD-5001B); (R2) under LC1, maximum von Mises must also stay below ultimate/1.4 = 221 MPa (same NASA-STD-5001B protoflight); (R3) first structural natural frequency must exceed 120 Hz to clear the vehicle dynamic coupling band per REXUS interface spec; (R4) no bolt separation under LC1+LC2 combined (zero-gap requirement); (R5) random vibration 3-sigma stress must stay below yield (276 MPa); (R6) under LC5 thermal, skin-to-boss temperature delta 130 C must not yield the aluminum at the boss root; (R7) module dry mass including bolts must not exceed 6.5 kg so the experiment stays under 40 kg wet budget. Fluid and radiation analyses not required; buckling covered by yield stress gate at this thickness. Deliverables: STEP AP242 assembly, random vibration PSD response plot, modal report with first 10 modes, thermo-structural report, bolted-joint separation check, mass budget.",
+  "short_prompt": "Design the primary structure of an ESA REXUS student experiment module installed on the Improved Orion sounding rocket (nominal apogee 82 km, max 90 km; 290 kg propellant). Cylindrical module bolted between adjacent service rings via the REXUS 24-bolt M5 A2-70 flange pattern.\n\nEnvelope: 356 mm OD (348 mm ID, 8 mm wall allowance), 220 mm axial; 40 kg experiment wet allocation; 6061-T6 aluminum.\n\nFactor regime: NASA-STD-5001B protoflight metallic - yield FoS 1.25 (allowable 220 MPa) and ultimate FoS 1.4 (allowable 221 MPa); first natural frequency > 120 Hz per REXUS interface; zero-gap at the bolted joint under combined load (ECSS-E-ST-32-10C); random 3-sigma stress < yield.\n\nLoad cases (per REXUS User Manual v7-17).\n- 17 g axial + 2.5 g lateral simultaneous on 40 kg wet experiment.\n- Bolt preload: 24 x M5 at 5.0 kN each; check for flange gap opening under LC1.\n- Spin at 4 Hz with 5 mm CoM offset.\n- Random vibration 20-2000 Hz at 6.1 g RMS (Miles or PSD response, 3-sigma stress gate).\n- Thermal transient: 150 C outer skin / 20 C inner bosses at end of re-entry.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ESA REXUS Student Experiment Module Primary Structure",
+    "brief": "REXUS module 356 mm OD, 40 kg experiment, 17 g axial + 2.5 g lateral + 6.1 g RMS random + re-entry 150 C skin.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 356,
+      "inner_diameter_mm": 348,
+      "axial_height_mm": 220,
+      "flange_bolts_per_ring": 24,
+      "bolt_size_grade": "M5 A2-70"
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "environment": {
+      "peak_axial_g": 17,
+      "lateral_g": 2.5,
+      "spin_Hz": 4,
+      "sine_sweep_Hz": [
+        5,
+        100
+      ],
+      "sine_amplitude_g": 1.5,
+      "random_Hz": [
+        20,
+        2000
+      ],
+      "random_rms_g": 6.1,
+      "skin_temp_ascent_C": 60,
+      "skin_temp_reentry_C": 150
+    },
+    "experiment_mass_max_kg": 40,
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "combined_quasi_static",
+        "application": "17 g axial + 2.5 g lateral on 40 kg"
+      },
+      {
+        "id": "LC2",
+        "name": "bolt_preload_and_flange_gap",
+        "bolt_preload_kN": 5.0,
+        "application": "24 bolts each ring"
+      },
+      {
+        "id": "LC3",
+        "name": "spin",
+        "rate_Hz": 4,
+        "CoM_offset_mm": 5
+      },
+      {
+        "id": "LC4",
+        "name": "random_vib_3sigma",
+        "rms_g": 6.1,
+        "application": "20-2000 Hz base"
+      },
+      {
+        "id": "LC5",
+        "name": "reentry_thermal",
+        "skin_C": 150,
+        "boss_C": 20
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 3,
+      "report_fields": [
+        "module_mass_kg",
+        "stress_LC1_MPa",
+        "first_natural_freq_Hz",
+        "random_3sigma_stress_MPa",
+        "thermal_joint_stress_LC5_MPa",
+        "bolt_gap_LC1_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_protoflight_yield",
+        "limit_MPa": 220,
+        "derivation": "276 / 1.25 (NASA-STD-5001B metallic protoflight)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_protoflight_ultimate",
+        "limit_MPa": 221,
+        "derivation": "310 / 1.4 (NASA-STD-5001B metallic protoflight)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "flange_bolt_gap",
+        "limit_mm": 0,
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_stress",
+        "limit_MPa": 276,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "thermal_analysis",
+        "metric": "thermal_joint_stress",
+        "limit_MPa": 276,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "module_dry_mass",
+        "limit_kg": 6.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell skins + TET10 bosses; bolt elements for LC2",
+      "mesh_size_mm": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (LC1-LC3)",
+        "modal",
+        "PSD random (LC4)",
+        "thermo-structural (LC5)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "fluid_analysis": "Aero heating reduced to skin-temperature BC.",
+      "radiation_analysis": "Not a vehicle-integration verification gate at REXUS altitudes.",
+      "buckling_analysis": "Stress gate at this wall-thickness bounds instability."
+    }
+  },
+  "eval_coverage": [
+    "NASA-STD-5001B protoflight FoS traceability",
+    "random vib 3-sigma",
+    "bolted-joint zero-gap",
+    "thermo-structural re-entry",
+    "modal coupling gate"
+  ]
+}

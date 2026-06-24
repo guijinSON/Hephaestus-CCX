@@ -1,0 +1,216 @@
+{
+  "id": "004_pt4_skf_schaeffler_bearing_housing",
+  "source": {
+    "catalog_ref": "PT4",
+    "year": 2024,
+    "tier": "A+"
+  },
+  "domain": "industrial_machinery",
+  "part_class": "split_plummer_block_housing",
+  "full_prompt": "Design a split cast-iron plummer block bearing housing that interfaces with a canonical size-220 spherical roller bearing and accepts a standard plummer-block seal interface. The representative 2024 bearing catalog values for the size-220 spherical roller bearing are: bore d = 100 mm, outside diameter D = 180 mm, width B = 46 mm, dynamic load rating C = 475 kN, static load rating C0 = 600 kN, fatigue load limit Pu = 62 kN. The paired plummer-block housing has overall length 470 mm, base width 160 mm, total height 280 mm, base-to-shaft-center height 110 mm, foot bolt pattern with four M20 bolts on a 370 x 130 mm rectangular footprint, and a split line along the bearing centerline plane. The housing must accept adapter sleeve-mounted shafting up to 90 mm nominal and tolerate +/- 0.5 degree of static angular misalignment (spherical roller inherent capability). Design load cases: LC1 radial load on the bearing Fr = 150 kN (about C/3, consistent with P/C0 ~= 0.25 sizing practice); LC2 combined radial+axial Fr = 120 kN + Fa = 40 kN (ratio Fa/Fr = 0.33, within spherical roller Y1/Y2 envelope); LC3 bolt preload only (4 x M20 grade 8.8 tightened to 410 N*m per standard industrial housing bolt torque table, generating approximately 158 kN clamping force per bolt). Pass/fail: (R1) housing cap half and base half cast-iron (EN-GJS-500-7, yield ~= 320 MPa, ultimate ~= 500 MPa) max von Mises stress <= 200 MPa (SF = 2.5 on yield, industrial machinery standard per industrial bearing housing design guide); (R2) bolt shank max tensile stress <= 0.7 * 640 = 448 MPa (preload limit for grade 8.8 per VDI 2230); (R3) bearing-seat out-of-roundness after load application <= 0.02 mm (industrial bearing catalog misalignment/clearance tolerance); (R4) vertical deflection at shaft centerline under LC1 <= 0.05 mm (stiffness to preserve bearing internal clearance C3); (R5) interface contact pressure at split line under LC1 must remain compressive everywhere (no gap opening). The housing is grey cast iron or ductile iron poured to EN-GJS-500-7, machined bore to ISO H7 at 180 mm, base-to-bore perpendicularity IT7, and sealed against IP65-equivalent labyrinth grease seals. Deliverables: STEP AP242 assembly with cap half, base half, seal rings, and bolt envelopes; geometry must parametrically accept the size-220 spherical roller bearing envelope without interference; report with max housing stress, bolt stress, bore distortion, shaft-center deflection, and split-line contact margin.",
+  "short_prompt": "Design a split cast-iron plummer block bearing housing that interfaces with a canonical size-220 spherical roller bearing (bore 100 mm, OD 180 mm, width 46 mm) and accepts a standard plummer-block seal interface. The housing accepts adapter sleeve-mounted shafting up to 90 mm nominal and tolerates +/- 0.5 degree static angular misalignment.\n\nEnvelope: overall length 470 mm, base width 160 mm, total height 280 mm, base-to-shaft-center height 110 mm, foot bolt pattern of four M20 bolts on a 370 x 130 mm rectangular footprint, with a split line along the bearing centerline plane.\n\nMaterial: EN-GJS-500-7 ductile iron; bore machined to ISO H7 at 180 mm.\n\nLoad cases.\n- LC1 radial on bearing: Fr = 150 kN.\n- LC2 combined radial + axial: Fr = 120 kN + Fa = 40 kN.\n- LC3 bolt preload only: 4 x M20 grade 8.8 tightened to 410 N*m, generating approximately 158 kN clamping force per bolt (per VDI 2230).\n\nServiceability: bearing-seat out-of-roundness after load <= 0.02 mm; vertical deflection at shaft centerline under LC1 <= 0.05 mm; split-line contact must remain compressive everywhere under LC1.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "bearing_life_calculator",
+        "reason": "L10 rating life L10 = (C/P)^(10/3) for roller bearings is a closed-form catalog formula, not FEA.",
+        "examples": [
+          "bearing life calculator",
+          "bearing life calculator (basic mode)"
+        ]
+      },
+      {
+        "tool": "bolt_preload_calculator",
+        "reason": "VDI 2230 preload + embedding + settling is a closed-form spreadsheet, not FEA.",
+        "examples": [
+          "VDI 2230 spreadsheet",
+          "MDESIGN bolt module"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Split plummer-block housing for size-220 spherical roller bearing",
+    "brief": "Design a split cast-iron bearing housing accepting a size-220 spherical roller bearing with published C=475 kN, C0=600 kN, Pu=62 kN, under combined radial+axial load and M20 grade 8.8 bolt preload.",
+    "geometric_constraints": {
+      "housing_overall": {
+        "length_mm": 470,
+        "base_width_mm": 160,
+        "height_mm": 280,
+        "shaft_center_height_mm": 110
+      },
+      "bearing_bore": {
+        "diameter_mm": 180,
+        "tolerance": "H7",
+        "width_mm": 46
+      },
+      "foot_bolts": {
+        "count": 4,
+        "thread": "M20",
+        "grade": "8.8",
+        "pattern_mm": {
+          "x": 370,
+          "y": 130
+        }
+      },
+      "split_line": "horizontal through bearing centerline",
+      "seal_type": "labyrinth grease seal, IP65-equivalent",
+      "misalignment_deg": 0.5
+    },
+    "material": {
+      "housing": {
+        "name": "EN-GJS-500-7",
+        "yield_strength_MPa": 320,
+        "ultimate_tensile_strength_MPa": 500
+      },
+      "bolt": {
+        "grade": "8.8",
+        "yield_MPa": 640
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "radial_only",
+        "Fr_kN": 150
+      },
+      {
+        "id": "LC2",
+        "name": "combined",
+        "Fr_kN": 120,
+        "Fa_kN": 40
+      },
+      {
+        "id": "LC3",
+        "name": "preload_only",
+        "bolt_torque_Nm": 410,
+        "bolt_preload_kN_per_bolt": 158
+      }
+    ],
+    "boundary_conditions": {
+      "foot_bolts": "pretensioned, fixed to base",
+      "bearing_outer_race_contact": "bearing load distributed over bearing seat per bearing contact patch"
+    },
+    "objective": {
+      "minimize": "housing mass subject to passing all stress/stiffness checks"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "assembly_bodies": [
+        "cap_half",
+        "base_half",
+        "seal_ring_x2",
+        "bolt_envelope_x4"
+      ],
+      "report_fields": [
+        "max_von_mises_housing_MPa",
+        "max_bolt_tensile_MPa",
+        "bore_out_of_roundness_mm",
+        "shaft_center_deflection_mm",
+        "split_line_contact_margin_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_housing",
+        "limit_MPa": 200,
+        "derivation": "yield / 1.6 (SF 2.5 effective on yield for cast iron industrial housing per industrial bearing housing design guide)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "bolt_shank_max_tensile",
+        "limit_MPa": 448,
+        "derivation": "0.7 * 640 per VDI 2230 preload limit grade 8.8",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "bearing_seat_out_of_roundness",
+        "limit_mm": 0.02,
+        "derivation": "standard mounting tolerance for preserving bearing clearance class C3",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "shaft_center_vertical_deflection",
+        "limit_mm": 0.05,
+        "derivation": "stiffness to preserve spherical roller C3 internal clearance",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "split_line_min_contact_pressure",
+        "limit_MPa": 0,
+        "derivation": "no gap opening under service load (compressive everywhere)",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "industrial bearing catalog 2024 + standard industrial housing bolt torque table + VDI 2230 Part 1",
+    "recommended_fea_setup": {
+      "element_type": "TET10 solid",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "Simcenter 3D"
+      ],
+      "analysis_types": [
+        "linear static with bolt preload + contact at split line"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Bearing resonance check is a separate variant using bearing dynamic analysis software.",
+      "thermal_analysis": "Grease lubrication thermal balance is out of scope.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "Industrial bearing catalog 2024: size-220 spherical roller dynamic rating C=475 kN, static C0=600 kN, fatigue limit Pu=62 kN. Standard industrial torque table M20 grade 8.8 tightening torque 410 Nm."
+  },
+  "eval_coverage": [
+    "catalog-driven bearing housing design",
+    "bolt preload + split line contact modeling",
+    "bore distortion stiffness constraint",
+    "mixed FEA + closed-form bolt/bearing calculators"
+  ]
+}

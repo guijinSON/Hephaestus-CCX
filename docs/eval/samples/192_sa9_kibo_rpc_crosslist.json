@@ -1,0 +1,167 @@
+{
+  "id": "192_sa9_kibo_rpc_crosslist",
+  "source": {
+    "catalog_ref": "SA9",
+    "year": 2025,
+    "tier": "A",
+    "cross_reference": "JP17 (parent catalog entry). This sample targets the astro-tool adapter subsystem specifically."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "iss_tool_adapter",
+  "full_prompt": "Design a passive tool adapter that mounts to an Astrobee-class free-flying robot aboard the ISS Japanese Experiment Module for an ISS microgravity tool-adapter benchmark. The adapter holds a set of AR-tag target cards at fixed relative poses so student-coded Astrobee missions can navigate, locate the cards, and point a laser at specific sub-targets. The adapter is launched inside a Cargo Transfer Bag (CTB), installed by the astronaut, and attached to Astrobee via the standard perching-arm end-effector interface.\n\nGeometry. The adapter is a rectangular frame 220 mm wide x 160 mm tall x 30 mm deep, machined from Delrin (acetal homopolymer) for ISS flammability and outgassing compliance. The front face carries six AR-tag pockets arranged in a 3 x 2 grid, each 40 mm x 40 mm with a 3 mm recess to seat a laminated card. The back face has the Astrobee perching-arm interface: a standard 25 mm diameter stainless-steel grapple post with a 19 mm shoulder, bonded and pinned to the frame. The frame has four 4 mm M4 captive-nut locations for emergency astronaut hand-install should the auto-perch fail. Maximum wet mass (including AR cards) 350 g.\n\nMaterial. Delrin 150 acetal homopolymer (Young's modulus 3.1 GPa, density 1420 kg/m^3, yield strength 72 MPa, ultimate tensile strength 89 MPa, glass transition -60 C, flammability compliant with NASA-STD-6001B Test 1). The grapple post is 316L stainless steel (Young's modulus 193 GPa, density 8000 kg/m^3, yield 205 MPa). Analyses at 22 C nominal ISS cabin temperature, but thermal excursion 18-27 C must be considered for CTE mismatch at the grapple bond.\n\nLoad cases. (LC1) Launch vibration in CTB (Dragon cargo): random vibration 20-2000 Hz at 6.8 g-rms per NASA-STD-5002 CTB spec, applied in all three axes. (LC2) Astrobee perch pull-off: 8 N axial pull through the grapple post simulating an abort retraction. (LC3) Astronaut hand-install shear: 15 N shear load on any single M4 captive nut simulating off-axis insertion. (LC4) Worst-case contingency impact: Astrobee colliding with the adapter frame at 0.1 m/s with Astrobee's 9.5 kg mass producing a ~10 N quasi-static contact at the AR-card face.\n\nPass/fail criteria. (R1) Maximum von Mises stress in the Delrin frame must not exceed 36 MPa (yield / 2.0 for polymer safety factor) under LC1, LC2, LC3, and LC4. (R2) The grapple-post bond joint must transfer 8 N pull-off without adhesive failure, demonstrated via a worst-case shear stress in the bond line below 2 MPa. (R3) First natural frequency must be above 150 Hz to stay above random-vibration energy peak at 80 Hz per NASA-STD-5002. (R4) Total wet mass including six AR cards must not exceed 350 g. (R5) All wetted surfaces must pass NASA-STD-6001B Test 1 flammability (demonstrated by material compliance certificate, not FEA).\n\nSolver and analysis expectations. Primary verification is linear static structural FEA for LC2, LC3, LC4. Random-vibration analysis via PSD input for LC1 (the CTB 6.8 g-rms spectrum). Modal analysis for R3. A CTE-mismatch thermal stress check at the Delrin-316L bond is required but is a linear thermal-structural coupled analysis with a 5 C delta, not a full thermal network. Fluid analysis not required (microgravity, no convection). Radiation analysis not applicable inside the ISS pressurized volume.\n\nDeliverables. STEP (AP242) + Parasolid for both the Delrin frame and the stainless grapple post as separate parts plus an assembly. Report covering LC1-LC4 stress extrema, first 5 natural frequencies, bond-line shear, CTE-mismatch peak stress, and a material compliance declaration referencing NASA-STD-6001B Test 1.",
+  "short_prompt": "Design a passive tool adapter that mounts to an Astrobee-class free-flying robot aboard the ISS JEM, holding six AR-tag target cards for student-coded navigation / laser-pointing missions. The adapter is a Delrin 150 acetal rectangular frame, 220 mm wide x 160 mm tall x 30 mm deep, with a 3 x 2 grid of 40 x 40 mm AR-tag pockets (3 mm recess) on the front face and a 25 mm dia x 19 mm shoulder 316L stainless grapple post on the back bonded-and-pinned into the frame, plus four M4 captive-nut emergency hand-install locations. Wet mass with AR cards <=350 g. The adapter is stowed inside a CTB and installed by the astronaut, then attached to Astrobee via the standard perching-arm interface.\n\nGoverning standards: NASA-STD-5002 (CTB random-vibration levels) and NASA-STD-6001B (flammability / offgassing of wetted surfaces).\n\nLoad cases.\n- LC1 CTB random vibration: 6.8 GRMS, 20-2000 Hz, each axis.\n- LC2 Astrobee perch pull-off: 8 N axial through the grapple post.\n- LC3 astronaut hand-install shear: 15 N on any single M4 captive nut.\n- LC4 Astrobee collision: 10 N quasi-static at the AR-card face (9.5 kg at 0.1 m/s).\n\nAlso check CTE mismatch at the Delrin-316L bond over the 18-27 C ISS cabin thermal excursion.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Astrobee-class AR-tag tool adapter (ISS microgravity benchmark)",
+    "geometric_constraints": {
+      "frame_overall_mm": {
+        "width": 220,
+        "height": 160,
+        "depth": 30
+      },
+      "ar_tag_pockets": {
+        "count": 6,
+        "grid": "3x2",
+        "pocket_mm": "40 x 40 x 3 recess"
+      },
+      "grapple_post": "25 mm dia x 19 mm shoulder, 316L stainless",
+      "captive_nut_locations": 4
+    },
+    "materials": [
+      {
+        "name": "Delrin 150",
+        "role": "primary frame",
+        "youngs_modulus_GPa": 3.1,
+        "density_kg_m3": 1420,
+        "yield_strength_MPa": 72,
+        "uts_MPa": 89
+      },
+      {
+        "name": "316L stainless",
+        "role": "grapple post",
+        "youngs_modulus_GPa": 193,
+        "density_kg_m3": 8000,
+        "yield_strength_MPa": 205
+      }
+    ],
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "ctb_random_vibration",
+        "spec": "NASA-STD-5002 CTB",
+        "g_rms": 6.8,
+        "frequency_Hz_range": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC2",
+        "name": "astrobee_perch_pulloff",
+        "magnitude_N": 8,
+        "axis_orientation": "axial through grapple post"
+      },
+      {
+        "id": "LC3",
+        "name": "astronaut_install_shear",
+        "magnitude_N": 15,
+        "axis_orientation": "shear on single M4 captive nut"
+      },
+      {
+        "id": "LC4",
+        "name": "astrobee_collision",
+        "magnitude_N": 10,
+        "derivation": "9.5 kg at 0.1 m/s"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "assembly": true
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_delrin",
+        "limit_MPa": 36,
+        "derivation": "yield / 2.0 (polymer SF)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "bond_line_shear_stress",
+        "limit_MPa": 2.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 150,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_wet_mass",
+        "limit_g": 350,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "material_compliance",
+        "metric": "flammability",
+        "standard": "NASA-STD-6001B Test 1",
+        "applies_to": [
+          "all_wetted_surfaces"
+        ],
+        "verification": "material_certificate"
+      }
+    ]
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Microgravity, no natural convection; ISS ventilation modeled separately.",
+      "radiation_analysis": "Pressurized ISS volume; adapter lifetime <1 mission."
+    },
+    "cross_reference": "Parent catalog entry JP17 covers the overall competition. This sample targets the AR-tag tool adapter as a distinct structural deliverable."
+  },
+  "eval_coverage": [
+    "ISS flammability/outgassing material constraint",
+    "polymer + metal dissimilar-bond CTE mismatch",
+    "random-vibration PSD input"
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "id": "289_i_ea4_fsae_japan_2025_intake_restrictor",
+  "source": {
+    "catalog_ref": "I-EA4 (cross-ref JP1)",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "automotive_powertrain_structural",
+  "part_class": "intake_restrictor_plate",
+  "full_prompt": "Design a single-part intake restrictor plate for a collegiate formula-class racecar benchmark 2025 car running a 710 cc four-stroke petrol engine on RON 100 fuel. Per the collegiate formula-class racecar benchmark rules inherited by collegiate formula-class racecar benchmark Local Rule 2nd Edition, all intake air must pass through a single circular orifice of exactly 20.0 mm diameter (for gasoline); the restrictor must be installed between the throttle and the engine, and must be a single rigid part with no moving pieces or bypass path. External envelope of the plate is 80 mm (outer diameter) x 20 mm thickness maximum. The central orifice is 20.0 mm diameter with a converging nozzle on the upstream face (included angle 21 deg) and a diverging nozzle on the downstream face (included angle 7 deg); the throat itself must be a parallel section of length 5 mm to ensure the 20.0 mm diameter is maintained for the minimum 5 mm per tech inspection. The plate is flanged to the throttle body with six M6 bolts on a 70 mm bolt circle diameter. Material is 2024-T3 aluminium with Young's modulus 73.1 GPa, Poisson's ratio 0.33, density 2780 kg/m^3, yield strength 345 MPa, ultimate tensile strength 483 MPa. Load cases: LC1 (Backfire overpressure) — internal transient gauge pressure of 0.35 MPa on the downstream face (representative of intake backfire peak for a 710 cc port-injected engine at 12,500 rpm redline) with the bolt flange fully fixed; LC2 (Steady vacuum) — internal gauge pressure of -0.08 MPa on the upstream face (WOT manifold vacuum) with bolt flange fully fixed; LC3 (Thermal) — uniform temperature rise of 80 K across the part (from 25 C ambient to 105 C heat-soaked bay) while bolt flange is fixed, simulating hot-bay soak; LC4 (Bolt preload) — each M6 bolt preloaded to 7 kN with ambient pressure. Pass/fail: (R1) under LC1, max von Mises must stay below 230 MPa (yield/1.5); (R2) under LC2, max von Mises must stay below 230 MPa; (R3) under LC3 + LC4 combined, max von Mises must stay below 230 MPa; (R4) throat diameter must not deform under LC1 by more than 0.05 mm (so effective throat diameter stays within 20.00 -0.05 / +0.05 mm tolerance band required by tech inspection); (R5) total restrictor mass must not exceed 90 g. Primary verification is linear static structural FEA for LC1, LC2, LC4 and a thermal-structural coupled linear analysis for LC3. Vibration analysis, fluid (CFD) analysis, and radiation analysis are explicitly not required even though real restrictor design typically uses CFD; this eval focuses on structural integrity of the fixed-geometry orifice only. Output one STEP AP242 solid body plus a report listing restrictor mass in g, max von Mises per case in MPa, throat diameter change under LC1 in mm, and combined stress under LC3 + LC4.",
+  "short_prompt": "Design a single-part intake restrictor plate for a collegiate formula-class racecar benchmark 2025 car running a 710 cc four-stroke RON 100 engine. Per FSJ 2025 Local Rule 2nd Ed, all intake air must pass through a single 20.0 mm gasoline orifice with a 5 mm parallel throat.\n\nEnvelope: 80 mm OD x <= 20 mm thickness; 21 deg upstream converging nozzle + 7 deg downstream diverging nozzle; six M6 bolts on a 70 mm bolt circle; 2024-T3 aluminum.\n\nFactor regime: yield FoS 1.5 on all static and thermal cases; throat dimensional tolerance 20.00 mm +/- 0.05 mm for tech inspection.\n\nLoad cases.\n- Backfire overpressure: 0.35 MPa transient on the downstream face (bolt flange fixed).\n- Steady vacuum: -0.08 MPa on the upstream face (WOT).\n- Thermal: uniform 80 K rise (25 C ambient to 105 C heat-soaked bay) with flange fixed.\n- Bolt preload: 7 kN per M6 combined with ambient pressure.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-class racecar benchmark 2025 20 mm intake restrictor plate",
+    "brief": "Single-part aluminium restrictor with a 20.0 mm throat, 70 mm bolt circle, rated for 0.35 MPa backfire, 80 K bay soak, and the tech-inspection throat tolerance of +/-0.05 mm.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 80,
+      "thickness_max_mm": 20,
+      "throat_diameter_mm": 20.0,
+      "throat_parallel_length_mm": 5,
+      "upstream_cone_deg": 21,
+      "downstream_cone_deg": 7,
+      "bolt_count": 6,
+      "bolt_size": "M6",
+      "bolt_circle_mm": 70
+    },
+    "material": {
+      "name": "2024-T3",
+      "properties": {
+        "youngs_modulus_GPa": 73.1,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2780,
+        "yield_strength_MPa": 345,
+        "ultimate_tensile_strength_MPa": 483
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "backfire_overpressure",
+        "pressure_MPa": 0.35,
+        "face": "downstream"
+      },
+      {
+        "id": "LC2",
+        "name": "WOT_vacuum",
+        "pressure_MPa": -0.08,
+        "face": "upstream"
+      },
+      {
+        "id": "LC3",
+        "name": "bay_soak_thermal",
+        "delta_T_K": 80
+      },
+      {
+        "id": "LC4",
+        "name": "bolt_preload",
+        "per_bolt_N": 7000
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "throat_delta_mm_LC1",
+        "combined_stress_LC3plusLC4_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 230,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 230,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "max_von_mises_stress_combined",
+        "limit_MPa": 230,
+        "applies_to": [
+          "LC3+LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "throat_diameter_change",
+        "limit_mm": 0.05,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 90,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (x3)",
+        "thermal-structural coupled (LC3)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Restrictor is not a rotating/vibratory part; collegiate formula-class racecar benchmark rule specifies static geometry only.",
+      "fluid_analysis": "CFD is common in practice but this eval isolates structural pass/fail of the fixed geometry.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Thin-shell buckling negligible for a 20 mm-thick disc of this size."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "CFD pressure recovery",
+      "Heat-soak thermocouple correlation"
+    ]
+  },
+  "eval_coverage": [
+    "collegiate formula-class racecar benchmark-mandated fixed orifice geometry",
+    "pressure + thermal + preload combined",
+    "strict geometric tolerance limit under load"
+  ]
+}

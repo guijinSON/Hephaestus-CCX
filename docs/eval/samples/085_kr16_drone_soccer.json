@@ -1,0 +1,167 @@
+{
+  "id": "085_kr16_drone_soccer",
+  "source": {
+    "catalog_ref": "KR16",
+    "year": 2024,
+    "tier": "A+"
+  },
+  "domain": "robotics_structural",
+  "part_class": "drone_soccer_ball_cage",
+  "full_prompt": "Design the spherical protective cage (drone soccer ball) for a drone-soccer 2024-25 rulebook benchmark. The cage is a spherical lattice of outside diameter 40 cm with a tolerance of plus or minus 2 cm (so 38 cm to 42 cm OD acceptable, 40 cm nominal). Inside the cage sits a racing quadcopter of approximately 250 g mass; the assembled ball including cage, motors, frame, battery, and props must still be compact enough to pass through a goal of inner diameter 60 cm at a height of 3-3.5 m above the arena floor. The arena is 14-20 m long, 7-10 m wide, and 4-5 m high. The cage must absorb repeated inter-ball collisions and ball-to-goal contacts during a match without permanent deformation. Specifically, the cage must survive a head-on collision between two balls traveling at 10 m/s each (relative 20 m/s closing speed, each ball approximately 500 g total) as a quasi-static 100 N impact equivalent applied at any point on the cage surface — no plastic yield, no fracture, and no intrusion of the cage geometry into the internal propeller disk (tip clearance to cage is typically 25-35 mm in standard 3-inch prop racing quads). The cage mass must be below 250 g (so that ball + drone total stays under 500 g). Typical cage construction is CFRP rods or molded carbon lattice. Primary structural pass/fail: (1) cage OD within 40 ± 2 cm; (2) propeller-to-cage tip clearance >= 20 mm at all points; (3) max cage rod stress under 100 N collision equivalent <= 0.67 x rod UTS (SF 1.5); (4) cage mass <= 250 g; (5) cage must recover elastically (no residual deformation > 2 mm after 100 N impact release). Primary verification is linear static structural FEA for the 100 N collision equivalent. Vibration (rotor-speed-induced) analysis is relevant to the inner drone but NOT required at the cage design gate. Thermal, fluid (prop aero), and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the cage, a mass budget, and a report listing cage OD in cm, cage mass in g, min prop-to-cage clearance in mm, max rod stress at 100 N in MPa, and residual deformation in mm.",
+  "short_prompt": "Design the spherical protective cage (the \"ball\") for a drone-soccer racing quadcopter per the 2024-25 Drone Soccer rulebook. The cage is a lightweight lattice (pultruded CFRP rod or molded carbon) supporting the 250 g drone inside through a 6-point internal interface, passing through a 60 cm goal. Cage + drone must stay under 500 g total.\n\nEnvelope: spherical, 40 +/- 2 cm outside diameter, minimum 20 mm prop-to-cage clearance everywhere.\n\nLoad case.\n- LC1 collision: 100 N quasi-static equivalent (representing two 500 g balls closing at 20 m/s) applied at the worst-case point on the cage surface; cage must recover elastically (residual deformation <= 2 mm after release).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Drone-soccer 40 cm ball cage",
+    "brief": "Design a 40 ± 2 cm spherical CFRP cage around a 250 g racing quad, cage mass ≤ 250 g, survives 100 N collision equivalent.",
+    "geometric_constraints": {
+      "cage_OD_cm": 40,
+      "cage_OD_tolerance_cm": 2,
+      "prop_to_cage_clearance_mm_min": 20,
+      "goal_inner_diameter_cm": 60,
+      "arena_mm": {
+        "L_range": [
+          14000,
+          20000
+        ],
+        "W_range": [
+          7000,
+          10000
+        ],
+        "H_range": [
+          4000,
+          5000
+        ]
+      }
+    },
+    "material": {
+      "typical_cage": "CFRP pultruded rod or molded lattice",
+      "CFRP": {
+        "E_GPa": 130,
+        "UTS_MPa": 1800,
+        "density_kg_m3": 1550
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "collision_100N",
+        "magnitude_N": 100,
+        "description": "quasi-static equiv of 20 m/s closing at 500 g per ball",
+        "location": "worst-case point on cage surface"
+      }
+    ],
+    "boundary_conditions": {
+      "inner_drone_frame": "provides internal 6-point support to cage rods"
+    },
+    "objective": {
+      "minimize": "cage_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "cage_OD_cm",
+        "cage_mass_g",
+        "min_prop_to_cage_clearance_mm",
+        "max_rod_stress_MPa",
+        "residual_deformation_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "cage_OD_cm",
+        "limit_lower_cm": 38,
+        "limit_upper_cm": 42,
+        "derivation": "40 ± 2 cm",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "cage_mass_g",
+        "limit_g": 250,
+        "derivation": "total ball ≤ 500 g with 250 g drone",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "min_prop_to_cage_clearance_mm",
+        "limit_mm": 20,
+        "derivation": "propeller strike prevention",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_rod_stress_MPa",
+        "limit_fraction_of_UTS": 0.67,
+        "derivation": "SF 1.5 against UTS",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "residual_deformation_mm",
+        "limit_mm": 2.0,
+        "derivation": "elastic recovery after impact release",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (rods) + tie constraints at nodes",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static (worst-case impact point scan)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Inner drone modal is separate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Prop aero not in cage gate.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "40 ± 2 cm sphere envelope",
+    "prop-to-cage clearance",
+    "impact equivalent stress",
+    "elastic recovery"
+  ]
+}

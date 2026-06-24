@@ -1,0 +1,66 @@
+**
+** ABS HSC Part 3 (2013) S19 - Forward bottom panel - submission-agnostic template
+** Spliced into model.inp by wire_bcs.py with:
+**   - mesh.inp (gmsh -3 out.step)         provides *NODE + *ELEMENT C3D + Eall
+**   - meta.json selectors                  populate NLOAD, NFIX_*MIN/MAX NSETs
+**
+** Units: mm, N, MPa, t (tonne)
+**   pressure 0.05 MPa = 50 kPa  (slamming LC1)
+**   density  2.7e-9 t/mm^3      = 2700 kg/m^3
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIX_XMIN   - x = 0   outer face: simply supported edge
+**   NFIX_XMAX   - x = 500 outer face: simply supported edge
+**   NFIX_YMIN   - y = 0   outer face: simply supported edge
+**   NFIX_YMAX   - y = 1200 outer face: simply supported edge
+**
+** Required element-face pressure surface (built by wire_bcs.py from
+** meta.json "pressure_surfaces" -> emits *SURFACE TYPE=ELEMENT):
+**   SURF_NLOAD  - wetted (sea-side) face of the plate (z_min plane)
+**
+** *SOLID SECTION uses ELSET=Eall (auto-built from gmsh's C3D* volume sets).
+**
+** Single *STATIC step under LC1 slamming pressure 50 kPa.
+** R2 (LC1 vM <= 120 MPa) and R4 (LC2 mid-deflection) are evaluated from
+** model.frd; LC2/LC3/LC4 are linearly scaled / superposed in check.py.
+** R1 (plate scantling), R5 (stiffener Z), R6 (weld fatigue), R7 (mass)
+** are closed-form in check.py.
+**
+** ---- Material: Al 5083-H116 (welded) ---------------------------------
+*MATERIAL, NAME=AL5083
+*ELASTIC
+70000.0, 0.33
+*DENSITY
+2.7e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=AL5083
+**
+** ---- Boundary: simply support all four panel edges -------------------
+** Pin the four outer side faces of the stiffened panel in 3 DOF. Each
+** face represents the panel attached to adjacent framing in the real
+** hull. Translational restraint on the outer faces produces the ABS
+** "simply supported at stiffeners and frames" boundary.
+*BOUNDARY
+NFIX_XMIN, 1, 3, 0.0
+NFIX_XMAX, 1, 3, 0.0
+NFIX_YMIN, 1, 3, 0.0
+NFIX_YMAX, 1, 3, 0.0
+**
+** ---- STEP 1 : LC1 slamming uniform 50 kPa on wetted face -------------
+** *DLOAD on the element-face surface SURF_NLOAD applies pressure P to
+** every (eid, face) pair in the surface. Sign convention: positive P
+** pushes inward to the body, so the slamming pressure on the bottom
+** (z_min) face produces a +z reaction (hull pushed up), matching
+** ABS HSC Part 3 Section 2.3 slamming.
+*STEP
+*STATIC
+1.0, 1.0
+*DLOAD
+SURF_NLOAD, P, 0.050
+*EL PRINT, ELSET=Eall
+S
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP

@@ -1,0 +1,220 @@
+{
+  "id": "039_s8_fia_art253_rollcage",
+  "source": {
+    "catalog_ref": "S8",
+    "year": 2013,
+    "tier": "A+"
+  },
+  "domain": "motorsport_safety",
+  "part_class": "rollcage_tubular_frame",
+  "full_prompt": "Design the main hoop, front hoop, and diagonal tubes of a rollcage for a closed-cockpit rally car with GVW 1200 kg, in accordance with FIA Appendix J Article 253 (2013 edition). Article 253 specifies the permitted tubing dimensions (cold-drawn seamless non-alloy carbon steel with <=0.3% C, minimum tensile 350 N/mm^2), the minimum mounting plate size and thickness, the minimum number of bolts at each mounting point, and the FIA homologation load tests (vertical on main hoop, longitudinal on front structure, lateral).\n\nGeometry. Main hoop: single continuous tube of 45 mm OD x 2.5 mm wall (permitted Table 253-37 line: cold-drawn seamless, 45x2.5, minimum tensile strength 350 N/mm^2). Front hoop: 45 mm OD x 2.5 mm wall. Front-to-main connecting tubes: 38 mm OD x 2.5 mm wall. Diagonal on main hoop: 38 mm OD x 2.5 mm wall. Main hoop height 1350 mm (floor to top), width at shoulder 1200 mm, wheelbase 2400 mm, front-to-main distance 850 mm. Each of the six mounting feet is a 3 mm thick steel plate of at least 120 cm^2 area, attached to the chassis by 3 M10 bolts minimum through the plate with bolts in double shear through the chassis rail (FIA Article 253-8.3.2.4).\n\nMaterial. Cold-drawn seamless carbon steel tube, minimum UTS 350 N/mm^2, minimum yield 235 N/mm^2 (typical S235-equivalent). E = 210 GPa, nu = 0.30, rho = 7850 kg/m^3. Mount plates S235 or equivalent 3 mm thick.\n\nLoad cases (FIA homologation quasi-static). LC1 (vertical on main hoop, Art 253-8.3.2.1.1 homologation reference): apply 7.5 * mass of vehicle (weight) vertically downward on top of main hoop = 7.5 * 1200 * 9.81 = 88,290 N, distributed across a loading plate 400 mm wide centered on the main hoop top. LC2 (longitudinal on front structure, Art 253-8.3.2.1.2): 3.5 * W = 41,202 N applied horizontally rearward on the top of the front hoop at its connection to the main hoop. LC3 (lateral on main hoop, Art 253-8.3.2.1.3): 3.5 * W = 41,202 N applied laterally on the main hoop at the driver shoulder height. Deformation under each load must not exceed 50 mm (FIA homologation criterion: tube must not fracture and permanent deformation must not exceed 50 mm at the point of load after unload). Combined deformation envelope after all three sequential tests must not exceed 100 mm.\n\nPass/fail criteria. (R1) Under LC1 peak load the maximum von Mises stress in any tube must not exceed the tube yield 235 MPa (elastic design target; the standard asks for no fracture and <=50 mm permanent set, for which yield-bounded design is the conservative CAD-agent proxy). (R2) Under LC2 peak load max von Mises <= 235 MPa. (R3) Under LC3 peak load max von Mises <= 235 MPa. (R4) Displacement at the loading point under each of LC1/LC2/LC3 must not exceed 50 mm. (R5) Main hoop and front hoop tubes must be exactly one of the permitted OD x wall combinations from Art 253 Table (45x2.5, 50x2.0, or 38x2.5 for cold-drawn seamless non-alloy carbon steel); geometric compliance is binary pass/fail. (R6) Each mount foot area must be >= 120 cm^2, plate thickness >= 3 mm, and each foot must have at least 3 bolts of minimum diameter M8 per Art 253-8.3.2.4 (geometric compliance). (R7) Total rollcage mass <= 45 kg (practical weight target, not mandated by FIA).\n\nSolver and analysis expectations. Primary verification is linear elastic beam- or shell-element FEM for LC1/LC2/LC3, separately applied. Mesh beam elements with at least 20 elements per tube between nodes, or 5 mm shell mesh on tubes if modeled as shells. Dynamic rollover simulation is explicitly NOT required for homologation-equivalent design; FIA tests are quasi-static. Buckling, modal, thermal, fluid, and radiation analyses are NOT required.\n\nDeliverables. STEP AP242 of tube centerlines + mount feet, rollcage total mass in kg, max von Mises per load case in MPa, max deformation per load case in mm, and a geometric compliance table confirming each tube matches a permitted OD x wall row of Art 253.",
+  "short_prompt": "Design the main hoop, front hoop, and diagonal tubes of a rollcage for a closed-cockpit rally car with GVW 1200 kg, in accordance with FIA Appendix J Article 253 (2013 edition). Article 253 specifies permitted tubing (cold-drawn seamless non-alloy carbon steel with <= 0.3% C, minimum tensile 350 N/mm^2), the minimum mounting plate size and thickness, the minimum number of bolts at each foot, and the FIA homologation load tests.\n\nGeometry. Main hoop: 45 mm OD x 2.5 mm wall. Front hoop: 45 mm OD x 2.5 mm wall. Front-to-main connecting and diagonal tubes: 38 mm OD x 2.5 mm wall. Main hoop height 1350 mm, shoulder width 1200 mm, wheelbase 2400 mm, front-to-main distance 850 mm. Six mounting feet, each a 3 mm thick plate of at least 120 cm^2, attached by 3 M10 bolts minimum in double shear through the chassis rail (Art 253-8.3.2.4).\n\nMaterial: cold-drawn seamless carbon steel tube, UTS >= 350 N/mm^2, yield ~235 N/mm^2 (S235-equivalent). Mount plates S235 or equivalent, 3 mm thick.\n\nLoad cases (quasi-static homologation per Art 253-8.3.2.1).\n- LC1 vertical on main hoop: 7.5 x W = 88,290 N, distributed across a 400 mm loading plate centered on top.\n- LC2 longitudinal on front structure: 3.5 x W = 41,202 N rearward at the front-hoop top at its connection to the main hoop.\n- LC3 lateral on main hoop: 3.5 x W = 41,202 N at driver shoulder height.\n\nHomologation: tubes must not fracture; permanent deformation <= 50 mm at the point of load after unload under each LC; combined envelope after all three sequential tests <= 100 mm. Rollcage total mass <= 45 kg.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "geometric_compliance_check",
+        "reason": "Tube OD x wall and mount plate dimensions are binary pass/fail against FIA Article 253 Table.",
+        "examples": [
+          "hand dimension check",
+          "PLM attribute validation"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Rally rollcage main+front hoop per FIA Appendix J Art. 253",
+    "brief": "Cold-drawn seamless carbon steel rollcage for 1200 kg GVW rally car; 45x2.5 main hoop, 38x2.5 diagonals; pass 7.5W vertical + 3.5W longitudinal + 3.5W lateral with <=50 mm deformation each.",
+    "geometric_constraints": {
+      "main_hoop_tube_mm": {
+        "OD": 45,
+        "wall": 2.5
+      },
+      "front_hoop_tube_mm": {
+        "OD": 45,
+        "wall": 2.5
+      },
+      "connecting_tubes_mm": {
+        "OD": 38,
+        "wall": 2.5
+      },
+      "diagonal_tube_mm": {
+        "OD": 38,
+        "wall": 2.5
+      },
+      "main_hoop_height_mm": 1350,
+      "main_hoop_width_mm": 1200,
+      "wheelbase_mm": 2400,
+      "front_to_main_mm": 850,
+      "mount_feet": {
+        "count": 6,
+        "plate_thickness_mm": 3,
+        "area_cm2_min": 120,
+        "bolts_per_foot_min": 3,
+        "bolt_size_min": "M8"
+      }
+    },
+    "material": {
+      "name": "Cold-drawn seamless carbon steel <=0.3%C",
+      "Fty_MPa": 235,
+      "Ftu_MPa": 350,
+      "E_GPa": 210,
+      "nu": 0.3,
+      "density_kg_m3": 7850
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical_7.5W_main_hoop",
+        "force_N": 88290,
+        "direction": "downward on main hoop top"
+      },
+      {
+        "id": "LC2",
+        "name": "longitudinal_3.5W_front",
+        "force_N": 41202,
+        "direction": "rearward on front hoop top"
+      },
+      {
+        "id": "LC3",
+        "name": "lateral_3.5W_main",
+        "force_N": 41202,
+        "direction": "lateral on main hoop shoulder height"
+      }
+    ],
+    "boundary_conditions": {
+      "mount_feet": "bolted to chassis, all 6 DOF fixed"
+    },
+    "objective": {
+      "minimize": "cage_mass",
+      "target_kg_max": 45
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "FIA Appendix J Article 253",
+      "revision": "2013"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_LC1",
+        "limit_MPa": 235,
+        "derivation": "Tube yield Fty 235 MPa; FIA asks for no fracture + <=50 mm permanent set; yield proxy is conservative",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_LC2",
+        "limit_MPa": 235,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_LC3",
+        "limit_MPa": 235,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_deformation_at_loading_point",
+        "limit_mm": 50,
+        "derivation": "FIA Art 253-8.3.2.1 homologation: deformation must not exceed 50 mm",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "tube_OD_wall_matches_FIA_table",
+        "limit": 1,
+        "derivation": "FIA Art 253 permitted tubing table (45x2.5, 50x2.0, 38x2.5 for cold-drawn seamless)",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "==",
+        "note": "binary pass/fail"
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mount_foot_compliance",
+        "limit": 1,
+        "derivation": "Area >=120 cm^2, thickness >=3 mm, bolts >=3 per foot per Art 253-8.3.2.4",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "==",
+        "note": "binary pass/fail"
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "rollcage_mass",
+        "limit_kg": 45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam or shell",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "LS-DYNA implicit",
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3 homologation loads"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "FIA homologation is quasi-static.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Local buckling checked implicitly by yield-bounded design of specified tube sizes."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Dynamic rollover simulation (LS-DYNA explicit)",
+      "Weld HAZ property degradation",
+      "Driver-harness mount points per Art 253-6"
+    ]
+  },
+  "eval_coverage": [
+    "three FIA quasi-static homologation loads",
+    "tube OD x wall binary table compliance",
+    "mount plate geometric compliance",
+    "deformation gate <=50 mm"
+  ]
+}

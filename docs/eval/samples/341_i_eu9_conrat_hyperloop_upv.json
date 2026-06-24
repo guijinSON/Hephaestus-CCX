@@ -1,0 +1,186 @@
+{
+  "id": "341_i_eu9_conrat_hyperloop_upv",
+  "source": {
+    "catalog_ref": "I-EU9",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "transport_structural",
+  "part_class": "hyperloop_levitation_bogie_frame",
+  "full_prompt": "Design the levitation-bogie mount frame of a student hyperloop-class pod prototype inspired by the Hyperloop research university / HyperPoland variant, intended for integration with a 125 m test track at reduced pressure (100 Pa). The pod sits on two bogies (front + rear), each carrying two passive permanent-magnet Halbach-array levitation skates plus one guidance rail-roller. This design scope is limited to one bogie frame: length 700 mm, width 500 mm, height 200 mm. Each bogie supports 50% of total pod wet mass (pod 140 kg wet), so 70 kg static per bogie + dynamic + emergency-brake loads. The bogie frame is a welded 30 x 30 x 3 mm box-tube frame plus 4 mm plate mounts for the skate magnet arrays, made of AISI 4130 chromoly (E 205 GPa, yield 460 MPa, ultimate 560 MPa, density 7850 kg/m^3). The permanent-magnet levitation force is proportional to the gap between track and magnet; nominal gap is 10 mm producing 700 N per skate lift, and the gap is stabilized by a rubber damped mount between skate and bogie frame. Load cases: (LC1) static trim at zero speed: 70 kg x 9.81 = 687 N distributed across two skates + one guide roller; (LC2) cruise 100 km/h nominal: lift 2 x 700 N = 1400 N vertical per bogie; aero drag applied at bogie-frame lower face 120 N horizontal; (LC3) emergency brake: 2 g longitudinal deceleration on 70 kg per bogie = 1373 N horizontal fore-aft at guide-roller mount; (LC4) curved-section cornering: 0.5 g lateral on 70 kg = 343 N at guide-roller; (LC5) hard-landing bogie-track gap closure: gap drops to 5 mm transiently, skate force triples to 2100 N per skate = 4200 N vertical per bogie; (LC6) safety factor: apply FoS 2.0 over all cases per European Hyperloop Week conservative gate. Pass/fail: (R1) under LC6 factored loads, max von Mises must remain below 460 MPa yield; (R2) bogie frame dry mass must not exceed 12 kg (one bogie); (R3) first natural frequency of bogie (with magnet mass, approx 8 kg per skate x 2 = 16 kg plus roller 3 kg = 19 kg loaded) must exceed 45 Hz to clear magnet-array levitation oscillation band (typical 5-15 Hz); (R4) peak vertical deflection at skate attachment under LC5 must remain below 1 mm to preserve levitation gap integrity; (R5) skate-mounting bolt preload loss under LC2 + LC3 combined must remain below 10%. Thermal, fluid, radiation, and buckling not primary. Deliverables: STEP AP242 bogie frame assembly, magnet-array interface dims, FEA per load case, modal report with lumped masses, mass budget.",
+  "short_prompt": "Design the levitation-bogie mount frame of a student hyperloop-class pod prototype (Hyperloop Research University / HyperPoland variant) for a 125 m test track at 100 Pa. Pod 140 kg wet, two bogies (front + rear) each carrying two passive Halbach-array levitation skates and one guidance rail-roller. Scope is one bogie: 700 x 500 x 200 mm.\n\nEnvelope: welded AISI 4130 30 x 30 x 3 mm box-tube frame plus 4 mm magnet-mount plates; 70 kg static per bogie; nominal 10 mm levitation gap giving 700 N per skate; rubber-damped skate-to-frame mounts.\n\nFactor regime: European Hyperloop Week conservative FoS 2.0 over ultimate applied in LC6 (stay below 460 MPa yield); dry mass per bogie <= 12 kg; first loaded frequency > 45 Hz (5-15 Hz levitation band decouple); skate-attachment deflection at gap-closure < 1 mm; bolt preload loss under combined cruise + brake < 10%.\n\nLoad cases.\n- Static trim at zero speed: 687 N distributed across two skates + one guide roller.\n- Nominal cruise at 100 km/h: 1400 N vertical lift per bogie + 120 N aero drag on the lower face.\n- Emergency brake: 2 g longitudinal on 70 kg per bogie = 1373 N fore-aft at the guide-roller mount.\n- Cornering: 0.5 g lateral on 70 kg = 343 N at the guide-roller.\n- Gap closure: transient 5 mm gap tripling skate force to 4200 N per bogie vertical.\n- Rulebook FoS 2.0 applied uniformly across LC1-LC5.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate hyperloop-class benchmark/Hyperloop research university Student Pod Bogie Frame",
+    "brief": "4130 welded bogie frame 700x500x200 mm for passive-Halbach levitation, 70 kg per bogie, FoS 2.0 per EHW gate.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "l": 700,
+        "w": 500,
+        "h": 200
+      },
+      "tubing": "30 x 30 x 3 mm box",
+      "plate_thickness_mm": 4,
+      "skates_per_bogie": 2,
+      "guide_rollers_per_bogie": 1
+    },
+    "material": {
+      "name": "AISI 4130 Chromoly",
+      "properties": {
+        "E_GPa": 205,
+        "yield_MPa": 460,
+        "ultimate_MPa": 560,
+        "density_kg_m3": 7850
+      }
+    },
+    "mass_per_bogie_kg": {
+      "static_support": 70,
+      "loaded_frame": 19
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_trim",
+        "magnitude_N": 687
+      },
+      {
+        "id": "LC2",
+        "name": "cruise_100kmh",
+        "magnitude_N_vert": 1400,
+        "magnitude_N_horiz_drag": 120
+      },
+      {
+        "id": "LC3",
+        "name": "emergency_brake_2g",
+        "magnitude_N": 1373
+      },
+      {
+        "id": "LC4",
+        "name": "cornering_0p5g",
+        "magnitude_N": 343
+      },
+      {
+        "id": "LC5",
+        "name": "gap_closure_transient",
+        "magnitude_N": 4200
+      },
+      {
+        "id": "LC6",
+        "name": "factored_2x",
+        "factor": 2.0,
+        "application": "applied to LC1-LC5"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 8,
+      "report_fields": [
+        "bogie_mass_kg",
+        "max_stress_LC6_MPa",
+        "first_loaded_freq_Hz",
+        "skate_attachment_deflection_LC5_mm",
+        "bolt_preload_loss_LC2_LC3_pct"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 460,
+        "derivation": "yield, with FoS 2.0 already in LC6",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "bogie_dry_mass",
+        "limit_kg": 12,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_loaded_freq",
+        "limit_Hz": 45,
+        "applies_to": [
+          "with_skate_roller_masses"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "skate_attachment_deflection",
+        "limit_mm": 1,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "bolt_preload_loss",
+        "limit_pct": 10,
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam for tubing + shell for plate",
+      "mesh_size_mm": 4,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran"
+      ],
+      "analysis_types": [
+        "linear static (x5 + factored)",
+        "modal with lumped masses"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "collegiate hyperloop-class benchmark (RWTH) and Hyperloop research university student-design competition PDFs not directly surfaced in catalog; values inferred from EHW conservative gates + Halbach-array passive levitation common practice.",
+    "exclusions_explained": {
+      "thermal_analysis": "Not primary.",
+      "fluid_analysis": "Partial-vacuum aero reduced to LC2 drag.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Tubular frame; stress gate bounds."
+    }
+  },
+  "eval_coverage": [
+    "bogie frame FEA",
+    "gap-closure transient load",
+    "FoS-in-case workflow",
+    "modal with lumped magnet/roller masses",
+    "bolt preload loss"
+  ]
+}

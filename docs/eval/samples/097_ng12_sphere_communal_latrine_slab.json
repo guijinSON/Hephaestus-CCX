@@ -1,0 +1,201 @@
+{
+  "id": "097_ng12_sphere_communal_latrine_slab",
+  "source": {
+    "catalog_ref": "NG12",
+    "year": 2018,
+    "tier": "B"
+  },
+  "domain": "humanitarian_wash",
+  "part_class": "communal_pit_latrine_rc_slab",
+  "full_prompt": "Design one representative communal pit-latrine reinforced-concrete squat slab sized for a Sphere-compliant emergency response with 50 users (the Sphere Handbook 2018 recommends 1 latrine per 50 persons maximum, located <= 45 m walking distance from dwellings, in a site with 15 L/person/day water and 3.5 m2/person covered shelter space). The slab is a single-piece prefabricated RC squat plate with plan dimensions 1200 mm x 1200 mm, 75 mm thickness, designed to cover an unlined or lined pit 1000 mm x 1000 mm in plan, bearing on the pit lining or superstructure base-beam on all four edges with a 100 mm seating on each side. The slab includes a central keyhole squat opening (rectangular 400 mm long x 180 mm wide with rounded ends) and a 50 mm diameter vent-pipe penetration near one corner. Live load: the slab must support a centrally applied point load of 2.0 kN (one heavy adult + additional use) with a safety factor of 2.0 applied per the WaterAid / Sphere communal latrine guidance, i.e. the slab must be verified for 4.0 kN factored concentrated load. Dead load is self-weight. Target materials: concrete fc >= 20 MPa (M20), rebar ASTM A615 Gr 60 (fy = 420 MPa), 8 mm rebar at 150 mm spacing each way in the bottom layer with corner diagonal bars around the squat opening. Deliverable is a CAD model of the slab including squat opening, vent penetration, reinforcement, edge chamfer, and grip tread surface, suitable for linear static structural FEA under dead + concentrated load cases. Vibration, thermal, fluid, radiation, buckling analyses are NOT required. This sample also records two Sphere-compliance geometric pass/fail checks (coverage: 1 per 50 persons; distance: <= 45 m to dwelling) that do NOT require FEA and are verified by site layout.",
+  "short_prompt": "Design a single-piece precast reinforced-concrete squat slab for a Sphere-compliant emergency communal pit-latrine serving up to 50 users (Sphere Handbook 2018: 1 latrine / 50 persons, walking distance <= 45 m, per site-layout check). Concrete fc >= 20 MPa, Gr 60 rebar (8 mm at 150 mm each way bottom face, corner diagonals around the squat opening). Slab bears on pit lining on four sides with 100 mm seating. Safety factor 2.0 on the concentrated user load per WaterAid / Sphere communal-latrine guidance.\n\nEnvelope: 1200 x 1200 x 75 mm covering a 1000 x 1000 mm pit, with a 400 x 180 mm rounded keyhole squat opening and a 50 mm vent-pipe penetration near one corner.\n\nLoad cases.\n- LC1 concentrated user: 2.0 kN point load at slab center.\n- LC2 factored user (SF 2): 4.0 kN point load at slab center.\n- LC3 dead: slab self-weight.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "site_layout_geometric_check",
+        "reason": "Sphere coverage (1 latrine / 50 persons) and walking distance (<= 45 m) are camp-layout geometry checks, not FEA.",
+        "examples": [
+          "GIS layout",
+          "site plan measurement"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Sphere-compliant communal pit-latrine RC slab",
+    "brief": "Design a 1200 x 1200 x 75 mm RC squat slab for a pit-latrine serving 50 users with SF 2 on 2 kN concentrated load.",
+    "geometric_constraints": {
+      "slab_plan_mm": [
+        1200,
+        1200
+      ],
+      "slab_thickness_mm": 75,
+      "pit_plan_mm": [
+        1000,
+        1000
+      ],
+      "edge_bearing_mm": 100,
+      "squat_opening_mm": [
+        400,
+        180
+      ],
+      "vent_pipe_diameter_mm": 50
+    },
+    "material": {
+      "concrete": {
+        "min_fc_MPa": 20
+      },
+      "rebar": {
+        "grade": "Gr 60",
+        "fy_MPa": 420,
+        "diameter_mm": 8,
+        "spacing_mm": 150
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "concentrated_user",
+        "magnitude_N": 2000,
+        "application": "point load at slab center"
+      },
+      {
+        "id": "LC2",
+        "name": "factored_user_SF2",
+        "magnitude_N": 4000,
+        "application": "SF 2 factored point load at slab center"
+      },
+      {
+        "id": "LC3",
+        "name": "dead",
+        "application": "self-weight of 75 mm RC slab"
+      }
+    ],
+    "boundary_conditions": {
+      "edges": "simply supported on 4 sides over 100 mm bearing",
+      "squat_opening_edges": "free"
+    },
+    "objective": {
+      "primary": "pass structural + Sphere coverage/distance checks",
+      "secondary": "minimize slab mass for hand-transport"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "single body",
+      "report_fields": [
+        "max_bending_stress_MPa",
+        "max_deflection_mm",
+        "slab_mass_kg",
+        "coverage_persons_per_latrine",
+        "walking_distance_m"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "factored_concentrated_load_N",
+        "limit_N": 4000,
+        "derivation": "2 kN user load x SF 2",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_bending_stress_in_concrete_MPa",
+        "limit_MPa": 13.4,
+        "derivation": "0.67 * fc = 0.67 * 20 MPa allowable (rough ACI phi*Mn envelope check)",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "rebar_tensile_stress_at_factored_load_MPa",
+        "limit_MPa": 420,
+        "derivation": "rebar yield",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "coverage_persons_per_latrine",
+        "limit": 50,
+        "derivation": "Sphere 2018 WASH standard 3",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "walking_distance_to_latrine_m",
+        "limit_m": 45,
+        "derivation": "Sphere 2018 WASH standard 3",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (slab) + embedded rebar",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "SAP2000",
+        "CalculiX",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static concentrated load"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not applicable.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Short stocky slab, no buckling."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Pit lining design for unstable soil",
+      "Vent-pipe fly-screen and airflow for VIP variant",
+      "Handwashing-station integration"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "structural FEA + site-layout geometric check",
+    "SF 2 on concentrated load",
+    "humanitarian WASH scope",
+    "Sphere-compliance numeric limits baked in",
+    "RC slab with cast opening and penetration"
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "id": "066_jp11_birdman_rally",
+  "source": {
+    "catalog_ref": "JP11",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "human_powered_aircraft_wing_spar",
+  "full_prompt": "Design the wing spar and primary wing structure of a human-powered glider (Human-powered Prop-plane division assumed) for a human-powered aircraft launch benchmark. The total wingspan must not exceed 36 m; this design targets a 25 m wingspan as representative. The aircraft launches from a 10 m high horizontal platform above the lake surface. The pilot is seated in a semi-reclined cockpit. The wing spar must carry a symmetric positive-g flight load of 2.5 g at an assumed gross weight of 120 kg (pilot 70 kg + aircraft 50 kg), giving a design limit load of 300 kg equivalent distributed span-wise in an elliptical lift distribution. The spar must also survive a negative-g load factor of -1.0 g for gusts. A mandatory pre-competition bend test requires the completed wing to support a root bending moment equivalent to the 2.5 g flight load held statically for at least 10 seconds with no audible cracking and no permanent deformation beyond 5 mm at the wingtip on unload. Material is typically a CFRP tube spar with balsa/foam ribs and heat-shrink film skin; the spar CFRP is modeled as linear elastic orthotropic with longitudinal E approximately 130 GPa (pultruded T300/epoxy). Primary verification is linear static structural FEA of the wing spar under the 2.5 g positive and 1.0 g negative load cases, with stress gated by CFRP laminate allowables. A linear buckling eigenvalue analysis is required on the upper skin / spar cap under the positive-g case with minimum load factor 1.5. Vibration (flutter) analysis is relevant in a certification context but is NOT required at this design gate. Thermal, fluid (sectional aerodynamic lift is already reduced to a distributed load on the spar), and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the wing structure, a mass budget, and a report listing total aircraft structural mass in kg, wingtip deflection at 2.5 g in mm, peak spar cap strain, and first buckling load factor.",
+  "short_prompt": "Design the wing spar and primary wing structure of a human-powered glider (Human-powered Prop-plane division) for a human-powered aircraft launch benchmark. Wingspan 25 m (rulebook cap 36 m). Launch from a 10 m high horizontal platform above a lake. Gross weight 120 kg (70 kg pilot + 50 kg aircraft). Typical construction is a CFRP tube spar with balsa/foam ribs and heat-shrink film skin. Slender upper skin / spar cap must pass a linear buckling eigenvalue check with first-mode load factor >= 1.5 under the positive-g case.\n\nLoad cases.\n- LC1 positive-g flight: 2.5 g symmetric with elliptical spanwise lift distribution (300 kg equivalent).\n- LC2 negative-g gust: -1.0 g (-120 kg equivalent) with inverted elliptical distribution.\n- LC3 mandatory pre-competition static bend test: root bending moment equivalent to LC1 held for 10 s; no audible cracking and residual wingtip deflection on unload <= 5 mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "lifting_line_aero",
+        "reason": "Elliptical lift distribution comes from lifting-line or panel-method aero, not FEA.",
+        "examples": [
+          "XFLR5",
+          "AVL"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Human-powered glider 25 m wing spar",
+    "brief": "Design a 25 m CFRP wing spar (of 36 m class) that carries 2.5 g flight load with elliptical lift, survives -1 g gust, passes static bend test.",
+    "geometric_constraints": {
+      "wingspan_m": 25,
+      "wingspan_m_max": 36,
+      "launch_platform_height_m": 10
+    },
+    "material": {
+      "spar_CFRP": {
+        "longitudinal_E_GPa": 130,
+        "tensile_allowable_MPa": 1800,
+        "density_kg_m3": 1550
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "flight_2p5g_positive",
+        "magnitude_kg_equiv": 300,
+        "distribution": "elliptical span-wise lift, 2.5 g at 120 kg gross"
+      },
+      {
+        "id": "LC2",
+        "name": "gust_negative_1g",
+        "magnitude_kg_equiv": -120,
+        "distribution": "elliptical, inverted"
+      },
+      {
+        "id": "LC3",
+        "name": "static_bend_test",
+        "description": "root bending moment equivalent to LC1, held 10 s"
+      }
+    ],
+    "boundary_conditions": {
+      "wing_root": "clamped at fuselage attachment"
+    },
+    "objective": {
+      "minimize": "wing_structural_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "structural_mass_kg",
+        "wingtip_deflection_mm_2p5g",
+        "peak_spar_cap_strain_microstrain",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "wingspan_m",
+        "limit_m": 36,
+        "derivation": "Rulebook cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_spar_cap_stress_MPa",
+        "limit_MPa": 1200,
+        "derivation": "CFRP allowable 1800 MPa / SF 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "wingtip_residual_deflection_after_bend_test_mm",
+        "limit_mm": 5.0,
+        "derivation": "Pre-comp bend-test acceptance",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (spar) + shell (skin)",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static x2",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Flutter is relevant but not in this gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Lift reduced to distributed load via lifting-line.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "high-aspect-ratio wing FEA",
+    "symmetric / negative-g load cases",
+    "CFRP allowables",
+    "static bend-test compliance"
+  ]
+}

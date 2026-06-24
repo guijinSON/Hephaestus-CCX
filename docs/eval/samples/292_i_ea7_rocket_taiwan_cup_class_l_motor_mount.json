@@ -1,0 +1,209 @@
+{
+  "id": "292_i_ea7_rocket_taiwan_cup_class_l_motor_mount",
+  "source": {
+    "catalog_ref": "I-EA7",
+    "year": 2025,
+    "tier": "A+",
+    "language_note": "Rulebook in ZH-TW; quantities restated in SI."
+  },
+  "domain": "aerospace_rocketry_structural",
+  "part_class": "motor_mount_tube_thrust_ring",
+  "full_prompt": "Design the motor mount tube + forward thrust ring assembly for a Class L Rocket Taiwan Cup 2025 university rocket. The competition plan sets Class L motor impulse 4700 N*s, peak thrust 200 kgf (~2000 N), burn time 3.1 s, vehicle GLOW <= 28.5 kg, target apogee 3 km, minimum rail-exit velocity 30 m/s. The motor mount tube is the inner structural tube that holds the solid rocket motor casing and transfers thrust into the airframe. Geometry: motor tube inner diameter 75 mm (fits an AeroTech M-class 75 mm motor), outer diameter 77.6 mm (wall 1.3 mm), length 800 mm; the forward thrust ring is a 6061-T6 aluminium annulus with OD 150 mm (flush to airframe ID), ID 75 mm, thickness 6 mm, bonded to the motor tube's forward end and to the airframe ID with 3M Scotch-Weld 9323 B/A epoxy adhesive; four centering rings of the same 150/75 mm OD/ID geometry but 3 mm thick are spaced along the tube length at 0, 267, 533, and 800 mm from the aft end. Motor tube material is filament-wound glass/epoxy [+-45/0]s layup with equivalent in-plane stiffness Ex = 25 GPa, Ey = 10 GPa, Gxy = 3.5 GPa, nu_xy = 0.30, density 1900 kg/m^3, allowable in-plane tensile stress 350 MPa, compressive 250 MPa, interlaminar shear 40 MPa. Thrust ring material is 6061-T6 aluminium (69 GPa, 0.33, 2700 kg/m^3, 276 MPa yield, 310 MPa UTS). Load cases: LC1 (Peak thrust) — axial compressive force of 2000 N applied at the motor's aft closure transferred through the thrust ring into the airframe, with the airframe bond line modeled as fully fixed at the thrust ring's outer edge; LC2 (Chamber pressure) — internal gauge pressure of 7.0 MPa on the motor tube inner surface (representative of M-class chamber peak) with both ends axially restrained; LC3 (Drag column) — axial compressive force of 600 N at burnout from aerodynamic drag with airframe restrained, worst-case column buckling; LC4 (Landing shock) — 25 g longitudinal shock on the entire assembly with airframe restrained, representative of hard landing. Pass/fail: (R1) under LC1, aluminium thrust ring max von Mises < 184 MPa (yield/1.5) and composite tube peak stress < 233 MPa (tensile allowable / 1.5); (R2) under LC2, composite tube hoop stress < 233 MPa and interlaminar shear < 26 MPa (40 / 1.5); (R3) under LC3, first-mode linear buckling load factor of the composite tube >= 3.0; (R4) under LC4, no component above its 1.5x safety factor limit, and adhesive bond-line shear < 10 MPa (Scotch-Weld 9323 B/A manual); (R5) total motor mount + thrust ring + centering rings assembly mass < 1.8 kg. Primary verification: linear static structural FEA with orthotropic composite layup for LC1, LC2, LC4; linear buckling eigenvalue for LC3. Thermal (motor case heat), vibration, fluid, and radiation analyses are explicitly not required. Output one STEP AP242 assembly plus a report of total mass, max stress per material per case, buckling load factor for LC3, and bond-line shear under LC4.",
+  "short_prompt": "Design the motor mount tube + forward thrust ring assembly for a Class L Rocket Taiwan Cup 2025 university rocket. Class L plan: 4700 N-s total impulse, 2000 N peak thrust, 3.1 s burn, GLOW <= 28.5 kg, 3 km apogee, rail-exit velocity >= 30 m/s.\n\nEnvelope: filament-wound glass/epoxy [+-45/0]s motor tube 75 mm ID x 77.6 mm OD (1.3 mm wall) x 800 mm; four 3 mm centering rings at 0/267/533/800 mm; one 6061-T6 forward thrust ring (150 mm OD x 75 mm ID x 6 mm) adhered with Scotch-Weld 9323 B/A; airframe bond edge treated as fully fixed.\n\nFactor regime: FoS 1.5 on allowables; linear-buckling eigenvalue >= 3.0 under post-burnout axial drag; adhesive shear allowable 10 MPa.\n\nLoad cases.\n- Peak thrust: 2000 N axial through the thrust ring.\n- Chamber pressure: 7.0 MPa internal on the motor-tube ID (both ends axially restrained).\n- Drag column at burnout: 600 N axial compression with airframe restrained.\n- Landing shock: 25 g longitudinal on the assembly with airframe restrained.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Rocket Taiwan Cup Class L motor mount",
+    "brief": "Composite motor tube + aluminium thrust ring + four centering rings for a Class L 4700 N*s rocket with 2 kN peak thrust, 7 MPa chamber, and 3 km apogee target.",
+    "geometric_constraints": {
+      "motor_tube_ID_mm": 75,
+      "motor_tube_OD_mm": 77.6,
+      "motor_tube_length_mm": 800,
+      "thrust_ring_OD_mm": 150,
+      "thrust_ring_ID_mm": 75,
+      "thrust_ring_thickness_mm": 6,
+      "centering_rings_count": 4,
+      "centering_ring_thickness_mm": 3,
+      "centering_ring_positions_mm": [
+        0,
+        267,
+        533,
+        800
+      ]
+    },
+    "material": {
+      "composite": {
+        "name": "GFRP filament-wound [+-45/0]s",
+        "Ex_GPa": 25,
+        "Ey_GPa": 10,
+        "Gxy_GPa": 3.5,
+        "density_kg_m3": 1900,
+        "tension_allowable_MPa": 350,
+        "compression_allowable_MPa": 250,
+        "ILSS_MPa": 40
+      },
+      "thrust_ring": {
+        "name": "6061-T6",
+        "youngs_modulus_GPa": 69,
+        "yield_MPa": 276,
+        "UTS_MPa": 310,
+        "density_kg_m3": 2700
+      },
+      "adhesive": {
+        "name": "3M Scotch-Weld 9323 B/A",
+        "shear_allowable_MPa": 15
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "peak_thrust_axial",
+        "force_N": 2000
+      },
+      {
+        "id": "LC2",
+        "name": "chamber_pressure",
+        "pressure_MPa": 7.0
+      },
+      {
+        "id": "LC3",
+        "name": "drag_column",
+        "force_N": 600
+      },
+      {
+        "id": "LC4",
+        "name": "landing_shock",
+        "shock_g": 25
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 6,
+      "report_fields": [
+        "assembly_mass_kg",
+        "max_stress_per_material_per_case_MPa",
+        "buckling_factor_LC3",
+        "bondline_shear_LC4_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_thrust_ring",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_stress_composite",
+        "limit_MPa": 233,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "hoop_stress_composite",
+        "limit_MPa": 233,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "structural_analysis",
+        "metric": "interlaminar_shear",
+        "limit_MPa": 26,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bondline_shear",
+        "limit_MPa": 10,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "assembly_mass",
+        "limit_kg": 1.8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "composite shell + hex solid for rings",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical ACP",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x3)",
+        "linear buckling (LC3)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Rulebook does not impose modal req.",
+      "thermal_analysis": "Assumes ablative liner protects composite; thermal soak not in scope.",
+      "fluid_analysis": "Drag load pre-computed.",
+      "radiation_analysis": "N/A."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Ablative liner thermal soak",
+      "Chamber grain thermal transient"
+    ]
+  },
+  "eval_coverage": [
+    "composite orthotropic + metallic mixed stack",
+    "multiple material safety factors",
+    "buckling at burnout",
+    "bond-line shear check"
+  ]
+}

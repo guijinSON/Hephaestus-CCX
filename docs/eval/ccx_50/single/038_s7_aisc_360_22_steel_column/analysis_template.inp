@@ -1,0 +1,63 @@
+**
+** AISC 360-22 W10x49 steel column - analysis template (submission-agnostic)
+** Spliced into model.inp by wire_bcs.py:
+**   - mesh.inp (gmsh -3 out.step) provides *NODE + *ELEMENT C3D* + Eall
+**   - meta.json provides NFIXED (z_min face) and NTOP (z_max face) NSETs
+** Units: N, mm, MPa, t (consistent FEM units)
+**
+** Strength capacity checks (R1..R4) and serviceability deflection (R5)
+** and section weight (R6) are evaluated closed-form in check.py per
+** AISC 360-22 Chapter E/F/H. This FEM run is a sanity-check linear
+** static under a representative per-node axial demand on NTOP - it
+** does NOT govern any pass/fail; check.py's symbolic chapter checks
+** do.
+**
+**----------------------------------------------------------------
+** Material: ASTM A992 (50 ksi yield, 65 ksi ultimate)
+**   E   = 200 GPa   = 200000 MPa
+**   nu  = 0.3
+**   rho = 7.85e-9 t/mm^3
+**----------------------------------------------------------------
+*MATERIAL, NAME=A992
+*ELASTIC
+200000.0, 0.3
+*DENSITY
+7.85e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=A992
+**
+**----------------------------------------------------------------
+** Boundary conditions: column base fully fixed (DOF 1, 2, 3 = U pinned;
+** for solid 3D elements only translational DOFs exist, but the entire
+** z=0 face is restrained which produces an effective fixed-end clamp).
+**----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3
+**
+**----------------------------------------------------------------
+** STEP 1 : LC2-style wind-dominant per-node axial compression
+**
+** *CLOAD applies the listed value to EACH node in the NSET (CCX
+** convention). The actual W10x49 capacity demand of Pu = 280 kN
+** (LC2) is checked closed-form in check.py against AISC Chapter E
+** capacity. Here we apply a small per-node compressive force on the
+** NTOP face so the FEM produces a non-trivial stress state for
+** post-processing/cross-check, regardless of the meshed node count.
+**
+** Biaxial moments (Mux = 210 kN.m, Muy = 15 kN.m) are NOT applied as
+** *CLOAD on solid elements (no rotational DOF). They are accounted
+** for via Chapter F + Chapter H closed-form in check.py.
+**----------------------------------------------------------------
+*STEP, NLGEOM=NO
+*STATIC
+*CLOAD
+NTOP, 3, -100.0
+*NODE PRINT, NSET=NTOP
+U
+*EL PRINT, ELSET=Eall
+S
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP

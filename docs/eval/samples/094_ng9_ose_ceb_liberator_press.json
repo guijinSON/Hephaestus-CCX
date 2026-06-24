@@ -1,0 +1,182 @@
+{
+  "id": "094_ng9_ose_ceb_liberator_press",
+  "source": {
+    "catalog_ref": "NG9",
+    "year": 2020,
+    "tier": "A"
+  },
+  "domain": "open_hardware_agriculture",
+  "part_class": "hydraulic_ceb_press_main_frame",
+  "full_prompt": "Design one representative main compression frame for the Open Source Ecology (OSE) CEB Liberator Compressed Earth Block press, compliant with the published OSE documentation. The press produces a compressed earth block of 305 mm x 145 mm x 90 mm nominal dimensions by compacting raw soil at a compaction pressure of 10 MPa using a single hydraulic cylinder delivering 150 kN axial force. The main frame is a welded mild-steel (ASTM A36, yield 250 MPa) plate-and-tube structure that reacts the full 150 kN compaction force between the upper platen (fixed to the frame) and the movable lower platen driven by the cylinder rod, across the block mold cavity. Frame envelope 1500 mm (H) x 900 mm (W) x 700 mm (D). Main vertical reaction columns are two channel sections C 150 x 19 or equivalent, tied by horizontal top and bottom cross-plates of 20 mm thick steel. The mold box is a 305 x 145 mm internal-cavity steel box with 15 mm wall thickness, reinforced against hoop burst during compaction (compaction pressure 10 MPa acts radially as well as axially on the mold walls through the soil plug, so hoop-direction stress must be checked). The compression cylinder is an off-the-shelf hydraulic cylinder sized to at least 150 kN at the system pressure. Deliverable is a CAD assembly of the main compression frame (two columns + top + bottom crossplates + cylinder mount + mold box + upper platen + lower platen) suitable for linear static FEA under the 150 kN compaction load case. In addition, the LifeTrac interface (30 kN drawbar capacity) is out of scope for this sample and is tracked separately. Vibration, thermal, fluid, radiation analyses are NOT required. A linear buckling check on the two vertical compression columns IS required because they are slender enough to potentially buckle under 150 kN.",
+  "short_prompt": "Design the main welded A36 mild-steel compression frame of the Open Source Ecology (OSE) CEB Liberator compressed-earth-block press: two vertical channel columns + top and bottom cross-plates + cylinder mount + mold box + upper / lower platens, reacting a single hydraulic cylinder's compaction force across a 305 x 145 x 90 mm earth-block cavity. Machine-frame safety factors: SF 1.5 on yield stress, SF 3.0 on column buckling.\n\nEnvelope: frame 1500 x 900 x 700 mm overall, mold-box wall 15 mm thick, top/bottom plates 20 mm, columns C 150x19 or equivalent.\n\nLoad cases.\n- LC1 compaction: 150 kN axial between platens (reacted in the columns and plates).\n- LC2 mold hoop: 10 MPa compaction pressure acting radially on the mold-box interior walls.\n\nA linear buckling eigenvalue check on the two vertical compression columns is required because they are slender at 150 kN.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "OSE CEB Liberator main compression frame",
+    "brief": "Design a welded A36 steel main frame that reacts 150 kN hydraulic compaction force over a 305 x 145 x 90 mm earth-block mold at 10 MPa compaction pressure.",
+    "geometric_constraints": {
+      "frame_envelope_mm": [
+        1500,
+        900,
+        700
+      ],
+      "block_size_mm": [
+        305,
+        145,
+        90
+      ],
+      "mold_wall_thickness_mm": 15,
+      "column_section": "C 150 x 19 or equivalent",
+      "top_bottom_plate_thickness_mm": 20
+    },
+    "material": {
+      "name": "ASTM A36 mild steel",
+      "yield_strength_MPa": 250,
+      "ultimate_tensile_strength_MPa": 400,
+      "E_GPa": 200,
+      "density_kg_m3": 7850
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "compaction",
+        "magnitude_N": 150000,
+        "direction": "axial between platens",
+        "application": "uniform pressure on lower platen; reaction on upper platen"
+      },
+      {
+        "id": "LC2",
+        "name": "mold_hoop",
+        "magnitude_MPa": 10,
+        "application": "radial pressure on mold-box interior walls"
+      }
+    ],
+    "boundary_conditions": {
+      "cylinder_mount": "fixed to bottom cross-plate",
+      "upper_platen": "rigidly fixed to top cross-plate",
+      "lower_platen": "reacts cylinder force uniformly"
+    },
+    "objective": {
+      "primary": "pass all criteria",
+      "secondary": "minimize frame mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_von_mises_frame_MPa",
+        "max_von_mises_mold_wall_MPa",
+        "column_buckling_load_factor",
+        "frame_mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "compaction_force_kN",
+        "limit_kN": 150,
+        "derivation": "OSE CEB Liberator spec",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "compaction_pressure_MPa",
+        "limit_MPa": 10,
+        "derivation": "OSE compaction pressure",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 166,
+        "derivation": "yield / 1.5 = 250 / 1.5 (machine-frame SF)",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor_of_columns",
+        "limit": 3.0,
+        "derivation": "machine-frame buckling SF",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "block_nominal_size_mm",
+        "limit": "305 x 145 x 90",
+        "derivation": "OSE CEB Liberator block geometry",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (plates) + beam (columns) + solid (mold box + platens)",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "CalculiX",
+        "Abaqus",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling eigenvalue"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static compaction cycle.",
+      "thermal_analysis": "No thermal load case.",
+      "fluid_analysis": "Hydraulic pressure treated as given cylinder force, no CFD.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Weld qualification and inspection",
+      "LifeTrac hydraulic-power-take-off interface (30 kN drawbar, separate sample)",
+      "Fatigue under production cycles (~3600 blocks/day targets)"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "open-source agricultural machinery structural frame",
+    "buckling eigenvalue check on slender columns",
+    "multi-load case (axial compaction + hoop pressure)",
+    "explicit OSE GVCS numerics (150 kN, 10 MPa, 305x145x90 mm)",
+    "humanitarian low-cost production tool scope"
+  ]
+}

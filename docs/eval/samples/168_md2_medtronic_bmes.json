@@ -1,0 +1,193 @@
+{
+  "id": "168_md2_medtronic_bmes",
+  "source": {
+    "catalog_ref": "MD2",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "medical_device",
+  "part_class": "intraosseous_driver_handpiece",
+  "full_prompt": "Design a single-use intraosseous infusion needle driver handpiece benchmarked against an FDA 510(k)-cleared intraosseous driver predicate. The device is a battery-powered disposable drill handpiece 160 mm long x 55 mm wide x 40 mm tall (molded Zytel 70G33HS1L polyamide housing with TPU overmold grip) driving a 15 mm or 25 mm 15G stainless steel intraosseous needle into an adult humerus or tibia. The handpiece must deliver a rotational speed of 1100 rpm +/- 100 rpm at 0.5 N-m shaft torque for up to 30 s continuous operation from a single-use 9 V primary lithium battery of 1200 mAh capacity. The handpiece is held by an ungloved or gloved clinician with a typical grip force of 30 N. Pass/fail criteria per ISO 10993-1 biocompat plus IEC 60601-1: (R1) housing max von Mises stress under a 150 N static drop onto the handpiece (1 m drop on hard surface equivalent static) must not exceed 45 MPa which is Zytel yield 67 MPa divided by 1.5, (R2) maximum torque transmission through the handpiece must be at least 0.8 N-m continuous at the needle tip under a 30 s drive cycle, (R3) needle tip insertion force required to penetrate the tibia cortex must not exceed 30 N, computed via bone-drilling empirical model with a 15G bevel-edge needle, (R4) device surface temperature after 30 s drive plus 10 s stall must not exceed 41 C per IEC 60601-1 Clause 11.1.2.2, and (R5) total assembly mass must not exceed 300 g per human factors target. Thermal analysis is required for R4. Vibration, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly with housing, motor, battery, needle interface, and trigger as sub-bodies plus a verification report with housing stress, torque delivered, insertion force, surface temperature, and total mass.",
+  "short_prompt": "Design a single-use intraosseous infusion-needle driver handpiece benchmarked against an FDA 510(k)-cleared predicate. The handpiece is a molded Zytel 70G33HS1L polyamide body with TPU grip overmold, on the order of 160 x 55 x 40 mm, driving a 15G stainless-steel intraosseous needle (15 mm or 25 mm options) into adult humerus or tibia at a nominal 1100 rpm +/- 100 rpm and 0.5 N-m for up to 30 s continuous, powered by a single-use 9 V 1200 mAh primary lithium battery.\n\nDesign to IEC 60601-1 (general medical electrical safety, Clause 11 surface-temperature limits). Clinician grip is held at 30 N; the needle tip contacts bone cortex.\n\nLoad cases.\n- LC1 1 m drop (equivalent quasi-static): 150 N vertical on the housing.\n- LC2 continuous drive: 1100 rpm at 0.5 N-m for 30 s, torque transmitted to the needle tip.\n- LC3 bone insertion: 15G bevel needle penetrating tibia cortex.\n- LC4 thermal: 30 s continuous drive plus 10 s stall, surface-temperature steady state.\n\nTotal assembly mass is a human-factors constraint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "bone_drilling_empirical_model",
+        "reason": "Needle tip insertion force through human tibia cortex uses the Alam/Allotta empirical correlations, not FEA.",
+        "examples": [
+          "Allotta bone drilling regression",
+          "ASTM F2502 for cortical proxy"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Single-use intraosseous driver handpiece",
+    "brief": "Design a 160 x 55 x 40 mm single-use Zytel/TPU intraosseous driver handpiece delivering 1100 rpm at 0.5 N-m for 30 s, benchmarked against a cleared predicate, passing 1 m drop, torque, insertion force, IEC 60601-1 temperature, and 300 g mass limits.",
+    "geometric_constraints": {
+      "housing_mm": [
+        160,
+        55,
+        40
+      ],
+      "needle_gauge": "15G",
+      "needle_length_mm_options": [
+        15,
+        25
+      ]
+    },
+    "material": {
+      "housing": "Zytel 70G33HS1L PA66-GF33, yield 67 MPa",
+      "grip": "TPU overmold",
+      "needle": "17-7 PH SS"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "drop_1m_equiv_static",
+        "magnitude_N": 150,
+        "application": "vertical on housing"
+      },
+      {
+        "id": "LC2",
+        "name": "continuous_drive",
+        "speed_rpm": 1100,
+        "torque_Nm": 0.5,
+        "duration_s": 30
+      },
+      {
+        "id": "LC3",
+        "name": "bone_insertion",
+        "target_force_limit_N": 30,
+        "application": "15G bevel needle into tibia cortex"
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_continuous_plus_stall",
+        "duration_drive_s": 30,
+        "duration_stall_s": 10
+      }
+    ],
+    "boundary_conditions": {
+      "grip": "30 N clinician grip",
+      "needle_tip": "contacts bone cortex"
+    },
+    "objective": {
+      "primary": "pass all predicate + IEC 60601-1 criteria",
+      "secondary": "minimize handpiece mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "housing_max_von_mises_MPa",
+        "delivered_torque_Nm",
+        "insertion_force_N",
+        "surface_temperature_C",
+        "total_mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "housing_max_von_mises",
+        "limit_MPa": 45,
+        "derivation": "Zytel yield 67 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "delivered_torque_at_needle",
+        "limit_Nm": 0.8,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "bone_insertion_force",
+        "limit_N": 30,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "surface_temperature_post_30s_drive_plus_10s_stall",
+        "limit_C": 41,
+        "derivation": "IEC 60601-1 Clause 11.1.2.2",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_assembly_mass",
+        "limit_g": 300,
+        "derivation": "predicate handheld mass target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet for housing, solid motor, shell for needle",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS Mechanical + Fluent",
+        "SolidWorks Simulation"
+      ],
+      "analysis_types": [
+        "linear static drop",
+        "linear static torque",
+        "transient thermal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Handheld 30 s drive is quasi-static for predicate scope.",
+      "fluid_analysis": "No fluid domain; surface temperature uses natural convection boundary.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Short handpiece is not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "ISO 10993 full biocompat",
+      "Clinical HFE (IEC 62366-1) task analysis",
+      "Sterilization compatibility (ETO or gamma)"
+    ]
+  },
+  "eval_coverage": [
+    "single-use medical device stress + temperature stack",
+    "predicate-benchmarked design",
+    "bone drilling empirical non-FEA solver",
+    "IEC 60601-1 surface temperature 41 C rule"
+  ]
+}

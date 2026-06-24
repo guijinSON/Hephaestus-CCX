@@ -1,0 +1,202 @@
+{
+  "id": "036_s5_ecss_32_22a_sandwich_insert",
+  "source": {
+    "catalog_ref": "S5",
+    "year": 2011,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "sandwich_insert_assembly",
+  "full_prompt": "Design a potted threaded insert installation in an aluminum-honeycomb sandwich panel that carries a 150 N tensile pull-out plus 80 N transverse shear service load at limit, governed by ECSS-E-HB-32-22A (20 March 2011) closed-form pull-out, shear-out, and combined-load allowables. The panel is fixed; the design variables are insert diameter, insert depth, potting compound volume, and the local face-sheet reinforcement.\n\nGeometry. Sandwich panel local region 300 mm x 300 mm, total thickness 25.4 mm, face-sheet AA 2024-T3 thickness 0.4 mm per face, Al 5056 honeycomb core 3/16-5056-.0007 24.6 mm thick. The insert is a fully potted KSN16 (KN-1016-4) class with nominal body diameter D_i = 16 mm, potting compound outer diameter D_p = 20 mm, insert height h = 12 mm (partial depth - NOT through the full core; this is a blind insert), internal M5 thread. Potting compound is 3M Scotch-Weld EC-2216 or equivalent, assumed shear strength tau_pot = 17 MPa, tensile 20 MPa (ECSS-E-HB-32-22A tabulated values).\n\nLoads. LC1 (pull-out): axial tensile force F_T = 150 N at limit on the insert thread axis, with ECSS metallic ultimate SF of 1.25 applied per ECSS-E-ST-32-10C. LC2 (shear): transverse force F_S = 80 N at limit. LC3 (combined): simultaneous 150 N pull-out + 80 N shear, evaluated against the ECSS-E-HB-32-22A quadratic interaction equation (F_T/F_T_allow)^2 + (F_S/F_S_allow)^2 <= 1.\n\nAllowables per ECSS-E-HB-32-22A closed-form equations (all in newtons).\n(a) Pull-out allowable limited by face-sheet punch-through: P_face = 2 * pi * D_p * t_face * tau_face = 2 * pi * 0.020 * 0.0004 * 3e8 (shear allowable of 2024-T3 at ~300 MPa) = 15,080 N. Not limiting.\n(b) Pull-out allowable limited by core shear tear-out around potting: P_core = pi * D_p * h * tau_core_W = pi * 0.020 * 0.012 * 1.17e6 = 882 N. Limiting for pull-out.\n(c) Shear allowable limited by core crushing + potting bearing: S_core = D_p * h * sigma_core_crush = 0.020 * 0.012 * 2.55e6 = 612 N.\n(d) Combined interaction: (F_T/P_core)^2 + (F_S/S_core)^2 <= 1.\n\nPass/fail criteria. (R1) At limit load x 1.25 ultimate SF, pull-out demand must be <= P_core allowable: 150 * 1.25 = 187.5 N <= 882 N. MS = 882/187.5 - 1 = 3.70. Pass. (R2) Shear demand at ultimate: 80 * 1.25 = 100 N <= 612 N. MS = 5.12. Pass. (R3) Combined quadratic interaction at ultimate: (187.5/882)^2 + (100/612)^2 = 0.0452 + 0.0267 = 0.072 <= 1.0. MS = 1/0.072 - 1 = 12.9. Pass. (R4) The insert thread M5 must transfer the ultimate tensile 187.5 N with MoS >= 0 against stripping; A286 M5 minimum stripping strength ~ 9 kN, pass trivially. (R5) Panel local face-sheet around insert must not exceed Fty_face / 1.25 = 232 MPa under LC3 combined. (R6) Potting compound volume <= 12 cm^3 per insert to minimize mass penalty.\n\nSolver and analysis expectations. Primary verification is ECSS-E-HB-32-22A closed-form hand-calculation of R1-R4. A supporting 3D FEM with solid potting, solid insert body, and shell face-sheets (ANSYS or Abaqus) is recommended for R5 face-sheet stress visualization but is not mandatory to declare pass/fail on R1-R4. Buckling, modal, thermal, fluid, and radiation analyses are NOT required.\n\nDeliverables. STEP AP242 of insert + potting + local panel, insert mass in grams, margins for R1-R6, and if FEM is run, the peak face-sheet stress at LC3.",
+  "short_prompt": "Design a potted threaded insert installation in an aluminum-honeycomb sandwich panel carrying a 150 N tensile pull-out plus 80 N transverse shear service load at limit, governed by ECSS-E-HB-32-22A (20 March 2011) closed-form pull-out, shear-out, and combined-load allowables.\n\nGeometry: local sandwich region 300 x 300 mm, total thickness 25.4 mm, face-sheet AA 2024-T3 0.4 mm per face, Al 5056 honeycomb core (3/16-5056-.0007) 24.6 mm. Fully potted blind insert of KSN16 (KN-1016-4) class: nominal body diameter D_i = 16 mm, potting outer diameter D_p = 20 mm, insert height h = 12 mm (partial-depth), internal M5 thread. Potting compound 3M Scotch-Weld EC-2216 or equivalent (shear 17 MPa, tensile 20 MPa per ECSS-E-HB-32-22A tables).\n\nLoads with ECSS-E-ST-32-10C ultimate SF 1.25 applied on limit.\n- LC1 pull-out: axial tensile F_T = 150 N on the thread axis.\n- LC2 shear: transverse F_S = 80 N.\n- LC3 combined: simultaneous 150 N pull-out + 80 N shear, evaluated against the ECSS-E-HB-32-22A quadratic interaction (F_T/F_T_allow)^2 + (F_S/F_S_allow)^2 <= 1.\n\nClosed-form allowables per ECSS-E-HB-32-22A: face-sheet punch-through P_face ~ 15,080 N (not limiting); core shear tear-out P_core = pi * D_p * h * tau_core_W ~ 882 N (limiting); shear S_core = D_p * h * sigma_core_crush ~ 612 N. Insert M5 minimum stripping ~9 kN (A286) trivially passes. Potting compound volume <= 12 cm^3 per insert.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "closed_form_insert_analysis",
+        "reason": "ECSS-E-HB-32-22A is a closed-form handbook; FEM is optional supporting.",
+        "examples": [
+          "hand calc",
+          "MathCAD",
+          "custom spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Potted sandwich insert sized by ECSS-E-HB-32-22A allowables",
+    "brief": "KSN16 potted insert in 25.4 mm Al-honeycomb sandwich carrying 150 N pull-out + 80 N shear; pull-out / shear-out / combined closed-form pass.",
+    "geometric_constraints": {
+      "local_panel_mm": {
+        "x": 300,
+        "y": 300,
+        "z": 25.4
+      },
+      "face_sheet_mm": 0.4,
+      "core_thickness_mm": 24.6,
+      "insert_type": "KSN16 partial-depth potted blind insert",
+      "insert_body_diameter_mm": 16,
+      "potting_outer_diameter_mm": 20,
+      "insert_height_mm": 12,
+      "internal_thread": "M5"
+    },
+    "material": {
+      "face": {
+        "name": "AA 2024-T3",
+        "Fty_MPa": 290,
+        "Ftu_MPa": 435,
+        "tau_face_approx_MPa": 300
+      },
+      "core": {
+        "name": "Al 5056 3/16-5056-.0007",
+        "tau_W_MPa": 1.17,
+        "sigma_crush_MPa": 2.55
+      },
+      "potting": {
+        "name": "3M EC-2216 equivalent",
+        "tau_MPa": 17,
+        "tensile_MPa": 20
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pull_out",
+        "force_N_limit": 150,
+        "direction": "axial thread"
+      },
+      {
+        "id": "LC2",
+        "name": "shear",
+        "force_N_limit": 80,
+        "direction": "transverse"
+      },
+      {
+        "id": "LC3",
+        "name": "combined",
+        "pull_out_N_limit": 150,
+        "shear_N_limit": 80
+      }
+    ],
+    "boundary_conditions": {
+      "panel_far_field": "fully fixed"
+    },
+    "objective": {
+      "minimize": "potting_volume",
+      "target_cm3_max": 12
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "ECSS-E-HB-32-22A",
+      "revision": "20 March 2011"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "pull_out_demand_vs_allowable",
+        "limit_N": 882,
+        "derivation": "P_core = pi * D_p * h * tau_core_W = pi*0.020*0.012*1.17e6; SF 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "shear_demand_vs_allowable",
+        "limit_N": 612,
+        "derivation": "S_core = D_p * h * sigma_crush = 0.020*0.012*2.55e6",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "combined_interaction",
+        "limit": 1.0,
+        "derivation": "(F_T/P_core)^2 + (F_S/S_core)^2 per ECSS-E-HB-32-22A",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "M5_thread_strip_margin",
+        "limit": 0.0,
+        "derivation": "A286 M5 min strip ~9 kN vs 187.5 N ultimate demand",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "face_sheet_max_von_mises_at_limit",
+        "limit_MPa": 232,
+        "derivation": "Fty_2024 / 1.25 = 290/1.25",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "potting_volume",
+        "limit_cm3": 12,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid potting + shell face + core-equivalent solid",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "hand calc primary",
+        "ANSYS / Abaqus supporting"
+      ],
+      "analysis_types": [
+        "closed-form insert equations",
+        "optional local FEM"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Random-vib amplification rolled into quasi-static limit loads.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Cured potting compound batch qualification",
+      "Insert installation process control",
+      "Thermal-cycle-induced potting shrinkage"
+    ]
+  },
+  "eval_coverage": [
+    "three ECSS-E-HB-32-22A closed-form equations",
+    "quadratic combined-load interaction",
+    "margins-of-safety against all four failure modes"
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "id": "117_e7_hydrogen_student_contest_storage_bottle",
+  "source": {
+    "catalog_ref": "E7",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "hydrogen_storage",
+  "part_class": "type_3_composite_overwrapped_pressure_vessel_liner",
+  "full_prompt": "Design the aluminum liner of a Type-3 composite-overwrapped pressure vessel (COPV) for 350-bar gaseous hydrogen dispensing station buffer storage in a hydrogen-pressure-vessel student benchmark, in compliance with NFPA 2 Hydrogen Technologies Code 2023, ASME BPVC Section X (fiber-reinforced pressure vessels) Class III, and SAE J2579 performance targets. The prompt scope is the AA6061-T6 aluminum liner only; the carbon-fiber/epoxy overwrap is modeled as a uniform outer pressure on the liner equal to 35% of service pressure share, and is not part of the geometry you must output. The liner is a monolithic seamless formed part, no welds, integral hemispherical-like polar bosses at both ends; one end boss carries a 1-inch UN-O-ring boss port (SAE straight thread SAE J1926-1) for a TK-25H dispenser valve, the opposite boss is blind. Liner geometry: inside diameter 250 mm, wall thickness 4.0 mm (nominal), cylindrical straight length 700 mm, polar boss opening 25 mm, overall closed length 880 mm, bounding envelope 260 mm OD x 900 mm length. Service pressure (NWP) 35 MPa (350 bar), max fill pressure 125% NWP = 43.75 MPa per SAE J2579 thermal transient allowance, minimum burst pressure of the composite vessel 2.25 x NWP = 78.75 MPa per ASME Section X Class III; liner share at burst 35% = 27.56 MPa. Operating temperature range -40 C to +85 C per SAE J2579. Material 6061-T6 aluminum at 20 C: E 68.9 GPa, nu 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa; at 85 C yield derates to 262 MPa; at -40 C yield nominal 276 MPa with Charpy impact above 27 J. Three load cases. Load Case 1 (fill cycle proof): 1.5 x NWP = 52.5 MPa total vessel internal pressure at 85 C, corresponding to liner share of 52.5 x 0.35 = 18.4 MPa of the autofrettage-residual-adjusted net liner load; for this CAD prompt apply 18.4 MPa internal pressure to the liner boundary, both bosses constrained axially. Load Case 2 (cold fast fill): -40 C metal temperature, internal 35 MPa NWP liner share 12.25 MPa, thermal gradient 70 C from +30 C gas inlet to -40 C initial wall during a 3-minute fast fill. Load Case 3 (fatigue): 11250 fill cycles over 15-year life at 35 MPa NWP liner share 12.25 MPa, ambient 20 C, per SAE J2579 pressure-cycle endurance. Pass/fail: (R1) under LC1 proof, peak von Mises in the liner must not exceed 138 MPa (yield at 85 C / 1.9, equivalent to Section X Class III liner safety factor); (R2) under LC2 cold fast fill including thermal stress, combined peak stress must not exceed 207 MPa (yield at -40 C / 1.33 short-duration transient); (R3) fatigue: under LC3 the maximum local stress in liner near boss must keep the stress range below 88 MPa to satisfy >= 22500 allowable cycles (2x life per SAE J2579) at R = 0.1 on a 6061-T6 S-N curve; (R4) a linear buckling eigenvalue analysis under external pressure (composite overwrap compressing empty liner, 5 MPa inward) must yield a first-mode factor of at least 3.0; (R5) mass of the liner must not exceed 7.5 kg; (R6) minimum wall thickness of 3.5 mm must be maintained everywhere including the knuckle-to-boss transition. Fluid and radiation analyses are not required (thermal enters only via LC2 gradient). Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design the monolithic seamless AA6061-T6 aluminum liner of a Type-3 carbon-fiber-overwrapped pressure vessel (COPV) for a 350-bar gaseous hydrogen dispensing-station buffer tank, per NFPA 2 (2023), ASME BPVC Section X Class III, and SAE J2579 targets. Integral polar bosses at both ends, one carrying a 1-inch UN-O-ring (SAE J1926-1) valve port. The carbon-epoxy overwrap is modeled as a uniform outer pressure carrying 65% of service load; the liner carries 35%. Liner mass <= 7.5 kg, min wall 3.5 mm anywhere including knuckle-to-boss. Allowables: yield_85C / 1.9 at proof (Sect.-X Class III liner SF), yield_minus40C / 1.33 short-duration cold-fill transient, fatigue stress range <= 88 MPa (6061-T6 S-N at R = 0.1 for >= 22500 cycles, 2x design life). Buckling SF 3.0 on empty-liner external collapse.\n\nEnvelope: 250 mm ID x 4.0 mm wall x 700 mm cylindrical straight, 880 mm overall, 25 mm boss opening (260 mm OD x 900 mm envelope).\n\nLoad cases.\n- LC1 proof at 85 C: 18.4 MPa internal (liner share of 1.5x NWP total vessel = 52.5 MPa).\n- LC2 cold fast fill: 12.25 MPa internal at -40 C metal, with a 70 C thermal gradient from +30 C gas to -40 C wall over a 3-minute fast fill.\n- LC3 fatigue: 12.25 MPa internal at 20 C, 11250 cycles over 15-year life at R = 0.1.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "350 bar Type-3 COPV aluminum liner for hydrogen-pressure-vessel student benchmark",
+    "brief": "Seamless 6061-T6 liner with integral polar bosses; ID 250 mm, L 700 straight, NWP 35 MPa, SAE J2579 + ASME Sect. X Class III.",
+    "geometric_constraints": {
+      "inside_diameter_mm": 250,
+      "wall_thickness_mm": 4.0,
+      "cylinder_length_mm": 700,
+      "overall_length_mm": 880,
+      "polar_boss_opening_mm": 25,
+      "valve_boss_thread": "SAE J1926-1 1 inch",
+      "bounding_envelope_mm": {
+        "diameter": 260,
+        "length": 900
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_20C_MPa": 276,
+        "yield_85C_MPa": 262,
+        "yield_minus40C_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "pressures": {
+      "NWP_MPa": 35,
+      "max_fill_MPa": 43.75,
+      "burst_MPa_composite": 78.75,
+      "liner_share_pct": 35
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof_85C",
+        "internal_MPa_liner_share": 18.4,
+        "temp_C": 85
+      },
+      {
+        "id": "LC2",
+        "name": "cold_fast_fill",
+        "internal_MPa_liner_share": 12.25,
+        "temp_C_metal": -40,
+        "gradient_C": 70,
+        "duration_min": 3
+      },
+      {
+        "id": "LC3",
+        "name": "fatigue_15yr",
+        "internal_MPa_liner_share": 12.25,
+        "cycles": 11250,
+        "R_ratio": 0.1
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "min_wall_thickness_mm",
+        "fatigue_allowable_cycles",
+        "first_buckling_load_factor",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 138,
+        "derivation": "yield_85C/1.9 (ASME Section X Class III liner SF)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_with_thermal",
+        "limit_MPa": 207,
+        "derivation": "yield_minus40C/1.33 (transient)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "stress_range_at_boss",
+        "limit_MPa": 88,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "external_pressure"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 7.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "min_wall_thickness",
+        "limit_mm": 3.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) + axisymmetric verification",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling (external)",
+        "steady-state thermal-stress coupling (LC2)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Hydrogen flow internal to vessel is transient gas dynamics outside liner-sizing scope.",
+      "radiation_analysis": "Not applicable.",
+      "vibration_analysis": "Station storage is stationary (not mobile J2579 mobile vibration profile)."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Hydrogen embrittlement of 6061 at grain boundaries",
+      "Carbon-fiber overwrap stacking sequence",
+      "Leak-before-burst demonstration"
+    ]
+  },
+  "eval_coverage": [
+    "SAE J2579 + ASME Section X Class III liner safety factor",
+    "cryogenic fast-fill thermal stress combination",
+    "pressure-cycle fatigue at boss stress concentration",
+    "external-pressure buckling of empty-liner under overwrap"
+  ]
+}

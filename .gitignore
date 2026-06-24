@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# macOS
+.DS_Store
+
+# Solver / run outputs
+*.frd
+*.dat
+*.cvg
+*.sta
+mesh.inp
+model.inp
+model.dat
+model.frd
+out.step
+grade.json
+runs/

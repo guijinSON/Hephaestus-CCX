@@ -1,0 +1,187 @@
+{
+  "id": "169_md3_bmeidea",
+  "source": {
+    "catalog_ref": "MD3",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "medical_device",
+  "part_class": "lancing_autoinjector_body",
+  "full_prompt": "Design a reusable capillary-blood lancing auto-injector body aimed at point-of-care glucose diagnostics. The device is a cylindrical handheld injector 120 mm long x 18 mm diameter, actuating a disposable 28G lancet (fingerstick) with a spring-driven linear motion. The body is injection-molded polycarbonate (yield 62 MPa, E 2.2 GPa, density 1200 kg/m^3) with a stainless steel internal spring rail and a 28G lancet holder cartridge. The injector must deliver a lancet tip stroke of 1.8 mm +/- 0.2 mm into the fingertip with a contact velocity of 2.0 m/s +/- 0.2 m/s, powered by a 14 N nominal compression spring with a free length of 20 mm. Pass/fail criteria: (R1) housing max von Mises stress during the post-fire end-stop impact of the piston at 2.0 m/s against the forward end-stop must not exceed 41 MPa (PC yield 62 / SF 1.5), (R2) actuation-button breakaway force to fire the injector must be 4-8 N per ISO 11608-1 sharps safety human-factors band, (R3) the lancet must be retracted fully inside the housing within 50 ms of firing and must physically not be re-fireable without loading a new cartridge (safety lockout), (R4) drop test on the device from 1.0 m onto a hard surface (equivalent quasi-static 200 N impulse through the housing) must not produce housing max von Mises above 41 MPa and must retain the lancet, and (R5) total device mass must not exceed 30 g per commercialization ergonomic target. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly with housing, spring, piston, cartridge interface, and trigger as sub-bodies plus a verification report listing housing stress, actuation force, retraction time, drop result, and total mass.",
+  "short_prompt": "Design a reusable capillary-blood lancing auto-injector body for point-of-care glucose diagnostics. The device is a cylindrical handheld injector roughly 120 mm long x 18 mm diameter in injection-molded polycarbonate with a stainless internal spring rail, firing a disposable 28G lancet cartridge. Stroke target is 1.8 mm +/- 0.2 mm at a 2.0 m/s +/- 0.2 m/s contact velocity, driven by a 14 N nominal compression spring (20 mm free length).\n\nDesign to ISO 11608-1 (needle-based injection systems, sharps safety and ergonomics). Body is held by the user at the grip section; lancet contacts fingertip tissue at fire.\n\nLoad cases.\n- LC1 end-stop impact: piston hits the forward end-stop at 2.0 m/s.\n- LC2 actuation-button breakaway: required firing force band 4-8 N.\n- LC3 retraction lockout: lancet must be fully retracted within 50 ms and not re-fireable without a new cartridge.\n- LC4 1 m drop (equivalent 200 N impulse) onto hard surface, lancet retained.\n\nTotal device mass is an ergonomic constraint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "spring_energy_conservation",
+        "reason": "Spring-to-piston velocity and contact-velocity envelope are closed-form energy-conservation, not FEA.",
+        "examples": [
+          "Hooke's law energy spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Reusable capillary lancing auto-injector",
+    "brief": "Design a 120 mm x 18 mm reusable PC body lancing auto-injector with 1.8 mm +/- 0.2 mm stroke at 2.0 m/s contact velocity, 4-8 N actuation breakaway, safety lockout, 1 m drop survival, and 30 g ergonomic cap.",
+    "geometric_constraints": {
+      "length_mm": 120,
+      "diameter_mm": 18,
+      "lancet": "28G disposable cartridge",
+      "stroke_mm": 1.8,
+      "stroke_tolerance_mm": 0.2
+    },
+    "material": {
+      "housing": "Polycarbonate, yield 62 MPa, E 2.2 GPa",
+      "spring": "304 SS wire",
+      "piston": "PC with 30% GF"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "end_stop_impact_2mps",
+        "contact_velocity_m_s": 2.0,
+        "application": "piston hits forward end-stop"
+      },
+      {
+        "id": "LC2",
+        "name": "actuation_button",
+        "target_force_band_N": [
+          4,
+          8
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "retraction_lockout",
+        "retraction_time_ms_max": 50
+      },
+      {
+        "id": "LC4",
+        "name": "drop_1m",
+        "impulse_N": 200
+      }
+    ],
+    "boundary_conditions": {
+      "body": "held by user at grip section",
+      "lancet": "in contact with fingertip tissue"
+    },
+    "objective": {
+      "primary": "pass ISO 11608-1 sharps safety + stroke envelope",
+      "secondary": "minimize device mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "housing_max_von_mises_MPa",
+        "actuation_breakaway_N",
+        "retraction_time_ms",
+        "drop_housing_max_von_mises_MPa",
+        "total_mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "housing_max_von_mises",
+        "limit_MPa": 41,
+        "derivation": "PC yield 62 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "actuation_breakaway_force",
+        "limit_N_lower": 4,
+        "limit_N_upper": 8,
+        "derivation": "ISO 11608-1 human-factors",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "retraction_time",
+        "limit_ms": 50,
+        "derivation": "sharps safety lockout",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "drop_housing_max_von_mises",
+        "limit_MPa": 41,
+        "derivation": "PC yield 62 / 1.5 under 1 m drop quasi-static equivalent",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_device_mass",
+        "limit_g": 30,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet + shell for housing",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "Abaqus Explicit",
+        "ANSYS LS-DYNA"
+      ],
+      "analysis_types": [
+        "explicit dynamic end-stop impact",
+        "linear static drop"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Handheld, one-time firing; no harmonic loads.",
+      "thermal_analysis": "Ambient use.",
+      "fluid_analysis": "No fluid domain; lancet-tissue contact treated as contact BC.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compact body, not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "ISO 23908 sharps injury protection validation",
+      "Pain perception studies (clinical)",
+      "Cartridge biocompat (ISO 10993)"
+    ]
+  },
+  "eval_coverage": [
+    "explicit dynamic end-stop impact with PC yield limit",
+    "ISO 11608-1 actuation force band pass/fail",
+    "retraction time lockout requirement",
+    "drop test integrity as safety pass/fail"
+  ]
+}

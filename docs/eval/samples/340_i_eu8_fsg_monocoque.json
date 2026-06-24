@@ -1,0 +1,225 @@
+{
+  "id": "340_i_eu8_fsg_monocoque",
+  "source": {
+    "catalog_ref": "I-EU8 (cross-ref HV family)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "formula_student_monocoque",
+  "full_prompt": "Design a CFRP monocoque primary structure for a collegiate formula-class racecar benchmark 2026 electric-drive (EV) car, complying with FS Rules 2026 chapter T (Technical Regulations) and the Structural Equivalency Spreadsheet (SES) approach. The monocoque substitutes for the prescriptive steel space-frame primary structure; equivalency is demonstrated per FS Rules Appendix T.2. Vehicle total wet mass 240 kg excluding driver; driver 75 kg. Envelope: wheelbase 1600 mm, track 1200 mm, monocoque length 2200 mm, nominal cockpit cross-section 320 mm wide x 500 mm tall. Laminate schedule: CFRP skins 2 mm (outer) + aramid honeycomb core 25 mm + CFRP skins 2 mm (inner). Skin material: T800/epoxy twill fabric (E_eff 60 GPa, tensile 750 MPa, compressive 650 MPa, density 1540 kg/m^3). Core: Nomex aramid honeycomb 48 kg/m^3 (shear 1.45 MPa, density 48 kg/m^3). Mandatory SES equivalency targets vs steel space-frame baseline (prescriptive 1.0 inch x 0.095 wall 4130 chromoly): (a) side-impact equivalency: panel must absorb >= 7350 J at <= 40 g average on 300 kg mass; (b) front-bulkhead equivalency: front impact structure attached in front must transmit no more than 40 g peak to driver; (c) main-hoop + front-hoop equivalency: passing nominal rollover load of 6 kN axial on each hoop without yield; (d) harness bar tensile 13.24 kN per FS T.3.6.2. Load cases: (LC1) front impact 20 g on 315 kg (vehicle + driver) into 300 mm impact attenuator reacting at front bulkhead - monocoque front face must not rupture; (LC2) side impact 7 g on 315 kg at side-impact panel region; (LC3) rollover 6 kN axial on main-hoop peak mount while wheels pinned; (LC4) harness bar pull 13.24 kN applied at the harness attachment bolts into monocoque; (LC5) stiffness: torsional stiffness from +/-1000 N couple across front axle vs rear axle must exceed 2000 N*m/deg; (LC6) structural equivalency panel test (LC-SES): simulate the 3-point bending test defined in FS Rules Appendix T.2 (e.g. 3-point bend with span and load per the spreadsheet) and confirm energy/stiffness per spec. Pass/fail (per collegiate formula-class racecar 2026 + FS Rules Ch T): (R1) max CFRP skin Tsai-Wu failure index at LC1-LC4 ultimate must remain below 1.0 at factor-of-safety 1.5 applied; (R2) core shear under LC1 and LC2 must remain below 0.725 MPa (1.45 / 2.0 core FoS); (R3) torsional stiffness under LC5 must exceed 2000 N*m/deg; (R4) monocoque dry mass (all skins + core + inserts, excluding rollbars and other metallic hardware) must not exceed 45 kg; (R5) first torsional mode must exceed 25 Hz; (R6) harness bar pull-out under LC4 must not produce insert pull-through above 10 kN limit per FS Rules T.3.6.2; (R7) SES panel test equivalency (LC6) must meet the prescriptive baseline (bending stiffness E*I and energy absorption) recorded in the collegiate formula-class racecar SES spreadsheet. Thermal, fluid, radiation, buckling not primary. Deliverables: STEP AP242 of monocoque shell (sandwich layers as one solid), layup schedule, FEA per load case, SES equivalency tables, modal report.",
+  "short_prompt": "Design the CFRP monocoque primary structure of a collegiate formula-class racecar benchmark 2026 EV per FS Rules 2026 Ch T + SES equivalency (Appendix T.2). Vehicle wet 240 kg + 75 kg driver; wheelbase 1600 mm, track 1200 mm, cockpit 320 x 500 mm, monocoque length 2200 mm. Laminate: 2 mm T800/epoxy twill + 25 mm Nomex honeycomb (48 kg/m^3) + 2 mm inner skin.\n\nSES targets: (a) side-impact energy absorption >= 7350 J on 300 kg at <= 40 g avg; (b) front-bulkhead FIS transmits <= 40 g peak; (c) main/front hoop equivalency at 6 kN axial without yield; (d) harness-bar tensile 13.24 kN per T.3.6.2.\n\nFactor regime: Tsai-Wu <= 1.0 at FoS 1.5 on LC1-LC4 ultimate; core-shear FoS 2.0 (allowable 0.725 MPa) on front/side impact; torsional stiffness > 2000 N-m/deg; monocoque dry mass <= 45 kg; first torsional mode > 25 Hz; harness-insert pull-through limit 10 kN.\n\nLoad cases.\n- Front impact 20 g on 315 kg into a 300 mm IA, reacted at the front bulkhead.\n- Side impact 7 g on 315 kg at the side-impact panel.\n- Rollover 6 kN axial on the main-hoop peak mount, wheels pinned.\n- Harness bar pull: 13.24 kN at the harness attachment bolts.\n- Stiffness: +/- 1000 N couple across front vs rear axle.\n- SES 3-point bend panel test per FS Appendix T.2.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "FSG_SES_spreadsheet",
+        "reason": "Structural Equivalency Spreadsheet is mandated by FS Rules and is not FEA; it tabulates E*I, E*A, and energy equivalence vs prescriptive steel baseline.",
+        "examples": [
+          "collegiate formula-class racecar SES 2026 xlsx"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-class racecar benchmark 2026 CFRP Monocoque",
+    "brief": "CFRP skin + Nomex core sandwich monocoque, FS Rules Ch T + collegiate formula-class racecar SES equivalency to steel space frame.",
+    "geometric_constraints": {
+      "wheelbase_mm": 1600,
+      "track_mm": 1200,
+      "mono_length_mm": 2200,
+      "cockpit_width_mm": 320,
+      "cockpit_height_mm": 500,
+      "sandwich_build_mm": "2 skin + 25 core + 2 skin"
+    },
+    "material": {
+      "skin": {
+        "name": "T800/epoxy twill",
+        "E_GPa": 60,
+        "tensile_MPa": 750,
+        "compressive_MPa": 650,
+        "density_kg_m3": 1540
+      },
+      "core": {
+        "name": "Nomex aramid honeycomb 48",
+        "shear_MPa": 1.45,
+        "density_kg_m3": 48
+      }
+    },
+    "vehicle_mass_kg": {
+      "wet": 240,
+      "with_driver": 315
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "front_impact_20g",
+        "magnitude_N": 61887,
+        "application": "reacting at front bulkhead"
+      },
+      {
+        "id": "LC2",
+        "name": "side_impact_7g",
+        "magnitude_N": 21670,
+        "application": "side-impact panel"
+      },
+      {
+        "id": "LC3",
+        "name": "rollover",
+        "magnitude_N": 6000,
+        "application": "main-hoop axial"
+      },
+      {
+        "id": "LC4",
+        "name": "harness_pull",
+        "magnitude_N": 13240,
+        "application": "harness bar mounts"
+      },
+      {
+        "id": "LC5",
+        "name": "torsion_couple",
+        "magnitude_N": 1000,
+        "application": "front vs rear axle couple"
+      },
+      {
+        "id": "LC6",
+        "name": "SES_3pt_bend",
+        "application": "per collegiate formula-class racecar SES spreadsheet"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 1,
+      "report_fields": [
+        "mono_mass_kg",
+        "tsai_wu_max_per_case",
+        "core_shear_LC1_LC2_MPa",
+        "torsional_stiffness_Nm_per_deg",
+        "first_torsion_mode_Hz",
+        "insert_pullout_LC4_kN"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_ultimate_index",
+        "limit": 1.0,
+        "derivation": "loads x 1.5 then index <= 1.0",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "core_shear_max",
+        "limit_MPa": 0.725,
+        "derivation": "1.45 / 2.0 core FoS",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "torsional_stiffness",
+        "limit_Nm_per_deg": 2000,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "monocoque_dry_mass",
+        "limit_kg": 45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsion_mode",
+        "limit_Hz": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "harness_insert_pullout",
+        "limit_kN": 10,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "SES_equivalency_vs_baseline",
+        "limit": ">= prescriptive 4130 baseline for E*I and energy",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell (sandwich modeling) for all monocoque; solids for metallic inserts",
+      "mesh_size_mm": 10,
+      "solver_hints": [
+        "ANSYS ACP + Mechanical",
+        "Abaqus Composite Layup"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "SES LC6 (coupon-level static)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "Not mandated at monocoque level.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Sandwich face-wrinkling criterion sits inside Tsai-Wu check for this build; not a separate FEA."
+    }
+  },
+  "eval_coverage": [
+    "sandwich composite FEA",
+    "collegiate formula-class racecar SES equivalency",
+    "multi-impact case",
+    "harness bar insert pull-out",
+    "torsional stiffness",
+    "modal"
+  ]
+}

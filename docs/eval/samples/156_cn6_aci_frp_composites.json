@@ -1,0 +1,176 @@
+{
+  "id": "156_cn6_aci_frp_composites",
+  "source": {
+    "catalog_ref": "CN6",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "civil_composite_structural",
+  "part_class": "frp_reinforced_concrete_beam",
+  "full_prompt": "Design a single FRP-reinforced concrete beam scored on lowest cost-to-load ratio. The beam must be a simply supported rectangular beam with a total length of 1220 mm (48 in), clear span of 1016 mm (40 in), cross section 150 mm wide by 200 mm deep, and reinforcement limited to supplied GFRP bars with guaranteed tensile strength ffu of 690 MPa (100 ksi) and modulus of elasticity Ef of 44.8 GPa (6500 ksi), arranged inside a concrete section made from a normal-weight mix with design compressive strength fc' of 27.6 MPa (4000 psi). The beam must be tested under a four-point bending setup with two concentrated loads applied 305 mm (12 in) apart at mid-span on the top surface and must simultaneously satisfy these pass/fail criteria: (R1) nominal flexural capacity computed per ACI CODE-440.11-22 Chapter 22 must be at least 8.9 kN of total applied four-point load (4.45 kN per load point) which corresponds to a nominal moment demand of 0.68 kN-m at the critical section, (R2) the beam must fail by concrete crushing (compression-controlled) rather than FRP rupture, which for GFRP requires the reinforcement ratio rho_f to exceed rho_fb per ACI 440.11-22 Section 22.2.2, (R3) mid-span deflection under 8.9 kN total load must not exceed span/180 which is 5.6 mm, (R4) strength reduction factor phi must be at least 0.55 per ACI 440.11-22 Table 21.2.2, and (R5) the total material cost of concrete, GFRP bars, and stirrups must not exceed $25 per beam at reference unit prices. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly with concrete and each FRP bar as distinct bodies plus a structural report listing nominal moment capacity, total failure load, failure mode, mid-span deflection, strength reduction factor, and total cost.",
+  "short_prompt": "Design a single FRP-reinforced concrete beam scored on lowest cost-to-load ratio. The beam is a simply supported rectangular section 1220 mm long (1016 mm clear span), 150 mm wide x 200 mm deep, with reinforcement limited to GFRP bars (guaranteed tensile strength f_fu = 690 MPa, modulus E_f = 44.8 GPa) inside a normal-weight concrete mix (f'c = 27.6 MPa / 4000 psi). Design per ACI CODE-440.11-22 Chapter 22.\n\nLoad case. Four-point bending with two concentrated loads on the top surface, 305 mm (12 in) apart at mid-span.\nThe beam must reach a nominal flexural capacity >= 8.9 kN total (4.45 kN per point; nominal moment demand 0.68 kN-m at the critical section), fail by concrete crushing rather than FRP rupture (rho_f > rho_fb per 440.11-22 Section 22.2.2), mid-span deflection under 8.9 kN <= span/180 (5.6 mm), phi >= 0.55 per 440.11-22 Table 21.2.2, and total material cost of concrete, GFRP bars, and stirrups <= $25.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ACI_440_11_22_moment_capacity",
+        "reason": "ACI CODE-440.11-22 Chapter 22 flexural capacity uses a closed-form equivalent rectangular stress block with rho_f/rho_fb branch logic, not FEA.",
+        "examples": [
+          "ACI 440 spreadsheet",
+          "RESPONSE-2000 for sectional analysis"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "GFRP-reinforced concrete beam per ACI 440.11-22",
+    "brief": "Design a 150 x 200 mm, 1220 mm long simply supported GFRP-reinforced concrete beam with 1016 mm clear span to carry at least 8.9 kN total in four-point bending with compression-controlled failure and ACI CODE-440.11-22 compliance.",
+    "geometric_constraints": {
+      "total_length_mm": 1220,
+      "clear_span_mm": 1016,
+      "width_mm": 150,
+      "depth_mm": 200,
+      "four_point_load_separation_mm": 305
+    },
+    "material": {
+      "concrete": {
+        "fc_prime_MPa": 27.6
+      },
+      "GFRP_bars": {
+        "f_fu_MPa": 690,
+        "E_f_GPa": 44.8
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "four_point_bending",
+        "total_applied_load_N": 8900,
+        "load_points": 2,
+        "point_separation_mm": 305,
+        "application": "concentrated loads on top surface"
+      }
+    ],
+    "boundary_conditions": {
+      "supports": "simply supported at 1016 mm clear span"
+    },
+    "objective": {
+      "primary": "pass all ACI 440.11-22 criteria",
+      "secondary": "minimize cost per beam"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "nominal_moment_capacity_kNm",
+        "ultimate_total_load_kN",
+        "failure_mode",
+        "midspan_deflection_at_8p9kN_mm",
+        "phi_factor",
+        "total_cost_USD"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "nominal_total_load_capacity",
+        "limit_N": 8900,
+        "derivation": "ACI 440.11-22 Chapter 22 equivalent to 0.68 kN-m at critical section",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "rho_f_over_rho_fb_ratio",
+        "limit": 1.0,
+        "derivation": "compression-controlled requires rho_f > rho_fb per ACI 440.11-22 Section 22.2.2",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">"
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection_at_design_load",
+        "limit_mm": 5.6,
+        "derivation": "span/180",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "phi_strength_reduction_factor",
+        "limit": 0.55,
+        "derivation": "ACI 440.11-22 Table 21.2.2 compression-controlled",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_cost",
+        "limit_USD": 25,
+        "derivation": "reference unit prices",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid concrete with embedded reinforcement or plane-stress with truss",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "Abaqus with concrete damage plasticity",
+        "ATENA",
+        "RESPONSE-2000 for sectional"
+      ],
+      "analysis_types": [
+        "nonlinear static with concrete damage plasticity (optional)",
+        "ACI 440 closed-form sectional"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static four-point bending only.",
+      "thermal_analysis": "Room-temperature test.",
+      "fluid_analysis": "Dry lab.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Long-term FRP creep rupture (environmental reduction factor CE)",
+      "Bond slip at FRP-concrete interface",
+      "Shear detailing outside mid-span region"
+    ]
+  },
+  "eval_coverage": [
+    "ACI CODE-440.11-22 Chapter 22 compliance",
+    "compression-controlled failure mode requirement",
+    "load-to-cost efficiency ratio",
+    "GFRP reinforcement ratio vs balanced ratio branching"
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "id": "284_a44_covent19_ventilator",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A44",
+    "year": 2020,
+    "tier": "A"
+  },
+  "domain": "medical_structural",
+  "part_class": "bag_valve_compression_arm",
+  "full_prompt": "Design a single-part monolithic compression-arm (cam-follower lever) for an automated bag-valve-mask (BVM) ventilator per the emergency ventilator benchmark open-CAD challenge Round 1 (MGH/MIT specification). The ventilator uses a motor-driven rotating cam to compress a standard BVM resuscitator bag; the compression-arm is the lever that rides the cam and presses the bag. Ventilator functional specs to honor: tidal volume 400-800 mL, respiratory rate 10-30 breaths per minute, PEEP 5-15 cmH2O, inspiratory pressure limit 40 cmH2O, I:E ratio 1:2 to 1:4. Geometric constraints: arm length 250 mm from pivot to bag-pad; pivot bore 12 mm diameter with bronze bushing shoulder; cam-follower roller pocket 30 mm diameter; bag-compression pad 80 mm x 120 mm curved to match BVM bag; bounding 280 mm x 90 mm x 30 mm. Material: 6061-T6 aluminum alloy (E = 68.9 GPa, yield = 276 MPa, ultimate = 310 MPa, density = 2700 kg/m^3), anodized. Load cases: (R1) Max compression force: bag at 40 cmH2O back-pressure x pad area (9600 mm^2 = 96 cm^2) x 40 cmH2O (40 cmH2O = 3923 Pa) = 37.7 N at bag pad (a small force). Multiply by 8x safety margin for pad-edge stress concentration = 300 N compressive normal at pad. Max von Mises <= yield / 1.5 = 184 MPa. (R2) Cam overrun impact: if motor stalls with arm fully compressed, cam pushes arm at 2x nominal = 600 N; max von Mises <= yield / 1.25 = 221 MPa. (R3) Arm side-load from misaligned bag: 50 N lateral at pad; max von Mises <= 184 MPa. (R4) Fatigue: 30 bpm x 60 min x 24 h x 30 days = 1.3 million cycles at nominal 37.7 N; infinite-life stress limit <= 96 MPa (fully reversed fatigue strength of 6061-T6). (R5) Arm mass <= 250 g. (R6) First modal frequency with pivot fixed >= 30 Hz (to avoid coupling with cam rotation harmonics up to 6 Hz * 5th harmonic). Autoclave steam sterilization at 134 C 0.2 MPa for 20 min must not warp arm > 0.1 mm. Primary verification: structural FEA (linear static x3 + fatigue x1) + modal + thermal. Fluid and buckling NOT required (bag fluid is external; arm not column-loaded). Radiation NOT applicable. Deliverables: STEP AP242 + Parasolid arm, pivot bushing detail drawing, and a report listing arm mass in g, max von Mises per case in MPa, fatigue safety factor, first modal frequency in Hz, autoclave warp in mm.",
+  "short_prompt": "Design a single-part monolithic cam-follower compression-arm for an automated bag-valve-mask (BVM) ventilator per the emergency ventilator benchmark (MGH/MIT specification), targeting tidal volume 400-800 mL, respiratory rate 10-30 bpm, PEEP 5-15 cmH2O, inspiratory pressure cap 40 cmH2O, I:E 1:2 to 1:4.\n\nEnvelope: arm 250 mm from pivot to bag-pad, bounding 280 x 90 x 30 mm; 12 mm bronze-bushed pivot bore, 30 mm cam-follower roller pocket, 80 x 120 mm curved bag-compression pad.\n\nFactor regime: yield FoS 1.5 for the nominal compression, yield FoS 1.25 for cam-overrun impact; 6061-T6 fatigue allowable 96 MPa fully reversed; autoclave steam 134 C / 0.2 MPa / 20 min warp target < 0.1 mm.\n\nLoad cases.\n- Max compression: 300 N compressive at the bag pad (8x margin on the 37.7 N raw cushion load).\n- Cam overrun (motor stall): 600 N at the pad.\n- Bag misalignment: 50 N lateral at the pad.\n- Fatigue: 1.3e6 cycles at nominal 37.7 N over 30 day duty.\n- Pivot-fixed first modal frequency >= 30 Hz.\n- Autoclave steam sterilization (134 C, 0.2 MPa, 20 min).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "emergency ventilator benchmark BVM compression arm",
+    "brief": "6061-T6 monolithic cam-follower arm for automated BVM ventilator; 1.3 M fatigue cycles + autoclave + 40 cmH2O pressure cap.",
+    "geometric_constraints": {
+      "arm_length_mm": 250,
+      "pivot_bore_mm": 12,
+      "cam_roller_pocket_mm": 30,
+      "pad_mm": "80 x 120",
+      "bounding_mm": "280 x 90 x 30",
+      "mass_g_max": 250,
+      "monolithic": true
+    },
+    "material": {
+      "name": "6061-T6 anodized",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "fatigue_strength_fully_reversed_MPa": 96,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "bag_pad_nominal",
+        "force_N": 300,
+        "direction": "compressive at pad"
+      },
+      {
+        "id": "LC2",
+        "name": "cam_overrun_stall",
+        "force_N": 600,
+        "direction": "compressive at pad"
+      },
+      {
+        "id": "LC3",
+        "name": "bag_misalignment_lateral",
+        "force_N": 50,
+        "direction": "lateral at pad"
+      },
+      {
+        "id": "LC4",
+        "name": "fatigue_cycles",
+        "cycles": 1300000,
+        "amplitude_N": 37.7
+      },
+      {
+        "id": "LC5",
+        "name": "modal"
+      },
+      {
+        "id": "LC6",
+        "name": "autoclave_134C_0.2MPa_20min"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "pivot bore fully fixed",
+      "loads": "at bag pad"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "arm_mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "fatigue_safety_factor",
+        "first_modal_frequency_Hz",
+        "autoclave_warp_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 221,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "fatigue_stress_amplitude",
+        "limit_MPa": 96,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 250,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 30,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "thermal_analysis",
+        "metric": "autoclave_warp",
+        "limit_mm": 0.1,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "fatigue (stress-life)",
+        "modal",
+        "thermal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Bag-side fluid is external; reduced to equivalent pad force.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Arm is a bending lever, not column-loaded."
+    }
+  },
+  "eval_coverage": [
+    "emergency ventilator benchmark BVM compression mechanism",
+    "fatigue life at clinical cycle count",
+    "autoclave sterilization stability"
+  ]
+}

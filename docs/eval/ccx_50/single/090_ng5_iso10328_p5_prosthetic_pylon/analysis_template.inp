@@ -1,0 +1,70 @@
+** ISO 10328 P5 prosthetic pylon -- submission-agnostic linear static FEA
+** Aluminum 6061-T6, two principal static load cases:
+**   Step 1 = Test Condition I  (toe heel-off),    F = 3360 N along -Z
+**   Step 2 = Test Condition II (heel heel-strike), F = 4000 N along -Z
+**
+** NSETs (populated by wire_bcs.py from meta.json selectors):
+**   NFIXED -- distal clamp face (z_min), pinned in the alignment jig.
+**   NLOAD  -- proximal interface face (z_max), where the principal force
+**             is delivered through the pyramid adapter.
+**
+** Eall is auto-built by wire_bcs.py from the gmsh C3D* element sets.
+
+*MATERIAL, NAME=AL6061T6
+*ELASTIC
+68900., 0.33
+*DENSITY
+2.7e-9
+*SOLID SECTION, ELSET=Eall, MATERIAL=AL6061T6
+
+** ---------------------------------------------------------------------------
+** Loading reference node + rigid body coupling
+** ---------------------------------------------------------------------------
+** A single off-mesh reference node (id 999999) is rigidly coupled to all
+** NLOAD nodes; the principal compressive test force is applied at this
+** reference node so the total load on the structure equals the standard's
+** principal force regardless of how many proximal-face nodes the meshing
+** stage produced. This keeps the deck submission-agnostic.
+*NODE, NSET=NREF
+999999, 0.0, 0.0, 1000.0
+*RIGID BODY, NSET=NLOAD, REF NODE=999999
+
+** ---------------------------------------------------------------------------
+** Boundary conditions: distal clamp fully fixed
+** ---------------------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.
+
+** ===========================================================================
+** Step 1 -- Test Condition I (toe), principal static force 3360 N
+** ===========================================================================
+*STEP
+*STATIC
+*CLOAD
+999999, 3, -3360.
+*NODE FILE
+U
+*EL FILE
+S
+*NODE PRINT, NSET=NFIXED, TOTALS=ONLY
+RF
+*EL PRINT, ELSET=Eall
+S
+*END STEP
+
+** ===========================================================================
+** Step 2 -- Test Condition II (heel), principal static force 4000 N
+** ===========================================================================
+*STEP
+*STATIC
+*CLOAD, OP=NEW
+999999, 3, -4000.
+*NODE FILE
+U
+*EL FILE
+S
+*NODE PRINT, NSET=NFIXED, TOTALS=ONLY
+RF
+*EL PRINT, ELSET=Eall
+S
+*END STEP

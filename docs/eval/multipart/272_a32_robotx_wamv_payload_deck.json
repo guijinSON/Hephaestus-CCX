@@ -1,0 +1,457 @@
+{
+  "id": "272_a32_robotx_wamv_payload_deck",
+  "source": {
+    "catalog_ref": "A32",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/272_a32_robotx_wamv_payload_deck.json",
+    "multipart_basis": "RobotX WAM-V payload decks carry UAV launch pads, UUV deployment booms, and a sensor mast on a 4 x 2 m sandwich panel. Real competition decks are assemblies of a primary sandwich deck plate with bolted aluminum or CFRP truss / I-beam cross-members underneath, pontoon clamping brackets along each long edge, discrete payload hardpoints on top, and a mast foundation. Decomposition speculative at the level of cross-member count and payload hardpoint map; all load magnitudes, material, and pass/fail thresholds are preserved."
+  },
+  "domain": "marine_structural",
+  "part_class": "wamv_payload_deck_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a single-part monolithic payload deck for the 2026 RobotX WAM-V 16 USV, compliant with the 2026 RobotX Team Handbook. The WAM-V has two 5 m pontoons connected by a 4 m x 2 m deck bridging structure on top of which the team must mount sensors, a UAV launch/recovery interface, and a UUV deployment gantry. Payload mass limit 500 kg on the deck. The deck is a honeycomb sandwich composite panel: outer skin 3 mm carbon/epoxy quasi-isotropic, 25 mm Nomex honeycomb core, inner skin 3 mm carbon/epoxy. Overall dimensions 4000 mm x 2000 mm x 31 mm. Deck attaches to the WAM-V inflatable pontoon rigid inserts via 8 clamping strap interfaces on each long edge (16 total) - model as pinned. Material: carbon/epoxy (E1 = 135 GPa, E2 = 10 GPa, strength L = 1500 MPa, density 1600 kg/m^3); Nomex honeycomb (density 48 kg/m^3, out-of-plane compressive 2.4 MPa, shear 1.2 MPa). Skin layup [0/45/90/-45]s. Load cases: (R1) Distributed payload 500 kg x 9.81 = 4,905 N uniformly over deck center 2000 mm x 1000 mm area; max fiber stress <= 1500 / 3.0 = 500 MPa; max core shear <= 1.2 MPa; max deck deflection <= L/200 = 20 mm. (R2) Concentrated UAV launch load: 80 kg UAV + 3 g launch recoil = 2,354 N at a single 500 mm x 500 mm pad location near deck center; max fiber stress <= 500 MPa; max deflection at load <= 15 mm. (R3) UUV deployment: 25 kg UUV hoisted and swung, producing 50 kg equivalent dynamic load at the deployment boom rooted at deck edge => 490 N vertical + 200 N horizontal; max fiber stress <= 500 MPa. (R4) Wave-hogging asymmetric load: full 500 kg concentrated at one corner (worst case of waves lifting one pontoon), 4,905 N corner load; max fiber stress <= 500 MPa; max corner deflection <= 30 mm. (R5) Deck structural mass <= 60 kg. (R6) Deck first modal frequency pinned at 16 strap interfaces >= 15 Hz (decouple from wave excitation <= 1 Hz x 10 margin). Primary verification: laminate-composite structural FEA (linear static x4) + modal (R6). Vibration secondary via R6. Thermal, fluid, radiation NOT required. Deliverables: STEP AP242 deck panel, laminate schedule, strap-mount drawings, and a report listing deck mass in kg, max fiber stress per case, max deflection per case, first modal frequency in Hz.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe payload deck is delivered as a multi-part bolted assembly, not a single sandwich panel. Speculated families: (A) primary deck sandwich plate (4000 x 2000 x 31 mm CFRP/Nomex sandwich); (B) transverse I-beam / truss cross-members underneath the deck (x5, CFRP or Al extrusion, spaced ~800 mm along length) providing LC1/LC4 bending stiffness; (C) pontoon clamping strap brackets (x16, 8 per long edge, Al 6061 machined, bolted to A and clamping to pontoon inserts); (D) payload hardpoints on top of A (x12 mission hardpoints including one 500x500 UAV launch pad and one UUV boom base) for LC2/LC3; (E) mast foundation (reinforced bolted plate carrying the sensor mast); (F) edge rail / splash rail around A perimeter; (G) two longitudinal stringers under A long edges for additional bending stiffness; (H) UAV launch pad local reinforcement / sub-deck insert at the LC2 load patch. Interfaces: A<->B bolted through bonded-in inserts on A (cross-members provide stiffness under LC1/LC4); A<->C bolted at 16 strap positions (primary mounting BC); A<->D bolted hardpoints (bonded-in steel or Al inserts); A<->E bolted with local ply build-up; A<->F bolted (non-structural); A<->G bolted (longitudinal stringers mirror cross-members); A<->H bonded/bolted local insert. FEM verification runs on the assembled model ONLY. The LC1 distributed load is carried primarily by A + B in combined bending; LC2 UAV recoil concentrates at H and A; LC3 UUV swing loads go into D and A; LC4 corner hogging stresses the C bracket at the loaded corner. Inter-part DCR <= 1.0 under the governing case. All load magnitudes, material properties, skin layup, and pass/fail thresholds are preserved verbatim.",
+  "short_prompt": "Design the payload deck for the 2026 RobotX WAM-V 16 USV as a multi-part bolted assembly, compliant with the 2026 RobotX Team Handbook. The WAM-V has two 5 m pontoons connected by a 4 m x 2 m deck bridging structure; payload mass limit 500 kg.\n\nDeck is a honeycomb sandwich composite panel: 3 mm carbon/epoxy outer skin, 25 mm Nomex honeycomb core, 3 mm carbon/epoxy inner skin; overall 4000 x 2000 x 31 mm; skin layup [0/45/90/-45]s. Attaches to pontoon rigid inserts via 8 clamping strap interfaces per long edge (16 total), pinned. Carbon/epoxy: E1 = 135 GPa, E2 = 10 GPa, longitudinal strength 1500 MPa, density 1600 kg/m^3. Nomex core: density 48 kg/m^3, compressive 2.4 MPa, shear 1.2 MPa.\n\nLC1 distributed payload 500 kg x 9.81 = 4905 N over center 2000 x 1000 mm; max fiber stress <= 1500 / 3.0 = 500 MPa; core shear <= 1.2 MPa; deflection <= L/200 = 20 mm. LC2 UAV launch 80 kg + 3 g recoil = 2354 N on 500 x 500 mm pad; <= 500 MPa; deflection <= 15 mm. LC3 UUV deployment: 25 kg UUV swung (50 kg equivalent) => 490 N vertical + 200 N horizontal at deck-edge boom; <= 500 MPa. LC4 wave-hogging asymmetric 4905 N corner load; <= 500 MPa; corner deflection <= 30 mm. Deck structural mass <= 60 kg. First modal frequency pinned at 16 strap interfaces >= 15 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "laminate_first_ply_failure_post",
+        "reason": "Fiber-stress per-ply is a laminate-theory post-processing step.",
+        "examples": [
+          "ANSYS ACP Post"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "RobotX 2026 WAM-V payload deck (multi-part bolted assembly)",
+    "brief": "Carbon/Nomex sandwich deck (4 x 2 m) with underdeck cross-members, pontoon clamping brackets, payload hardpoints, and mast foundation; carries 500 kg payload + UAV launch + UUV deployment loads. Multi-part: primary deck (A), cross-members (B x5), pontoon strap brackets (C x16), payload hardpoints (D x12), mast foundation (E), edge rail (F), longitudinal stringers (G x2), UAV pad reinforcement (H). FEM assembled-only; DCR <= 1.0.",
+    "geometric_constraints": {
+      "deck_length_mm": 4000,
+      "deck_width_mm": 2000,
+      "deck_thickness_mm": 31,
+      "skin_thickness_mm": 3,
+      "core_thickness_mm": 25,
+      "skin_layup": "[0/45/90/-45]s",
+      "strap_attachments_per_edge": 8,
+      "payload_mass_kg_max": 500,
+      "cross_member_count": 5,
+      "cross_member_spacing_mm": 800
+    },
+    "material": {
+      "skin": {
+        "name": "Carbon/epoxy",
+        "E1_GPa": 135,
+        "E2_GPa": 10,
+        "long_strength_MPa": 1500,
+        "density_kg_m3": 1600
+      },
+      "core": {
+        "name": "Nomex honeycomb",
+        "density_kg_m3": 48,
+        "compressive_strength_MPa": 2.4,
+        "shear_strength_MPa": 1.2
+      },
+      "cross_member_material": "CFRP pultruded I-beam or Al 6061-T6 extrusion (80 x 40 x 5 mm I)",
+      "bracket_material": "Al 6061-T6 machined"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "uniform_payload",
+        "total_force_N": 4905,
+        "area_mm": "2000 x 1000",
+        "applied_to": "center of A"
+      },
+      {
+        "id": "LC2",
+        "name": "UAV_launch_3g",
+        "force_N": 2354,
+        "patch_mm": "500 x 500",
+        "applied_to": "H UAV launch pad reinforcement"
+      },
+      {
+        "id": "LC3",
+        "name": "UUV_deployment",
+        "vertical_N": 490,
+        "horizontal_N": 200,
+        "applied_to": "D UUV boom base at deck edge"
+      },
+      {
+        "id": "LC4",
+        "name": "wave_hogging_corner",
+        "force_N": 4905,
+        "location": "corner",
+        "applied_to": "one of A's corners"
+      },
+      {
+        "id": "LC5",
+        "name": "modal",
+        "description": "pinned at 16 C strap positions; first frequency >= 15 Hz"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "16 C strap brackets pinned to pontoon rigid inserts (8 per long edge)",
+      "loads": "distributed and point loads on A surface and on D/H hardpoints",
+      "bolted_joints": "A<->B cross-member bolts, A<->C strap bolts, A<->D payload hardpoint bolts modeled as stiffness-equivalent with VDI 2230 post-check"
+    },
+    "objective": {
+      "minimize": "assembled_deck_mass_kg",
+      "design_heuristic": "target assembled deck structural mass <= 60 kg"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (A + B x5 + C x16 + D x12 + E + F + G x2 + H)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E|F|G|H)",
+        "instance_index",
+        "laminate_schedule_ref or extrusion_profile",
+        "bolt_size_and_grade"
+      ],
+      "report_fields": [
+        "deck_mass_kg",
+        "max_fiber_stress_LC1_MPa",
+        "max_fiber_stress_LC2_MPa",
+        "max_fiber_stress_LC3_MPa",
+        "max_fiber_stress_LC4_MPa",
+        "max_core_shear_MPa",
+        "max_deck_deflection_mm",
+        "first_modal_frequency_Hz",
+        "connection_DCR_max",
+        "per_part_max_fiber_stress",
+        "bolt_utilization_max"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "primary_deck_sandwich",
+        "role": "main load-carrying deck plate; all payload reaches the pontoons through A",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "4000 x 2000 x 31 sandwich",
+          "skin_layup": "[0/45/90/-45]s",
+          "core": "25 mm Nomex honeycomb",
+          "bolted_insert_pattern": "cross-member bolts, strap-bracket bolts, hardpoint bolts (all via bonded-in inserts)"
+        },
+        "material_hint": "Carbon/epoxy + Nomex honeycomb",
+        "speculation": false
+      },
+      {
+        "part_id": "B",
+        "name": "underdeck_cross_member",
+        "role": "transverse I-beam / truss spaced along length, providing LC1/LC4 bending stiffness",
+        "count_min": 5,
+        "geometric_constraints": {
+          "cross_section_mm": "80 x 40 x 5 I-beam (Al) or equivalent CFRP",
+          "length_mm": 2000,
+          "spacing_mm": 800,
+          "attachment": "bolted to A via 8 bolts per cross-member through bonded inserts"
+        },
+        "material_hint": "CFRP pultruded I-beam or Al 6061-T6 extrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "pontoon_strap_bracket",
+        "role": "Al machined bracket bolted to A and clamping to the WAM-V pontoon rigid insert; primary mounting BC",
+        "count_min": 16,
+        "geometric_constraints": {
+          "nominal_size_mm": "120 x 80 x 30",
+          "bolt_count_to_A": 4,
+          "bolt_size_to_A": "M10 Grade 8.8",
+          "clamp_interface": "conforms to WAM-V pontoon insert (strap radius ~120 mm)"
+        },
+        "material_hint": "Al 6061-T6 machined",
+        "speculation": false
+      },
+      {
+        "part_id": "D",
+        "name": "payload_hardpoint",
+        "role": "mission-payload mounting point (sensors, deployment booms, winches) bolted to A at bonded-in inserts",
+        "count_min": 12,
+        "geometric_constraints": {
+          "nominal_size_mm": "100 x 100 x 15 insert + surface plate",
+          "insert_material": "steel or Al 7075 bonded into A",
+          "bolt_size": "M10 Grade 8.8",
+          "distribution": "8 along central length, 4 at corners for camera/antenna mounts"
+        },
+        "material_hint": "Steel / Al 7075-T6 inserts",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "mast_foundation",
+        "role": "reinforced bolted plate carrying the sensor / radio mast and distributing its moment into A",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "400 x 400 x 15",
+          "bolt_count_min": 8,
+          "ply_build_up_on_A": "4 additional plies on inner skin",
+          "material": "Al 7075-T6 plate bolted to A"
+        },
+        "material_hint": "Al 7075-T6 plate + CFRP local build-up",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "edge_splash_rail",
+        "role": "perimeter splash rail (non-structural) around A",
+        "count_min": 1,
+        "geometric_constraints": {
+          "perimeter_length_mm": 12000,
+          "cross_section_mm": "30 x 30 extrusion",
+          "material": "Al 6063-T5 or GRP"
+        },
+        "material_hint": "Al 6063-T5 extrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "longitudinal_stringer",
+        "role": "2 longitudinal stringers under A long edges adding bending stiffness along the deck length",
+        "count_min": 2,
+        "geometric_constraints": {
+          "length_mm": 4000,
+          "cross_section_mm": "80 x 40 x 5 I-beam",
+          "attachment": "bolted to A via ~10 bolts per stringer through bonded inserts; intersects with B at cross-member joints"
+        },
+        "material_hint": "Al 6061-T6 or CFRP pultrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "uav_launch_pad_reinforcement",
+        "role": "local ply build-up + bonded sub-deck insert at the 500x500 UAV launch patch; carries LC2 recoil",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "600 x 600 x 20 (sub-deck plate + bonded-in insert)",
+          "construction": "CFRP local ply doublers (6 additional plies) + bonded-in Al 7075 block under the patch",
+          "bolt_count_for_UAV_clamp": 8
+        },
+        "material_hint": "CFRP ply doublers + Al 7075 insert",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_length_mm": 4000,
+      "overall_width_mm": 2000,
+      "overall_thickness_mm": 50,
+      "coordinate_system": "X along-deck, Y across-deck, Z up",
+      "assembled_deck_mass_cap_kg": 60,
+      "payload_mass_cap_kg": 500
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 500,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_core_shear",
+        "limit_MPa": 1.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1c",
+        "type": "structural_analysis",
+        "metric": "max_deck_deflection",
+        "limit_mm": 20,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 500,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 500,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 500,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "deck_structural_mass",
+        "limit_kg": 60,
+        "applies_to": [
+          "assembled_design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 15,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across bolted interfaces (IF1..IF7) <= 1.0 under the governing load case.",
+        "metric": "max_DCR across IF1..IF7",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Strap-bracket bolts (A<->C) shall not exceed bolt utilization 1.0 under LC4 corner hogging (worst C-bracket shear+tension).",
+        "metric": "max bolt utilization at IF3 (strap brackets)",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "sandwich laminated shell for A + beam/solid for B/G + solid for C/D/E/H inserts",
+      "mesh_size_mm_in_critical_regions": 25,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x4 (LC1-LC4)",
+        "modal (LC5)"
+      ],
+      "connection_modeling": [
+        "bolts as stiffness-equivalent MPC/CBUSH with VDI 2230 post-check",
+        "bonded inserts (D, H) as tied solid-to-shell",
+        "edge rail F as non-structural mass only"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A_primary_deck",
+        "B_cross_member (5x)"
+      ],
+      "mediated_by": "bolted to bonded-in inserts in A; 8 bolts per cross-member (M8 Grade 8.8)",
+      "load_path": "primary LC1/LC4 bending reaction into cross-members"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A_primary_deck",
+        "G_longitudinal_stringer (2x)"
+      ],
+      "mediated_by": "bolted to bonded-in inserts along long edges; ~10 bolts per stringer",
+      "load_path": "adds longitudinal bending stiffness; shares LC1/LC4 load with B"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A_primary_deck",
+        "C_pontoon_strap_bracket (16x)"
+      ],
+      "mediated_by": "bolted to bonded-in inserts at 16 positions (4 M10 Grade 8.8 bolts per bracket)",
+      "load_path": "primary mounting BC; the corner bracket carries the worst LC4 hogging reaction"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A_primary_deck",
+        "D_payload_hardpoint (12x)"
+      ],
+      "mediated_by": "bolted to bonded-in steel/Al inserts",
+      "load_path": "payload-point loads into deck; governs LC3 UUV boom base and concentrated mission loads"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A_primary_deck",
+        "E_mast_foundation"
+      ],
+      "mediated_by": "bolted with ply build-up on inner skin",
+      "load_path": "mast moment into deck; wind and dynamic excitation"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A_primary_deck",
+        "H_uav_launch_pad_reinforcement"
+      ],
+      "mediated_by": "bonded Al 7075 insert + ply doublers + 8 bolts clamping the UAV",
+      "load_path": "LC2 UAV recoil into deck; governs local fiber stress at the load patch"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "C_pontoon_strap_bracket (16x)",
+        "WAM-V pontoon rigid insert (external)"
+      ],
+      "mediated_by": "clamping strap around pontoon insert",
+      "load_path": "all deck loads reach the pontoons through these 16 straps"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Deck bending under LC1/LC4 depends on cross-member spacing and longitudinal stringer stiffness; UAV recoil (LC2) depends on the local insert H; UUV boom (LC3) depends on hardpoint D. None of these can be evaluated with a single-body sandwich panel FEA.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Real WAM-V competition decks are bolted assemblies with underdeck trusses and discrete payload hardpoints; the single-body sandwich panel in the brief is a simplification.",
+    "speculation_caveats": "Cross-member count (5) and payload hardpoint count (12) are plausible defaults; actual team-specific layouts vary.",
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient ocean.",
+      "fluid_analysis": "Wave excitation out of scope at deck level.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not driving for bending-dominated deck."
+    },
+    "original_sample_preserved_at": "docs/eval/samples/272_a32_robotx_wamv_payload_deck.json"
+  },
+  "rulebook_citations": {}
+}

@@ -1,0 +1,217 @@
+{
+  "id": "343_i_eu11_euroavia_vtol",
+  "source": {
+    "catalog_ref": "I-EU11",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "tilt_rotor_boom",
+  "full_prompt": "Design the forward tilt-rotor boom of a VTOL cargo UAV entered in the Air Cargo Challenge 2026 (which serves as the EUROAVIA European VTOL Design Competition for 2026). The aircraft uses the mandated T-MOTOR AT2814 900 kv motor with fixed prop (14 inch diameter x 4.7 inch pitch), 3S LiPo battery (11.1 V nominal), maximum thrust per motor 28 N at full throttle. The design is a quad-tilt-rotor with 4 booms; this scope is one forward boom. The boom tilts from horizontal (forward-flight) to vertical (VTOL hover) via a servo-driven pivot at the wing-root end. Boom length 280 mm, rectangular tube cross-section 22 mm x 15 mm x 1.5 mm wall, carbon-fiber pultruded (E_long 150 GPa, tensile 1800 MPa, compressive 1200 MPa, density 1550 kg/m^3). At the outboard end the boom supports the motor and prop assembly (95 g). At the inboard end the boom pivots through a 25 mm diameter aluminum clevis bearing. The aircraft MTOW is 3.5 kg with 1.5 kg transport payload in a bounding-box 250 x 200 x 150 mm container. Load cases: (LC1) hover: 28 N thrust at motor end, axial along boom; (LC2) forward-flight transition: boom tilted 30 degrees, 22 N thrust forward + 11 N gravity lateral, producing combined bending on boom; (LC3) 1.5 g pull-up limit: 42 N at motor end vertical; (LC4) ultimate 1.5 x LC3 = 63 N per STANAG 4703 composite FoS 1.5; (LC5) transition stall: boom momentarily misaligned during tilt transition, motor thrust 28 N acts at 20 deg misalignment producing unbalanced side load 9.6 N at boom tip; (LC6) hard landing on one boom: 5 g equivalent on 95 g motor mass = 4.6 N at motor end downward, simultaneously with impact reaction on the clevis 4.6 N upward. Pass/fail: (R1) under LC4 ultimate, max composite stress must remain below 900 MPa (1800 / 2.0 FoS) in tension, 600 MPa (1200 / 2.0) in compression; (R2) tip deflection under LC3 limit must remain below 4 mm to preserve prop-fuselage clearance; (R3) boom dry mass must not exceed 45 g; (R4) first cantilever natural frequency must exceed 30 Hz; (R5) clevis bearing stress under LC5 misalignment must remain below 184 MPa (276 / 1.5 yield FoS on 6061-T6 clevis); (R6) linear buckling eigenvalue under LC1 axial thrust must exceed 4.0 to preserve flutter margin. Thermal, fluid, radiation analyses not primary. Deliverables: STEP AP242 boom + clevis assembly (2 bodies), composite stack-up, FEA for each load case, buckling report for LC1, modal, mass.",
+  "short_prompt": "Design the forward tilt-rotor boom of a VTOL cargo UAV entered in Air Cargo Challenge 2026 (EUROAVIA European VTOL Design Competition 2026). Mandated T-MOTOR AT2814 900 kv + 14 x 4.7 prop on 3S LiPo, 28 N max thrust per motor. Quad-tilt-rotor with 4 booms; scope is one forward boom tilting horizontal-to-vertical via a servo pivot at the wing-root end. Aircraft MTOW 3.5 kg + 1.5 kg payload in a 250 x 200 x 150 mm bay.\n\nEnvelope: pultruded CFRP rectangular tube 22 x 15 mm x 1.5 mm wall x 280 mm, 95 g motor + prop at the outboard end, 25 mm aluminum clevis-bearing at the inboard pivot.\n\nFactor regime: STANAG 4703 composite ultimate FoS 1.5 = FoS 2.0 stated here (tensile 900 MPa / compressive 600 MPa); tip deflection at limit < 4 mm (prop-fuselage clearance); dry mass <= 45 g; first cantilever mode > 30 Hz; clevis yield FoS 1.5 (184 MPa on 6061-T6); linear buckling under axial thrust >= 4.0 (flutter margin).\n\nLoad cases.\n- Hover: 28 N axial thrust along the boom at the motor end.\n- Forward-flight transition (30 deg tilt): 22 N forward + 11 N gravity lateral.\n- Limit pull-up 1.5 g: 42 N vertical at the motor end.\n- Ultimate 1.5 x limit: 63 N per STANAG 4703.\n- Transition-stall side load: 9.6 N at boom tip (28 N at 20 deg misalignment).\n- Hard landing on one boom: 4.6 N at the motor end + 4.6 N up at the clevis (5 g on 95 g motor mass).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "EUROAVIA Air Cargo Challenge 2026 VTOL Forward Tilt-Rotor Boom",
+    "brief": "CFRP pultruded tilt-rotor boom 280 mm for 28 N T-MOTOR AT2814 mandated motor, STANAG 4703 composite FoS.",
+    "geometric_constraints": {
+      "boom_length_mm": 280,
+      "cross_section_mm": {
+        "h": 22,
+        "w": 15,
+        "wall": 1.5
+      },
+      "motor_mass_g": 95,
+      "pivot_clevis_OD_mm": 25
+    },
+    "material": {
+      "boom": {
+        "name": "Pultruded CFRP UD",
+        "E_GPa": 150,
+        "tensile_MPa": 1800,
+        "compressive_MPa": 1200,
+        "density_kg_m3": 1550
+      },
+      "clevis": {
+        "name": "Aluminum 6061-T6",
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "density_kg_m3": 2700
+      }
+    },
+    "motor_spec": {
+      "model": "T-MOTOR AT2814 900kv",
+      "peak_thrust_N": 28
+    },
+    "aircraft": {
+      "MTOW_kg": 3.5,
+      "payload_kg": 1.5
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hover",
+        "magnitude_N": 28,
+        "application": "boom tip axial"
+      },
+      {
+        "id": "LC2",
+        "name": "transition_30deg",
+        "thrust_N": 22,
+        "gravity_N": 11
+      },
+      {
+        "id": "LC3",
+        "name": "pullup_1p5g_limit",
+        "magnitude_N": 42
+      },
+      {
+        "id": "LC4",
+        "name": "ultimate_1p5xLC3",
+        "magnitude_N": 63
+      },
+      {
+        "id": "LC5",
+        "name": "misalignment_side_load",
+        "magnitude_N": 9.6
+      },
+      {
+        "id": "LC6",
+        "name": "hard_landing_5g",
+        "magnitude_N": 4.6
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 2,
+      "report_fields": [
+        "boom_mass_g",
+        "tensile_LC4_MPa",
+        "compressive_LC4_MPa",
+        "tip_deflection_LC3_mm",
+        "buckling_factor_LC1",
+        "first_cantilever_freq_Hz",
+        "clevis_stress_LC5_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "tensile_stress_ultimate",
+        "limit_MPa": 900,
+        "derivation": "1800 / 2.0",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "compressive_stress_ultimate",
+        "limit_MPa": 600,
+        "derivation": "1200 / 2.0",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tip_deflection_limit",
+        "limit_mm": 4,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "boom_dry_mass",
+        "limit_g": 45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_cantilever_freq",
+        "limit_Hz": 30,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "clevis_stress",
+        "limit_MPa": 184,
+        "derivation": "276 / 1.5 yield FoS on 6061-T6",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 4.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam/shell hybrid for boom; TET10 for clevis",
+      "mesh_size_mm": 1.5,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Composite"
+      ],
+      "analysis_types": [
+        "linear static (x6)",
+        "linear buckling",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "Not a gate.",
+      "fluid_analysis": "Prop wash reduced to thrust vector.",
+      "radiation_analysis": "N/A."
+    }
+  },
+  "eval_coverage": [
+    "composite cantilever FEA",
+    "tilt-axis misalignment side load",
+    "buckling flutter proxy",
+    "modal decoupling from servo",
+    "mandated motor integration"
+  ]
+}

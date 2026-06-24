@@ -1,0 +1,304 @@
+{
+  "id": "204_oc4_unsw_sunsprint_solar_vehicle",
+  "source": {
+    "catalog_ref": "OC3",
+    "year": 2025,
+    "tier": "B",
+    "original_sample": "docs/eval/samples/204_oc4_unsw_sunsprint_solar_vehicle.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "solar_vehicle_structural",
+  "part_class": "model_solar_car_chassis_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the complete chassis assembly of an Open-class model-solar-car benchmark as a multi-part build. The complete vehicle including wheels and PV array must fit within a rectangular envelope of 650 mm length x 320 mm width, with no explicit height limit but a total mass target of 1.2 kg maximum for competitive performance. The top surface of the chassis must present a flat mounting area of at least 180 mm x 260 mm for an eight-cell silicon PV array. The chassis sandwich uses carbon-fiber/epoxy composite laminate skins (quasi-isotropic layup, E1 = E2 = 50 GPa effective, Poisson ratio 0.30, density 1550 kg/m^3, tensile strength 600 MPa, compressive strength 450 MPa) with a skin thickness of 0.8 mm and a foam core (Rohacell 51IG, density 52 kg/m^3, shear strength 0.8 MPa) of thickness 6 mm between skins. The assembly decomposes into the sandwich monocoque pan (upper + lower skins with foam core and PV mounting pad), the front steerable axle assembly, the rear dead axle assembly, four wheels mounted at axle bosses located 60 mm inboard of each corner, and the PV array mounting interface. Load cases for pass/fail: (LC1) static 4x safety factor on mass load: apply 4 g vertical downward body load to the full car; (LC2) cornering: 1.5 g lateral at the PV pad centroid while the outer two wheels are pinned, representing figure-8 corner entry at ~3 m/s on the 100 m course; (LC3) PV array preload: 5 N uniform download across the 180 x 260 mm array footprint representing the light-box test platen plus array mass; (LC4) drop test: 0.3 m vertical drop onto a flat surface landing on all four wheels, modeled as a 10 g impulse on the axle bosses. Pass/fail: under LC1-LC3 static, maximum von Mises stress in either composite skin must remain below 400 MPa, core shear must remain below 0.53 MPa (0.8 / 1.5), PV-pad out-of-plane deflection must remain below 2 mm, and first torsional mode must exceed 60 Hz. Under LC4 drop, no failure of skin or core is permitted (peak stress limits of LC1 scaled by 2x kept). Verification is carried out on the assembled multi-body model with bonded / bolted interfaces between the monocoque pan, the axle assemblies, the wheel axles, and the PV mounting interface. Per-part stress is reported but does not gate pass/fail; pass/fail is taken on the assembled model. Deliverables: STEP AP242 with all bodies, composite layup table, FEA report per case on assembly, modal and drop summary, and mass report broken out by part family.",
+  "short_prompt": "Design the complete chassis assembly of an Open-class model solar car benchmark as a multi-part build within a 650 mm x 320 mm rectangular envelope and a 1.2 kg maximum mass target.\n\nThe chassis is a sandwich monocoque with quasi-isotropic CFRP skins (E1 = E2 = 50 GPa, Poisson 0.30, density 1550 kg/m^3, tensile 600 MPa, compressive 450 MPa) at 0.8 mm skin thickness over a 6 mm Rohacell 51IG foam core (density 52 kg/m^3, shear strength 0.8 MPa). The top surface must present a flat mounting area of at least 180 mm x 260 mm for an eight-cell silicon PV array.\n\nLoad cases.\n- LC1 static 4 g vertical on the full car.\n- LC2 cornering: 1.5 g lateral at the PV pad centroid at ~3 m/s on the 100 m course.\n- LC3 PV array preload: 5 N uniform download across the 180 x 260 mm footprint.\n- LC4 drop: 0.3 m vertical drop modeled as a 10 g impulse on axle bosses.\n\nFirst torsional mode must exceed 60 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Open-class model solar car chassis (multi-part assembly)",
+    "brief": "Multi-part sandwich-composite monocoque chassis assembly for a 650 x 320 mm model solar car, split into pan, front steerable axle, rear dead axle, four wheels, and PV mounting interface, joined by bonded / bolted interfaces and verified on the assembled model.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "monocoque_pan",
+        "role": "sandwich-composite main floor carrying the PV pad and tying the front and rear axle assemblies together",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_mm": {
+            "L": 650,
+            "W": 320
+          },
+          "pv_pad_mm": {
+            "L": 260,
+            "W": 180
+          },
+          "skin_thickness_mm": 0.8,
+          "core_thickness_mm": 6
+        },
+        "material_hint": "CFRP QI skins + Rohacell 51IG core",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "front_steerable_axle_assembly",
+        "role": "front axle with steering kinematics mounted at axle bosses 60 mm inboard of the forward corners",
+        "count_min": 1,
+        "geometric_constraints": {
+          "inboard_offset_mm": 60
+        },
+        "material_hint": "team-selected, stiffness-matched to monocoque",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "rear_dead_axle_assembly",
+        "role": "fixed rear axle mounted at axle bosses 60 mm inboard of the rear corners",
+        "count_min": 1,
+        "geometric_constraints": {
+          "inboard_offset_mm": 60
+        },
+        "material_hint": "team-selected, stiffness-matched to monocoque",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "wheel",
+        "role": "road wheel running on the competition surface",
+        "count_min": 4,
+        "geometric_constraints": {},
+        "material_hint": "team-selected light polymer / composite",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "pv_array_mounting_interface",
+        "role": "flat mounting pad + retention hardware that transfers array mass and light-box platen load into the monocoque skin",
+        "count_min": 1,
+        "geometric_constraints": {
+          "pad_mm": {
+            "L": 260,
+            "W": 180
+          }
+        },
+        "material_hint": "bonded CFRP pad + fasteners",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "650 mm x 320 mm x team-selected height",
+      "coordinate_system": "X along forward drive direction, Y transverse, Z up; origin at monocoque geometric center"
+    },
+    "material": {
+      "skins": {
+        "name": "CFRP quasi-isotropic",
+        "E_GPa": 50,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 1550,
+        "skin_thickness_mm": 0.8,
+        "tensile_strength_MPa": 600,
+        "compressive_strength_MPa": 450
+      },
+      "core": {
+        "name": "Rohacell 51IG foam",
+        "thickness_mm": 6,
+        "density_kg_m3": 52,
+        "shear_strength_MPa": 0.8
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "4g_static",
+        "application": "full car body load"
+      },
+      {
+        "id": "LC2",
+        "name": "cornering_1_5g_lateral",
+        "application": "PV-pad centroid, outer wheels pinned"
+      },
+      {
+        "id": "LC3",
+        "name": "light_box_platen",
+        "magnitude_N": 5,
+        "application": "PV pad footprint"
+      },
+      {
+        "id": "LC4",
+        "name": "drop_0_3m",
+        "magnitude_g": 10,
+        "application": "axle bosses"
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "axle assemblies bonded/bolted to monocoque at 60 mm inboard bosses with representative fastener stiffness; PV pad bonded to upper skin",
+      "support_in_LC2": "outer two wheels pinned",
+      "support_in_LC4": "axle bosses loaded with 10 g impulse"
+    },
+    "objective": "minimize total assembly mass while meeting all pass/fail criteria",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "mass_g",
+        "max_skin_stress_MPa",
+        "max_core_shear_MPa",
+        "pv_pad_deflection_mm",
+        "first_torsional_mode_Hz",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_skin_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_core_shear_stress",
+        "limit_MPa": 0.53,
+        "derivation": "0.8 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "pv_pad_out_of_plane_deflection",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 60,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "peak_skin_stress_under_drop",
+        "limit_MPa": 800,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "front axle vertical/lateral loads into monocoque forward bosses"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "rear axle vertical/lateral loads into monocoque rear bosses"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "wheel bearing reaction into front axle"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "wheel bearing reaction into rear axle"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "PV preload into upper skin"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Chassis is a monocoque pan carrying two distinct axle assemblies and four wheels at axle bosses, with a PV mounting interface; these are separate structural parts joined by bolted/bonded interfaces.",
+    "speculation_caveats": "Part-family counts and interface types are speculative; materials and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "docs/eval/samples/204_oc4_unsw_sunsprint_solar_vehicle.json"
+  }
+}

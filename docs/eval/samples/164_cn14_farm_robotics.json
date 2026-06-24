@@ -1,0 +1,184 @@
+{
+  "id": "164_cn14_farm_robotics",
+  "source": {
+    "catalog_ref": "CN14",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "agricultural_robotics",
+  "part_class": "weeding_arm_end_effector",
+  "full_prompt": "Design a single 4-axis crop-row weeding arm end-effector for a field robot operating in tomato rows on California raised beds. The end-effector mounts to a mobile platform driving at 0.50 m/s, reaches across a 0.76 m row spacing, and removes weeds between crops planted on 0.30 m in-row spacing without damaging crop stems of 8 mm diameter. The mechanism is a stainless steel articulated arm with links 250 mm + 250 mm + 150 mm, carrying a distal oscillating blade tool of mass 0.6 kg that strikes the soil with a vertical motion up to 40 mm amplitude at up to 5 Hz. Drive motors are NEMA-17 frameless servos at each joint with continuous torque up to 2.0 N-m each. The arm must simultaneously satisfy: (R1) stainless steel link maximum von Mises stress under the worst-case inertia plus soil reaction load must not exceed 125 MPa (Type 304 yield 205 MPa divided by SF 1.65), (R2) end-effector tip positioning error with 0.6 kg payload at 5 Hz oscillation must not exceed 5 mm at the blade tip, (R3) total end-effector mass including blade and links must not exceed 3.0 kg to protect the platform payload budget, (R4) a linear buckling eigenvalue check on the longest link under a 50 N axial accidental strike must yield a first-mode load factor of at least 3.0, and (R5) the first natural frequency of the assembled arm must be at least 15 Hz which is 3x the maximum 5 Hz operating forcing frequency to avoid resonance. Vibration (modal) analysis is required for R5. Thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly with each link and joint as separate sub-bodies plus a motion and structural report listing max von Mises, tip positioning error, total mass, first buckling load factor, and first natural frequency.",
+  "short_prompt": "Design a 4-axis stainless-steel crop-row weeding arm end-effector for a field robot in a tomato row. The arm mounts to a platform driving at 0.5 m/s across 0.76 m row spacing, with links approximately 250 + 250 + 150 mm and a distal 0.6 kg oscillating blade (up to 40 mm vertical stroke at up to 5 Hz). Each joint is a NEMA-17 frameless servo (continuous torque up to 2.0 N-m).\n\nBase is rigidly mounted to the mobile platform. Load cases.\n- LC1 worst inertia + soil reaction: 80 N soil reaction at the blade tip at 5 Hz peak (blade acceleration ~40 m/s^2).\n- LC2 accidental strike: 50 N axial impulse along the longest link.\n- LC3 modal: require the first natural frequency above the 5 Hz forcing with margin.\n\nEnd-effector total mass is a mobile-platform payload-budget constraint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "multibody_dynamics",
+        "reason": "Joint-level inertia and reaction forces are solved via rigid multibody dynamics, then fed to FEA per link.",
+        "examples": [
+          "MSC Adams",
+          "MATLAB Simscape Multibody",
+          "Python PyBullet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "4-axis agricultural weeding arm end-effector",
+    "brief": "Design a 4-axis stainless steel weeding arm (links 250+250+150 mm, 0.6 kg blade at 5 Hz) for 0.76 m tomato rows at 0.50 m/s travel, passing Type 304 stress, positioning, mass, buckling, and 15 Hz resonance floor.",
+    "geometric_constraints": {
+      "link_lengths_mm": [
+        250,
+        250,
+        150
+      ],
+      "row_spacing_m": 0.76,
+      "in_row_spacing_m": 0.3,
+      "crop_stem_dia_mm": 8,
+      "blade_vertical_amplitude_mm": 40,
+      "blade_frequency_Hz_max": 5
+    },
+    "material": {
+      "links": "Type 304 stainless steel, yield 205 MPa, E 193 GPa, density 8000 kg/m3",
+      "blade": "tool steel, mass 0.6 kg"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "worst_inertia_plus_soil_reaction",
+        "soil_reaction_N": 80,
+        "blade_acceleration_m_s2": 40,
+        "application": "distal blade tip at 5 Hz peak"
+      },
+      {
+        "id": "LC2",
+        "name": "accidental_strike",
+        "magnitude_N": 50,
+        "application": "axial along longest link"
+      },
+      {
+        "id": "LC3",
+        "name": "modal",
+        "target_min_frequency_Hz": 15
+      }
+    ],
+    "boundary_conditions": {
+      "base": "rigidly mounted to mobile platform"
+    },
+    "objective": {
+      "primary": "pass stress, positioning, and resonance limits",
+      "secondary": "minimize end-effector mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "tip_positioning_error_mm",
+        "total_mass_kg",
+        "first_buckling_load_factor",
+        "first_natural_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 125,
+        "derivation": "Type 304 yield 205 / SF 1.65",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tip_positioning_error",
+        "limit_mm": 5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 3.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 15,
+        "derivation": "3x the 5 Hz forcing",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam for links, solid for joints",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Simscape Multibody + ANSYS",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "multibody dynamics",
+        "linear static",
+        "linear buckling",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Field ambient, not thermal-critical.",
+      "fluid_analysis": "No fluid domain.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Crop computer-vision detection accuracy",
+      "Sealing against dust and water",
+      "Blade life and sharpening interval"
+    ]
+  },
+  "eval_coverage": [
+    "multibody dynamics to FEA handoff",
+    "stiffness-driven positioning accuracy",
+    "resonance floor relative to forcing frequency",
+    "agricultural robotics field deployability budget"
+  ]
+}

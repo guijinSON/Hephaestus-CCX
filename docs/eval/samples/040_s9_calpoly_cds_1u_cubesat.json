@@ -1,0 +1,243 @@
+{
+  "id": "040_s9_calpoly_cds_1u_cubesat",
+  "source": {
+    "catalog_ref": "S9",
+    "year": 2022,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cubesat_structural_frame",
+  "full_prompt": "Design the 1U CubeSat structural frame (chassis) per Cal Poly CubeSat Design Specification Rev 14.1 (2022-02-09). The frame is a monolithic machined aluminum 6061-T6 part that defines the four rails, the four corner posts, and internal mounting ledges for a PC/104 stack. The governing standard is Cal Poly CDS Rev 14.1; the random-vibration qualification envelope used for FEM pass/fail is the SpaceX Falcon 9 GEVS-equivalent 14.1 Grms spectrum commonly referenced by CDS-compliant launch providers.\n\nGeometry. External envelope 100.0 mm x 100.0 mm x 113.5 mm (CDS Rev 14.1 Section 3.2.1). The four rails are the Z-axis corners, each rail 8.5 mm wide on the X-Y face, extending the full 113.5 mm length. Rail tips are 6.5 mm above/below the 100 mm face dimension to ensure deployer contact only on rail tips. Rail corners must be rounded R = 1 mm minimum. Anodization per CDS 3.2.4 (hard anodize Type III) or alternative approved coating. Feet (the 6.5 mm extensions) must contact only the launcher's dispenser rails. Center of mass (CM) must be within 20 mm of the geometric center in every axis (CDS 3.2.15: 2 cm from geometric center; CDS specifies 2 cm for 1U). Total CubeSat mass (with all subsystems simulated as lumped) <= 2.0 kg (CDS Rev 14.1 3.2.18 revised 1U mass cap 2.0 kg). Stack provision for four PC/104 compatible PCBs at 90.17 mm x 95.89 mm.\n\nMaterial. Al 6061-T6, E = 68.9 GPa, nu = 0.33, rho = 2700 kg/m^3, Fty = 276 MPa, Ftu = 310 MPa. Hard-anodized surface per Type III (20 micron) on rails; treat as cosmetic for structural analysis.\n\nMass budget. Chassis design variable: target <= 300 g (typical 1U structure). Lumped masses for qualification: 4 PCBs x 80 g = 320 g at stack height positions 15, 35, 55, 75 mm from the bottom; battery module 150 g at 20 mm from bottom; antenna module 80 g at 110 mm from bottom; total bus+payload lumped = 1550 g. Total CubeSat mass = chassis + 1550 g, must be <= 2000 g.\n\nLoad cases. LC1 (quasi-static launch): 20 g applied simultaneously in each of the +X, +Y, +Z directions at all lumped masses, run as three separate cases. LC2 (random vibration): 14.1 Grms envelope with PSD plateau 0.04 g^2/Hz from 50 Hz to 800 Hz, ramped +3 dB/oct from 20 Hz to 50 Hz, -3 dB/oct from 800 Hz to 2000 Hz; 3-sigma response stress must be computed per axis via modal superposition or direct PSD solver. LC3 (sine qualification): 12.5 g sine swept 5-100 Hz, 4 oct/min; worst-mode response to be reported. LC4 (CM compliance): geometric check that CM is within 2 cm of geometric center. LC5 (shock - optional): 1000 g SRS from 100 Hz to 10 kHz; structural capability in the 3-sigma sense is informative only.\n\nPass/fail criteria. (R1) Fundamental natural frequency (constrained at rails per CDS dispenser interface) must be >= 90 Hz per CDS Rev 14.1 launch-provider decoupling recommendation (often 100 Hz for Falcon 9; 90 Hz conservative default). (R2) Under LC1 quasi-static 20 g in each axis, max von Mises in chassis must not exceed Fty / 1.25 = 220.8 MPa (NASA-STD-5001B protoflight yield FoS). (R3) Under LC2 random-vibration 3-sigma response, max von Mises must not exceed Ftu / 1.4 = 221.4 MPa (NASA-STD-5001B ultimate for random 3-sigma proxy). (R4) Total CubeSat mass <= 2.0 kg. (R5) CM displacement from geometric center in each axis <= 20 mm. (R6) Rail straightness / flatness: rail-to-rail parallelism <= 0.1 mm end-to-end (CDS 3.2.1 derived geometric tolerance). (R7) Rail tip contact area total >= 75% of rail end-face (CDS dispenser contact requirement).\n\nSolver and analysis expectations. Primary analyses: (a) constrained modal extraction of first 10 modes for R1; (b) linear static for LC1 three axes for R2; (c) random PSD response via modal superposition for LC2 to extract R3; (d) closed-form mass and CM verification in CAD for R4 and R5; (e) geometric tolerance check for R6 and R7. Buckling analysis is NOT required. Thermal, fluid, and radiation analyses are NOT required for this structural benchmark.\n\nDeliverables. STEP AP242 of chassis (one body), a mass+CM report, first 10 modal frequencies in Hz, max von Mises per LC1 axis in MPa, 3-sigma random response stress per LC2 axis in MPa, and the rail-tip contact area.",
+  "short_prompt": "Design the 1U CubeSat structural frame per Cal Poly CubeSat Design Specification Rev 14.1 (2022-02-09). The frame is a monolithic machined aluminum 6061-T6 part defining the four rails, four corner posts, and internal PC/104-stack mounting ledges. Random-vibration qualification uses the SpaceX Falcon 9 GEVS-equivalent 14.1 Grms spectrum.\n\nEnvelope: 100.0 mm x 100.0 mm x 113.5 mm (CDS Rev 14.1 Section 3.2.1). Four rails on the Z-axis corners, each 8.5 mm wide on the X-Y face and 113.5 mm long; rail tips extend 6.5 mm above/below the 100 mm face to ensure deployer contact only on rail tips. Rail-corner radii R >= 1 mm. Hard anodize Type III (20 um) per CDS 3.2.4. Center of mass within 20 mm (2 cm) of geometric center in every axis (CDS 3.2.15). Total CubeSat mass <= 2.0 kg (CDS Rev 14.1 3.2.18). Stack provision for four PC/104 boards at 90.17 x 95.89 mm.\n\nMass budget. Chassis target <= 300 g. Lumped qualification masses: 4 PCBs x 80 g at 15, 35, 55, 75 mm from the bottom; 150 g battery at 20 mm; 80 g antenna at 110 mm; bus+payload total 1550 g.\n\nLoad cases.\n- LC1 quasi-static launch: 20 g in +X, +Y, +Z at all lumped masses, three separate cases.\n- LC2 random vibration: 14.1 Grms envelope, PSD plateau 0.04 g^2/Hz 50-800 Hz, +3 dB/oct 20-50 Hz, -3 dB/oct 800-2000 Hz.\n- LC3 sine qualification: 12.5 g 5-100 Hz at 4 oct/min.\n- LC4 CM within 2 cm of geometric center (geometric check).\n- LC5 shock (optional): 1000 g SRS 100 Hz-10 kHz, informative.\n\nAdditional gates: fundamental natural frequency >= 90 Hz (CDS Rev 14.1 launch-provider decoupling); rail-to-rail parallelism <= 0.1 mm end-to-end; rail-tip contact area >= 75% of rail end-face.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "CM_and_geometric_tolerance_check",
+        "reason": "CM position and rail flatness are CAD-native geometric checks.",
+        "examples": [
+          "Siemens NX measure",
+          "CATIA GD&T check"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "1U CubeSat frame per Cal Poly CDS Rev 14.1",
+    "brief": "100x100x113.5 mm 6061-T6 monolithic 1U chassis; fn >= 90 Hz constrained, stress limits under 20 g QS and 14.1 Grms random, CM within 2 cm of geometric center, mass <= 2.0 kg.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 100.0,
+        "y": 100.0,
+        "z": 113.5
+      },
+      "rail_width_mm": 8.5,
+      "rail_tip_extension_mm": 6.5,
+      "rail_corner_radius_mm": 1.0,
+      "PC104_pcb_area_mm": {
+        "x": 90.17,
+        "y": 95.89
+      },
+      "surface_finish": "hard anodize Type III (20 micron)"
+    },
+    "material": {
+      "name": "Al 6061-T6",
+      "E_GPa": 68.9,
+      "nu": 0.33,
+      "density_kg_m3": 2700,
+      "Fty_MPa": 276,
+      "Ftu_MPa": 310
+    },
+    "lumped_masses": {
+      "pcbs": {
+        "count": 4,
+        "mass_g_each": 80,
+        "z_positions_mm": [
+          15,
+          35,
+          55,
+          75
+        ]
+      },
+      "battery_g": 150,
+      "antenna_g": 80,
+      "total_non_chassis_g": 1550
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "qs_20g_each_axis",
+        "magnitude_g": 20
+      },
+      {
+        "id": "LC2",
+        "name": "random_vib_14.1Grms",
+        "Grms": 14.1,
+        "plateau_PSD_g2_Hz": 0.04,
+        "plateau_Hz": [
+          50,
+          800
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "sine_qual_12.5g",
+        "magnitude_g": 12.5,
+        "sweep_Hz": [
+          5,
+          100
+        ],
+        "rate_oct_min": 4
+      },
+      {
+        "id": "LC4",
+        "name": "CM_compliance",
+        "limit_mm": 20
+      },
+      {
+        "id": "LC5",
+        "name": "shock_SRS_1000g",
+        "Hz_range": [
+          100,
+          10000
+        ],
+        "note": "informative only"
+      }
+    ],
+    "boundary_conditions": {
+      "rails": "constrained on deployer contact faces"
+    },
+    "objective": {
+      "minimize": "chassis_mass",
+      "target_g_max": 300
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "Cal Poly CubeSat Design Specification Rev 14.1",
+      "revision": "2022-02-09"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "vibration_analysis",
+        "metric": "fundamental_natural_frequency_constrained",
+        "limit_Hz": 90,
+        "derivation": "CDS Rev 14.1 dispenser decoupling recommendation; launch-provider-conservative",
+        "applies_to": [
+          "constrained_modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_QS_20g",
+        "limit_MPa": 220.8,
+        "derivation": "Fty / 1.25 (NASA-STD-5001B protoflight yield FoS)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "max_3sigma_random_response_stress",
+        "limit_MPa": 221.4,
+        "derivation": "Ftu / 1.4 (NASA-STD-5001B ultimate)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 2.0,
+        "derivation": "CDS Rev 14.1 Section 3.2.18 (1U mass cap 2.0 kg)",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "CM_offset_from_geometric_center_each_axis",
+        "limit_mm": 20,
+        "derivation": "CDS Rev 14.1 Section 3.2.15 (2 cm for 1U)",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "rail_to_rail_parallelism",
+        "limit_mm": 0.1,
+        "derivation": "Derived from CDS 3.2.1 rail straightness",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "rail_tip_contact_area_pct",
+        "limit_pct": 75,
+        "derivation": "CDS rail tip dispenser contact",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 solid",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Nastran random",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "constrained modal",
+        "linear static x3",
+        "PSD random response"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Not required for structural CDS-compliance benchmark.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "No compressive buckling case; rail tips only bear launcher contact."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Separation-switch and deployment-switch compliance (CDS 3.3)",
+      "RF frequency licensing",
+      "Battery inhibits per CDS 3.2.3"
+    ]
+  },
+  "eval_coverage": [
+    "constrained modal natural frequency gate",
+    "random-vibration 3-sigma response stress",
+    "CM geometric compliance",
+    "rail-tip dispenser contact geometry"
+  ]
+}

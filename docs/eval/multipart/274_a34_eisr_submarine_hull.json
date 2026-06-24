@@ -1,0 +1,500 @@
+{
+  "id": "274_a34_eisr_submarine_hull",
+  "source": {
+    "catalog_ref": "A34",
+    "year": 2024,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/274_a34_eisr_submarine_hull.json",
+    "multipart_basis": "eISR wet-hull submarines are built as bonded GFRP shell assemblies with discrete domes at bow/stern, internal ring frames for buckling stiffness, a bolted pilot hatch ring, viewport housings, bolted thruster / control-fin pod mounts, and molded-in rudder/fin brackets. The single-body brief treats the shell as one GFRP monocoque; this multipart decomposition splits it into the bow dome, aft dome, cylindrical pressure-hull section (wet-hull), internal frames, hatch ring, viewport housings, thruster / fin pod mounts, and fin/rudder brackets. Speculative at the level of internal frame count; load magnitudes, material, and pass/fail thresholds are preserved."
+  },
+  "domain": "marine_structural",
+  "part_class": "human_powered_submarine_hull_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the main hull (monocoque shell) for an eISR (European International Submarine Races) human-powered submarine, compliant with eISR24 Rulebook. The pilot operates on SCUBA inside a wet submarine (flooded hull). Geometric constraints per eISR24: overall hull length 3.0 m, maximum beam (diameter) 0.85 m (length-to-beam ratio 3.53:1, within rule limits), height 0.85 m. Hull is a one-piece GFRP (glass fiber reinforced plastic) hand-laid shell, [0/90/+45/-45]s quasi-isotropic layup with 0.5 mm plies, 12 plies total (6 mm shell thickness). Material: E-glass/polyester; E1 = 25 GPa, E2 = 8 GPa, long-tensile strength 400 MPa, long-compressive strength 300 MPa, density 1900 kg/m^3. Operating depth 5 m (pool); max planned depth 10 m for structural margin. Load cases: (R1) Hydrostatic at 10 m (100 kPa external differential, interior flooded, so net differential = 0 across the shell for a wet submarine -- the rule here is actually inertial + steering loads, not pressure); (R2) Pilot pedal effort: 500 N forward through the bulkhead propulsion mount; max fiber stress <= 400 / 3.0 = 133 MPa. (R3) Fin bending: aft control fins (deflectable by pilot) apply 200 N at 200 mm from hull centerline = 40 N*m moment at the fin-mount; max fiber stress at mount <= 133 MPa. (R4) Ballast release: mechanical dead-man releases a 5 kg ballast weight (5 x 9.81 = 49 N) from the hull; the mounting lug must survive 2x dynamic amplification = 98 N without permanent damage; max fiber stress <= 133 MPa. (R5) Linear buckling eigenvalue under external-pressure equivalent of 100 kPa (the wet-hull case is slightly more complex but model as crush check) >= 3.0. (R6) Positive buoyancy reserve: vehicle without pilot must float positively (rule requires at least +5 kgf buoyancy empty); displaced volume - structural mass - ballast <= -5 kg equivalent; geometric check. (R7) Hull structural mass <= 35 kg. (R8) SCUBA integration: clear internal volume behind the pilot's bulkhead >= 200 L for tanks and regulators; geometric check. Primary verification: laminate composite structural FEA for R2-R4 + linear buckling for R5. Vibration, thermal, fluid, radiation NOT required. Deliverables: STEP AP242 hull, laminate schedule, and a report listing hull mass in kg, max fiber stress per case in MPa, first buckling load factor, buoyancy reserve in kgf, internal volume in L.\n\n--- ASSEMBLY RECONFIGURATION ---\neISR wet-hull submarines are bonded GFRP shell assemblies, not single-piece hand-laid shells, once the hatch, viewport, and fin pickups are included. Speculated families: (A) forward dome (bow hemispherical cap closing the front of the hull, molded GFRP with local ply build-up); (B) aft dome (stern hemispherical cap carrying the control-fin brackets and aft thruster / propeller); (C) cylindrical pressure-hull section (central GFRP monocoque tube, ~2 m long, 0.85 m diameter, wet-hull so pressure-equalized); (D) internal ring frames (x4, bonded circumferentially inside C, stiffen against LC4 crush buckling); (E) hatch ring (bolted ring on top of C receiving the bolted pilot hatch for crew access); (F) viewport housings (x2, forward port/starboard, GFRP housings bonded/bolted to C with O-ring viewport seat); (G) thruster / fin pod mounts (aft, bolted to B + C interface, carrying LC3 fin bending and propulsion thrust reaction); (H) fin / rudder brackets (x4 aft control surfaces, bolted to B aft dome); (J) propulsion-mount bulkhead (bonded internal bulkhead receiving the LC1 pilot pedal effort); (K) ballast lug (metal insert bonded into B lower surface, carries LC3 dynamic ballast release). Interfaces: A<->C bow dome bonded; B<->C aft dome bonded; D<->C ring frames fillet bonded; E<->C hatch ring bolted through bonded-in studs; F<->C viewport housings bolted with O-ring; G<->B/C thruster mount bolted; H<->B fin brackets bolted; J<->C propulsion bulkhead bonded internally; K<->B ballast lug bonded insert. FEM verification runs on the assembled model ONLY per fem_check_policy=assembled_only. Under LC2 pedal effort enters J, flows into C; LC3 fin bending into H brackets stresses B aft dome and aft D ring frame; LC4 ballast release loads K which is bonded to B; LC5 crush buckling eigenvalue depends on D ring-frame spacing on C. Load magnitudes (500 N LC1, 40 Nm LC2, 98 N LC3, 100 kPa LC4), material (E-glass/polyester, 400 MPa long-tensile), and stress/buckling/mass/buoyancy/volume thresholds are preserved verbatim.",
+  "short_prompt": "Design the main hull (monocoque shell) for an eISR (European International Submarine Races) human-powered submarine as a multi-part bonded GFRP assembly, compliant with eISR24 Rulebook. Pilot operates on SCUBA inside a wet (flooded) submarine.\n\nOverall hull length 3.0 m, maximum beam 0.85 m (L:B 3.53:1), height 0.85 m. GFRP shell quasi-isotropic [0/90/+45/-45]s, 0.5 mm plies, 12 plies total (6 mm shell thickness). Material E-glass/polyester: E1 = 25 GPa, E2 = 8 GPa, long-tensile 400 MPa, long-compressive 300 MPa, density 1900 kg/m^3. Operating depth 5 m (pool); structural margin depth 10 m.\n\nLC1 pilot pedal effort: 500 N forward through the propulsion bulkhead; max fiber stress <= 400 / 3.0 = 133 MPa. LC2 fin bending: aft control fins 200 N at 200 mm from centerline = 40 N*m; <= 133 MPa. LC3 ballast release: 5 kg mechanical deadman (49 N) with 2x dynamic = 98 N; <= 133 MPa. LC4 crush buckling eigenvalue under 100 kPa external equivalent >= 3.0. Positive buoyancy reserve empty >= 5 kgf. Hull structural mass <= 35 kg. Clear internal volume behind pilot bulkhead >= 200 L for SCUBA tanks/regulators.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "buoyancy_volume_integrator",
+        "reason": "R6 buoyancy reserve and R8 internal clear volume are geometric CAD volume calculations.",
+        "examples": [
+          "Rhino VolumeMassProperties",
+          "SolidWorks Mass Properties"
+        ]
+      },
+      {
+        "tool": "laminate_first_ply_failure_post",
+        "reason": "Fiber-stress is post-FEA laminate-theory processing.",
+        "examples": [
+          "ANSYS ACP Post"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "eISR24 human-powered submarine hull (multi-part bonded assembly)",
+    "brief": "GFRP wet-hull submarine assembly, 3.0 m x 0.85 m beam; pilot-powered with pedal effort, aft control fins, ballast release, and crush buckling check. Multi-part: forward dome (A), aft dome (B), cylindrical pressure hull (C), internal ring frames (D x4), hatch ring (E), viewport housings (F x2), thruster/fin pod mount (G), fin/rudder brackets (H x4), propulsion bulkhead (J), ballast lug (K). FEM assembled-only; DCR <= 1.0.",
+    "geometric_constraints": {
+      "length_m": 3.0,
+      "beam_m_max": 0.85,
+      "height_m": 0.85,
+      "L_over_B": 3.53,
+      "skin_thickness_mm": 6,
+      "layup": "[0/90/+45/-45]s, 12 plies @ 0.5 mm",
+      "internal_clear_volume_L_min": 200,
+      "ring_frame_count": 4,
+      "ring_frame_spacing_mm": 500,
+      "hatch_diameter_mm": 600,
+      "viewport_count": 2
+    },
+    "material": {
+      "name": "E-glass / polyester GFRP",
+      "properties": {
+        "E1_GPa": 25,
+        "E2_GPa": 8,
+        "long_tensile_strength_MPa": 400,
+        "long_compressive_strength_MPa": 300,
+        "density_kg_m3": 1900
+      },
+      "adhesive": "marine-grade structural epoxy; shear allowable ~18 MPa",
+      "viewport_material": "cast acrylic 20 mm with EPDM O-ring seat",
+      "metal_insert_material": "316 stainless at K ballast lug and E hatch studs"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pilot_pedal",
+        "force_N": 500,
+        "direction": "forward at propulsion mount",
+        "applied_to": "J propulsion-mount bulkhead"
+      },
+      {
+        "id": "LC2",
+        "name": "fin_bending",
+        "moment_Nm": 40,
+        "location": "aft fin mount",
+        "applied_to": "H fin/rudder bracket"
+      },
+      {
+        "id": "LC3",
+        "name": "ballast_release",
+        "force_N": 98,
+        "direction": "downward at ballast lug",
+        "applied_to": "K ballast lug"
+      },
+      {
+        "id": "LC4",
+        "name": "crush_buckling",
+        "external_pressure_kPa": 100,
+        "analysis_type": "linear buckling eigenvalue"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "internal pilot bulkhead J fixed for structural loads LC1; for LC2/LC3 the hull is supported at hatch ring E to avoid rigid-body motion; LC4 is free with external uniform pressure",
+      "loads": "concentrated at propulsion, fin, ballast points; uniform pressure for LC4",
+      "bonded_joints": "A<->C, B<->C, D<->C, J<->C, K<->B as tied contact with adhesive shear post-check"
+    },
+    "objective": {
+      "minimize": "assembled_hull_mass_kg",
+      "design_heuristic": "target assembled hull mass <= 35 kg"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (A + B + C + D x4 + E + F x2 + G + H x4 + J + K)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E|F|G|H|J|K)",
+        "instance_index",
+        "laminate_schedule_ref",
+        "insert_material_if_metal"
+      ],
+      "report_fields": [
+        "hull_mass_kg",
+        "max_fiber_stress_LC1_MPa",
+        "max_fiber_stress_LC2_MPa",
+        "max_fiber_stress_LC3_MPa",
+        "first_buckling_load_factor",
+        "buoyancy_reserve_kgf",
+        "internal_clear_volume_L",
+        "connection_DCR_max",
+        "per_part_max_fiber_stress",
+        "adhesive_shear_util_max"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "forward_dome",
+        "role": "bow hemispherical cap closing the front of the hull",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_shape": "hemisphere",
+          "diameter_mm": 850,
+          "thickness_mm": 8,
+          "construction": "GFRP hand lay-up with local ply build-up at the bond flange",
+          "bond_flange_width_mm_min": 40
+        },
+        "material_hint": "E-glass / polyester GFRP",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "aft_dome",
+        "role": "stern hemispherical cap carrying the control-fin brackets, thruster pod mount, and ballast lug",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_shape": "hemisphere with flat aft pad",
+          "diameter_mm": 850,
+          "thickness_mm": 8,
+          "construction": "GFRP with bonded-in stainless ballast lug K and bolted H fin brackets",
+          "bond_flange_width_mm_min": 40
+        },
+        "material_hint": "E-glass / polyester GFRP",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "cylindrical_pressure_hull",
+        "role": "central cylindrical GFRP tube between A and B; main pilot compartment",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 2000,
+          "diameter_mm": 850,
+          "thickness_mm": 6,
+          "layup": "[0/90/+45/-45]s, 12 plies @ 0.5 mm",
+          "construction": "hand-laid GFRP tube"
+        },
+        "material_hint": "E-glass / polyester GFRP",
+        "speculation": false
+      },
+      {
+        "part_id": "D",
+        "name": "internal_ring_frame",
+        "role": "circumferential ring bonded inside C to stiffen against LC4 crush buckling",
+        "count_min": 4,
+        "geometric_constraints": {
+          "radius_mm": 425,
+          "cross_section_mm": "25 x 40 (rectangular)",
+          "spacing_mm": 500,
+          "bond": "fillet bond lay-up to C inner surface"
+        },
+        "material_hint": "GFRP rigid foam core + glass overwrap",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "hatch_ring",
+        "role": "bolted ring on top of C receiving the pilot hatch; service access and BC for LC2/LC3",
+        "count_min": 1,
+        "geometric_constraints": {
+          "hatch_diameter_mm": 600,
+          "flange_width_mm": 40,
+          "bolt_count": 16,
+          "bolt_size": "M8 A4-70 stainless",
+          "material": "Al 6061-T6 or GFRP laminate ring"
+        },
+        "material_hint": "Al 6061-T6 or GFRP",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "viewport_housing",
+        "role": "forward port/starboard viewport housings for pilot visibility",
+        "count_min": 2,
+        "geometric_constraints": {
+          "viewport_diameter_mm": 200,
+          "housing_material": "GFRP with bonded-in acrylic viewport",
+          "O_ring": "EPDM (non-structural for LC1-LC4)",
+          "mount": "bolted through C with 8 M5 bolts per viewport"
+        },
+        "material_hint": "GFRP housing + cast acrylic viewport",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "thruster_fin_pod_mount",
+        "role": "aft pod carrying propeller and aft control fin mounts; bolted at B-C interface",
+        "count_min": 1,
+        "geometric_constraints": {
+          "pod_length_mm": 300,
+          "pod_diameter_mm": 120,
+          "bolt_count": 8,
+          "bolt_size": "M6 A4-70 stainless"
+        },
+        "material_hint": "GFRP pod with Al 6061-T6 insert plate",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "fin_rudder_bracket",
+        "role": "aft control-surface bracket bolted to B aft dome; carries LC2 fin bending",
+        "count_min": 4,
+        "geometric_constraints": {
+          "nominal_size_mm": "100 x 80 x 8",
+          "bolt_count_to_B": 4,
+          "bolt_size": "M6 A4-70 stainless",
+          "fin_offset_mm_from_centerline": 200
+        },
+        "material_hint": "Al 6061-T6 machined bracket",
+        "speculation": true
+      },
+      {
+        "part_id": "J",
+        "name": "propulsion_mount_bulkhead",
+        "role": "internal bulkhead bonded inside C where pilot pedals feed thrust into the hull",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "850 diameter x 10 thick GFRP",
+          "bond": "fillet bonded circumferentially to C inner surface",
+          "pedal_bore_dia_mm": 150
+        },
+        "material_hint": "GFRP monolithic",
+        "speculation": true
+      },
+      {
+        "part_id": "K",
+        "name": "ballast_lug",
+        "role": "bonded stainless lug on B lower surface; releasable ballast deadman attach; carries LC3",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "60 x 40 x 10",
+          "material": "316 stainless steel bonded into B",
+          "release_mechanism": "mechanical pin (non-structural to FEA)"
+        },
+        "material_hint": "316 stainless steel",
+        "speculation": false
+      }
+    ],
+    "assembly_envelope": {
+      "overall_length_m": 3.0,
+      "overall_beam_m": 0.85,
+      "overall_height_m": 0.85,
+      "coordinate_system": "X forward (surge), Y port-starboard (sway), Z up (heave)",
+      "assembled_hull_mass_cap_kg": 35,
+      "positive_buoyancy_reserve_kgf_min": 5,
+      "internal_clear_volume_L_min": 200,
+      "pool_depth_m": 5,
+      "design_margin_depth_m": 10
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "buoyancy_reserve",
+        "limit_kgf": 5,
+        "applies_to": [
+          "assembled_design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "hull_mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "assembled_design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R8",
+        "type": "structural_analysis",
+        "metric": "internal_clear_volume",
+        "limit_L": 200,
+        "applies_to": [
+          "assembled_design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across bonded/bolted interfaces (IF1..IF9) <= 1.0 under the governing load case.",
+        "metric": "max_DCR across IF1..IF9",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Dome-to-cylinder bonds (IF1, IF2) adhesive shear utilization <= 1.0 under LC4 crush and LC2 fin-bending load distribution.",
+        "metric": "max adhesive shear utilization at IF1, IF2",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "laminated shell for A/B/C/D/F/J + solid for K, H, E metal parts",
+      "mesh_size_mm_in_critical_regions": 25,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3 (LC1-LC3)",
+        "linear buckling eigenvalue (LC4)"
+      ],
+      "connection_modeling": [
+        "dome-to-cylinder bonds as tied contact with adhesive shear post-check",
+        "ring frames D bonded to C inner skin as tied contact; influences LC4 buckling eigenvalue directly",
+        "hatch ring E and viewport F bolts as stiffness-equivalent MPC/CBUSH",
+        "bonded metal inserts K as tied solid-to-shell"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A_forward_dome",
+        "C_cylindrical_hull (forward end)"
+      ],
+      "mediated_by": "continuous structural adhesive bond with overlap lay-up",
+      "load_path": "forward closure; reacts LC4 axial crush component at the bow"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B_aft_dome",
+        "C_cylindrical_hull (aft end)"
+      ],
+      "mediated_by": "continuous structural adhesive bond with overlap lay-up",
+      "load_path": "aft closure; transfers H fin bracket loads and G thruster pod loads into C"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "D_internal_ring_frame (4x)",
+        "C_cylindrical_hull inner surface"
+      ],
+      "mediated_by": "fillet bond lay-up",
+      "load_path": "stiffens C against LC4 crush buckling; governs R5"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "E_hatch_ring",
+        "C_cylindrical_hull top"
+      ],
+      "mediated_by": "bolted through bonded-in stainless studs; gasketed",
+      "load_path": "hatch service access; bolted BC for LC2/LC3 analysis"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "F_viewport_housing (2x)",
+        "C_cylindrical_hull forward flanks"
+      ],
+      "mediated_by": "bolted with EPDM O-ring",
+      "load_path": "pilot viewport; minor structural share, stress-concentrator check in LC4"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "G_thruster_fin_pod_mount",
+        "B_aft_dome + C_cylindrical_hull"
+      ],
+      "mediated_by": "bolted 8 M6 A4-70 stainless",
+      "load_path": "propulsion thrust reaction into aft hull"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "H_fin_rudder_bracket (4x)",
+        "B_aft_dome"
+      ],
+      "mediated_by": "bolted 4 M6 A4-70 per bracket",
+      "load_path": "LC2 fin-bending moment (40 Nm) from control surface into B aft dome"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "J_propulsion_bulkhead",
+        "C_cylindrical_hull inner surface"
+      ],
+      "mediated_by": "fillet bond lay-up circumferentially",
+      "load_path": "LC1 500 N pilot pedal effort from J into C through the bond"
+    },
+    {
+      "id": "IF9",
+      "between": [
+        "K_ballast_lug",
+        "B_aft_dome lower surface"
+      ],
+      "mediated_by": "bonded stainless insert with film adhesive",
+      "load_path": "LC3 98 N dynamic ballast release into B"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Wet-hull submarines have their real stress state at dome-to-cylinder bonds, hatch ring bolts, viewport cutouts, and bonded inserts. LC4 crush buckling is particularly sensitive to internal ring-frame spacing D on C. A single-shell FEA would miss all of these.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Real eISR wet submarines are bonded GFRP assemblies with discrete hatch rings, viewports, and aft fin pickups; hand-laid single-shell idealization overstates buckling margin because ring frames are not represented.",
+    "speculation_caveats": "Ring-frame count (4) and hatch diameter (600 mm) are plausible defaults; actual geometry is team-specific. No additional eISR rulebook clauses are cited.",
+    "exclusions_explained": {
+      "vibration_analysis": "Slow wet submarine.",
+      "thermal_analysis": "Pool ambient.",
+      "fluid_analysis": "Wet hull; pressure equalized.",
+      "radiation_analysis": "Not applicable."
+    },
+    "original_sample_preserved_at": "docs/eval/samples/274_a34_eisr_submarine_hull.json"
+  },
+  "rulebook_citations": {}
+}

@@ -1,0 +1,184 @@
+{
+  "id": "322_i_me2_teknofest_model_uydu_cansat",
+  "source": {
+    "catalog_ref": "I-ME2 (I-TF4)",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_primary_structure",
+  "full_prompt": "Design the primary structural shell and internal stack frame of a CanSat complying with the national aerospace student benchmark 2025 Model Uydu Yarışması şartnamesi. The complete CanSat including all payloads, batteries, electronics, and recovery hardware must fit within a cylindrical envelope of outer diameter 66 mm (-0/+1 mm) and total height 115 mm (-0/+2 mm), with total integrated wet mass between 300 g and 350 g (inclusive of parachute assembly). The structure comprises a thin-wall cylindrical outer skin, a conical nose cap, a base plate with parachute eyelet, and three internal PCB-stack rails spaced 120 degrees around the inner wall. The CanSat is launched inside a carrier rocket to an altitude of approximately 700 m AGL, ejected, and descends under a single parachute with a nominal descent rate between 6 m/s and 8 m/s measured over the last 100 m before touchdown. Material is 3D-printed PA12-CF (carbon-fiber reinforced nylon, SLS) with Young's modulus 5.8 GPa, tensile strength 75 MPa, density 1060 kg/m^3, and isotropic assumption acceptable at shell level. Load cases: (LC1) 20 g quasi-static axial acceleration applied to the full CanSat wet mass of 350 g (corresponds to the qualification-level launch shock specified in the competition safety review); (LC2) 15 g lateral acceleration applied simultaneously to the full wet mass along the worst-case transverse direction; (LC3) parachute opening shock of 40 N applied at the base-plate eyelet in the axial direction while the CanSat hangs from the shock cord; (LC4) ground-impact drop of 350 g at 8 m/s onto a rigid flat surface (use an equivalent static 10 g deceleration on the base for first-order sizing). Pass/fail criteria: (R1) maximum von Mises stress in the primary structure must remain below 37.5 MPa under all load cases (75 / 2.0 material factor of safety); (R2) maximum deflection of any PCB stack rail relative to the outer skin must remain below 1.5 mm under LC1 to avoid PCB-to-wall contact; (R3) no structural-element first natural frequency below 80 Hz to avoid coupling with the carrier rocket motor thrust oscillation band; (R4) total structural dry mass (shell + nose + base + rails, excluding PCB/battery/parachute) must not exceed 120 g to leave mass budget for payload; (R5) the shell outer surface must not protrude past the 66 mm envelope under any load case. Vibration qualification is satisfied by meeting R3 plus the LC1/LC2 quasi-static envelope; no random-vibration PSD is imposed by the rulebook at this level. Thermal, fluid, and radiation analyses are not required. Deliverables: STEP AP242 solid model, SLS process note (build orientation and support plan), FEA report with stress + deflection for each load case, and modal report listing the first 10 eigenfrequencies.",
+  "short_prompt": "Design the primary structural shell and internal stack frame of a national aerospace student benchmark 2025 Model Uydu CanSat. Cylindrical envelope 66 mm (-0/+1) OD x 115 mm (-0/+2) height; total integrated wet mass 300-350 g. Launched in a carrier rocket to ~700 m AGL and descends at 6-8 m/s under one parachute.\n\nEnvelope: thin-wall cylindrical outer skin, conical nose, base plate with parachute eyelet, and three internal PCB-stack rails at 120 deg around the wall; 3D-printed PA12-CF (SLS), isotropic at shell level.\n\nFactor regime: material FoS 2.0 (limit 37.5 MPa); deflection / envelope / modal gates; no random-vib PSD mandated at this level.\n\nLoad cases.\n- 20 g axial quasi-static launch on 350 g wet.\n- 15 g lateral quasi-static on 350 g (worst-transverse).\n- Parachute-opening shock: 40 N axial at the base-plate eyelet.\n- Ground impact: 8 m/s onto rigid flat, first-order equivalent 10 g static deceleration on the base.\n- First natural frequency >= 80 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark 2025 Model Uydu Primary CanSat Structure",
+    "brief": "350 g CanSat primary shell + stack frame, 66 x 115 mm envelope, 20 g axial + 15 g lateral launch qual, parachute descent 6-8 m/s.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 66,
+      "outer_diameter_tolerance_mm": "+1/-0",
+      "height_mm": 115,
+      "height_tolerance_mm": "+2/-0",
+      "mass_envelope_g": {
+        "min": 300,
+        "max": 350
+      },
+      "internal_rails": 3,
+      "rail_angular_spacing_deg": 120
+    },
+    "material": {
+      "name": "PA12-CF (SLS)",
+      "properties": {
+        "youngs_modulus_GPa": 5.8,
+        "tensile_strength_MPa": 75,
+        "density_kg_m3": 1060
+      }
+    },
+    "mission": {
+      "deploy_altitude_m_AGL": 700,
+      "descent_rate_mps_target": {
+        "min": 6,
+        "max": 8
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "axial_launch_20g",
+        "magnitude_g": 20,
+        "application": "axial on full 350 g wet mass"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_launch_15g",
+        "magnitude_g": 15,
+        "application": "transverse on full 350 g wet mass"
+      },
+      {
+        "id": "LC3",
+        "name": "parachute_opening",
+        "magnitude_N": 40,
+        "application": "base plate eyelet axial"
+      },
+      {
+        "id": "LC4",
+        "name": "ground_impact",
+        "magnitude_g": 10,
+        "application": "base equivalent static for 8 m/s drop"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 4,
+      "report_fields": [
+        "structural_dry_mass_g",
+        "max_von_mises_per_case_MPa",
+        "rail_deflection_LC1_mm",
+        "first_10_eigenfrequencies_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 37.5,
+        "derivation": "75 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "rail_to_shell_relative_deflection",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "structural_dry_mass",
+        "limit_g": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_radial_protrusion",
+        "limit_mm_from_envelope": 0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 solid for shell and rails",
+      "mesh_size_mm": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "modal (first 10 modes)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "Short mission (< 20 min), no thermal gradient imposed by rulebook at this class.",
+      "fluid_analysis": "Descent drag reduced to parachute opening shock LC3.",
+      "radiation_analysis": "Not applicable at 700 m AGL.",
+      "buckling_analysis": "Thin-wall check covered by LC1 axial stress gate."
+    }
+  },
+  "eval_coverage": [
+    "envelope-constrained shell FEA",
+    "quasi-static + modal combined",
+    "mass budget gate",
+    "small-scale CanSat structural benchmark"
+  ]
+}

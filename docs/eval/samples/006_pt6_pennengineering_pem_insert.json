@@ -1,0 +1,217 @@
+{
+  "id": "006_pt6_pennengineering_pem_insert",
+  "source": {
+    "catalog_ref": "PT6",
+    "year": 2024,
+    "tier": "A+"
+  },
+  "domain": "industrial_machinery",
+  "part_class": "sheet_metal_bracket_with_clinch_insert",
+  "full_prompt": "Design a cold-rolled steel sheet-metal L-bracket that accepts a canonical self-clinching nut insert (steel/stainless, #6-32 UNC) (thread #6-32 UNC, for host sheet thickness 1.6 mm / 0.063 in minimum) and transmits its published rated loads without tearing or permanently deforming the host sheet. The representative catalog 2024 values for the #6-32 UNC self-clinching insert installed in low-carbon steel host sheet (hardness HRB 80 maximum per install spec) are: minimum installation force approximately 13.3 kN (3,000 lbf), minimum pull-out force 2.45 kN (550 lbf), minimum torque-out 2.7 N*m (24 in*lbf). The bracket geometry: two-leg sheet metal L formed from 1.6 mm cold-rolled steel (SPCC / DC01, yield 210 MPa, UTS 350 MPa), bend radius 2.4 mm inside, leg A 80 mm long x 50 mm wide with two mounting slots (6 x 12 mm) on a 60 mm centerline spacing, leg B 60 mm long x 50 mm wide carrying the #6-32 self-clinching insert at its centroid (at least 6.5 mm from any edge per minimum edge-distance spec for #6-32 thread). The insert is installed by pressing into the pre-punched 4.19 mm (+0.08/-0.0) host hole, which plastically flows the host sheet into the insert's knurl and undercut. Service loads applied through a #6-32 grade 5 screw threaded into the insert: LC1 axial pull-out load 2.45 kN (full rated) normal to leg B; LC2 installation torque reaction 2.7 N*m on the insert-to-sheet interface; LC3 combined shear 500 N along leg B plus 1 kN normal to leg B. Pass/fail: (R1) at LC1 rated pull-out, the maximum principal stress in the host sheet around the insert must remain below UTS / 1.25 = 280 MPa, i.e. no net-section tearing (self-clinching-insert design-guide SF 1.25 against sheet tear-out at rated pull-out); (R2) at LC2 rated torque-out, the host-sheet von Mises around the insert must stay below yield / 1.0 = 210 MPa on the first torque cycle (insert clinch friction governs, catalog practice); (R3) L-bracket max von Mises under LC3 <= yield / 1.5 = 140 MPa (general sheet-metal SF); (R4) L-bracket deflection at the insert location under LC3 <= 0.5 mm (to preserve screw preload integrity); (R5) host-sheet minimum edge-distance 6.5 mm to any free edge and 9.5 mm between adjacent self-clinching insert hole centerlines (catalog constraint); (R6) host hole diameter tolerance 4.19 +0.08/-0.00 mm (catalog install spec, directly affects retention). The bracket is manufactured by laser-cutting a flat blank, punching the 4.19 mm insert hole, V-die forming to the L shape, and pressing the insert on an arbor press. Deliverables: STEP AP242 of the formed L-bracket plus flat-pattern DXF; report listing sheet max principal stress at LC1, von Mises at LC2, bracket max von Mises + deflection at LC3, and a pass/fail line for edge-distance and hole-diameter compliance.",
+  "short_prompt": "Design a cold-rolled steel sheet-metal L-bracket that accepts a #6-32 UNC self-clinching nut insert and transmits its rated loads without tearing or permanently deforming the host sheet. Catalog values for #6-32 UNC self-clinching insert in low-carbon steel: minimum installation force ~13.3 kN (3,000 lbf), minimum pull-out 2.45 kN (550 lbf), minimum torque-out 2.7 N*m (24 in*lbf).\n\nGeometry: two-leg L formed from 1.6 mm cold-rolled steel (SPCC / DC01), inside bend radius 2.4 mm. Leg A 80 mm x 50 mm with two 6 x 12 mm mounting slots on 60 mm spacing; Leg B 60 mm x 50 mm carries the insert at its centroid. Host hole 4.19 +0.08/-0.00 mm.\n\nLoad cases through a #6-32 grade 5 screw.\n- LC1 axial pull-out 2.45 kN normal to leg B.\n- LC2 installation torque reaction 2.7 N*m on the insert-to-sheet interface.\n- LC3 combined shear: 500 N along leg B plus 1 kN normal to leg B.\n\nGeometric compliance: minimum edge distance 6.5 mm and >= 9.5 mm between adjacent insert centerlines; L-bracket deflection at the insert under LC3 <= 0.5 mm.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "sheet_metal_flat_pattern",
+        "reason": "Bend allowance and K-factor computation for the formed L is deterministic CAD/CAM, not FEA.",
+        "examples": [
+          "SolidWorks sheet metal",
+          "Onshape sheet metal"
+        ]
+      },
+      {
+        "tool": "insert_install_force_chart",
+        "reason": "Self-clinching insert install force curves are tabulated, not simulated.",
+        "examples": [
+          "self-clinching insert technical support packet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Sheet-metal L-bracket with self-clinching nut insert",
+    "brief": "Design a 1.6 mm cold-rolled steel L-bracket with one #6-32 self-clinching nut insert, sized to transmit the catalog 2.45 kN pull-out and 2.7 N*m torque-out without host-sheet tear-out.",
+    "geometric_constraints": {
+      "sheet": {
+        "material": "SPCC/DC01",
+        "thickness_mm": 1.6,
+        "bend_radius_mm": 2.4
+      },
+      "leg_A": {
+        "length_mm": 80,
+        "width_mm": 50,
+        "slots": {
+          "count": 2,
+          "size_mm": {
+            "x": 6,
+            "y": 12
+          },
+          "center_spacing_mm": 60
+        }
+      },
+      "leg_B": {
+        "length_mm": 60,
+        "width_mm": 50,
+        "insert": "self-clinching #6-32 insert",
+        "insert_hole_dia_mm": 4.19,
+        "insert_hole_tol_mm": "+0.08/-0.00",
+        "min_edge_distance_mm": 6.5
+      }
+    },
+    "material": {
+      "sheet": {
+        "name": "SPCC / DC01",
+        "yield_MPa": 210,
+        "ultimate_MPa": 350,
+        "hardness_max_HRB": 80
+      },
+      "insert": {
+        "part": "self-clinching #6-32 insert",
+        "thread": "#6-32 UNC",
+        "host_sheet_min_thickness_mm": 1.6
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pullout_rated",
+        "axial_N": 2450
+      },
+      {
+        "id": "LC2",
+        "name": "torqueout_rated",
+        "torque_Nm": 2.7
+      },
+      {
+        "id": "LC3",
+        "name": "combined_service",
+        "shear_N": 500,
+        "normal_N": 1000
+      }
+    ],
+    "boundary_conditions": {
+      "mounting_slots_leg_A": "fully constrained in service test",
+      "insert_interface": "clinch contact with radial interference, friction + form locking"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "DXF_flat_pattern"
+      ],
+      "report_fields": [
+        "sheet_max_principal_stress_LC1_MPa",
+        "sheet_von_mises_LC2_MPa",
+        "bracket_max_von_mises_LC3_MPa",
+        "bracket_deflection_LC3_mm",
+        "edge_distance_check",
+        "hole_tolerance_check"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "host_sheet_max_principal_stress_around_insert",
+        "limit_MPa": 280,
+        "derivation": "UTS / 1.25 = 350 / 1.25 (self-clinching-insert design-guide tear-out SF at rated pull-out)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "host_sheet_max_von_mises_around_insert",
+        "limit_MPa": 210,
+        "derivation": "yield / 1.0 first-cycle torque-out limit (catalog practice)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "bracket_max_von_mises",
+        "limit_MPa": 140,
+        "derivation": "yield / 1.5 = 210 / 1.5 (general sheet-metal SF)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bracket_deflection_at_insert",
+        "limit_mm": 0.5,
+        "derivation": "preserve screw preload integrity",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "insert_edge_distance",
+        "limit_mm": 6.5,
+        "derivation": "self-clinching #6-32 minimum edge-distance catalog value",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "host_hole_diameter_tolerance",
+        "limit_mm": 0.08,
+        "derivation": "self-clinching #6-32 insert install spec 4.19 +0.08/-0.00",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "Self-clinching fasteners catalog 2024 (installation + performance data)",
+    "recommended_fea_setup": {
+      "element_type": "TET10 or HEX20 with elasto-plastic host sheet",
+      "mesh_size_mm_in_critical_regions": 0.3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "nonlinear static with contact + friction at clinch"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Catalog insert qualification is quasi-static.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "Representative #6-32 self-clinching insert technical data: min pull-out 2.45 kN (550 lbf), min torque-out 2.7 Nm (24 in-lbf), install force 13.3 kN (3,000 lbf), host sheet min 1.6 mm / max HRB 80."
+  },
+  "eval_coverage": [
+    "catalog self-clinching insert integration",
+    "sheet-metal tear-out prediction",
+    "formed L-bracket with mixed slotted + insert features",
+    "DXF flat-pattern + STEP deliverables"
+  ]
+}

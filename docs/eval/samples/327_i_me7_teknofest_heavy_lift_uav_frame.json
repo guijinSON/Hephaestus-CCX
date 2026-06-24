@@ -1,0 +1,213 @@
+{
+  "id": "327_i_me7_teknofest_heavy_lift_uav_frame",
+  "source": {
+    "catalog_ref": "I-ME7 (national aerospace student benchmark Ağır Yük Taşıma — heavy-lift UAV family, per I-TF5 İHA base rule)",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "multirotor_hub_and_arm",
+  "full_prompt": "Design the primary central hub plate plus four tubular motor arms of a heavy-lift octocoaxial (4 arms x coaxial twin motors = 8 rotors) multirotor UAV entered in the national aerospace student benchmark Ağır Yük Taşıma (Heavy-Lift) category, inheriting the national aerospace student benchmark İHA MTOW cap of 25 kg. The airframe target dry mass (frame only, excluding motors, ESCs, battery, payload, avionics) is under 3.5 kg. Each coaxial motor pair produces a maximum combined static thrust of 120 N at full throttle, and design-limit thrust per arm is taken as 1.3 x hover thrust at MTOW, giving 95.6 N per arm at limit; ultimate is 1.5 x limit per STANAG 4703 light-UAS airworthiness for composite UAVs. Arms are 30 mm OD x 2 mm wall carbon-fiber tubes (woven CFRP, tensile strength 600 MPa, compressive 500 MPa, Young's modulus 70 GPa, density 1550 kg/m^3), length 400 mm from hub edge to motor mount. Central hub is a sandwich panel: two 1.2 mm CFRP face skins with 8 mm aramid honeycomb core (core density 48 kg/m^3, core shear 1.2 MPa), 320 x 320 mm square, with central battery mount hole 180 x 120 mm and four peripheral arm-mount cutouts clamped with M4 A4-70 bolts. Load cases: (LC1) hover at MTOW: 25 kg suspended at hub, four arms each supporting 61.3 N upward thrust, reacting at the battery-mount bolts; (LC2) 1.3 g pull-up (limit) climb: each arm supports 79.6 N; (LC3) ultimate 1.5 x LC2 per STANAG 4703: each arm 119.4 N, simultaneously on all four arms; (LC4) one-motor-out (OMO) scenario: two opposing coaxial pairs on asymmetric thrust (95.6 N vs 30 N) producing a net moment on the hub; (LC5) hard landing with 5 g vertical acceleration on the hub center-of-mass while the payload (10 kg) is still attached. Pass/fail criteria: (R1) under LC3 ultimate, maximum von Mises stress in CFRP skins must remain below 300 MPa (600 / 2.0 UD composite FoS) and core shear below 0.6 MPa (1.2 / 2.0); (R2) first arm-bending natural frequency must exceed 35 Hz per industry practice to clear flight-controller PID bandwidth (typical 10-20 Hz); (R3) hub-center deflection under LC1 hover must remain below 2 mm to preserve IMU alignment; (R4) linear buckling eigenvalue of an arm tube under its LC3 compressive/bending combined load must exceed 1.5; (R5) frame dry mass (hub + 4 arms + fasteners) must remain below 3.5 kg; (R6) bolt-bearing stress on arm-to-hub clamp under LC4 OMO must remain below 350 MPa at ultimate. Thermal, fluid, and radiation analyses are not primary gates. Deliverables: STEP AP242 assembly with hub + 4 arms + fastener bodies, composite layup schedule for hub skins and arm tubes, FEA report per load case, buckling report for LC3 arm, modal for R2, mass budget.",
+  "short_prompt": "Design the central hub plate + four tubular motor arms of a national aerospace student benchmark Ağır Yük octocoaxial UAV (4 arms x coaxial twin motors). MTOW cap 25 kg; frame dry target < 3.5 kg. Each coaxial pair gives 120 N combined max static thrust; design-limit thrust per arm 1.3 x hover, ultimate 1.5 x limit per STANAG 4703.\n\nEnvelope: 30 mm OD x 2 mm wall woven-CFRP arms, 400 mm from hub edge to motor mount; central sandwich hub 320 x 320 mm with two 1.2 mm CFRP skins over an 8 mm 48 kg/m^3 aramid honeycomb core, 180 x 120 mm battery-mount cutout, four peripheral arm-clamp cutouts on M4 A4-70.\n\nFactor regime: composite FoS 2.0 (skin allowable 300 MPa, core shear 0.6 MPa) at ultimate; first arm-bending mode > 35 Hz; hub-center deflection at hover < 2 mm; linear buckling on an arm tube under LC3 >= 1.5; bolt-bearing at arm-to-hub clamp under OMO <= 350 MPa at ultimate.\n\nLoad cases.\n- Hover at MTOW: 25 kg at the hub, each arm 61.3 N up.\n- 1.3 g limit pull-up: 79.6 N per arm.\n- Ultimate 1.5 x limit: 119.4 N per arm simultaneously.\n- One-motor-out: opposing pairs 95.6 N vs 30 N (net moment).\n- 5 g hard landing on the hub with 10 kg payload attached.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark Heavy-Lift Octocoaxial UAV Hub + 4-Arm Frame",
+    "brief": "CFRP sandwich-panel hub + 4 CFRP tube arms for 25 kg MTOW octocoaxial, STANAG 4703 ultimate = 1.5 x limit.",
+    "geometric_constraints": {
+      "hub_size_mm": {
+        "x": 320,
+        "y": 320
+      },
+      "hub_sandwich": {
+        "skin_mm": 1.2,
+        "core_mm": 8,
+        "core_type": "aramid_honeycomb_48kgm3"
+      },
+      "arm_tube_OD_mm": 30,
+      "arm_tube_wall_mm": 2,
+      "arm_length_mm": 400,
+      "clamp_bolts": "M4 A4-70"
+    },
+    "material": {
+      "name": "Woven CFRP skins + aramid honeycomb core",
+      "properties": {
+        "skin_tensile_MPa": 600,
+        "skin_compressive_MPa": 500,
+        "skin_E_GPa": 70,
+        "skin_density_kg_m3": 1550,
+        "core_shear_MPa": 1.2,
+        "core_density_kg_m3": 48
+      }
+    },
+    "airworthiness_reference": "STANAG 4703 / AEP-83 (ultimate = 1.5 x limit)",
+    "MTOW_kg": 25,
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hover_MTOW",
+        "magnitude_N_per_arm": 61.3,
+        "application": "4 arms upward thrust, hub reacts"
+      },
+      {
+        "id": "LC2",
+        "name": "pullup_limit_1p3g",
+        "magnitude_N_per_arm": 79.6,
+        "application": "limit load"
+      },
+      {
+        "id": "LC3",
+        "name": "pullup_ultimate_1p5xLC2",
+        "magnitude_N_per_arm": 119.4,
+        "application": "ultimate = 1.5 x limit"
+      },
+      {
+        "id": "LC4",
+        "name": "one_motor_out",
+        "magnitude_N": [
+          95.6,
+          30
+        ],
+        "application": "asymmetric opposing pairs"
+      },
+      {
+        "id": "LC5",
+        "name": "hard_landing_5g",
+        "magnitude_g": 5,
+        "application": "hub with 10 kg payload"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 5,
+      "report_fields": [
+        "frame_mass_kg",
+        "skin_stress_LC3_MPa",
+        "core_shear_LC3_MPa",
+        "arm_buckling_factor_LC3",
+        "hub_deflection_LC1_mm",
+        "first_arm_bending_Hz",
+        "bolt_bearing_LC4_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "skin_max_stress",
+        "limit_MPa": 300,
+        "derivation": "600 / 2.0 composite FoS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "core_shear_max",
+        "limit_MPa": 0.6,
+        "derivation": "1.2 / 2.0 core FoS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_arm_bending_freq",
+        "limit_Hz": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "hub_center_deflection",
+        "limit_mm": 2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "arm_first_mode_load_factor",
+        "limit": 1.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "frame_dry_mass",
+        "limit_kg": 3.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "bolt_bearing_stress",
+        "limit_MPa": 350,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell (hub skins + core) + beam/shell hybrid for arm tubes",
+      "mesh_size_mm": 5,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Composite"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "linear buckling (LC3 arm)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "Heavy-Lift category page on national aerospace student benchmark.org not yet extracted; inherited envelope from I-TF5 İHA 2024 v1.9 rules. Payload-mass gate and exact MTOW for heavy-lift sub-class may differ; verify when category-specific PDF is scraped.",
+    "exclusions_explained": {
+      "thermal_analysis": "Short flight (< 20 min) at ambient.",
+      "fluid_analysis": "Aero and prop wash reduced to per-arm thrust vector in LC1-LC4.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "sandwich-panel FEA",
+    "tube buckling",
+    "limit + ultimate factor per STANAG 4703",
+    "modal decoupling from controller bandwidth",
+    "one-motor-out asymmetric case"
+  ]
+}

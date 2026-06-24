@@ -1,0 +1,193 @@
+{
+  "id": "098_ng13_ewb_usa_timber_footbridge",
+  "source": {
+    "catalog_ref": "NG13",
+    "year": 2023,
+    "tier": "A"
+  },
+  "domain": "humanitarian_civil",
+  "part_class": "steel_stringer_timber_deck_footbridge",
+  "full_prompt": "Design one representative 12 m clear-span simple-supported pedestrian footbridge with two parallel steel wide-flange stringers and a transverse timber deck, fully compliant with the EWB-USA Technical Guidelines v4 (2023) Footbridge chapter. The bridge carries a uniformly distributed pedestrian live load of 3.6 kPa over a 1.5 m clear walkway width, self-weight of deck + stringers + railings, and the EWB-USA climatic wind pressure of 1.0 kPa applied laterally on the exposed envelope. The two main stringers are W310x45 (W12x30) ASTM A992 steel beams (fy = 345 MPa), 12 m long, simply supported on reinforced-concrete abutments with elastomeric pad bearings. Transverse timber deck planks are 50 mm x 150 mm pressure-treated softwood (allowable bending stress Fb = 10 MPa, allowable shear Fv = 1.0 MPa), spanning 1.5 m between stringers, spaced 400 mm on center in the span direction. A timber handrail 1100 mm tall with vertical balusters 100 mm clear between runs on both sides and is connected to deck joists with steel angle brackets. A pedestrian load factor and a 2.0 safety factor on timber stresses per EWB-USA apply; steel is checked per AISC 360 ASD with typical Omega = 1.67 on bending. Deliverable is a CAD assembly of the bridge (two stringers + timber deck + railings + abutment bearing stiffeners + intermediate cross-bracing every 3 m), suitable for linear static structural FEA under the three independent EWB-USA load cases (LC1 live, LC2 wind, LC3 combined). Vibration, thermal, fluid, radiation, buckling analyses are NOT required (stringer LTB is envelope-checked by AISC lookup, not a separate eigenvalue).",
+  "short_prompt": "Design a 12 m simple-span pedestrian footbridge with two parallel W310x45 A992 steel stringers, a transverse 50 x 150 mm pressure-treated softwood timber deck, timber handrails and intermediate cross-bracing every 3 m, supported on RC abutments with elastomeric pad bearings, per the EWB-USA Technical Guidelines v4 (2023) Footbridge chapter. Factor-of-safety 2.0 on timber allowables (Fb = 10 MPa, Fv = 1.0 MPa); steel per AISC 360 ASD. Deflection limit L/400 under live load. Walkway 1.5 m clear.\n\nEnvelope: 12 m clear span, two stringers at 1.5 m spacing, deck planks at 400 mm on-center, 1100 mm handrail.\n\nLoad cases.\n- LC1 pedestrian live: 3.6 kPa uniform on the deck.\n- LC2 wind: 1.0 kPa lateral on the bridge envelope.\n- LC3 dead: self-weight of stringers, deck, rails and bracing.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "12 m EWB-USA pedestrian footbridge (steel + timber)",
+    "brief": "Design a 12 m simple-span pedestrian footbridge with two W310x45 stringers and 50 mm timber deck carrying 3.6 kPa live + 1.0 kPa wind with timber SF 2.",
+    "geometric_constraints": {
+      "clear_span_m": 12,
+      "walkway_width_m": 1.5,
+      "stringer_section": "W310x45",
+      "stringer_count": 2,
+      "stringer_spacing_m": 1.5,
+      "timber_deck_plank_mm": [
+        50,
+        150
+      ],
+      "deck_plank_spacing_mm": 400,
+      "handrail_height_mm": 1100,
+      "cross_bracing_spacing_m": 3.0
+    },
+    "material": {
+      "stringer": {
+        "name": "ASTM A992 steel",
+        "fy_MPa": 345,
+        "E_GPa": 200
+      },
+      "timber_deck": {
+        "allowable_Fb_MPa": 10,
+        "allowable_Fv_MPa": 1.0
+      },
+      "abutments": {
+        "concrete_fc_MPa": 25
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pedestrian_live",
+        "magnitude_kPa": 3.6,
+        "application": "uniform on 1.5 m x 12 m deck"
+      },
+      {
+        "id": "LC2",
+        "name": "wind_lateral",
+        "magnitude_kPa": 1.0,
+        "application": "lateral on envelope"
+      },
+      {
+        "id": "LC3",
+        "name": "dead",
+        "application": "self-weight of stringers, deck, rails"
+      }
+    ],
+    "boundary_conditions": {
+      "abutment_bearings": "simple supports (pinned one end, roller other)",
+      "stringer_to_deck": "shear-transfer through deck screws / joist hangers"
+    },
+    "objective": {
+      "primary": "pass all EWB-USA criteria"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_stringer_bending_stress_MPa",
+        "max_stringer_deflection_mm",
+        "max_deck_bending_stress_MPa",
+        "max_deck_shear_stress_MPa",
+        "timber_SF"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "pedestrian_live_load_kPa",
+        "limit_kPa": 3.6,
+        "derivation": "EWB-USA footbridge live load",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "timber_safety_factor",
+        "limit": 2.0,
+        "derivation": "EWB-USA timber SF",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_stringer_bending_stress_MPa",
+        "limit_MPa": 207,
+        "derivation": "0.6 * fy = 0.6 * 345 MPa AISC ASD bending envelope",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_stringer_deflection_mm",
+        "limit_mm": 30,
+        "derivation": "L/400 = 12000 / 400 for pedestrian footbridges",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "timber_deck_bending_stress_MPa",
+        "limit_MPa": 5.0,
+        "derivation": "Fb / SF2 = 10 / 2",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (stringers, rails, bracing), shell (deck planks)",
+      "solver_hints": [
+        "SAP2000",
+        "STAAD.Pro",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static combined loads"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "EWB-USA footbridge chapter does not require pedestrian-induced vibration at this scale.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Wind is equivalent static.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Stringer LTB checked by AISC lookup, not eigenvalue FEA."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Scour / hydraulic design of foundations",
+      "Long-term timber decay",
+      "EWB-USA seismic addendum for high-UBC zones"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "timber SF 2 + steel ASD bending envelope",
+    "combined live + wind + dead FEA",
+    "deflection serviceability (L/400)",
+    "humanitarian civil / EWB-USA scope",
+    "mixed-material assembly (steel + timber + concrete)"
+  ]
+}

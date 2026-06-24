@@ -1,0 +1,156 @@
+{
+  "id": "064_jp9_aij_structural_design",
+  "source": {
+    "catalog_ref": "JP9",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "civil_structural",
+  "part_class": "multi_story_frame_model",
+  "full_prompt": "Design a scaled multi-story structural frame model for a student architectural structural-design benchmark. The model must span 600 mm between two base supports and stand 800 mm tall (representative of a scaled multi-story frame). Construction material is limited to balsa wood, basswood, and paper-based laminates with PVA adhesive; metal fasteners and composite tows are prohibited per the competition rulebook. The self-weight of the structural model must not exceed 1.0 kg. Under a vertical static load of 30 kg applied centrally at the roof level, the maximum downward deflection at the roof must not exceed L/400 where L = 800 mm (the height is treated as L for roof drift scaling in the rulebook), giving 2.0 mm. Under a horizontal static load of 5 kg applied at the roof level (representing a lateral seismic proxy), the inter-story drift must not exceed H/200 where H is the full height 800 mm, giving 4.0 mm. The model must carry both the vertical and horizontal loads simultaneously without plastic failure at any joint. Primary verification is linear static structural FEA with balsa treated as orthotropic linear elastic (along-grain E approximately 3.4 GPa). Because slender bracing members dominate the lateral system, a linear buckling eigenvalue check under combined gravity + lateral load must yield a first-mode load factor of at least 1.2. Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the full structural model, a bill of materials, and a report listing self-weight in grams, roof vertical deflection in mm, inter-story drift under lateral load in mm, and first buckling load factor.",
+  "short_prompt": "Design a scaled multi-story structural frame model (representative of a scaled multi-story building) for a student architectural structural-design benchmark. The model spans 600 mm between two base supports and stands 800 mm tall. Materials limited to balsa, basswood, and paper-based laminates with PVA adhesive; metal fasteners and composite tows are prohibited. Self-weight <= 1.0 kg. Slender bracing members must pass a linear buckling eigenvalue check with first-mode load factor >= 1.2 under combined gravity + lateral load.\n\nLoad cases.\n- LC1 vertical roof load: 30 kg at roof center (294 N); roof deflection limit L/400 = 2.0 mm (with L = 800 mm).\n- LC2 horizontal roof load: 5 kg lateral at roof (49 N, seismic proxy); inter-story drift limit H/200 = 4.0 mm.\n- LC3 combined LC1 + LC2 simultaneously without plastic joint failure.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Scaled multi-story student structural frame",
+    "brief": "Design a 600 x 800 mm balsa multi-story frame model carrying 30 kg vertical + 5 kg horizontal, self-weight ≤ 1.0 kg.",
+    "geometric_constraints": {
+      "span_mm": 600,
+      "height_mm": 800,
+      "self_weight_kg_max": 1.0
+    },
+    "material": {
+      "allowed": [
+        "balsa wood",
+        "basswood",
+        "paper laminate",
+        "PVA adhesive"
+      ],
+      "prohibited": [
+        "metal fastener",
+        "composite tow"
+      ]
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical_roof_load",
+        "magnitude_kg": 30,
+        "magnitude_N": 294
+      },
+      {
+        "id": "LC2",
+        "name": "horizontal_roof_load",
+        "magnitude_kg": 5,
+        "magnitude_N": 49
+      },
+      {
+        "id": "LC3",
+        "name": "combined",
+        "description": "LC1 + LC2 simultaneous"
+      }
+    ],
+    "boundary_conditions": {
+      "base": "fully fixed 6 DOF"
+    },
+    "objective": {
+      "maximize": "load_to_selfweight_ratio"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "self_weight_g",
+        "roof_vertical_deflection_mm",
+        "inter_story_drift_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "self_weight_kg",
+        "limit_kg": 1.0,
+        "derivation": "Rulebook self-weight cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "roof_vertical_deflection_mm",
+        "limit_mm": 2.0,
+        "derivation": "L/400 = 800/400",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "inter_story_drift_mm",
+        "limit_mm": 4.0,
+        "derivation": "H/200 = 800/200",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.2,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + truss",
+      "solver_hints": [
+        "CalculiX",
+        "OpenSees",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in competition gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "combined gravity + lateral loads",
+    "drift ratio H/200",
+    "roof deflection L/400",
+    "buckling of slender bracing"
+  ]
+}

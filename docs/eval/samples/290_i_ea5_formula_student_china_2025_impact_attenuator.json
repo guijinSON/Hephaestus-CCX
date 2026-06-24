@@ -1,0 +1,211 @@
+{
+  "id": "290_i_ea5_formula_student_china_2025_impact_attenuator",
+  "source": {
+    "catalog_ref": "I-EA5",
+    "year": 2025,
+    "tier": "A",
+    "language_note": "Rulebook supplied in EN+ZH."
+  },
+  "domain": "automotive_crashworthiness_structural",
+  "part_class": "impact_attenuator_bolt_on",
+  "full_prompt": "Design a single-piece bolt-on Impact Attenuator (IA) for a collegiate formula-class racecar benchmark 2025 car. The IA mounts in front of the Anti-Intrusion Plate and must, per FSC 2025 Handbook clause T.3.18, have minimum dimensions 200 mm (length, along car x-axis) x 100 mm (height) x 200 mm (width), and when mounted on a 300 kg test mass and impacted at 7.0 m/s against a rigid flat barrier, must decelerate the mass with an average value <= 20 g, and a peak value <= 40 g measured over any 3 ms window. Energy absorbed must therefore be at least 7350 J (E = 0.5 * 300 * 7^2). The external envelope caps at 250 mm (L) x 150 mm (H) x 250 mm (W). The rear face of the IA is bonded or bolted to a 1.5 mm thick 6061-T6 Anti-Intrusion Plate (AIP) of size 200 mm x 350 mm; the attachment pattern is 4 x M8 bolts on a 180 mm x 150 mm rectangular pattern. The IA is fabricated from 5052-H38 aluminium honeycomb with nominal density 83 kg/m^3 (5.2 pcf, 3/8-inch cell, 0.002-inch foil), crush strength 2.1 MPa, stabilized compressive modulus 620 MPa, bulk Young's modulus treated as 620 MPa for linear pre-crush, Poisson ratio effectively 0. Load cases: LC1 (Regulatory impact) — 300 kg rigid mass at 7.0 m/s hits the front face normally with the AIP rear face rigidly fixed; this is a quasi-static-equivalent or explicit-dynamic event depending on solver. LC2 (Oblique impact) — same 300 kg mass, 7.0 m/s, impact angle 10 deg off-axis in the horizontal plane. LC3 (Bolt pull-out) — 4 kN steady tension on each AIP bolt with the IA body held fixed. Pass/fail: (R1) under LC1, average deceleration must be <= 20 g (196 m/s^2); (R2) under LC1, peak 3 ms deceleration must be <= 40 g; (R3) under LC1, energy absorbed must be >= 7350 J before rear-face contact; (R4) crush stroke must be <= 200 mm so the IA does not fully compact before stopping; (R5) under LC2, peak deceleration must stay <= 50 g and energy absorbed >= 6000 J; (R6) under LC3, AIP + bolt region max von Mises must stay below 184 MPa (6061-T6 yield/1.5). Primary verification: explicit-dynamic structural FEA of LC1 and LC2 (LS-DYNA, Abaqus Explicit, or Radioss with honeycomb material card MAT_126 or equivalent) plus linear static structural FEA of LC3. Vibration, thermal, fluid, and radiation analyses are explicitly not required. Output one STEP AP242 assembly (IA + AIP as two bonded bodies) plus a report listing IA mass, peak and average deceleration per case, crush stroke at end of event, absorbed energy per case, and max von Mises around bolt holes under LC3.",
+  "short_prompt": "Design a single-piece bolt-on Impact Attenuator for a collegiate formula-class racecar benchmark 2025 car per FSC 2025 T.3.18: 300 kg sled at 7.0 m/s into the rigid barrier (7350 J absorbed) with average deceleration <= 20 g and peak <= 40 g over any 3 ms window.\n\nEnvelope: minimum 200 x 100 x 200 mm, external cap 250 x 150 x 250 mm; 5052-H38 aluminum honeycomb (nominal density 83 kg/m^3, 3/8 in cell, crush strength 2.1 MPa); bonded/bolted to a 1.5 mm 6061-T6 AIP (200 x 350 mm) with 4 x M8 on a 180 x 150 mm pattern.\n\nFactor regime: yield FoS 1.5 on the AIP + bolt bosses under LC3; explicit-dynamics event gates for crush.\n\nLoad cases.\n- Regulatory 300 kg at 7.0 m/s axial impact.\n- Oblique 10 deg off-axis 300 kg at 7.0 m/s.\n- Bolt pull-out: 4 kN steady tension on each AIP bolt with the IA body held fixed.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_solver",
+        "reason": "Impact event at 7 m/s is an explicit-dynamics problem; linear static is insufficient for honeycomb progressive crush.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Altair Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FSC 2025 bolt-on impact attenuator",
+    "brief": "Honeycomb IA sized to FSC 2025 T.3.18 minimums; must decelerate 300 kg at 7 m/s with 20 g avg / 40 g peak caps and absorb >= 7350 J.",
+    "geometric_constraints": {
+      "min_LWH_mm": {
+        "L": 200,
+        "H": 100,
+        "W": 200
+      },
+      "max_LWH_mm": {
+        "L": 250,
+        "H": 150,
+        "W": 250
+      },
+      "AIP_size_mm": {
+        "W": 200,
+        "H": 350,
+        "thickness_mm": 1.5
+      },
+      "bolt_pattern_mm": {
+        "x": 180,
+        "y": 150,
+        "count": 4,
+        "size": "M8"
+      }
+    },
+    "material": {
+      "name": "5052-H38 aluminium honeycomb 5.2 pcf",
+      "properties": {
+        "density_kg_m3": 83,
+        "crush_strength_MPa": 2.1,
+        "stabilized_compressive_modulus_MPa": 620
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "frontal_impact",
+        "mass_kg": 300,
+        "velocity_m_s": 7.0,
+        "angle_deg": 0
+      },
+      {
+        "id": "LC2",
+        "name": "oblique_impact",
+        "mass_kg": 300,
+        "velocity_m_s": 7.0,
+        "angle_deg": 10
+      },
+      {
+        "id": "LC3",
+        "name": "bolt_pullout",
+        "per_bolt_N": 4000
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 2,
+      "report_fields": [
+        "mass_g",
+        "avg_decel_g_LC1",
+        "peak_decel_g_LC1",
+        "energy_absorbed_J_LC1",
+        "crush_stroke_mm",
+        "max_von_mises_LC3_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "average_deceleration",
+        "limit_g": 20,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_deceleration_3ms",
+        "limit_g": 40,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "energy_absorbed",
+        "limit_J": 7350,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "crush_stroke",
+        "limit_mm": 200,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5a",
+        "type": "structural_analysis",
+        "metric": "peak_deceleration_3ms",
+        "limit_g": 50,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5b",
+        "type": "structural_analysis",
+        "metric": "energy_absorbed",
+        "limit_J": 6000,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid hex + honeycomb MAT_126",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "LS-DYNA",
+        "Abaqus Explicit",
+        "Altair Radioss"
+      ],
+      "analysis_types": [
+        "explicit dynamic (LC1, LC2)",
+        "linear static (LC3)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "IA is a single-use crush device; modal not relevant.",
+      "thermal_analysis": "Test at ambient.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Honeycomb crush is post-buckling plastic progressive failure, captured by explicit material card, not linear eigenvalue."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Bond/adhesive peel test IAD",
+      "Tech-sheet impact test video"
+    ]
+  },
+  "eval_coverage": [
+    "collegiate formula-class racecar benchmark-family IA regulatory load case",
+    "explicit dynamics solver requirement",
+    "multi-angle impact robustness"
+  ]
+}

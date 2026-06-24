@@ -1,0 +1,439 @@
+{
+  "id": "185_sa2_ukseds_sdc",
+  "source": {
+    "catalog_ref": "SA2",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/185_sa2_ukseds_sdc.json",
+    "multipart_basis": "Decomposition mirrors a Cal Poly CDS Rev 14 3U CubeSat primary structure assembled from four deployer-rail corner members, +/-X and +/-Y side panels, +/-Z deck plates, internal PC/104 stack rods, and payload/ADCS mounting trays, typical of UKSEDS Satellite Design Challenge entries."
+  },
+  "domain": "satellite_structural",
+  "part_class": "3u_cubesat_primary_structure_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a 3U CubeSat primary structure benchmark compliant with Cal Poly CubeSat Design Specification (CDS) Rev 14 for 3U deployers. The structure is a monolithic 6061-T6 aluminum skeletonized chassis with external envelope 100.0 +/- 0.1 mm x 100.0 +/- 0.1 mm x 340.5 +/- 0.3 mm (stacked 3U), four deployer rails on the long corners (8.5 x 8.5 mm rails, at least 85% of each 340.5 mm long rail in contact with the P-POD), and a total mass at or below 4.0 kg (3 x 1.33 kg) per CDS Rev 14 3U mass cap. The structure must support internal electronics stacks using the standard PC/104 form factor (90 x 96 mm boards, 4 mounting holes at 85.60 x 82.55 mm), spaced up to 12 boards along the long axis. Loads per GEVS-SE GSFC-STD-7000 typical qualification levels for a secondary payload on a launcher like Falcon 9 / Vega / PSLV: (LC1) quasi-static 12 g axial + 7 g lateral simultaneously, (LC2) sine vibration 2.5 g at 5-100 Hz, (LC3) random vibration GRMS 14.1 at 20-2000 Hz, (LC4) shock response 1000 g peak 100-10000 Hz. Material 6061-T6 (yield 276 MPa, ultimate 310 MPa, E 69 GPa, density 2700 kg/m^3). Pass/fail: (R1) quasi-static max von Mises stress must not exceed 137 MPa (yield / SF 2.0 per NASA-STD-5001B Category A bracket), (R2) first natural frequency must be at least 100 Hz to clear the launcher primary interface per ECSS-E-HB-32-26A, (R3) total structure mass at or below 4.0 kg, (R4) a linear buckling analysis under 12 g axial + 7 g lateral must yield a first-mode load factor of at least 2.0, and (R5) deployer rail flatness tolerance must be +/- 0.1 mm along the 340.5 mm rail length. Vibration analysis (modal + random) is required for R2. Thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 solid body plus a structural report with max von Mises, first natural frequency, total mass, first buckling load factor, and rail flatness.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a multi-part assembly rather than a single solid body. The decomposition comprises (A) deployer_rail_corners (x4), (B) side_panels_X (x2), (C) side_panels_Y (x2), (D) deck_plate_minus_Z, (E) deck_plate_plus_Z, (F) pc104_stack_rods (x4), (G) payload_mounting_tray, (H) adcs_module_plate. The final FEM verification runs on the ASSEMBLED model only — per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a 3U CubeSat primary structure benchmark compliant with Cal Poly CubeSat Design Specification (CDS) Rev 14 for 3U deployers.\n\nThe structure is a monolithic 6061-T6 aluminum skeletonized chassis with external envelope 100.0 +/- 0.1 mm x 100.0 +/- 0.1 mm x 340.5 +/- 0.3 mm, four deployer rails on the long corners (8.5 x 8.5 mm rails, at least 85% of each 340.5 mm long rail in contact with the P-POD), and a total mass at or below 4.0 kg per CDS Rev 14 3U mass cap.\n\nMaterial 6061-T6 (yield 276 MPa, ultimate 310 MPa, E 69 GPa, density 2700 kg/m^3).\n\nLoad cases per GEVS-SE GSFC-STD-7000: LC1 quasi-static 12 g axial + 7 g lateral simultaneously; LC2 sine vibration 2.5 g at 5-100 Hz; LC3 random vibration GRMS 14.1 at 20-2000 Hz; LC4 shock response 1000 g peak 100-10000 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "CDS_rev14_compliance_check",
+        "reason": "CDS Rev 14 envelope/rail/mass compliance is a rule-checklist on the geometry, not FEA.",
+        "examples": [
+          "Cal Poly CDS checklist PDF"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CDS Rev 14 3U CubeSat primary structure (multi-part assembly)",
+    "brief": "Design a 6061-T6 3U CubeSat chassis (100 x 100 x 340.5 mm, <=4.0 kg) compliant with Cal Poly CDS Rev 14, passing GEVS quasi-static, modal >=100 Hz, and 2x buckling margin. [Multi-part assembly] deployer_rail_corners (x4), side_panels_X (x2), side_panels_Y (x2), deck_plate_minus_Z (x1), deck_plate_plus_Z (x1), pc104_stack_rods (x4), payload_mounting_tray (x1), adcs_module_plate (x1). FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "envelope_mm": [
+        100,
+        100,
+        340.5
+      ],
+      "envelope_tolerance_mm": [
+        0.1,
+        0.1,
+        0.3
+      ],
+      "deployer_rail_cross_section_mm": [
+        8.5,
+        8.5
+      ],
+      "rail_contact_pct_min": 85,
+      "pc104_board_mm": [
+        90,
+        96
+      ]
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "yield_MPa": 276,
+      "ultimate_MPa": 310,
+      "E_GPa": 69,
+      "density_kg_m3": 2700
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static",
+        "axial_g": 12,
+        "lateral_g": 7
+      },
+      {
+        "id": "LC2",
+        "name": "sine_vib",
+        "g": 2.5,
+        "freq_Hz": [
+          5,
+          100
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "random_vib",
+        "GRMS": 14.1,
+        "freq_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "shock",
+        "peak_g": 1000,
+        "freq_Hz": [
+          100,
+          10000
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "deployer_rails": "constrained in P-POD by 4 rails with 85% contact"
+    },
+    "objective": {
+      "primary": "pass CDS Rev 14 + GEVS quasi-static",
+      "secondary": "minimize structure mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "first_natural_frequency_Hz",
+        "total_mass_kg",
+        "first_buckling_load_factor",
+        "rail_flatness_mm",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "deployer_rail_corners",
+        "role": "four long corner rails that contact the P-POD for 340.5 mm with 85% min contact; CDS Rev 14 rail-flatness body",
+        "count_min": 4,
+        "geometric_constraints": {
+          "cross_section_mm": [
+            8.5,
+            8.5
+          ],
+          "length_mm": 340.5,
+          "flatness_tolerance_mm": 0.1
+        },
+        "material_hint": "6061-T6 machined rail, yield 276 MPa, hard-anodized slip surface",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side_panels_X",
+        "role": "+X and -X side panels closing the X faces, attaching to rail corners and deck plates",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plan_LxH_mm": [
+            83,
+            340.5
+          ],
+          "thickness_mm": 1.5,
+          "lightening_hole_pitch_mm": 30
+        },
+        "material_hint": "6061-T6 machined panel, yield 276 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "side_panels_Y",
+        "role": "+Y and -Y side panels closing the Y faces, attaching to rail corners and deck plates",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plan_LxH_mm": [
+            83,
+            340.5
+          ],
+          "thickness_mm": 1.5,
+          "lightening_hole_pitch_mm": 30
+        },
+        "material_hint": "6061-T6 machined panel, yield 276 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "deck_plate_minus_Z",
+        "role": "-Z deck plate closing the bottom of the 3U tube and tying rail feet",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            100,
+            100
+          ],
+          "thickness_mm": 2.0,
+          "deployer_standoff_mm": 6.5
+        },
+        "material_hint": "6061-T6 machined plate, yield 276 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "deck_plate_plus_Z",
+        "role": "+Z deck plate closing the top of the 3U tube and hosting antenna/ADCS interface",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            100,
+            100
+          ],
+          "thickness_mm": 2.0,
+          "deployer_standoff_mm": 6.5
+        },
+        "material_hint": "6061-T6 machined plate, yield 276 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "pc104_stack_rods",
+        "role": "four threaded rods clamping the PC/104 board stack along Z (PC/104 85.60 x 82.55 mm mounting pattern)",
+        "count_min": 4,
+        "geometric_constraints": {
+          "length_mm": 320,
+          "diameter_mm": 3,
+          "thread": "M3"
+        },
+        "material_hint": "A2-70 or A4-70 stainless threaded rods with nyloc nuts",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "payload_mounting_tray",
+        "role": "internal tray carrying mission payload within one 1U cell of the 3U envelope",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            90,
+            96
+          ],
+          "thickness_mm": 2,
+          "mounting_hole_pattern_mm": [
+            85.6,
+            82.55
+          ]
+        },
+        "material_hint": "6061-T6 tray with PC/104 hole pattern",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "adcs_module_plate",
+        "role": "plate mounting attitude determination and control module (reaction wheels or magnetorquers) within the bus",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            90,
+            96
+          ],
+          "thickness_mm": 2,
+          "mounting_hole_pattern_mm": [
+            85.6,
+            82.55
+          ]
+        },
+        "material_hint": "6061-T6 plate with non-magnetic ADCS mounting bosses",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "see original brief",
+      "coordinate_system": "inherit from original"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 137,
+        "derivation": "Al 6061-T6 yield 276 / SF 2.0 per NASA-STD-5001B Category A",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 100,
+        "derivation": "typical launcher first-mode cutoff",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 4.0,
+        "derivation": "Cal Poly CDS Rev 14 3U cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "deployer_rail_flatness",
+        "limit_mm": 0.1,
+        "derivation": "Cal Poly CDS Rev 14 rail tolerance",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across all inter-part interfaces (rail-panel bolts, panel-deck bolts, PC/104 stack rod clamp, tray/ADCS mounts) <= 1.0 under LC1 + LC3.",
+        "metric": "max DCR across IF1..IFn",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Assembled structure must retain deployer rail 85% contact with P-POD after LC1 quasi-static deformation.",
+        "metric": "rail-POD contact percent after LC1",
+        "threshold": 85,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "random vibration",
+        "linear buckling"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "deployer rail corners A are bolted to +/-X side panels B along full 340.5 mm length; transfer shear between rails and panels"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "deployer rail corners A are bolted to +/-Y side panels C; provides torsional closure"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "rail corners A bolt to -Z deck plate D at bottom; transfers axial launch load into deck"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "rail corners A bolt to +Z deck plate E at top; closes tube at separation face"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "D",
+        "F"
+      ],
+      "mediated_by": "threaded",
+      "load_path": "PC/104 stack rods F are threaded into -Z deck plate D bosses; preload clamps the board stack"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "E",
+        "F"
+      ],
+      "mediated_by": "threaded",
+      "load_path": "PC/104 stack rods F thread into +Z deck plate E nuts; completes stack preload chain"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "F",
+        "G"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "payload mounting tray G is clamped between stack rods F via standoffs in PC/104 pattern"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "F",
+        "H"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "ADCS module plate H is clamped between stack rods F via standoffs in PC/104 pattern"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "First natural frequency, launch-load stress, buckling margin, and deployer rail flatness depend on the assembled structure (rail-panel-deck stiffness + PC/104 stack clamp preload); per-part metrics are reported but do not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Although the original sample is described as monolithic, real CubeSat primary structures are invariably bolted assemblies of rails + panels + deck plates + PC/104 stack rods; multi-part FEA captures the realistic stiffness + joint margins.",
+    "speculation_caveats": "parts[] counts and interfaces[] reflect typical CDS Rev 14 3U compliant skeletonized chassis designs; not derived from a specific UK SEDS SDC rulebook.",
+    "original_sample_preserved_at": "docs/eval/samples/185_sa2_ukseds_sdc.json"
+  }
+}

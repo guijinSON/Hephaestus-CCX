@@ -1,0 +1,811 @@
+{
+  "id": "340_i_eu8_fsg_monocoque",
+  "source": {
+    "catalog_ref": "I-EU8 (cross-ref HV family)",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/340_i_eu8_fsg_monocoque.json",
+    "multipart_basis": "Design-specific decomposition reflecting an FSG-style CFRP sandwich monocoque: separate upper and lower CFRP shells bonded at a split-line, discrete front bulkhead, main hoop and rear bulkhead, side impact structure, firewall, anti-intrusion plate, harness hardpoints, and metallic inserts. Part families correspond to SES-equivalency zones defined by FS Rules Ch T. No rulebook citations fabricated."
+  },
+  "domain": "automotive_structural",
+  "part_class": "formula_student_monocoque_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a CFRP monocoque primary structure for a collegiate formula-class racecar benchmark 2026 electric-drive (EV) car, complying with FS Rules 2026 chapter T (Technical Regulations) and the Structural Equivalency Spreadsheet (SES) approach. The monocoque substitutes for the prescriptive steel space-frame primary structure; equivalency is demonstrated per FS Rules Appendix T.2. Vehicle total wet mass 240 kg excluding driver; driver 75 kg. Envelope: wheelbase 1600 mm, track 1200 mm, monocoque length 2200 mm, nominal cockpit cross-section 320 mm wide x 500 mm tall. Laminate schedule: CFRP skins 2 mm (outer) + aramid honeycomb core 25 mm + CFRP skins 2 mm (inner). Skin material: T800/epoxy twill fabric (E_eff 60 GPa, tensile 750 MPa, compressive 650 MPa, density 1540 kg/m^3). Core: Nomex aramid honeycomb 48 kg/m^3 (shear 1.45 MPa, density 48 kg/m^3). Mandatory SES equivalency targets vs steel space-frame baseline (prescriptive 1.0 inch x 0.095 wall 4130 chromoly): (a) side-impact equivalency: panel must absorb >= 7350 J at <= 40 g average on 300 kg mass; (b) front-bulkhead equivalency: front impact structure attached in front must transmit no more than 40 g peak to driver; (c) main-hoop + front-hoop equivalency: passing nominal rollover load of 6 kN axial on each hoop without yield; (d) harness bar tensile 13.24 kN per FS T.3.6.2. Load cases: (LC1) front impact 20 g on 315 kg (vehicle + driver) into 300 mm impact attenuator reacting at front bulkhead - monocoque front face must not rupture; (LC2) side impact 7 g on 315 kg at side-impact panel region; (LC3) rollover 6 kN axial on main-hoop peak mount while wheels pinned; (LC4) harness bar pull 13.24 kN applied at the harness attachment bolts into monocoque; (LC5) stiffness: torsional stiffness from +/-1000 N couple across front axle vs rear axle must exceed 2000 N*m/deg; (LC6) structural equivalency panel test (LC-SES): simulate the 3-point bending test defined in FS Rules Appendix T.2 (e.g. 3-point bend with span and load per the spreadsheet) and confirm energy/stiffness per spec. Pass/fail (per collegiate formula-class racecar 2026 + FS Rules Ch T): (R1) max CFRP skin Tsai-Wu failure index at LC1-LC4 ultimate must remain below 1.0 at factor-of-safety 1.5 applied; (R2) core shear under LC1 and LC2 must remain below 0.725 MPa (1.45 / 2.0 core FoS); (R3) torsional stiffness under LC5 must exceed 2000 N*m/deg; (R4) monocoque dry mass (all skins + core + inserts, excluding rollbars and other metallic hardware) must not exceed 45 kg; (R5) first torsional mode must exceed 25 Hz; (R6) harness bar pull-out under LC4 must not produce insert pull-through above 10 kN limit per FS Rules T.3.6.2; (R7) SES panel test equivalency (LC6) must meet the prescriptive baseline (bending stiffness E*I and energy absorption) recorded in the collegiate formula-class racecar SES spreadsheet. Thermal, fluid, radiation, buckling not primary. Deliverables: STEP AP242 of monocoque shell (sandwich layers as one solid), layup schedule, FEA per load case, SES equivalency tables, modal report.\n\n--- ASSEMBLY RECONFIGURATION ---\nDelivered as a multi-part assembly reflecting the FSG monocoque physical build and the SES zone map: the outer CFRP sandwich is split into an upper shell and lower shell bonded at the cockpit split-line, with a front bulkhead co-bonded at the nose, a tubular main hoop welded into steel root shear plates bonded into the monocoque, a rear bulkhead terminating the cockpit aft, a side-impact structure zone (discrete CFRP panel zones upper and lower SIS per SES), a composite firewall aft of driver, an anti-intrusion plate inside the front bulkhead, harness hardpoints as metallic inserts at shoulder/lap/anti-submarine positions, and localized metallic inserts at suspension mounts. Interfaces include co-bonded (upper-lower shells, bulkheads, firewall, AIP), welded-into-insert (main hoop to root plate), and bolted (harness bar into hardpoint inserts). Final FEM verification runs on the ASSEMBLED model only; per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case (LC1 front impact). All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a CFRP monocoque primary structure for a collegiate formula-class racecar benchmark 2026 electric-drive (EV) car, complying with FS Rules 2026 chapter T and the Structural Equivalency Spreadsheet (SES) approach per FS Rules Appendix T.2.\n\nEnvelope: wheelbase 1600 mm, track 1200 mm, monocoque length 2200 mm, cockpit cross-section 320 mm wide x 500 mm tall. Vehicle wet mass 240 kg excluding 75 kg driver. Laminate: CFRP skins 2 mm + aramid honeycomb core 25 mm + CFRP skins 2 mm.\n\nMaterials: T800/epoxy twill (tensile 750 MPa, compressive 650 MPa); Nomex aramid honeycomb 48 kg/m^3 (shear 1.45 MPa).\n\nLoad cases: (LC1) front impact 20 g on 315 kg into 300 mm attenuator reacting at front bulkhead; (LC2) side impact 7 g on 315 kg at SIS region; (LC3) rollover 6 kN axial on main-hoop peak mount with wheels pinned; (LC4) harness bar pull 13.24 kN per FS T.3.6.2; (LC5) torsional stiffness from +/-1000 N couple across axles must exceed 2000 N*m/deg; (LC6) SES 3-point bend per Appendix T.2.\n\nPass/fail: (R1) CFRP skin Tsai-Wu index < 1.0 at FoS 1.5 across LC1-LC4; (R2) core shear under LC1/LC2 < 0.725 MPa (1.45/2.0); (R3) torsional stiffness > 2000 N*m/deg; (R4) monocoque dry mass <= 45 kg; (R5) first torsional mode > 25 Hz; (R6) harness pull-out under LC4 no insert pull-through above 10 kN per FS T.3.6.2; (R7) SES panel test equivalency met.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "FSG_SES_spreadsheet",
+        "reason": "Structural Equivalency Spreadsheet is mandated by FS Rules and is not FEA; it tabulates E*I, E*A, and energy equivalence vs prescriptive steel baseline.",
+        "examples": [
+          "collegiate formula-class racecar SES 2026 xlsx"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-class racecar benchmark 2026 CFRP Monocoque (multi-part assembly)",
+    "brief": "CFRP skin + Nomex core sandwich monocoque, FS Rules Ch T + collegiate formula-class racecar SES equivalency to steel space frame. Decomposition: CFRP upper shell, CFRP lower shell, front bulkhead, main hoop + root plates, rear bulkhead, side impact structure zones, firewall, anti-intrusion plate, harness hardpoints, suspension/insert set. FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "wheelbase_mm": 1600,
+      "track_mm": 1200,
+      "mono_length_mm": 2200,
+      "cockpit_width_mm": 320,
+      "cockpit_height_mm": 500,
+      "sandwich_build_mm": "2 skin + 25 core + 2 skin"
+    },
+    "material": {
+      "skin": {
+        "name": "T800/epoxy twill",
+        "E_GPa": 60,
+        "tensile_MPa": 750,
+        "compressive_MPa": 650,
+        "density_kg_m3": 1540
+      },
+      "core": {
+        "name": "Nomex aramid honeycomb 48",
+        "shear_MPa": 1.45,
+        "density_kg_m3": 48
+      }
+    },
+    "vehicle_mass_kg": {
+      "wet": 240,
+      "with_driver": 315
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "front_impact_20g",
+        "magnitude_N": 61887,
+        "application": "reacting at front bulkhead"
+      },
+      {
+        "id": "LC2",
+        "name": "side_impact_7g",
+        "magnitude_N": 21670,
+        "application": "side-impact panel"
+      },
+      {
+        "id": "LC3",
+        "name": "rollover",
+        "magnitude_N": 6000,
+        "application": "main-hoop axial"
+      },
+      {
+        "id": "LC4",
+        "name": "harness_pull",
+        "magnitude_N": 13240,
+        "application": "harness bar mounts"
+      },
+      {
+        "id": "LC5",
+        "name": "torsion_couple",
+        "magnitude_N": 1000,
+        "application": "front vs rear axle couple"
+      },
+      {
+        "id": "LC6",
+        "name": "SES_3pt_bend",
+        "application": "per collegiate formula-class racecar SES spreadsheet"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "mono_mass_kg",
+        "tsai_wu_max_per_case",
+        "core_shear_LC1_LC2_MPa",
+        "torsional_stiffness_Nm_per_deg",
+        "first_torsion_mode_Hz",
+        "insert_pullout_LC4_kN",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "cfrp_shell_upper",
+        "role": "upper CFRP sandwich shell (roof over cockpit and upper SIS zone) co-bonded to lower shell at split-line",
+        "count_min": 1,
+        "geometric_constraints": {
+          "axial_span_mm": [
+            0,
+            2200
+          ],
+          "sandwich_build_mm": "2 skin + 25 core + 2 skin",
+          "split_line_height_mm_from_floor": 250
+        },
+        "material_hint": "T800/epoxy twill skins + Nomex 48 core",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "cfrp_shell_lower",
+        "role": "lower CFRP sandwich shell (floor + lower SIS zone) co-bonded to upper shell and carrying suspension inserts",
+        "count_min": 1,
+        "geometric_constraints": {
+          "axial_span_mm": [
+            0,
+            2200
+          ],
+          "sandwich_build_mm": "2 skin + 25 core + 2 skin"
+        },
+        "material_hint": "T800/epoxy twill skins + Nomex 48 core",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "front_bulkhead",
+        "role": "composite front bulkhead mounting the impact attenuator and reacting LC1 front-impact load into shell",
+        "count_min": 1,
+        "geometric_constraints": {
+          "axial_position_mm_from_nose": 300,
+          "thickness_mm_effective": 16,
+          "interfaces": "IA bolted forward; AIP bonded aft"
+        },
+        "material_hint": "CFRP sandwich with higher skin ply count",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "main_hoop",
+        "role": "tubular steel main hoop welded into root shear plates bonded into monocoque; provides rollover equivalency",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tube_OD_mm_min": 25.4,
+          "tube_wall_mm_min": 2.4,
+          "root_plate_pattern": "bonded CFRP+steel shear plate per side"
+        },
+        "material_hint": "4130 or equivalent steel tube",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "rear_bulkhead",
+        "role": "composite rear bulkhead terminating cockpit and carrying harness shoulder hardpoints + rear suspension inserts",
+        "count_min": 1,
+        "geometric_constraints": {
+          "axial_position_mm_from_nose": 1800,
+          "thickness_mm_effective": 16
+        },
+        "material_hint": "CFRP sandwich",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "side_impact_structure_zone",
+        "role": "discrete upper and lower side-impact panel zones of the shell with higher ply count per SES; must absorb 7350 J",
+        "count_min": 2,
+        "geometric_constraints": {
+          "axial_span_mm": [
+            600,
+            1600
+          ],
+          "per_side": true,
+          "upper_lower_zones_per_side": 2
+        },
+        "material_hint": "CFRP sandwich with SES-tuned layup",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "firewall",
+        "role": "fire-rated composite firewall aft of driver isolating HV battery/motor compartment",
+        "count_min": 1,
+        "geometric_constraints": {
+          "axial_position_mm_from_nose": 1650,
+          "thickness_mm_min": 2
+        },
+        "material_hint": "CFRP+ceramic barrier layer (fire-rated)",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "anti_intrusion_plate",
+        "role": "anti-intrusion plate (AIP) bonded to aft face of front bulkhead",
+        "count_min": 1,
+        "geometric_constraints": {
+          "thickness_mm_min": 1.5,
+          "material_min": "aluminum 7075-T6 or SES-equivalent CFRP"
+        },
+        "material_hint": "7075-T6 (1.5 mm) or SES-equivalent CFRP",
+        "speculation": true
+      },
+      {
+        "part_id": "I",
+        "name": "harness_hardpoints",
+        "role": "metallic harness attachment inserts at shoulder (rear bulkhead), lap (lower shell), and anti-submarine (lower shell) positions",
+        "count_min": 6,
+        "geometric_constraints": {
+          "design_load_kN": 13.24,
+          "insert_type": "bonded+through-bolted metallic",
+          "per_belt_point": 1
+        },
+        "material_hint": "steel or 7075-T6 bonded insert",
+        "speculation": true
+      },
+      {
+        "part_id": "J",
+        "name": "suspension_inserts",
+        "role": "localized metallic inserts at four suspension pickup zones on lower shell",
+        "count_min": 8,
+        "geometric_constraints": {
+          "per_corner": "2 (upper + lower wishbone)",
+          "insert_type": "bonded aluminum sleeve"
+        },
+        "material_hint": "7075-T6 bonded inserts",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "wheelbase_mm": 1600,
+      "track_mm": 1200,
+      "mono_length_mm": 2200,
+      "cockpit_width_mm": 320,
+      "cockpit_height_mm": 500,
+      "coordinate_system": "vehicle axes: X longitudinal (nose+), Y lateral, Z up; origin at nose bulkhead centerline"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_ultimate_index",
+        "limit": 1.0,
+        "derivation": "loads x 1.5 then index <= 1.0",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "core_shear_max",
+        "limit_MPa": 0.725,
+        "derivation": "1.45 / 2.0 core FoS",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "torsional_stiffness",
+        "limit_Nm_per_deg": 2000,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "monocoque_dry_mass",
+        "limit_kg": 45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsion_mode",
+        "limit_Hz": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "harness_insert_pullout",
+        "limit_kN": 10,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "SES_equivalency_vs_baseline",
+        "limit": ">= prescriptive 4130 baseline for E*I and energy",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "type": "structural_analysis",
+        "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces (shell split-line, bulkhead bond lines, main hoop root plates, harness hardpoints, suspension inserts) <= 1.0 under the governing load case (LC1 front impact).",
+        "metric": "max_DCR_across_IF1_to_IF9",
+        "threshold": 1.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "scope": "assembled_only",
+        "operator": "<="
+      },
+      {
+        "id": "R_asm2",
+        "type": "structural_analysis",
+        "description": "Upper-lower shell split-line (IF1) bond peel stress under LC2 side impact must remain below adhesive-specific peel limit (design hint: 8 MPa for epoxy film adhesive).",
+        "metric": "split_line_peel_MPa",
+        "limit_MPa": 8.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "scope": "assembled_only",
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[5].geometric_constraints",
+          "prompt.parts[6].count_min",
+          "prompt.parts[6].geometric_constraints",
+          "prompt.parts[7].count_min",
+          "prompt.parts[7].geometric_constraints",
+          "prompt.parts[8].count_min",
+          "prompt.parts[8].geometric_constraints",
+          "prompt.parts[9].count_min",
+          "prompt.parts[9].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell (sandwich modeling) for monocoque; solids for metallic inserts and main hoop; connector elements for bonded interfaces",
+      "mesh_size_mm": 10,
+      "solver_hints": [
+        "ANSYS ACP + Mechanical",
+        "Abaqus Composite Layup"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "SES LC6 (coupon-level static)",
+        "modal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "co-bonded split-line joint (epoxy film adhesive + overlap lay-up)",
+      "load_path": "cockpit hoop-stiffness load path under LC2/LC5; peel/shear critical"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "C",
+        "B"
+      ],
+      "mediated_by": "co-bonded nose bulkhead into lower shell (and into upper shell through perimeter tab)",
+      "load_path": "LC1 front-impact 61.9 kN reacted from IA into shell"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C",
+        "H"
+      ],
+      "mediated_by": "anti-intrusion plate bonded to aft face of front bulkhead",
+      "load_path": "penetration protection under LC1; AIP reacts into bulkhead skins"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "D",
+        "A"
+      ],
+      "mediated_by": "main hoop welded to steel root plates bonded through both shells",
+      "load_path": "LC3 rollover 6 kN axial into shell via root plates"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "E",
+        "A"
+      ],
+      "mediated_by": "rear bulkhead co-bonded to upper + lower shells",
+      "load_path": "cockpit closure + harness shoulder reaction load path"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "G",
+        "E"
+      ],
+      "mediated_by": "firewall bonded to rear bulkhead and perimeter shell",
+      "load_path": "fire-barrier + HV compartment closure; minor load path"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "I",
+        "B"
+      ],
+      "mediated_by": "harness hardpoint inserts bonded + through-bolted into lower shell and rear bulkhead",
+      "load_path": "LC4 13.24 kN harness pull reacted through insert pull-through (R6)"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "J",
+        "B"
+      ],
+      "mediated_by": "suspension inserts bonded into lower shell at four pickup zones",
+      "load_path": "suspension loads + LC5 torsion couple reacted through insert zones"
+    },
+    {
+      "id": "IF9",
+      "between": [
+        "F",
+        "A",
+        "B"
+      ],
+      "mediated_by": "SIS ply build-up continuous with upper and lower shells",
+      "load_path": "LC2 side-impact 21.67 kN absorbed in SIS zone"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "SES equivalency (R7) and torsional stiffness (R3) are defined on the closed monocoque; main-hoop rollover (R6/LC3) only reacts correctly via bonded root plates; harness pull-through (R6/LC4) is an insert-plus-laminate system; shell peel (IF1) is only meaningful on the assembled upper+lower shells.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "FS Rules Appendix T.2 SES defines the monocoque as a zoned structure (front bulkhead, SIS upper/lower, main hoop, rear bulkhead, firewall, AIP, harness hardpoints) each with prescriptive baseline requirements; the physical build further splits the shell at a co-bond split-line.",
+    "speculation_caveats": "Zone layout and insert count are consistent with typical FSG practice; any explicit rulebook thresholds remain those carried from the original brief.",
+    "original_sample_preserved_at": "docs/eval/samples/340_i_eu8_fsg_monocoque.json"
+  },
+  "rulebook_citations": {},
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "R7",
+      "R_asm1",
+      "R_asm2"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[5].geometric_constraints",
+      "prompt.parts[6].count_min",
+      "prompt.parts[6].geometric_constraints",
+      "prompt.parts[7].count_min",
+      "prompt.parts[7].geometric_constraints",
+      "prompt.parts[8].count_min",
+      "prompt.parts[8].geometric_constraints",
+      "prompt.parts[9].count_min",
+      "prompt.parts[9].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3",
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3,LC4",
+      "metric": "tsai_wu_ultimate_index",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2",
+      "metric": "core_shear_max",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC5"
+      ],
+      "deck_step": "generated_static_step:LC5",
+      "metric": "torsional_stiffness",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "monocoque_dry_mass",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_OTHER",
+      "solver": "calculix",
+      "analysis_card": "*DYNAMIC",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "generated_dynamic_step",
+      "metric": "first_torsion_mode",
+      "metric_source": "dynamic/static response block",
+      "outputs": [
+        "model.dat: dynamic displacement response"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_005",
+      "requirement_id": "R6",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC4",
+      "metric": "harness_insert_pullout",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R7_006",
+      "requirement_id": "R7",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC6"
+      ],
+      "deck_step": "generated_static_step:LC6",
+      "metric": "SES_equivalency_vs_baseline",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_007",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "max_DCR_across_IF1_to_IF9",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm2_008",
+      "requirement_id": "R_asm2",
+      "requirement_path": "requirements.pass_fail_criteria[8]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC2",
+      "metric": "split_line_peel_MPa",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_009",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[9]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

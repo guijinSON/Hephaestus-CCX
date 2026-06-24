@@ -1,0 +1,137 @@
+{
+  "id": "065_jp10_jsce_bridge_model",
+  "source": {
+    "catalog_ref": "JP10",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "civil_structural",
+  "part_class": "bridge_model",
+  "full_prompt": "Design a single-span bridge model for a civil-engineering student bridge benchmark. The bridge must span 1000 mm between simple supports and carry a live point load of 50 kg (approximately 490 N) applied at midspan. Allowed materials are balsa, basswood, plywood, lightweight paperboard, and construction paper with PVA adhesive; metal and carbon-fiber are prohibited per the standard governing rulebook. Self-weight of the structure must not exceed 1.5 kg. Under the 50 kg midspan point load, the maximum downward midspan deflection must not exceed L/400 where L = 1000 mm, giving a deflection limit of 2.5 mm. No member may exhibit visible fracture or permanent buckling under the 50 kg load. The deck must be at least 800 mm long to provide an unobstructed loading window. Supports are simple (pin + roller) spaced 1000 mm apart. Scoring is primarily the ratio of sustained load to self-weight, but the pass/fail gates are the deflection limit and the self-weight cap. Primary verification is linear static structural FEA (orthotropic linear elastic wood), plus a linear buckling eigenvalue check with minimum load factor 1.5 at the 50 kg load case to protect slender compression chords. Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the bridge, a bill of materials, and a report listing self-weight in grams, midspan deflection at 50 kg in mm, and first buckling load factor.",
+  "short_prompt": "Design a single-span bridge model for a civil-engineering student bridge benchmark. Span 1000 mm between simple supports (pin + roller); deck >= 800 mm long. Allowed materials: balsa, basswood, plywood, lightweight paperboard, construction paper, with PVA adhesive; metal and carbon fiber prohibited. Self-weight <= 1.5 kg. Slender compression chords must pass a linear buckling eigenvalue check with first-mode load factor >= 1.5 at the 50 kg load.\n\nLoad cases.\n- LC1 midspan live point load: 50 kg (~490 N) applied statically; midspan deflection limit L/400 = 2.5 mm. No member may show visible fracture or permanent buckling.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "1 m span student bridge model",
+    "brief": "Design a 1000 mm span bridge that carries 50 kg midspan, self-weight ≤ 1.5 kg, deflection ≤ L/400.",
+    "geometric_constraints": {
+      "span_mm": 1000,
+      "deck_length_mm_min": 800,
+      "support_condition": "simply supported"
+    },
+    "material": {
+      "allowed": [
+        "balsa",
+        "basswood",
+        "plywood",
+        "paperboard",
+        "construction paper",
+        "PVA adhesive"
+      ],
+      "prohibited": [
+        "metal",
+        "carbon fiber"
+      ]
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "midspan_live_load",
+        "magnitude_kg": 50,
+        "magnitude_N": 490,
+        "location": "midspan"
+      }
+    ],
+    "boundary_conditions": {
+      "support_A": "pin",
+      "support_B": "roller"
+    },
+    "objective": {
+      "maximize": "load_to_selfweight_ratio"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "self_weight_g",
+        "midspan_deflection_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "self_weight_kg",
+        "limit_kg": 1.5,
+        "derivation": "Rulebook self-weight cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection_mm",
+        "limit_mm": 2.5,
+        "derivation": "L/400 = 1000/400",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell",
+      "solver_hints": [
+        "CalculiX",
+        "OpenSees",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "span + point-load bridge FEA",
+    "self-weight budget",
+    "L/400 deflection check",
+    "buckling of slender compression chord"
+  ]
+}

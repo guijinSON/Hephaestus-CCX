@@ -1,0 +1,128 @@
+**
+** ASME HPVC tandem Roll Protection System (RPS) -- analysis template
+** (mesh + NSETs spliced in by wire_bcs.py from the agent's STEP)
+**
+** Units: mm, N, MPa, t (tonne)
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIXED      - 4 base mounts (lower face of legs, all 6 DOF clamped)
+**   NTOP_LOAD   - top-center of the front roll hoop (LC1 + LC4)
+**   NSIDE       - shoulder height on the front hoop  (LC2 + LC4)
+**   NHARNESS    - harness-attachment tab tip          (LC3)
+**
+** Element type: solid tetrahedra (C3D from gmsh).  ELSET=Eall is built
+** automatically by wire_bcs.py from gmsh's per-volume C3D ELSETs.
+**
+** Material: 4130 normalized chromoly steel
+**   E = 205 GPa, nu = 0.29, rho = 7.85e-9 t/mm^3 (= 7850 kg/m^3)
+**   yield 460 MPa, ultimate 670 MPa
+**
+** Load convention: each *CLOAD on an NSET below applies the listed
+** scalar to EVERY node in that NSET, so the per-step total scales
+** linearly with the NSET's node count.  check.py reads mesh.inp to
+** count NSET nodes and scales the CCX-reported displacement and von
+** Mises peaks by (target_total_force / per_step_applied_total) so
+** the pass/fail comparison uses the spec's actual load magnitudes
+** (LC1 = 2670 N, LC2 = 1330 N, LC3 = 1334 N, LC4 = LC1 + LC2).
+** Per-node values below are intentionally 1.0 N so the scaling
+** factor is just (target_force / NSET_node_count).
+**
+*MATERIAL, NAME=STEEL4130
+*ELASTIC
+205000., 0.29
+*DENSITY
+7.85E-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=STEEL4130
+**
+** ---- Boundary conditions (4 base mounts fully clamped) ------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.
+**
+** =====================================================================
+** STEP 1: LC1 top load -- aimed at driver, 12 deg from vertical
+**   Direction: cos(12) downward (-z) and sin(12) toward cockpit (+x).
+**     fx_unit = +sin(12 deg) = +0.20791
+**     fz_unit = -cos(12 deg) = -0.97815
+**   Per-node values are normalized so total/node = 1.0 N magnitude;
+**   check.py rescales the response to the spec's 2670 N total.
+** =====================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD, OP=NEW
+NTOP_LOAD, 1,  0.20791
+NTOP_LOAD, 3, -0.97815
+*NODE PRINT, NSET=NTOP_LOAD
+U
+*EL PRINT, ELSET=Eall
+S
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** =====================================================================
+** STEP 2: LC2 side load -- horizontal at shoulder, 1.0 N/node toward +y
+**   NSIDE patch lives on front-left leg (y < 0); the +y push is the
+**   crash-side intrusion direction.  check.py rescales to 1330 N total.
+** =====================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD, OP=NEW
+NSIDE, 2, 1.0
+*NODE PRINT, NSET=NSIDE
+U
+*EL PRINT, ELSET=Eall
+S
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** =====================================================================
+** STEP 3: LC3 harness pull -- 1.0 N/node rearward (+x) at tab tip
+**   Rescaled in check.py to 1334 N total.
+** =====================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD, OP=NEW
+NHARNESS, 1, 1.0
+*NODE PRINT, NSET=NHARNESS
+U
+*EL PRINT, ELSET=Eall
+S
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** =====================================================================
+** STEP 4: LC4 combined top + side simultaneously
+**   Same per-node unit components as LC1 + LC2 active in one step.
+**   check.py uses superposition (the linear-elastic combined response
+**   equals scaled-LC1 + scaled-LC2) for the deflection-limit check.
+** =====================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD, OP=NEW
+NTOP_LOAD, 1,  0.20791
+NTOP_LOAD, 3, -0.97815
+NSIDE,     2,  1.0
+*NODE PRINT, NSET=NTOP_LOAD
+U
+*NODE PRINT, NSET=NSIDE
+U
+*EL PRINT, ELSET=Eall
+S
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP

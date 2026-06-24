@@ -1,0 +1,143 @@
+{
+  "id": "072_jp17_kibo_rpc",
+  "source": {
+    "catalog_ref": "JP17",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "iss_payload_mounting_fixture",
+  "full_prompt": "Design a mounting fixture that would secure a small CubeSat-scale payload to an ISS internal payload rail for an illustrative orbital-robotics programming challenge (reference problem; actual flight hardware is agency-supplied). The fixture is a 100 mm x 100 mm x 30 mm aluminum plate with four mounting holes on a 50 mm pitch matching the rail standoff. The fixture must carry a 2 kg payload under the ISS on-orbit quasi-static load of 0.1 g (safety factor 2.0 applied to design to 0.2 g equivalent) and under launch-to-ISS quasi-static of 11 g axial with safety factor 1.25 yield / 1.4 ultimate per NASA-STD-5001B. The fixture must have rounded corners with radius >= 3 mm (ISS safety - no sharp edges that can catch on fabric or crew gloves). All exposed surfaces must be non-magnetic and must meet outgassing requirements (TML < 1.0%, CVCM < 0.1% per ASTM E595) — this is a material-cert check, not FEA. AR-tag positions on the top face must be located to +/-1 mm absolute tolerance so that the free-flying-robot camera-based docking routine can localize the fixture. Primary verification is structural FEA for the 11 g launch and 0.2 g on-orbit cases, plus a materials-certification side check for outgassing. Vibration (random vib qualification at GEVS 14.1 Grms) is technically required for flight but is NOT required at this illustrative design gate. Thermal and fluid are also excluded; radiation is excluded for LEO interior habitat. Deliverables: STEP AP242 of the fixture, a material cert statement, and a report listing mass in grams, max stress at 11 g in MPa, and AR-tag position accuracy in mm.",
+  "short_prompt": "Design a small CubeSat-scale payload mounting fixture for attachment to an internal ISS payload rail (illustrative reference problem for an orbital-robotics programming challenge; flight hardware is agency-supplied). Primary structure aluminum plate. Stress allowables per NASA-STD-5001B (yield FoS 1.25, ultimate FoS 1.4). ISS safety: all exposed corners rounded to >= 3 mm radius (no sharp edges catching fabric/gloves). Material must be non-magnetic and meet ASTM E595 outgassing (TML < 1.0%, CVCM < 0.1%) - vendor-cert lookup. AR-tag positions on the top face must be accurate to +/- 1 mm for the free-flying robot's camera-based docking.\n\nEnvelope: 100 x 100 x 30 mm plate with four mounting holes on a 50 mm pitch matching the ISS rail standoff.\n\nLoad cases on the 2 kg payload.\n- LC1 launch quasi-static: 11 g axial.\n- LC2 on-orbit quasi-static: 0.1 g (with safety factor 2.0 => design to 0.2 g equivalent).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "material_cert_lookup",
+        "reason": "ASTM E595 outgassing (TML/CVCM) and non-magnetic certification are vendor datasheet lookups.",
+        "examples": [
+          "NASA Outgassing Database"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ISS payload mounting fixture (illustrative)",
+    "brief": "Design a 100 x 100 x 30 mm Al mounting plate for 2 kg payload on ISS rails, survives 11 g launch + 0.2 g on-orbit, outgassing-compliant.",
+    "geometric_constraints": {
+      "plate_mm": {
+        "L": 100,
+        "W": 100,
+        "H": 30
+      },
+      "mounting_hole_pitch_mm": 50,
+      "corner_radius_mm_min": 3,
+      "AR_tag_position_tolerance_mm": 1.0
+    },
+    "material": {
+      "typical": "Al 6061-T6 (outgassing-compliant)",
+      "Al6061_T6": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_11g_axial",
+        "magnitude_g": 11,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "onorbit_0p2g",
+        "magnitude_g": 0.2,
+        "direction": "any"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting_holes": "fixed 6 DOF"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "mass_g",
+        "max_vm_stress_LC1_MPa",
+        "AR_tag_position_accuracy_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 0.8,
+        "derivation": "NASA-STD-5001B yield FoS 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "corner_radius_mm",
+        "limit_mm": 3,
+        "derivation": "ISS no-sharp-edge safety",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "AR_tag_position_accuracy_mm",
+        "limit_mm": 1.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10",
+      "solver_hints": [
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Full GEVS qual is flight-gate, not illustrative design gate.",
+      "thermal_analysis": "ISS interior habitat, not in gate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "LEO interior, not in gate."
+    },
+    "flagged_uncertainty": "This reference problem is primarily a programming challenge; the mechanical fixture prompt is illustrative, not a direct rulebook extraction."
+  },
+  "eval_coverage": [
+    "ISS safety rounding",
+    "launch quasi-static",
+    "outgassing material cert",
+    "AR-tag positional tolerance"
+  ]
+}

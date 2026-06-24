@@ -1,0 +1,187 @@
+{
+  "id": "175_md9_collegiate_inventors",
+  "source": {
+    "catalog_ref": "MD9",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "medical_device",
+  "part_class": "transcutaneous_drug_reservoir",
+  "full_prompt": "Design a magnetically coupled transcutaneous drug delivery reservoir for an implantable medical device project. The device is a subcutaneously implanted 316L stainless steel reservoir (internal volume 5.0 mL, external OD 25 mm, length 35 mm, wall 0.5 mm) with a titanium septum cap and a magnetically actuated micro-pump valve driven by an external handheld N52 neodymium magnet held over the skin. The external magnet applies a vertical force of 0.5 N through skin thickness up to 5 mm, actuating the implanted pump to dispense up to 100 uL per actuation. The reservoir must maintain sterility for up to 3 months of implantation per ASTM F2097. Pass/fail criteria: (R1) max von Mises stress in the 316L reservoir under normal physiological tissue pressure of 5 kPa plus external manual palpation force of 20 N must not exceed 115 MPa (316L yield 170 / SF 1.5), (R2) magnetic coupling must deliver at least 0.3 N at the pump valve through 5 mm skin using N52 magnet of 20 mm diameter x 10 mm thickness (Br 1.45 T), analytically checked via dipole approximation, (R3) septum leak rate at 10 kPa internal pressure must not exceed 0.1 uL per hour (ASTM F2097), (R4) device mass must not exceed 20 g to meet implantable comfort target, and (R5) titanium housing + septum must survive 50 ethylene-oxide sterilization cycles at 55 C with no dimensional change exceeding 0.05 mm. Thermal analysis only to confirm sterilization cycle thermal envelope. Vibration, fluid CFD, and radiation analyses are not required; drug reservoir leak is a closed-form pressurized-vessel calculation. Deliver a STEP AP242 assembly with reservoir, septum, pump valve, and magnet holder as sub-bodies plus a verification report listing reservoir stress, magnetic force at pump, septum leak rate, device mass, and post-sterilization dimensional deviation.",
+  "short_prompt": "Design a magnetically coupled transcutaneous drug-delivery reservoir for a subcutaneous implant. The device is a 316L stainless steel cylindrical reservoir (internal volume 5.0 mL, external ~25 mm OD x 35 mm long, 0.5 mm wall) with a Grade 2 titanium + silicone septum cap and a magnetically actuated micro-pump valve. Actuation is via a handheld external N52 neodymium magnet (20 mm dia x 10 mm, Br 1.45 T) held over the skin (up to 5 mm thick), dispensing up to 100 uL per actuation.\n\nDesign to ASTM F2097 (implantable port leak) and assume 3-month implant sterility. The reservoir sits in soft tissue with the septum on the skin side.\n\nLoad cases.\n- LC1 palpation + tissue: 20 N manual palpation plus 5 kPa physiological tissue pressure.\n- LC2 magnetic coupling: external N52 magnet pulls the valve through 5 mm skin (dipole approximation).\n- LC3 septum leak test: 10 kPa internal pressure.\n- LC4 ETO sterilization: 50 cycles at 55 C (dimensional stability).\n\nTotal device mass is an implantable-comfort constraint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "magnetic_dipole_field_calc",
+        "reason": "External N52 magnetic coupling force through skin is closed-form magnetic dipole / Gilbert model, not FEA.",
+        "examples": [
+          "K&J Magnetics force calc",
+          "FEMM 2D magnetostatic for validation"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Magnetically actuated transcutaneous drug reservoir",
+    "brief": "Design a 5 mL 316L/Ti implantable drug reservoir (25 x 35 mm) with magnetically actuated pump valve, meeting palpation stress, magnetic coupling force, septum leak, mass, and ETO sterilization dimensional stability.",
+    "geometric_constraints": {
+      "internal_volume_mL": 5.0,
+      "external_OD_mm": 25,
+      "length_mm": 35,
+      "wall_mm": 0.5,
+      "target_dose_uL_per_actuation": 100
+    },
+    "material": {
+      "reservoir": "316L SS, yield 170 MPa, E 193 GPa",
+      "septum_cap": "Grade 2 titanium + silicone septum"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "palpation_plus_tissue",
+        "palpation_N": 20,
+        "tissue_pressure_kPa": 5
+      },
+      {
+        "id": "LC2",
+        "name": "magnetic_coupling",
+        "external_magnet": "N52, 20 mm dia x 10 mm, Br 1.45 T",
+        "skin_thickness_mm": 5,
+        "target_pump_force_N": 0.3
+      },
+      {
+        "id": "LC3",
+        "name": "septum_leak_test",
+        "internal_pressure_kPa": 10,
+        "target_leak_uL_h_max": 0.1
+      },
+      {
+        "id": "LC4",
+        "name": "eto_sterilization_50_cycles",
+        "temp_C": 55,
+        "cycles": 50
+      }
+    ],
+    "boundary_conditions": {
+      "reservoir": "surrounded by soft tissue; septum exposed to skin side"
+    },
+    "objective": {
+      "primary": "pass all implant pass/fail",
+      "secondary": "maximize actuation dose consistency"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "reservoir_max_von_mises_MPa",
+        "magnetic_force_at_pump_N",
+        "septum_leak_uL_h",
+        "device_mass_g",
+        "post_sterilization_dim_deviation_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "reservoir_max_von_mises",
+        "limit_MPa": 115,
+        "derivation": "316L yield 170 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "magnetic_force_at_pump",
+        "limit_N": 0.3,
+        "derivation": "dipole approximation through 5 mm skin",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "septum_leak_rate",
+        "limit_uL_h": 0.1,
+        "derivation": "ASTM F2097 implantable port leak",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "device_mass",
+        "limit_g": 20,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "post_sterilization_dim_deviation",
+        "limit_mm": 0.05,
+        "derivation": "50x ETO at 55 C",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "axisymmetric solid for reservoir, 3D solid for valve",
+      "mesh_size_mm_in_critical_regions": 0.2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "FEMM for magnetic"
+      ],
+      "analysis_types": [
+        "linear static",
+        "magnetostatic (non-FEA), steady-state thermal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Implant is static; no harmonic loads.",
+      "fluid_analysis": "Drug flow is pressure-driven; device scope limited to reservoir.",
+      "radiation_analysis": "ETO sterilization; no radiation.",
+      "buckling_analysis": "Pressurized thin-wall checked under R1."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Full ISO 10993 suite",
+      "FDA 510(k) predicate search and IP disclosure",
+      "Explantation surgical procedure"
+    ]
+  },
+  "eval_coverage": [
+    "magnetic dipole non-FEA solver",
+    "implantable leak rate pass/fail",
+    "ETO sterilization dimensional stability",
+    "implant-grade 316L + Ti material envelope"
+  ]
+}

@@ -1,0 +1,202 @@
+{
+  "id": "132_hv8_fs_italy_e85_fuel_tank",
+  "source": {
+    "catalog_ref": "HV8",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "fsae_fuel_system",
+  "part_class": "e85_compatible_fuel_tank",
+  "full_prompt": "Design a monolithic 316L stainless steel collegiate formula-class racecar benchmark Italy 2026 Class 1 CV fuel tank compatible with E85 ethanol blend and 98 RON gasoline per the collegiate formula-class racecar benchmark-Italy 2026 Information + Rules document, respecting the FS Rules 2026 base (frame tube OD 25.4 x 2.4 mm steel datum for tank standoff, IA 7.5g avg / 20g peak, 60 deg tilt test, 20 mm intake restrictor for gasoline engines). The tank is a single welded stainless body (treated as monolithic for this CAD prompt; no bolted seams, all internal baffles integral or welded in-situ). Geometry: tank outside dimensions 350 mm long x 250 mm wide x 160 mm tall, wall thickness 1.2 mm, integral central longitudinal baffle 1.2 mm thick with 60 mm diameter communicating hole, integral transverse baffle 1.2 mm thick with four 30 mm holes. Nozzles: one 50 mm filler neck at a top corner (30 mm tall stub, 50 mm OD flanged), one -8 AN (12.7 mm OD) fuel pickup port at bottom, one -6 AN (9.5 mm OD) return, one 10 mm vent on the top face. Four integral mounting tabs (15 mm x 30 mm x 3 mm) with 8 mm through-bores at the four bottom corners for M8 strap bolts clamping the tank into the frame. Overall bounding envelope 360 x 260 x 200 mm. Material 316L stainless (E85 compatible per SAE J1681): E 193 GPa, nu 0.30, density 8000 kg/m^3, yield 205 MPa at 20 C, UTS 515 MPa. Tank service: maximum fuel level 8 L (E85 density 785 kg/m^3, so 6.3 kg fuel mass), max internal pressure 50 kPa gauge from vapor + thermal expansion, operating temperature -10 C to +60 C (engine-bay heat). Three load cases per FS Rules 2026 T.3.2 fuel system. Load Case 1 (60-deg tilt test per T.3.2.1): tank full (6.3 kg E85), tank tilted 60 deg in any direction, static gravity load with tilt-induced slosh reduced to 1.0g in the tilt direction; mounting tabs fully fixed. Load Case 2 (impact pulse 40g): 40g peak pulse per IA envelope (20g peak per T.3.4 but vehicle longitudinal max design reviewed at 40g per collegiate formula-class racecar benchmark rule envelope) transmitted through the mounting tabs; fuel mass 6.3 kg produces 2.47 kN longitudinal load distributed as baffle + wall pressure loads. Load Case 3 (thermal + internal pressure): tank full, 60 C engine bay, 50 kPa gauge internal from vapor pressure of E85 (higher vapor pressure than gasoline at 60 C, ~45 kPa RVP + 5 kPa margin). Pass/fail: (R1) under LC1 60-deg tilt, peak von Mises must not exceed 103 MPa (yield/2.0 per FS Rules 2026 T.3.2 fuel system allowable); (R2) under LC2 40g impact, peak stress must not exceed 171 MPa (yield/1.2 transient; matches IA-class load SF); (R3) under LC3 thermal + pressure, peak stress 103 MPa; (R4) a linear buckling eigenvalue analysis under vacuum (-5 kPa fault during cooling) must yield a first-mode factor of at least 4.0; (R5) tank mass empty must not exceed 2.5 kg; (R6) tank must fit entirely rearward of the 95th-%ile driver template per FS T.3.1 (trivially enforced by 360 x 260 x 200 envelope placement inside chassis but is a design constraint for layout); (R7) fuel sump design must guarantee pickup remains submerged at all 60-deg tilt angles (geometric check: 250 mm wide x 160 mm tall means pickup at height <40 mm in tilted configuration stays wetted for 60 deg tilt at 75% fill). Thermal analysis beyond LC3 BC, fluid (slosh) analysis, and radiation are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 316L stainless steel fuel tank for a collegiate formula-class racecar (FS 2026 base, 600 cc IC, 8 L E85/gasoline capacity). The tank is welded but treated as monolithic for CAD; it carries integral longitudinal and transverse baffles with communicating holes, a 50 mm filler stub, -8 AN pickup and -6 AN return, a 10 mm vent, and four bottom corner strap-mounting tabs. Design per FS Rules 2026 T.3.2 (fuel-system safety, 60-degree tilt test, IA 20 g peak envelope) using yield/2.0 continuous and yield/1.2 impact-transient safety factors.\n\nEnvelope: 350 x 250 x 160 mm external (bounding ~360 x 260 x 200 mm).\n\nLoad cases.\n- LC1 60-degree tilt (T.3.2.1): full tank (6.3 kg E85), 1.0 g in tilt direction, strap tabs fixed.\n- LC2 40 g impact pulse: IA-envelope longitudinal pulse through the mount tabs, 6.3 kg fuel mass produces 2.47 kN distributed as baffle + wall pressure.\n- LC3 thermal + internal pressure: 60 C engine bay, 50 kPa gauge internal (E85 vapor pressure headroom).\nAlso verify buckling margin (>=4) under a -5 kPa vacuum cooldown fault and check the sump-geometry rule that the pickup stays submerged at 60-degree tilt.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-class racecar benchmark-Italy E85-compatible Class 1 CV fuel tank",
+    "brief": "316L 8 L welded tank with integral baffles; FS Rules 2026 + Italy E85 delta.",
+    "geometric_constraints": {
+      "external_mm": {
+        "l": 350,
+        "w": 250,
+        "h": 160
+      },
+      "wall_mm": 1.2,
+      "baffles": {
+        "longitudinal_hole_mm": 60,
+        "transverse_holes_mm": 30,
+        "transverse_count": 4
+      },
+      "ports": [
+        {
+          "type": "filler",
+          "od_mm": 50
+        },
+        {
+          "type": "pickup",
+          "size": "-8 AN"
+        },
+        {
+          "type": "return",
+          "size": "-6 AN"
+        },
+        {
+          "type": "vent",
+          "od_mm": 10
+        }
+      ],
+      "mounting_tabs": {
+        "count": 4,
+        "mm": [
+          15,
+          30,
+          3
+        ],
+        "hole_mm": 8
+      },
+      "bounding_envelope_mm": {
+        "x": 360,
+        "y": 260,
+        "z": 200
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "316L stainless",
+      "properties": {
+        "youngs_modulus_GPa": 193,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 8000,
+        "yield_MPa": 205,
+        "ultimate_tensile_strength_MPa": 515,
+        "e85_compatible_per_SAE_J1681": true
+      }
+    },
+    "fuel": {
+      "type": "E85",
+      "density_kg_m3": 785,
+      "max_volume_L": 8,
+      "fuel_mass_kg": 6.3,
+      "max_vapor_kPa_at_60C": 50
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "tilt_60deg",
+        "tilt_deg": 60,
+        "rule_ref": "FS Rules 2026 T.3.2.1"
+      },
+      {
+        "id": "LC2",
+        "name": "impact_40g",
+        "longitudinal_g": 40,
+        "fuel_kg": 6.3
+      },
+      {
+        "id": "LC3",
+        "name": "thermal_vapor",
+        "temp_C": 60,
+        "internal_kPa": 50
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_buckling_load_factor",
+        "empty_mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 103,
+        "derivation": "yield/2.0 FS T.3.2",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 171,
+        "derivation": "yield/1.2 impact transient",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 4.0,
+        "applies_to": [
+          "vacuum_fault"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "empty_mass",
+        "limit_kg": 2.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid hybrid",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling (external)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Strap-mounted, isolated from engine NVH path.",
+      "thermal_analysis": "Derate applied via 60 C property.",
+      "fluid_analysis": "Slosh reduced to equivalent static gravity per tilt test.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "E85 SCC (stress corrosion cracking) at weld HAZ",
+      "Anti-slosh reticulated foam",
+      "Vent rollover-valve integration"
+    ]
+  },
+  "eval_coverage": [
+    "collegiate formula-class racecar benchmark-Italy E85 material compatibility gate",
+    "60-deg tilt rule structural check",
+    "vacuum-collapse buckling on thin stainless tank",
+    "fuel-system impact load path"
+  ]
+}

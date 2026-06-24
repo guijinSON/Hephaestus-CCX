@@ -1,0 +1,147 @@
+{
+  "id": "212_oc12_aimsc_model_solar",
+  "source": {
+    "catalog_ref": "OC4",
+    "year": 2021,
+    "tier": "B"
+  },
+  "domain": "solar_vehicle_structural",
+  "part_class": "aimsc_model_solar_car_chassis",
+  "full_prompt": "Design the chassis and side-panel structure of a model-solar-car benchmark. Regulatory constraints: vehicle must present a cross-section of at least 150 cm^2 to the oncoming airflow on the drive direction; rigid side panels must be at least 100 mm long x 50 mm high; the vehicle interface to the PV array uses a pair of 4 mm banana sockets separated by 18 mm on centerline; vehicle is constrained to a 0.5 mm stainless steel guide wire through a front guide eye and a rear guide slot; total wheelbase between 180 mm and 260 mm. Material: ABS 3D printed or CNC-machined sheet (Young's modulus 2.3 GPa, Poisson 0.35, tensile yield 40 MPa, ultimate 42 MPa, density 1050 kg/m^3). PV array supplied: 6-cell monocrystalline silicon panel of mass 65 g mounted on the top chassis deck spanning at least 180 x 100 mm. Load cases: (LC1) 5x g static factor on total car mass of target 200 g at rest; (LC2) guide-wire lateral pull: 1.5 N at the front guide eye simulating wire drag/deflection; (LC3) PV cantilever: array mass 65 g with 3 g vertical bump applied at the array centroid while the four wheel contact patches are fully fixed; (LC4) 5 minute endurance at 2 Hz cyclic loading at 5% of LC1 representing track vibration for the standard 20 m class A run, 600 cycles. Pass/fail: (R1) max von Mises below 26 MPa (yield 40 / 1.5) across LC1-LC3, (R2) chassis deflection under array loaded under LC3 below 1.5 mm, (R3) cross-section rule 150 cm^2 and side-panel rules verified geometrically, (R4) total mass below 300 g, (R5) first torsional chassis mode above 40 Hz. Deliverables: STEP AP242, FEA per case, modal, and a geometric-compliance check block.",
+  "short_prompt": "Design the chassis and side-panel structure of a model-solar car running on a 0.5 mm stainless guide wire. Material class: ABS (3D-printed or CNC sheet). No external structural standard is cited; design to a 1.5 FoS on yield.\n\nEnvelope: frontal cross-section >= 150 cm^2 (rule), rigid side panels >= 100 mm x 50 mm, wheelbase 180-260 mm, PV array 6-cell 65 g supplied, total mass <= 300 g. Target car mass ~200 g.\n\nLoad cases.\n- LC1 5 g static: 5 g on the 200 g target mass.\n- LC2 guide-wire pull: 1.5 N at the front guide eye.\n- LC3 PV bump: 3 g vertical at the array centroid with the four wheel contacts fixed.\n- LC4 endurance: 600 cycles at 2 Hz of 5% of LC1, representing track vibration over the standard 20 m run.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Model solar car chassis",
+    "brief": "ABS chassis for a 200 g model solar car on 0.5 mm guide wire.",
+    "geometric_constraints": {
+      "cross_section_cm2_min": 150,
+      "side_panel_min_mm": {
+        "L": 100,
+        "H": 50
+      },
+      "banana_socket_sep_mm": 18,
+      "guide_wire_mm": 0.5,
+      "wheelbase_mm": [
+        180,
+        260
+      ]
+    },
+    "material": {
+      "name": "ABS",
+      "youngs_modulus_GPa": 2.3,
+      "poissons_ratio": 0.35,
+      "density_kg_m3": 1050,
+      "yield_strength_MPa": 40,
+      "ultimate_tensile_strength_MPa": 42
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "5g_static",
+        "application": "full 200 g mass"
+      },
+      {
+        "id": "LC2",
+        "name": "guide_wire_pull",
+        "F_N": 1.5,
+        "application": "front guide eye"
+      },
+      {
+        "id": "LC3",
+        "name": "pv_3g_bump",
+        "application": "array centroid, wheels fixed"
+      },
+      {
+        "id": "LC4",
+        "name": "endurance_600_cycles",
+        "amplitude_pct_of_LC1": 5,
+        "frequency_Hz": 2
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_MPa",
+        "array_deflection_mm",
+        "first_torsional_mode_Hz",
+        "cross_section_cm2"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 26,
+        "derivation": "ABS yield 40 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "pv_deck_deflection",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "frontal_cross_section",
+        "limit_cm2": 150,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_g": 300,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 40,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

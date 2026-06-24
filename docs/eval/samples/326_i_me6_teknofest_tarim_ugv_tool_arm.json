@@ -1,0 +1,205 @@
+{
+  "id": "326_i_me6_teknofest_tarim_ugv_tool_arm",
+  "source": {
+    "catalog_ref": "I-ME6 (I-TF14)",
+    "year": 2023,
+    "tier": "A"
+  },
+  "domain": "agricultural_structural",
+  "part_class": "ugv_tool_arm",
+  "full_prompt": "Design the primary cantilevered tool arm of an agricultural UGV competing in the national aerospace student benchmark Tarımsal İKA (Agricultural UGV) competition. The complete UGV fits within an envelope of 1.5 m length x 1.0 m width x 1.0 m height and has a total dry mass below 120 kg. The tool arm mounts to the side of the UGV chassis via a 4-bolt flange pattern on M10 class 8.8 bolts and extends outward 0.8 m to hold a 5 kg interchangeable agricultural implement (spray nozzle head, sensor boom, or mechanical weeder). The arm is a welded 6061-T6 aluminum box beam with nominal cross-section 60 x 40 mm and wall thickness 3 mm. Material properties: Young's modulus 68.9 GPa, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3, fatigue endurance limit 96 MPa at 5e8 cycles. The UGV must operate on slopes up to 15 degrees and maintain stability. Load cases: (LC1) static gravity load with 5 kg implement at 0.8 m cantilever (tip moment 39.2 N*m); (LC2) 1 g vertical shock simulating curb drop, doubling the effective tip load (implement effective 10 kg static-equivalent at tip); (LC3) 15 degree slope with arm oriented downhill, adding lateral component plus reduced vertical (implement weight of 5 kg decomposed into 4.83 N vertical + 1.27 N lateral projection correction - effectively the tip moment rotates into a combined bending + slight torsion); (LC4) implement-ground impact during weeding operation: 150 N horizontal at the implement attachment point, applied as a quasi-static peak load; (LC5) fatigue cycle: 0 - 50 N repeated vertical load at the tip over 1e6 cycles representing field-operation duty; verify Goodman/Soderberg criterion with mean stress adjustment. Pass/fail: (R1) maximum von Mises stress under LC1-LC4 must remain below 184 MPa (276 / 1.5 yield FoS); (R2) tip deflection under LC1 must remain below 5 mm to preserve implement positioning accuracy; (R3) fatigue check under LC5 must show infinite-life margin: alternating stress at the critical weld toe must remain below 96 MPa endurance limit with at least 1.3 margin (so below 74 MPa); (R4) arm dry mass must not exceed 4.5 kg; (R5) first cantilever natural frequency must exceed 25 Hz to decouple from drive-train vibration. Thermal, fluid, and radiation analyses are not primary gates; buckling is covered by the stress gate on this short cantilever. Deliverables: STEP AP242 solid model, welded-joint drawing with fillet size callouts, FEA report with stress and deflection for static cases, fatigue margin calculation, and modal analysis.",
+  "short_prompt": "Design the primary cantilevered tool arm of a national aerospace student benchmark Tarımsal İKA agricultural UGV. UGV envelope 1.5 x 1.0 x 1.0 m, dry < 120 kg; arm cantilevers 0.8 m to a 5 kg interchangeable implement and mounts via a 4-bolt flange on M10 class 8.8. Welded 6061-T6 box beam 60 x 40 mm x 3 mm wall; operation on slopes up to 15 deg.\n\nFactor regime: yield FoS 1.5 on static/shock (184 MPa); Goodman-adjusted fatigue allowable 74 MPa (endurance 96 MPa x 1.3 margin); tip deflection under gravity < 5 mm; first cantilever mode > 25 Hz.\n\nLoad cases.\n- Static gravity: 5 kg at 0.8 m cantilever = 39.2 N-m tip moment.\n- 1 g curb-drop shock: effective 10 kg static-equivalent at tip.\n- 15 deg downhill slope: vertical + lateral decomposition on 5 kg with combined bending + slight torsion.\n- Implement-ground impact during weeding: 150 N horizontal at the implement mount.\n- Fatigue: 0-50 N alternating at tip over 1e6 cycles.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "fatigue_post_processor",
+        "reason": "Goodman/Soderberg fatigue check on LC5 uses stress outputs from linear FEA but is a separate post-processing step (e.g. ANSYS nCode, FE-SAFE).",
+        "examples": [
+          "ANSYS nCode DesignLife",
+          "FE-SAFE",
+          "Altair HyperLife"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark Agricultural UGV Cantilevered Tool Arm",
+    "brief": "6061-T6 welded box-beam cantilever tool arm, 0.8 m reach, 5 kg implement, 15 deg slope operation, fatigue life 1e6 cycles.",
+    "geometric_constraints": {
+      "reach_m": 0.8,
+      "cross_section_mm": {
+        "height": 60,
+        "width": 40,
+        "wall": 3
+      },
+      "flange_bolts": {
+        "count": 4,
+        "size": "M10",
+        "grade": "8.8"
+      },
+      "ugv_envelope_m": {
+        "l": 1.5,
+        "w": 1.0,
+        "h": 1.0
+      }
+    },
+    "material": {
+      "name": "Aluminum 6061-T6 (welded)",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "density_kg_m3": 2700,
+        "fatigue_endurance_limit_MPa": 96,
+        "fatigue_cycles_at_endurance": 500000000.0
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_gravity",
+        "magnitude_Nm": 39.2,
+        "application": "tip moment from 5 kg at 0.8 m"
+      },
+      {
+        "id": "LC2",
+        "name": "curb_drop_2g",
+        "magnitude_kg_equiv": 10,
+        "application": "tip vertical"
+      },
+      {
+        "id": "LC3",
+        "name": "slope_15deg",
+        "magnitude_deg": 15,
+        "application": "combined bend + torsion"
+      },
+      {
+        "id": "LC4",
+        "name": "implement_impact",
+        "magnitude_N": 150,
+        "application": "implement attachment, horizontal"
+      },
+      {
+        "id": "LC5",
+        "name": "field_fatigue",
+        "cycles": 1000000,
+        "load_range_N": [
+          0,
+          50
+        ],
+        "application": "tip vertical repeated"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "arm_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "tip_deflection_LC1_mm",
+        "fatigue_margin_LC5",
+        "first_cantilever_freq_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "276 / 1.5 yield FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tip_deflection",
+        "limit_mm": 5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "fatigue_alternating_stress_weld_toe",
+        "limit_MPa": 74,
+        "derivation": "96 / 1.3 fatigue margin",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "arm_dry_mass",
+        "limit_kg": 4.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_cantilever_mode",
+        "limit_Hz": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for box beam; solid TET10 near weld-toe notches",
+      "mesh_size_mm": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "modal",
+        "fatigue post-process"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient field operation; no imposed thermal gradient.",
+      "fluid_analysis": "Spray-load reaction captured via LC4 peak horizontal.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Short cantilever; stress gate bounds instability."
+    }
+  },
+  "eval_coverage": [
+    "cantilever FEA with multi-static cases",
+    "fatigue post-processing",
+    "modal decoupling from drivetrain",
+    "welded aluminum mass gate"
+  ]
+}

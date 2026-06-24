@@ -1,0 +1,194 @@
+{
+  "id": "338_i_eu6_uk_robotics_challenge",
+  "source": {
+    "catalog_ref": "I-EU6",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "robotics_structural",
+  "part_class": "mobile_robot_chassis",
+  "full_prompt": "Design the load-bearing chassis plate of an autonomous mobile robot intended for the UK Robotics Challenge 2026. The robot must fit within an arena-size envelope of 450 mm length x 400 mm width x 350 mm height, weigh no more than 12 kg wet, and carry a 2 kg transport payload in a 150 x 150 x 100 mm interior compartment. The chassis plate is a single flat laser-cut / CNC-routed sheet of 6061-T6 aluminum (E 68.9 GPa, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3), 3 mm nominal thickness, with four standard skid-steer wheel motor mounts (mass 400 g each, torque 2 Nm) at corners and a central compartment cutout. Robot accelerates up to 2 m/s on smooth floor and can traverse 20 mm height ramps. Load cases: (LC1) static gravity with 12 kg wet mass supported on four wheel-mount bolt patterns; (LC2) obstacle traversal: front wheels encounter 20 mm ramp at 2 m/s, reaction peak at front wheel mounts is 2 g equivalent vertical on 6 kg (front axle load) = 118 N per front wheel mount; (LC3) motor torque reaction at one skid-steer turn: each wheel sees 2 Nm motor torque, reacting at the motor-mount bolts as a couple; (LC4) payload drop inside compartment: 2 kg payload shifts 20 mm and hits the compartment wall at 2 m/s (conservative 5 g equivalent lateral on 2 kg at the compartment wall = 98 N lateral); (LC5) handling handle-lift: a user grabs the chassis at two diagonally opposed corner-handle cutouts and lifts the whole 12 kg robot - 60 N each handle upward; (LC6) drop from 300 mm: full robot 12 kg hits floor at 2.43 m/s, equivalent 10 g static deceleration distributed on chassis plate. Pass/fail: (R1) max von Mises stress under LC1-LC5 must remain below 184 MPa (276 / 1.5 yield FoS); (R2) under LC6 drop case, stress must remain below 276 MPa (yield, no permanent deformation); (R3) chassis plate dry mass must not exceed 1.2 kg; (R4) first bending natural frequency must exceed 50 Hz to decouple from drive-motor torque ripple; (R5) maximum plate deflection under LC1 static gravity must remain below 1 mm to preserve ground clearance of the central compartment. Thermal, fluid, radiation, and buckling analyses not primary gates. Deliverables: STEP AP242 solid with mount holes and cutouts, FEA per load case, modal report, mass budget.",
+  "short_prompt": "Design the load-bearing chassis plate of an autonomous mobile robot for the UK Robotics Challenge 2026. Arena envelope 450 x 400 x 350 mm, wet mass <= 12 kg, 2 kg transport payload in a 150 x 150 x 100 mm interior compartment. Peak speed 2 m/s, 20 mm ramp traversal.\n\nEnvelope: single flat laser-cut / CNC-routed 6061-T6 sheet, 3 mm nominal; four skid-steer wheel-motor mounts (400 g each, 2 N-m torque) at the corners; central compartment cutout; two diagonal corner-handle cutouts.\n\nFactor regime: yield FoS 1.5 on LC1-LC5 (allowable 184 MPa); LC6 drop allowed to full yield (276 MPa); plate dry mass <= 1.2 kg; first bending mode > 50 Hz; static gravity deflection < 1 mm.\n\nLoad cases.\n- Static gravity: 12 kg supported at the four wheel-mount bolt patterns.\n- Obstacle traversal: 20 mm ramp at 2 m/s = 2 g vertical on 6 kg front axle (118 N per front mount).\n- Motor torque reaction at skid-steer turn: 2 N-m at each wheel as a couple at the motor-mount bolts.\n- In-compartment payload shift: 2 kg hits the wall at 2 m/s (5 g lateral = 98 N).\n- Handle lift: 60 N upward at each of two diagonally opposed corner handles.\n- Drop from 300 mm: 12 kg at 2.43 m/s = 10 g equivalent static distributed on the plate.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "UK Robotics Challenge 2026 Mobile Robot Chassis Plate",
+    "brief": "6061-T6 3 mm plate chassis for 12 kg autonomous skid-steer robot, 450x400x350 mm envelope, 2 m/s max + 20 mm obstacle.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "l": 450,
+        "w": 400,
+        "h": 350
+      },
+      "plate_thickness_mm": 3,
+      "motor_mount_count": 4,
+      "compartment_mm": {
+        "l": 150,
+        "w": 150,
+        "h": 100
+      }
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "robot_mass_kg": 12,
+    "payload_kg": 2,
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_gravity",
+        "application": "12 kg on 4 wheel mounts"
+      },
+      {
+        "id": "LC2",
+        "name": "obstacle_traversal",
+        "magnitude_N": 118,
+        "application": "each front wheel 2g vertical"
+      },
+      {
+        "id": "LC3",
+        "name": "skid_turn_torque",
+        "magnitude_Nm": 2,
+        "application": "per motor mount couple"
+      },
+      {
+        "id": "LC4",
+        "name": "payload_shift_impact",
+        "magnitude_N": 98,
+        "application": "compartment wall lateral"
+      },
+      {
+        "id": "LC5",
+        "name": "handle_lift",
+        "magnitude_N": 60,
+        "application": "2 diagonal handles upward"
+      },
+      {
+        "id": "LC6",
+        "name": "drop_300mm",
+        "magnitude_g": 10,
+        "application": "full 12 kg on plate"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "plate_mass_kg",
+        "max_stress_LC1_LC5_MPa",
+        "max_stress_LC6_MPa",
+        "static_deflection_LC1_mm",
+        "first_bending_freq_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "276 / 1.5 yield FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_drop",
+        "limit_MPa": 276,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "plate_dry_mass",
+        "limit_kg": 1.2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_bending_freq",
+        "limit_Hz": 50,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "static_plate_deflection",
+        "limit_mm": 1.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (SHELL181) for plate, beam for motor mount studs",
+      "mesh_size_mm": 4,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "FreeCAD FEM"
+      ],
+      "analysis_types": [
+        "linear static (x6)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "UK Robotics Challenge 2026 rulebook PDF not surfaced in catalog. Values inferred from typical IET mobile-robot benchmark and consistent with UK university mobile-robotics envelopes.",
+    "exclusions_explained": {
+      "thermal_analysis": "Indoor ambient operation.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Plate in dominantly bending; stress gate adequate."
+    }
+  },
+  "eval_coverage": [
+    "flat-plate FEA",
+    "skid-steer torque reaction",
+    "drop test implicit",
+    "modal decoupling from motor",
+    "mass budget"
+  ]
+}

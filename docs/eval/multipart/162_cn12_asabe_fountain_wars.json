@@ -1,0 +1,338 @@
+{
+  "id": "162_cn12_asabe_fountain_wars",
+  "source": {
+    "catalog_ref": "CN12",
+    "year": 2024,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/162_cn12_asabe_fountain_wars.json",
+    "multipart_basis": "The original sample already specifies body_count=2 (impeller, manifold). Multipart decomposition formalizes the PLA impeller + 4-outlet manifold + 4 valve/nozzle heads + O-ring seals + keyed shaft interface as distinct part families."
+  },
+  "domain": "agricultural_fluid_mechanical",
+  "part_class": "pump_nozzle_manifold_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the ASABE CN12 Fountain Wars PLA 3D-printable centrifugal pump and 4-outlet nozzle manifold as a multi-part assembly, explicitly modeling the fountain-delivery system as the physical collection of the pump impeller, pump volute/manifold body, nozzle heads, valve bodies, O-ring seals, and the keyed shaft interface to the 12 VDC motor.\n\nThe assembly consists of six part families: (A) the PLA centrifugal impeller, a semi-open 60 mm outer diameter x 20 mm inlet eye x 6 blades x 2 mm blade thickness x 25 deg outlet angle part mounted on a 5 mm keyed shaft; (B) the pump volute + 4-outlet nozzle manifold body, a printed PLA or PETG part that houses the impeller and routes flow to four independently valved outlets; (C) four nozzle heads corresponding to the four valved outlets: height-shooter nozzle (12 mm exit), wide-fan spray nozzle (5 mm slit), target-jet nozzle (6 mm exit), and accuracy-task pop-up nozzle (8 mm exit); (D) four valve bodies (shut-off or throttle valves) upstream of each nozzle head; (E) standard elastomeric O-ring seals at the impeller shaft, volute-to-manifold joint, valve bodies, and nozzle interfaces; (F) the keyed 5 mm shaft that couples the impeller to the 12 VDC motor and transmits the torque reaction.\n\nGeometry inherits the original sample verbatim: impeller OD 60 mm, inlet eye 20 mm, 6 blades, outlet angle 25 deg, blade thickness 2.0 mm, 5 mm keyed shaft, 4 nozzle outlets (12/5/6/8 mm).\n\nMaterial inherits verbatim: printed PLA (E 3.5 GPa, yield 50 MPa, density 1240 kg/m^3) as the primary body material; O-rings are standard NBR/EPDM elastomer.\n\nLoads inherit verbatim: LC1 design operating point (30 L/min at 3.0 m head at 3000 rpm); LC2 centrifugal structural at 3000 rpm on impeller; LC3 modal separation around 50 Hz operating frequency.\n\nPass/fail criteria inherit verbatim from the original and apply at the assembly level: (R1) delivered flow at 3.0 m head >= 30 L/min at BEP; (R2) shaft power at BEP <= 60 W; (R3) max hoop stress in impeller at 3000 rpm <= 25 MPa (PLA yield 50 / SF 2.0); (R4) impeller tip deflection under centrifugal load <= 0.3 mm; (R5) no impeller mode shape within +/- 20% of 50 Hz operating speed (i.e., no natural frequency in the 40-60 Hz band for the first three modes). Added assembly-level targets under fem_check_policy.assembled_only: volute-to-manifold and manifold-to-nozzle joint leak + DCR must be reported; per-part stresses are reported for diagnostic purposes but do not gate pass/fail.\n\nThermal, radiation, and buckling analyses are not required. Fluid analysis (CFD or 1D affinity) is required for R1/R2 head-flow curve. Structural FEA is required for R3/R4. Modal analysis is required for R5. Deliver STEP AP242 of the assembly with each body (impeller, volute/manifold, each nozzle head, each valve body, each O-ring, shaft) as a distinct solid tagged with part_family (A..F) and instance_index, plus a performance report with head-flow curve, BEP, shaft power, impeller stress, deflection, first three natural frequencies, assembly mass, and joint leak / DCR.",
+  "short_prompt": "Design the ASABE CN12 Fountain Wars PLA centrifugal pump + 4-outlet nozzle manifold as a multi-part assembly (impeller, volute/manifold body, four nozzle heads, four valve bodies, O-ring seals, keyed shaft).\n\nImpeller OD 60 mm x inlet eye 20 mm, 6 blades at 25 deg outlet angle, 2.0 mm blade thickness, 5 mm keyed shaft; four nozzle exits 12/5/6/8 mm. Printed PLA E 3.5 GPa, yield 50 MPa, density 1240 kg/m3.\n\nLoad cases: LC1 design operating point 30 L/min at 3.0 m head at 3000 rpm; LC2 centrifugal structural at 3000 rpm; LC3 modal separation around 50 Hz operating frequency.\n\nPass/fail: flow >= 30 L/min at 3.0 m head; shaft power <= 60 W at BEP; hoop stress at 3000 rpm <= 25 MPa (yield 50 / SF 2.0); tip deflection <= 0.3 mm; each of first three modes outside 40-60 Hz band (+/- 20% of 50 Hz); FEM at assembled level; joint/seal DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "fluid_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "centrifugal_pump_affinity_laws",
+        "reason": "BEP head-flow curve can be generated by affinity-law scaling from a baseline impeller performance test, without full CFD.",
+        "examples": [
+          "affinity laws spreadsheet",
+          "Stepanoff formulas"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "PLA centrifugal pump + nozzle manifold (multi-part assembly)",
+    "brief": "Multi-part PLA pump + 4-outlet nozzle system: impeller (A) + volute/manifold body (B) + 4 nozzle heads (C) + 4 valves (D) + O-ring seals (E) + keyed shaft (F). 60 mm OD, 6 blades, 30 L/min at 3.0 m head at 3000 rpm. Verified at assembly level: flow >= 30 L/min, shaft power <= 60 W, impeller hoop stress <= 25 MPa, tip deflection <= 0.3 mm, no mode in 40-60 Hz band, and joint leak/DCR within budget.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "pla_impeller",
+        "role": "semi-open centrifugal impeller, 60 mm OD x 20 mm inlet eye, 6 blades at 25 deg outlet angle, 2 mm blade thickness, 5 mm keyed bore; converts 3000 rpm shaft input into 3.0 m head x 30 L/min at the BEP",
+        "count_min": 1,
+        "geometric_constraints": {
+          "OD_mm": 60,
+          "inlet_eye_mm": 20,
+          "blade_count": 6,
+          "blade_outlet_angle_deg": 25,
+          "blade_thickness_mm": 2.0,
+          "shaft_bore_mm": 5
+        },
+        "material_hint": "printed PLA",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "volute_manifold_body",
+        "role": "printed PLA or PETG pump volute + 4-outlet nozzle manifold body housing the impeller and routing flow to four independently valved outlets",
+        "count_min": 1,
+        "geometric_constraints": {
+          "outlet_count": 4,
+          "impeller_bore_mm": 60
+        },
+        "material_hint": "printed PLA or PETG",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "nozzle_head",
+        "role": "printed nozzle head at the end of each of the 4 manifold branches: 12 mm height-shooter, 5 mm wide-fan slit, 6 mm target-jet, 8 mm accuracy-task pop-up",
+        "count_min": 4,
+        "geometric_constraints": {
+          "exits_mm": [
+            12,
+            5,
+            6,
+            8
+          ]
+        },
+        "material_hint": "printed PLA or PETG",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "valve_body",
+        "role": "shut-off or throttle valve body upstream of each nozzle head; enables independent valving per the fountain-delivery challenge",
+        "count_min": 4,
+        "geometric_constraints": {
+          "valve_type": "shut-off or throttle, team-selected"
+        },
+        "material_hint": "printed PLA or PETG + O-ring seal",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "o_ring_seal",
+        "role": "standard elastomeric O-ring seal at the impeller shaft, volute-manifold joint, valve-body joints, and nozzle interfaces",
+        "count_min": 8,
+        "count_note": "1 shaft seal + 1 volute-manifold + 4 valve body + 4 nozzle = ~10 seals; minimum 8 for the primary fluid path",
+        "geometric_constraints": {
+          "o_ring_sizes": "team-selected standard sizes"
+        },
+        "material_hint": "NBR or EPDM elastomer",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "keyed_shaft",
+        "role": "5 mm diameter keyed shaft coupling the impeller to the 12 VDC motor; transmits the 3000 rpm torque reaction",
+        "count_min": 1,
+        "geometric_constraints": {
+          "diameter_mm": 5,
+          "keyway": "standard"
+        },
+        "material_hint": "stainless steel",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "approximately 150 x 150 x 100 mm including manifold + nozzles",
+      "coordinate_system": "pump coordinates: +x along shaft axis, +y and +z in the impeller plane"
+    },
+    "material": {
+      "name": "Printed PLA",
+      "properties": {
+        "E_GPa": 3.5,
+        "yield_MPa": 50,
+        "density_kg_m3": 1240
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "design_operating_point",
+        "flow_Lpm": 30,
+        "head_m_H2O": 3.0,
+        "rotational_speed_rpm": 3000
+      },
+      {
+        "id": "LC2",
+        "name": "centrifugal_structural",
+        "rotational_speed_rpm": 3000,
+        "application": "centrifugal body force on impeller"
+      },
+      {
+        "id": "LC3",
+        "name": "modal",
+        "target_frequency_Hz": 50,
+        "margin_pct": 20
+      }
+    ],
+    "boundary_conditions": {
+      "shaft": "torque reaction at 5 mm keyed shaft",
+      "casing": "annular rigid casing wall around impeller",
+      "impeller_shaft_interface": "keyed press-fit (IF1)",
+      "volute_manifold_interface": "bonded print (IF2)",
+      "manifold_nozzle_interface": "threaded / O-ring (IF3)",
+      "valve_manifold_interface": "threaded / O-ring (IF4)"
+    },
+    "objective": {
+      "primary": "meet flow-head target at <=60 W shaft power under assembled_only FEM check",
+      "secondary": "minimize print mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "flow_at_3m_head_Lpm",
+        "shaft_power_W",
+        "max_hoop_stress_MPa",
+        "tip_deflection_mm",
+        "first_3_natural_frequencies_Hz",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress",
+        "joint_leak"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "fluid_analysis",
+        "metric": "delivered_flow_at_3m_head",
+        "limit_Lpm": 30,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "fluid_analysis",
+        "metric": "shaft_power_at_BEP",
+        "limit_W": 60,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_hoop_stress",
+        "limit_MPa": 25,
+        "derivation": "PLA yield 50 / SF 2.0",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "impeller_tip_deflection",
+        "limit_mm": 0.3,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "modal_separation_from_operating_speed",
+        "limit_Hz_lower": 40,
+        "limit_Hz_upper": 60,
+        "rule": "each natural frequency f_i must satisfy |f_i - 50 Hz| / 50 Hz >= 0.20, i.e. f_i outside 40-60 Hz band, for i=1..3",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "custom"
+      },
+      {
+        "id": "R6-assembly",
+        "type": "assembly_analysis",
+        "metric": "connection_DCR_joints_and_seals",
+        "limit": 1.0,
+        "derivation": "joint leak-rate + DCR at volute-manifold, manifold-nozzle, and valve-body O-ring seals",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet for impeller, shell for manifold",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "ANSYS CFX/Fluent for pump",
+        "Abaqus for structural + modal"
+      ],
+      "analysis_types": [
+        "steady RANS CFD",
+        "linear static with centrifugal",
+        "modal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "keyed shaft transmits 3000 rpm torque from motor into the impeller hub"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "impeller rotates within the volute body; fluid pressure and viscous shear act on the impeller and are reacted by the volute wall"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "threaded or bonded joint between the manifold body and each nozzle head with an O-ring seal"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "threaded joint between the manifold body and each valve body with an O-ring seal"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "O-ring seats in the volute-manifold boss that houses the shaft seal"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "D",
+        "E"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "O-ring seats in each valve body for inlet/outlet seals"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The original sample already specifies body_count=2 (impeller + manifold); the multipart sidecar expands that to include nozzle heads, valve bodies, O-ring seals, and the shaft as distinct part families.",
+    "speculation_caveats": "Exact valve body type, O-ring sizes, and shaft material are speculated; the original prompt only specifies the impeller geometry and nozzle exit sizes.",
+    "original_sample_preserved_at": "docs/eval/samples/162_cn12_asabe_fountain_wars.json"
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "id": "142_hv18_fsgp_solar_array_mount",
+  "source": {
+    "catalog_ref": "HV18 (user-assigned Formula Sun Grand Prix)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "solar_racing_structural",
+  "part_class": "solar_canopy_panel_mount",
+  "full_prompt": "Design a monolithic 6061-T6 aluminum solar-array canopy panel mount for a Formula Sun Grand Prix 2026 single-occupant Class solar vehicle per FSGP 2026 regulations, with a solar array of <= 4 m^2 projected and an optional reflector mounted on a 3.1-mile Brainerd International Raceway course. The bracket clamps the monolithic composite solar panel (area 2.0 m x 1.0 m = 2.0 m^2, panel mass 12 kg) to the vehicle's space-frame canopy rails, carrying aerodynamic lift + drag + rollover + transport loads. Bracket is a single billet-machined 6061-T6 part (no welds, no bolted gussets; integral panel-clamp + integral rail-clamp + integral drag-strut anchor). Geometry: panel-side clamp 60 mm wide x 40 mm tall x 4 mm thick with an integral M8 (9 mm) clearance clamp-screw through-hole and a 25 mm wide x 4 mm deep groove matching the panel's perimeter carbon-fiber reinforcement; rail-side clamp 50 mm ID half-saddle (matching a 50 mm OD canopy rail) x 60 mm long x 5 mm wall, with two M8 (9 mm) clamp-bolt holes; diagonal drag-strut anchor 30 mm OD x 20 mm long stub at 45 deg offset with a 8 mm through-bore. Overall bounding envelope 160 x 80 x 100 mm. Material 6061-T6 (E 68.9 GPa, nu 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa, endurance 97 MPa at 5e8 cycles). Environment: 0-45 C ambient (Brainerd summer), continuous solar irradiance 1000 W/m^2 direct beam, peak vehicle speed 70 mph (31.3 m/s); UV-exposed paint clear anodized. Three load cases. Load Case 1 (aero at peak 70 mph): lift coefficient CL ~ 0.15 on the 2 m^2 panel at dynamic pressure 0.5 * 1.2 * 31.3^2 = 588 Pa gives 176 N lift + 88 N drag; applied as distributed panel load through the panel-clamp; rail-clamp fixed. Load Case 2 (gust lift 2x): factor-of-2 gust per FSGP scrutineering conservative practice = 352 N lift at panel clamp. Load Case 3 (transport / rollover): 5g vertical on the 12 kg panel mass = 588 N distributed, with single-point rail clamp fixed representing a jacked-up vehicle during transport. Pass/fail: (R1) under LC1 aero, peak von Mises must not exceed 138 MPa (yield/2.0); (R2) under LC2 gust, peak stress 184 MPa (yield/1.5 transient); (R3) under LC3 transport, peak stress 184 MPa; (R4) fatigue: 10^6 cycles of LC1 scaled 60% (day-race vibration spectrum) local stress range at any fillet or hole edge must remain below 97 MPa (R=-1 5e8 endurance conservatively applied to 1e6); (R5) a steady-state thermal analysis at 45 C ambient with 1000 W/m^2 absorbed on the panel upper face (the panel is 18% efficient, so 820 W/m^2 rejected as heat) thermally conducting through the aluminum clamp must show the clamp body temperature below 85 C to prevent T6 overaging; (R6) panel flatness-preservation: maximum clamp-induced panel-curvature deflection at the panel clamp under LC1 must be below 1 mm over the clamp's 40 mm width to avoid cell micro-cracking; (R7) bracket mass must not exceed 0.25 kg. Fluid analysis reduced to equivalent static pressures; buckling, vibration, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 6061-T6 aluminum solar-array canopy-panel mount for a Formula Sun Grand Prix single-occupant solar vehicle (<=4 m^2 projected array, 2 m x 1 m monolithic composite panel, 12 kg panel mass, Brainerd International Raceway). The bracket is a single billet-machined 6061-T6 part with an integral panel-side clamp (4 mm grooved for the panel's carbon-fiber perimeter), a 50 mm ID rail-side half-saddle for a 50 mm canopy rail, and a 45-degree diagonal drag-strut anchor stub; no welds, no inserts. Apply yield/2.0 continuous and yield/1.5 transient safety factors.\n\nEnvelope: 160 x 80 x 100 mm.\n\nLoad cases.\n- LC1 aero at 70 mph: 176 N lift + 88 N drag distributed through the panel clamp (CL ~0.15 on 2 m^2, q = 588 Pa), rail clamp fixed.\n- LC2 gust lift (2x): 352 N lift at the panel clamp.\n- LC3 transport / rollover: 5 g vertical on 12 kg = 588 N distributed, single-point rail-clamp fixed (jacked-up vehicle).\nAlso require a steady-state thermal check at 45 C ambient with 820 W/m^2 panel heat rejection (clamp body below 85 C to preserve T6 temper) and a 1e6-cycle fatigue margin off 60% of LC1.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FSGP solar canopy panel mount bracket",
+    "brief": "6061-T6 panel clamp + rail saddle + drag strut anchor; aero + gust + transport loads + UV/thermal.",
+    "geometric_constraints": {
+      "panel_clamp_mm": {
+        "w": 60,
+        "h": 40,
+        "thickness": 4,
+        "groove_mm": {
+          "w": 25,
+          "d": 4
+        },
+        "bolt_hole_mm": 9
+      },
+      "rail_saddle_mm": {
+        "id": 50,
+        "length": 60,
+        "wall": 5,
+        "clamp_bolts_mm": 9
+      },
+      "drag_strut_stub_mm": {
+        "od": 30,
+        "length": 20,
+        "bore_mm": 8,
+        "angle_deg": 45
+      },
+      "bounding_envelope_mm": {
+        "x": 160,
+        "y": 80,
+        "z": 100
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "endurance_5e8_MPa": 97
+      }
+    },
+    "panel": {
+      "area_m2": 2.0,
+      "mass_kg": 12,
+      "efficiency_pct": 18
+    },
+    "environment": {
+      "ambient_max_C": 45,
+      "solar_W_m2": 1000,
+      "vehicle_peak_m_s": 31.3,
+      "dyn_press_Pa": 588
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "aero_70mph",
+        "lift_N": 176,
+        "drag_N": 88
+      },
+      {
+        "id": "LC2",
+        "name": "gust_2x",
+        "lift_N": 352
+      },
+      {
+        "id": "LC3",
+        "name": "transport_5g",
+        "force_N": 588
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "clamp_temperature_C",
+        "panel_clamp_deflection_mm",
+        "mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 138,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 97,
+        "cycles": 1000000,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "clamp_body_temperature",
+        "limit_C": 85,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "panel_clamp_deflection",
+        "limit_mm": 1.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "S-N fatigue",
+        "steady-state thermal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Aero reduced to static pressure.",
+      "radiation_analysis": "Captured in thermal BC.",
+      "vibration_analysis": "Low-speed road vibration non-governing for clamp.",
+      "buckling_analysis": "Compact clamp not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "UV yellowing of anodized aluminum",
+      "PV cell TCT (thermal cycling) compliance",
+      "FSGP dynamic scrutineering measurement"
+    ]
+  },
+  "eval_coverage": [
+    "FSGP aero + gust + transport multi-case",
+    "T6 overaging thermal gate",
+    "panel flatness preservation for cell integrity",
+    "clear-anodized UV ambient BC"
+  ]
+}

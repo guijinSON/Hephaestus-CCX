@@ -1,0 +1,193 @@
+{
+  "id": "165_cn15_sname_bdc",
+  "source": {
+    "catalog_ref": "CN15",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "naval_architecture",
+  "part_class": "aluminum_workboat_midship_bay",
+  "full_prompt": "Design a midship structural bay of a 10.0 m aluminum crew workboat. The workboat is a 10.0 m LOA x 3.2 m beam x 1.2 m depth (molded) x 0.70 m design draft aluminum planing hull carrying a maximum payload of 1.5 t plus four crew, powered by twin 150 kW outboards. The midship bay spans 2.0 m along the length between transverse frames and includes bottom shell, side shell, deck plating, one longitudinal centerline girder, and two bottom longitudinals, built from marine-grade aluminum alloy 5083-H116 (yield 215 MPa, ultimate 305 MPa, E 70 GPa, density 2660 kg/m^3). Plating scantlings must satisfy the ABS High-Speed Naval Craft or ABS HSNC / ABS Aluminum Pleasure Craft equivalent; apply the ABS HSC slamming pressure formula with a design vertical acceleration of 1.5 g at LCG yielding a bottom slamming pressure of 68 kPa, a side shell pressure of 22 kPa, and a deck design pressure of 6 kPa. The midship bay must simultaneously satisfy: (R1) maximum von Mises stress in any plating or stiffener under the combined slamming (bottom) + hydrostatic (side) + deck (top) load case must not exceed 143 MPa which is yield divided by 1.5, (R2) maximum plating deflection under bottom slamming pressure must not exceed panel_span/100 which is 6 mm for the 600 mm longitudinal spacing, (R3) a linear buckling eigenvalue of the side shell panel under a longitudinal hog bending stress of 60 MPa must yield a first-mode load factor of at least 2.0, (R4) intact stability GMt must be at least 0.30 m at design displacement per ISO 12217-1 category B, and (R5) the midship section modulus about the neutral axis must equal or exceed the ABS HSNC minimum for this length-to-beam ratio at 3.1e-4 m^3. Vibration, thermal, fluid CFD, and radiation analyses are not required; wave bending and slamming pressures are prescribed. Deliver a STEP AP242 assembly of the midship bay with plating and stiffeners as sub-bodies plus a scantling report listing maximum von Mises, plating deflection, first buckling load factor, GMt, and section modulus.",
+  "short_prompt": "Design the midship structural bay (2.0 m long between transverse frames) of a 10 m LOA x 3.2 m beam x 1.2 m depth aluminum planing workboat, design draft 0.7 m, payload 1.5 t + 4 crew, twin 150 kW outboards. The bay is welded marine aluminum (5083-H116 class) and includes bottom shell, side shell, deck plating, a centerline girder, and two bottom longitudinals.\n\nScantlings are per ABS HSNC / ABS Aluminum Pleasure Craft with a design vertical acceleration of 1.5 g at LCG. Transverse frames act as simple supports at the ends of the bay; centerline is a symmetry plane.\n\nLoad cases.\n- LC1 bottom slam pressure: 68 kPa on the bottom shell.\n- LC2 side hydrostatic pressure: 22 kPa on the side shell.\n- LC3 deck design pressure: 6 kPa on the weather deck.\n- LC4 longitudinal hog bending: 60 MPa stress on the side shell.\n\nAlso check intact GMt per ISO 12217-1 and the ABS HSNC midship section modulus floor.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "intact_stability_hydrostatics",
+        "reason": "GMt and righting arm curve are closed-form from hydrostatics of the hull form, not FEA.",
+        "examples": [
+          "Rhino Orca3D",
+          "Maxsurf Stability"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "10 m aluminum workboat midship structural bay",
+    "brief": "Design a 2.0 m midship bay of a 10.0 m LOA x 3.2 m beam aluminum workboat in 5083-H116 with ABS HSNC slamming 68 kPa, side 22 kPa, deck 6 kPa, meeting stress, deflection, buckling, stability, and section-modulus floors.",
+    "geometric_constraints": {
+      "LOA_m": 10.0,
+      "beam_m": 3.2,
+      "depth_m": 1.2,
+      "design_draft_m": 0.7,
+      "midship_bay_length_m": 2.0,
+      "long_stiffener_spacing_mm": 600
+    },
+    "material": {
+      "name": "Aluminum 5083-H116",
+      "yield_MPa": 215,
+      "ultimate_MPa": 305,
+      "E_GPa": 70,
+      "density_kg_m3": 2660
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "bottom_slam",
+        "magnitude_kPa": 68,
+        "application": "on bottom shell"
+      },
+      {
+        "id": "LC2",
+        "name": "side_hydrostatic",
+        "magnitude_kPa": 22,
+        "application": "on side shell"
+      },
+      {
+        "id": "LC3",
+        "name": "deck_load",
+        "magnitude_kPa": 6,
+        "application": "on weather deck"
+      },
+      {
+        "id": "LC4",
+        "name": "hog_bending",
+        "magnitude_MPa": 60,
+        "application": "longitudinal stress at side shell"
+      }
+    ],
+    "boundary_conditions": {
+      "frame_edges": "transverse frames at both ends of the bay act as simple supports",
+      "centerline": "symmetry plane"
+    },
+    "objective": {
+      "primary": "pass all scantling and stability checks",
+      "secondary": "minimize plating + stiffener mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "plating_deflection_mm",
+        "first_buckling_load_factor",
+        "GMt_m",
+        "section_modulus_m3"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 143,
+        "derivation": "yield 215 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "plating_deflection",
+        "limit_mm": 6,
+        "derivation": "600 mm panel span / 100",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "GMt",
+        "limit_m": 0.3,
+        "derivation": "ISO 12217-1 category B",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "midship_section_modulus",
+        "limit_m3": 0.00031,
+        "derivation": "ABS HSNC minimum for L/B ratio",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for plating, beam for stiffeners",
+      "mesh_size_mm_in_critical_regions": 20,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "Nauticus Hull"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling eigenvalue"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Slamming is scope-reduced to quasi-static pressure per ABS.",
+      "thermal_analysis": "Ambient sea temperature.",
+      "fluid_analysis": "Pressures prescribed by ABS formulas.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Slamming fatigue over design life",
+      "Corrosion allowance and galvanic protection",
+      "Welded joint S-N (IACS Rec.56 / ABS)"
+    ]
+  },
+  "eval_coverage": [
+    "ABS HSNC scantling pressure loadcases",
+    "hydrostatic stability GMt coupling with FEA structural pass/fail",
+    "section-modulus floor for hull girder",
+    "buckling check under longitudinal bending stress"
+  ]
+}

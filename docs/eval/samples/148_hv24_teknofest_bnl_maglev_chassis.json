@@ -1,0 +1,227 @@
+{
+  "id": "148_hv24_teknofest_bnl_maglev_chassis",
+  "source": {
+    "catalog_ref": "HV24 (user-assigned national aerospace student benchmark Hyperloop Development + BNL MagLev; catalog HV23 national aerospace student benchmark + HV24 BNL MagLev)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "magnetic_levitation_vehicle",
+  "part_class": "maglev_small_vehicle_chassis",
+  "full_prompt": "Design a monolithic 6061-T6 aluminum passive-magnet levitation vehicle chassis satisfying both the Brookhaven Lab MagLev Competition 2026 high-school rules (16 ft / 4.88 m track with 2 ft / 0.61 m total drop, 2.5 in / 63.5 mm magnet channel, 1 in x 0.75 in ceramic magnets spaced 1 in center-to-center, vehicle <=16 in / 406 mm long, gravity-powered descent) and satisfying the national aerospace student benchmark 2026 Hyperloop Development Competition Tech-Demo track requirement for a reduced-scale maglev demonstration vehicle. The chassis is a single billet-machined 6061-T6 part (no welds, no bolted-on tabs; integral central spine + integral magnet-carrier rails + integral payload cradle + integral front/rear bumper-stops). Geometry: 400 mm long x 60 mm wide x 20 mm tall central spine; two integral magnet-carrier rails along the underside of the spine, each 400 mm long x 20 mm wide x 4 mm thick with a 18 mm wide x 5 mm deep channel to hold a row of 20 x (1 in x 0.75 in x 0.5 in) N42 ceramic magnets spaced at 20 mm pitch (repelling the track magnet array); rail gap between the two rails 25 mm (matching the 63.5 mm track channel with some clearance). Integral payload cradle on top of the spine: 100 mm long x 40 mm wide x 10 mm deep trough with 4 integral M4 (4.5 mm clearance) tie-down holes. Integral bumper stops at front and rear: each 30 mm wide x 15 mm tall x 4 mm thick vertical plate. Overall bounding envelope 400 x 60 x 30 mm. Material 6061-T6 (E 68.9 GPa, nu 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa, endurance 97 MPa at 5e8 cycles); note: the magnets and the payload are non-structural for this prompt and modeled as lumped masses. Three load cases per combined BNL MagLev + national aerospace student benchmark Tech-Demo practice. Load Case 1 (peak descent dynamics at end of 16 ft track): vehicle total mass (chassis 0.35 kg + magnets 20 x 3.5 g = 70 g + payload 50 g) = 0.47 kg; peak velocity after 0.61 m drop = sqrt(2 * 9.81 * 0.61) = 3.46 m/s; entering the level run-out requires 0.5g lateral correction at the bumper stops + 1.5g longitudinal decel on the rear bumper hitting the track endstop = 3.5 N longitudinal + 2.3 N lateral; applied at the bumpers, magnet-carrier rails constrained by distributed levitation forces. Load Case 2 (end-of-track bumper hit): 25 N longitudinal impulse on the rear bumper over 10 ms (kinetic energy 2.8 J absorbed by elastomer-bumper pad modeled as stiffness BC), chassis fully supported by magnet-carrier levitation. Load Case 3 (drop from 0.3 m on payload install): 0.47 kg x (9.81) x (12/(2*0.005)) dynamic factor = 553 N shock vertical on payload cradle representing a careless install drop onto a hard bench (elastomer pad on bench has 5 mm compression at impact), chassis inverted constrained at bumpers. Pass/fail: (R1) under LC1 peak descent dynamics, peak von Mises must not exceed 138 MPa (yield/2.0); (R2) under LC2 bumper hit, peak stress must not exceed 184 MPa (yield/1.5 transient); (R3) under LC3 install drop shock, peak stress must not exceed 184 MPa; (R4) first six natural frequencies of the chassis (with magnets + payload lumped mass) must exceed 40 Hz to avoid resonance with the 10-30 Hz levitation magnet-track interaction ripple (track magnets spaced at 1 in produce spatial forcing at velocity v/d = 3.46/0.0254 = 136 Hz primary, but include 0.1x subharmonic floor at 13.6 Hz); (R5) chassis mass must not exceed 0.35 kg (keeps total vehicle <= 0.5 kg for BNL small-ceramic-magnet class); (R6) flatness of the magnet-carrier rail channels must not deviate by more than 0.2 mm under LC1 (deviation above 0.2 mm increases levitation gap variability and crashes the vehicle into the track); (R7) overall vehicle length in the chassis direction must remain <= 406 mm (BNL <=16 in limit). Thermal, fluid, buckling, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 6061-T6 aluminum passive-magnet levitation vehicle chassis for both the Brookhaven Lab MagLev Competition (16 ft / 4.88 m track, 0.61 m drop, 63.5 mm magnet channel, <=16 in vehicle length) and a national aerospace student benchmark Hyperloop Tech-Demo scaled maglev demonstrator. The chassis is a single billet-machined part with a central spine, two integral magnet-carrier rails with channels for 20 N42 ceramic magnets on 20 mm pitch, an integral payload cradle with four tie-down holes, and integral front/rear bumper stops. Apply yield/2.0 continuous and yield/1.5 transient safety factors.\n\nEnvelope: 400 x 60 x 30 mm (<=406 mm per BNL rule).\n\nLoad cases.\n- LC1 peak descent dynamics at run-out: 0.47 kg vehicle at 3.46 m/s, 0.5 g lateral at bumper stops + 1.5 g longitudinal decel = 3.5 N longitudinal + 2.3 N lateral at the bumpers, magnet-carrier rails constrained by distributed levitation forces.\n- LC2 end-of-track bumper hit: 25 N longitudinal impulse over 10 ms on the rear bumper (2.8 J via elastomer-bumper stiffness BC), chassis supported by levitation.\n- LC3 0.3 m install drop: 553 N vertical shock on the payload cradle (elastomer bench pad 5 mm compression), chassis inverted at the bumpers.\nAlso require first six modes >40 Hz (decouple 10-30 Hz levitation ripple; 136 Hz primary at 3.46 m/s / 1 in pitch) and magnet-rail channel flatness deviation under LC1 below 0.2 mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark + BNL maglev small-vehicle chassis",
+    "brief": "6061-T6 400x60x20 spine chassis w/ dual magnet-carrier rails + payload cradle + bumpers; 16 ft / 2 ft drop BNL track.",
+    "geometric_constraints": {
+      "spine_mm": {
+        "l": 400,
+        "w": 60,
+        "h": 20
+      },
+      "magnet_rails": {
+        "count": 2,
+        "mm": {
+          "l": 400,
+          "w": 20,
+          "t": 4
+        },
+        "channel_mm": {
+          "w": 18,
+          "d": 5
+        },
+        "magnet_count_per_rail": 20,
+        "magnet_pitch_mm": 20,
+        "rail_gap_mm": 25
+      },
+      "payload_cradle_mm": {
+        "l": 100,
+        "w": 40,
+        "d": 10,
+        "tie_down_holes": 4,
+        "hole_mm": 4.5
+      },
+      "bumpers": {
+        "count": 2,
+        "mm": {
+          "w": 30,
+          "h": 15,
+          "t": 4
+        }
+      },
+      "bounding_envelope_mm": {
+        "x": 400,
+        "y": 60,
+        "z": 30
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "endurance_5e8_MPa": 97
+      }
+    },
+    "track_env": {
+      "length_m": 4.88,
+      "drop_m": 0.61,
+      "peak_velocity_m_s": 3.46,
+      "channel_mm": 63.5,
+      "magnet_pitch_mm": 25.4
+    },
+    "masses_g": {
+      "chassis": 350,
+      "magnets_total": 70,
+      "payload": 50,
+      "vehicle_total_limit": 500
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "peak_descent_runout",
+        "longitudinal_N": 3.5,
+        "lateral_N": 2.3
+      },
+      {
+        "id": "LC2",
+        "name": "end_bumper_hit",
+        "impulse_N": 25,
+        "duration_ms": 10
+      },
+      {
+        "id": "LC3",
+        "name": "install_drop_shock",
+        "vertical_N": 553
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_six_freqs_Hz",
+        "rail_channel_flatness_deviation_mm",
+        "vehicle_length_mm",
+        "mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 138,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 40,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "rail_channel_flatness_deviation",
+        "limit_mm": 0.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "vehicle_length",
+        "limit_mm": 406,
+        "derivation": "BNL <=16in",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal with lumped magnet+payload"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Room-temperature passive maglev.",
+      "fluid_analysis": "Aero negligible at 3.5 m/s on 0.4 m part.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compact section not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Magnet Halbach-pattern optimization",
+      "Track misalignment dynamic interaction",
+      "Payload release mechanism"
+    ]
+  },
+  "eval_coverage": [
+    "BNL HS 16 ft / 2 ft drop envelope",
+    "national aerospace student benchmark Tech-Demo mass + rail-flatness",
+    "magnet-track spatial-frequency resonance avoidance",
+    "install-drop shock robustness"
+  ]
+}

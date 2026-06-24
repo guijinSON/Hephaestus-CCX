@@ -1,0 +1,171 @@
+{
+  "id": "256_a16_aisc_ssbc_steel_bridge",
+  "source": {
+    "catalog_ref": "A16",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "civil_structural",
+  "part_class": "steel_bridge_primary_truss",
+  "full_prompt": "Design a single-piece structural-steel bridge truss for a collegiate bridge-design event. The bridge shall span a nominal 20 ft (6.10 m) clear gap and carry a maximum applied vertical load of 2,500 lb (11,120 N) over the decking at the worst-case loading location. Exactly two stringers carry the decking loads. Overall bridge envelope: 6.5 m long (to allow support bearings outside the 20 ft span), 1.0 m wide (stringer-to-stringer), 0.7 m tall. Bridge is a through-truss welded from A500 Grade B steel hollow structural sections (HSS). Material: ASTM A500 Grade B steel, E = 200 GPa, yield = 315 MPa, ultimate = 400 MPa, density = 7850 kg/m^3. Primary members: top chord HSS 50 x 50 x 3 mm, bottom chord HSS 50 x 50 x 3 mm, diagonal web HSS 40 x 40 x 3 mm, transverse floor beams HSS 40 x 40 x 3 mm. Nodes are welded (modeled as rigid connections). Load cases: (R1) Service load: 2500 lb (11,120 N) concentrated at mid-span on both stringers simultaneously; maximum midspan vertical deflection of the loaded stringers <= span/500 = 6100 / 500 = 12.2 mm. (R2) Stress pass/fail: under R1, maximum von Mises stress in any member <= yield / 1.67 (LRFD phi 0.9 / gamma 1.5 equivalent) = 189 MPa. (R3) Linear buckling: under factored load 1.5 x 11,120 = 16,680 N, the first buckling eigenvalue (compressive chord / diagonal buckling) shall be >= 2.5. (R4) Bridge total mass (stiffness / lightness scoring): aim for minimum; hard cap mass <= 120 kg. (R5) Lateral sway under a horizontal rubbing load of 50 lb (222 N) applied at mid-span top chord <= 12 mm. (R6) Construction constraint: the bridge shall be assembled from members no longer than 1.2 m (transportation constraint) - this is a geometry rule not analysis, but bolted splice locations must carry the full R1 load. Primary verification: structural FEA (linear static) + linear buckling. Vibration, thermal, fluid, radiation explicitly NOT required. Deliverables: STEP AP242 welded assembly (treated as a single structural idealization for FEA), member schedule, and a report listing total mass, maximum midspan deflection, max von Mises stress, first buckling load factor, lateral sway.",
+  "short_prompt": "Design a welded A500 Grade B steel truss bridge for a collegiate bridge-design event, spanning a 20 ft (6.10 m) clear gap and carrying a maximum vertical load of 2500 lb (11,120 N) at the worst-case deck location through exactly two stringers. Sizing follows an LRFD-style factoring (phi 0.9 / gamma 1.5 equivalent) on A500 Grade B yield. Nodes welded and modelled as rigid.\n\nEnvelope: overall 6.5 m long (support bearings outside the 20 ft span) x 1.0 m wide (stringer-to-stringer) x 0.7 m tall. Primary members HSS 50 x 50 x 3 mm (chords) and HSS 40 x 40 x 3 mm (diagonals / floor beams). Construction rule: no single member longer than 1.2 m (splices must still carry full service load).\n\nLoad cases.\n- LC1 service load: 11,120 N at midspan on both stringers simultaneously; midspan stringer deflection <= span/500 = 12.2 mm.\n- LC2 factored buckling: 1.5 x 11,120 = 16,680 N, first buckling eigenvalue check on compression chords / diagonals.\n- LC3 lateral rub: 50 lbf (222 N) horizontal at midspan top chord, lateral sway <= 12 mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Collegiate steel through-truss bridge (20 ft clear span)",
+    "brief": "HSS steel truss 20 ft clear span, 2 stringers, 11.12 kN vertical load. Deflection <= L/500 and buckling >= 2.5.",
+    "geometric_constraints": {
+      "clear_span_m": 6.1,
+      "envelope_length_m": 6.5,
+      "width_m": 1.0,
+      "height_m": 0.7,
+      "stringer_count": 2,
+      "top_chord_HSS_mm": "50 x 50 x 3",
+      "bottom_chord_HSS_mm": "50 x 50 x 3",
+      "diagonals_HSS_mm": "40 x 40 x 3",
+      "max_member_length_m": 1.2
+    },
+    "material": {
+      "name": "ASTM A500 Grade B steel",
+      "properties": {
+        "youngs_modulus_GPa": 200,
+        "yield_strength_MPa": 315,
+        "ultimate_tensile_strength_MPa": 400,
+        "density_kg_m3": 7850
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "service_vertical",
+        "force_N": 11120,
+        "direction": "vertical at midspan on both stringers"
+      },
+      {
+        "id": "LC2",
+        "name": "buckling_factored",
+        "force_N": 16680,
+        "direction": "vertical at midspan"
+      },
+      {
+        "id": "LC3",
+        "name": "lateral_sway",
+        "force_N": 222,
+        "direction": "horizontal at mid-span top chord"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "pinned at one end, roller at other (simple span)",
+      "loads": "concentrated vertical or horizontal at midspan"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "total_mass_kg",
+        "max_midspan_deflection_mm",
+        "max_von_mises_MPa",
+        "first_buckling_load_factor",
+        "lateral_sway_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_midspan_deflection",
+        "limit_mm": 12.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 189,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "lateral_sway",
+        "limit_mm": 12,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B32) or shell for HSS",
+      "mesh_size_mm_in_critical_regions": 25,
+      "solver_hints": [
+        "SAP2000",
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Service load is static.",
+      "thermal_analysis": "Indoor venue.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "deflection <= L/500 pass/fail",
+    "LRFD-like stress limit",
+    "compressive member buckling",
+    "lateral sway serviceability"
+  ]
+}

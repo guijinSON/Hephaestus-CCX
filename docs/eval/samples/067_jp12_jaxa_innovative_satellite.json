@@ -1,0 +1,186 @@
+{
+  "id": "067_jp12_jaxa_innovative_satellite",
+  "source": {
+    "catalog_ref": "JP12",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "microsatellite_primary_structure",
+  "full_prompt": "Design the primary structure of a 50 kg class microsatellite for a student-demonstration microsatellite slot. The envelope is the published 50 kg class volume for the microsatellite program (approximately 500 mm x 500 mm x 500 mm with attachment ring); the total wet mass must not exceed 50 kg. The launch environment is defined per the program launch vehicle: random vibration 14.1 Grms (NASA GEVS qualification-style spectrum, 20-2000 Hz), and shock response spectrum 1000 G peak in the 1000-10000 Hz band at the separation plane. A quasi-static limit load of 20 g axial and 10 g lateral is applied at the spacecraft CG. The primary structure must carry and survive all three environments: quasi-static, random vibration, and pyroshock. Natural-frequency requirement: the first longitudinal mode must be above 110 Hz and the first lateral mode must be above 45 Hz, consistent with the launch vehicle decoupling requirement. Stress allowables follow NASA-STD-5001B: yield FoS 1.25, ultimate FoS 1.4. Material is typically Al 7075-T7351 or Al 6061-T6 for the primary structure. Primary verification is structural FEA (linear static for quasi-static; random-vibration harmonic response with 3-sigma stress evaluation; modal analysis for first-mode frequency). Vibration analysis is a primary gate here, not secondary. Thermal and fluid analyses are explicitly NOT required at this specific structural-qualification gate (thermal survival is verified at a separate thermal gate). Radiation analysis is explicitly NOT required since the student demo orbit is LEO. Deliverables: STEP AP242 of the primary structure, a mass budget, and a report listing wet mass in kg, first longitudinal mode in Hz, first lateral mode in Hz, max quasi-static stress in MPa with FoS, 3-sigma random-vibration peak stress in MPa, and shock-response displacement at critical mounting interfaces.",
+  "short_prompt": "Design the primary structure of a 50 kg-class microsatellite for a student-demonstration microsatellite slot. Envelope approximately 500 x 500 x 500 mm including the attachment ring; wet mass <= 50 kg. Stress allowables per NASA-STD-5001B: yield FoS 1.25, ultimate FoS 1.4. Primary structure typically Al 7075-T7351 or Al 6061-T6.\n\nLoad cases at the adapter-ring separation plane.\n- LC1 quasi-static 20 g axial limit load at the spacecraft CG.\n- LC2 quasi-static 10 g lateral limit load at the spacecraft CG.\n- LC3 random vibration 14.1 Grms over 20-2000 Hz (NASA GEVS-style qualification spectrum).\n- LC4 pyroshock SRS: 1000 G peak over 1000-10000 Hz.\n- First longitudinal mode >= 110 Hz and first lateral mode >= 45 Hz (launch-vehicle decoupling).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "50 kg-class microsatellite primary structure",
+    "brief": "Design a 50 kg-class microsatellite primary structure that survives 14.1 Grms random vib, 1000 G shock SRS, 20 g axial quasi-static, first modes ≥ 110 Hz long / ≥ 45 Hz lat.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "X": 500,
+        "Y": 500,
+        "Z": 500
+      },
+      "wet_mass_kg_max": 50,
+      "separation_plane": "spacecraft-to-launcher adapter ring"
+    },
+    "material": {
+      "primary_structure": "Al 7075-T7351 or Al 6061-T6",
+      "Al7075_T7351": {
+        "E_GPa": 71.7,
+        "yield_MPa": 435,
+        "ultimate_MPa": 505
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static_20g_axial",
+        "magnitude_g": 20,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "quasi_static_10g_lateral",
+        "magnitude_g": 10,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "random_vibration",
+        "Grms": 14.1,
+        "band_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "pyroshock_SRS",
+        "peak_G": 1000,
+        "band_Hz": [
+          1000,
+          10000
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "adapter_ring": "fixed at separation plane"
+    },
+    "objective": {
+      "minimize": "primary_structure_mass",
+      "first_long_mode_Hz_min": 110,
+      "first_lat_mode_Hz_min": 45
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "wet_mass_kg",
+        "first_long_mode_Hz",
+        "first_lat_mode_Hz",
+        "max_quasi_static_stress_MPa",
+        "three_sigma_random_stress_MPa",
+        "shock_response_displacement_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "wet_mass_kg",
+        "limit_kg": 50,
+        "derivation": "Student slot class cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_quasi_static_stress_MPa",
+        "limit_fraction_of_yield": 0.8,
+        "derivation": "NASA-STD-5001B yield FoS 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_long_mode_Hz",
+        "limit_Hz": 110,
+        "derivation": "Launch vehicle decoupling",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_lat_mode_Hz",
+        "limit_Hz": 45,
+        "derivation": "Launch vehicle decoupling",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "three_sigma_random_stress_MPa",
+        "limit_fraction_of_yield": 0.8,
+        "derivation": "3-sigma peak random response < 0.8 x yield",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "random vibration harmonic response",
+        "shock response (SRS analysis)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Thermal is a separate gate.",
+      "fluid_analysis": "Not applicable (space vacuum).",
+      "radiation_analysis": "LEO demo, not in student-slot structural gate."
+    }
+  },
+  "eval_coverage": [
+    "quasi-static + random vib + shock",
+    "first mode decoupling",
+    "3-sigma random stress",
+    "NASA FoS 1.25 yield / 1.4 ultimate"
+  ]
+}

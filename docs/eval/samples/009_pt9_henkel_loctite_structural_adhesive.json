@@ -1,0 +1,205 @@
+{
+  "id": "009_pt9_henkel_loctite_structural_adhesive",
+  "source": {
+    "catalog_ref": "PT9",
+    "year": 2024,
+    "tier": "B"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "bonded_lap_joint",
+  "full_prompt": "Design a single-lap bonded joint between two thin aluminum sheet coupons, bonded with a canonical two-part epoxy paste adhesive (aerospace-grade, EA 9394-class), sized to transmit a service tensile load of 20 kN per 25 mm joint width while maintaining an aerospace-typical safety factor of 1.5 on adhesive ultimate lap-shear strength. The two coupons are 2024-T3 clad aluminum sheet (yield 345 MPa, UTS 483 MPa, Young's modulus 72.4 GPa, density 2780 kg/m^3), each 3.2 mm thick, 25 mm wide, 150 mm long. They are overlapped and bonded in a single-lap configuration with bond width 25 mm and bond length L_bond (design variable). Substrate preparation per adhesive-supplier design guide: abrade + degrease + FPL etch or sol-gel surface treatment. Adhesive bondline thickness: 0.25 mm nominal (aerospace-grade epoxy recommended). Published room-temperature lap-shear strength for aerospace-grade two-part epoxy (EA 9394-class) (ASTM D1002) on abraded aluminum is approximately 28.9 MPa; published T-peel (ASTM D1876) on aluminum is approximately 0.35 N/mm (low-peel epoxy). Service loads: LC1 tensile pull 20 kN applied along the bond axis through one coupon, held fixed at the other coupon's free end; LC2 fatigue not required for this brief (static qualification only); LC3 120 C hot/wet service condition with adhesive strength reduced per manufacturer data to approximately 17 MPa lap-shear (60% of room-temperature). Pass/fail: (R1) at LC1, the average adhesive shear stress tau_avg = 20,000 / (25 * L_bond) must be <= 28.9 / 1.5 = 19.3 MPa (aerospace SF 1.5 on ultimate lap shear); (R2) at LC3 (120 C hot/wet), tau_avg <= 17 / 1.5 = 11.3 MPa using degraded allowable; (R3) peak adhesive shear stress (Volkersen or finite-element stress concentration at bond ends) must be <= 28.9 MPa ultimate under LC1 with no safety factor, as a pre-yield check; (R4) substrate coupon net section stress = 20,000 / (3.2 * 25) = 250 MPa must be <= 345 / 1.5 = 230 MPa, yielding a constraint that drives substrate thickness or width (flags coupon dimensions for adjustment); (R5) peel-mode stress at bond terminations must be <= 0.35 / 1.5 = 0.23 N/mm peel SF 1.5; (R6) minimum bond length L_bond such that the Volkersen characteristic length a = sqrt(t_a * E_sub / (G_a * 2 * t_sub)) satisfies L_bond >= 3 * a (a typical aerospace rule for stress-concentration decay at lap ends); with t_a = 0.25 mm, E_sub = 72.4 GPa, t_sub = 3.2 mm, G_a ~= 1.1 GPa (aerospace-grade epoxy at room temp), the characteristic length a ~= 2.7 mm, so L_bond >= 8 mm as a lower bound, rounded up per R1 to whichever is larger. Substrate coupons may have a chamfered lap-end (45 deg) to reduce peel concentration per adhesive-supplier design guide recommendation. Deliverables: STEP AP242 of the bonded assembly with explicit adhesive layer body; report with final L_bond, average and peak adhesive shear at LC1 and LC3, substrate net section stress, peel stress at terminations, and compliance vs the aerospace-grade epoxy allowables.",
+  "short_prompt": "Design a single-lap bonded joint between two thin aluminum sheet coupons bonded with a two-part epoxy paste adhesive (aerospace-grade, EA 9394-class), sized to transmit a 20 kN per 25 mm joint width service tensile load with an aerospace SF of 1.5 on ultimate lap-shear strength.\n\nGeometry: two 2024-T3 clad aluminum coupons, each 3.2 mm thick, 25 mm wide, 150 mm long, overlapped with bond width 25 mm and bond length L_bond (design variable). Adhesive bondline thickness 0.25 mm nominal. Substrate preparation: abrade + degrease + FPL etch or sol-gel.\n\nAdhesive allowables (EA 9394-class): room-temp lap-shear ~28.9 MPa (ASTM D1002); T-peel ~0.35 N/mm (ASTM D1876); at 120 C hot/wet ~17 MPa lap-shear.\n\nLoad cases.\n- LC1 tensile pull 20 kN along the bond axis through one coupon, with the other fixed.\n- LC2 fatigue not required (static qualification only).\n- LC3 120 C hot/wet with adhesive strength reduced to ~17 MPa lap-shear.\n\nMinimum bond length from Volkersen characteristic length a ~ 2.7 mm (t_a = 0.25 mm, E_sub = 72.4 GPa, t_sub = 3.2 mm, G_a ~= 1.1 GPa); L_bond >= 3 * a, i.e. >= 8 mm, rounded up to satisfy stress limits. Chamfered 45-deg lap-end permitted to reduce peel.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "volkersen_closed_form",
+        "reason": "Average + peak lap-shear stress via Volkersen / Goland-Reissner is a closed-form solution.",
+        "examples": [
+          "Excel Volkersen sheet",
+          "Python SymPy script"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Aluminum single-lap joint bonded with aerospace-grade two-part epoxy (EA 9394-class)",
+    "brief": "Size a single-lap adhesive joint in 3.2 mm 2024-T3 clad with aerospace-grade two-part epoxy (EA 9394-class) to transmit 20 kN with SF 1.5 on lap shear at both 23 C and 120 C.",
+    "geometric_constraints": {
+      "coupons": {
+        "count": 2,
+        "material": "2024-T3 clad",
+        "thickness_mm": 3.2,
+        "width_mm": 25,
+        "length_mm": 150
+      },
+      "bond": {
+        "adhesive": "aerospace-grade two-part epoxy (EA 9394-class)",
+        "thickness_mm": 0.25,
+        "width_mm": 25,
+        "length_mm": "design variable"
+      },
+      "lap_end_chamfer_deg": 45
+    },
+    "material": {
+      "substrate": {
+        "name": "2024-T3 clad",
+        "yield_MPa": 345,
+        "ultimate_MPa": 483
+      },
+      "adhesive": {
+        "name": "aerospace-grade two-part epoxy (EA 9394-class)",
+        "lap_shear_MPa_RT": 28.9,
+        "lap_shear_MPa_120C_wet": 17.0,
+        "t_peel_N_per_mm": 0.35,
+        "shear_modulus_GPa": 1.1
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "RT_tensile",
+        "force_N": 20000,
+        "temp_C": 23
+      },
+      {
+        "id": "LC3",
+        "name": "hot_wet_120C",
+        "force_N": 20000,
+        "temp_C": 120
+      }
+    ],
+    "boundary_conditions": {
+      "coupon_1_free_end": "fixed",
+      "coupon_2_free_end": "20 kN tensile along bond axis"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "assembly_bodies": [
+        "coupon_1",
+        "coupon_2",
+        "adhesive_layer"
+      ],
+      "report_fields": [
+        "L_bond_mm",
+        "tau_avg_LC1_MPa",
+        "tau_peak_LC1_MPa",
+        "tau_avg_LC3_MPa",
+        "substrate_net_section_MPa",
+        "peel_stress_at_ends_N_per_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "adhesive_avg_lap_shear",
+        "limit_MPa": 19.3,
+        "derivation": "28.9 / 1.5 (aerospace SF 1.5 on ultimate lap shear)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "adhesive_avg_lap_shear",
+        "limit_MPa": 11.3,
+        "derivation": "17.0 / 1.5 (hot-wet degraded allowable)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "adhesive_peak_lap_shear",
+        "limit_MPa": 28.9,
+        "derivation": "ultimate lap shear (pre-yield check no SF)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "substrate_net_section_stress",
+        "limit_MPa": 230,
+        "derivation": "yield / 1.5 = 345 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<=",
+        "note": "For 3.2 mm x 25 mm coupon at 20 kN, demand is 250 MPa > 230; prompt expects the agent to flag or increase coupon section."
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "peel_stress_at_lap_end",
+        "limit_N_per_mm": 0.23,
+        "derivation": "0.35 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "L_bond_vs_characteristic_length",
+        "limit": 3,
+        "derivation": "L_bond >= 3 * Volkersen characteristic length",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">=",
+        "note": "Characteristic length ~2.7 mm yields lower bound ~8 mm; final L_bond set by R1."
+      }
+    ],
+    "thermal_analysis_flag": {
+      "type": "thermal_analysis",
+      "reason": "LC3 at 120 C uses a degraded allowable; this is a coupled thermomechanical condition. Strictly the stress calc is isothermal but uses temperature-dependent properties, so thermal is secondary in spirit."
+    },
+    "governing_standard": "ASTM D1002 + ASTM D1876 + Aerospace-grade two-part epoxy Technical Data Sheet",
+    "recommended_fea_setup": {
+      "element_type": "solid layered (adhesive thin-shell surrogate)",
+      "mesh_size_mm_in_critical_regions": 0.1,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static with adhesive cohesive layer + Volkersen check"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static qualification only.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "thermal_explicitly_not_excluded": "LC3 uses temperature-degraded allowables; if the agent treats this as thermal-assisted structural, both thermal and structural are in play.",
+    "numeric_source": "Aerospace-grade two-part epoxy TDS: RT lap shear 28.9 MPa, hot-wet 120C ~17 MPa, T-peel 0.35 N/mm."
+  },
+  "eval_coverage": [
+    "adhesive lap-joint sizing",
+    "closed-form Volkersen + FEA peak check",
+    "temperature-degraded allowable enforcement",
+    "flag/raise on substrate-section mismatch"
+  ]
+}

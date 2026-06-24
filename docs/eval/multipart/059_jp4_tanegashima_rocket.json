@@ -1,0 +1,278 @@
+{
+  "id": "059_jp4_tanegashima_rocket",
+  "source": {
+    "catalog_ref": "JP4",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/059_jp4_tanegashima_rocket.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "model_rocket_airframe",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a class-B amateur model-rocket airframe and internal structure for an accuracy contest, delivered as a multi-part assembly because a model rocket airframe is by construction a built-up structure consisting of a body tube, nose cone, fins, internal bulkheads, motor mount, and recovery subassembly (CanSat bay + parachute) whose stability caliber, axial-burn buckling, bulkhead deflection, and fin-root shear pass/fail all reference the assembled airframe geometry.\n\nAssembly layout. (A) Body tube: phenolic or carbon-wrapped cardboard cylinder, ID 68 mm (1 mm radial clearance around 66 mm OD CanSat). (B) Nose cone: aerodynamic nose (plastic or balsa/composite) at the forward end. (C) Fins: 3 or 4 balsa/plywood or 3D-printed PLA fins bonded/fastened at the aft body tube. (D) Internal bulkheads: discs supporting recovery system and partitioning payload bay (>= 2 bulkheads typically). (E) Motor mount: centering rings + motor tube housing the class-B solid motor. (F) Recovery subassembly: nose cone + parachute pack + recovery electronics + CanSat bay, total mass <= 500 g.\n\nService envelope. Class B motor: peak thrust 2-5 N, total impulse 2.5-5.0 N*s, Isp ~70 s. Axial burn acceleration 20 G equivalent. Lateral gust 10 G. Fin tip side load 50 N.\n\nLoad cases. LC1 (motor burn axial 20 G). LC2 (lateral gust 10 G). LC3 (fin tip side 50 N).\n\nPass/fail criteria (assembly-level). (R1) Recovery subassembly mass <= 500 g (sums nose cone + parachute + avionics + CanSat bay). (R2) CG-CP separation 1.0-2.5 calibers measured with motor installed (Barrowman / RASAero). (R3) Body tube buckling load factor at 20 G axial >= 1.5. (R4) Bulkhead deflection at 20 G <= 1.0 mm. (R5) Fin root max stress under 50 N tip side load <= 25 MPa (balsa along-grain allowable).\n\nAssembly policy. CG-CP (R2) is inherently a whole-rocket quantity (assembled geometry, motor installed). Buckling (R3) couples body tube slenderness with bulkhead restraints and motor-mount ring reinforcement. Bulkhead deflection (R4) depends on the body tube boundary. Fin-root stress (R5) is at the C-A bonded/fastened interface. No part evaluated alone has meaningful pass/fail.\n\nSolver and analysis expectations. Primary: linear static FEM + linear buckling eigenvalue analysis (shell for tube, solid or shell for fins). Stability caliber via Barrowman/OpenRocket/RASAero (non-FEA analytical solver). Vibration, thermal, fluid CFD, radiation NOT required.\n\nDeliverables. STEP AP242 of airframe assembly, mass budget, recovery subassembly mass in g, CG-CP separation in calibers, body tube buckling load factor, bulkhead deflection in mm, and fin root max stress in MPa.",
+  "short_prompt": "Design a class-B amateur model-rocket airframe and internal structure for an accuracy contest, delivered as a built-up multi-part assembly: body tube (phenolic or carbon-wrapped cardboard, ID 68 mm with 1 mm radial clearance around a 66 mm OD CanSat) + nose cone + 3-4 balsa/plywood or PLA fins + >= 2 internal bulkheads + motor mount (centering rings + motor tube) + recovery subassembly (nose + parachute + avionics + CanSat bay).\n\nService envelope. Class B motor: peak thrust 2-5 N, total impulse 2.5-5.0 N*s, Isp ~70 s. Axial burn 20 G equivalent; lateral gust 10 G; fin tip side 50 N.\n\nLoad cases.\n- LC1 motor burn axial 20 G.\n- LC2 lateral gust 10 G.\n- LC3 fin tip side 50 N.\n\nPass limits: recovery subassembly mass <= 500 g; CG-CP separation 1.0-2.5 calibers with motor installed (Barrowman/RASAero); body-tube buckling factor at 20 G axial >= 1.5; bulkhead deflection at 20 G <= 1.0 mm; fin root stress under 50 N <= 25 MPa (balsa along-grain).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "aerodynamic_CP_CG_analysis",
+        "reason": "Stability margin is computed from Barrowman equations or equivalent (RASAero, OpenRocket) - analytical, not FEA.",
+        "examples": [
+          "OpenRocket",
+          "RASAero II"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Class-B amateur model rocket airframe as multi-part assembly",
+    "brief": "Airframe: body tube + nose cone + fins + internal bulkheads + motor mount + recovery subassembly; holds 350 ml CanSat; stability 1-2.5 caliber; 20 G axial + 10 G lateral + 50 N fin-tip.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "body_tube",
+        "role": "phenolic or carbon-wrapped cardboard cylinder forming the airframe",
+        "count_min": 1,
+        "geometric_constraints": {
+          "ID_mm": 68,
+          "material": "phenolic or carbon-wrapped cardboard"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "nose_cone",
+        "role": "aerodynamic nose at forward end of airframe",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "plastic or balsa/composite"
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "fin",
+        "role": "stabilizing fin bonded/fastened at aft body tube",
+        "count_min": 3,
+        "geometric_constraints": {
+          "material": "balsa/plywood or 3D-printed PLA"
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "bulkhead",
+        "role": "internal disc partitioning payload bay and supporting recovery system",
+        "count_min": 2,
+        "geometric_constraints": {
+          "material": "plywood or composite"
+        }
+      },
+      {
+        "part_id": "E",
+        "name": "motor_mount",
+        "role": "centering rings + motor tube housing the class-B solid motor",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "phenolic + plywood rings"
+        }
+      },
+      {
+        "part_id": "F",
+        "name": "recovery_subassembly",
+        "role": "parachute pack + recovery electronics + CanSat bay, total <= 500 g",
+        "count_min": 1,
+        "geometric_constraints": {
+          "mass_g_max": 500
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "body_tube_ID_mm": 68,
+      "payload_bay_radial_clearance_mm_min": 1,
+      "recovery_mass_g_max": 500
+    },
+    "material": {
+      "typical_airframe": "phenolic or carbon-wrapped cardboard tube",
+      "fin_material": "balsa/plywood or 3D-printed PLA"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "motor_burn_axial",
+        "magnitude_g": 20,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_gust",
+        "magnitude_g": 10,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "fin_tip_side_load",
+        "magnitude_N": 50,
+        "location": "fin tip"
+      }
+    ],
+    "boundary_conditions": {
+      "motor_mount": "fixed during axial burn",
+      "fin_root": "bonded/fastened to body tube"
+    },
+    "objective": {
+      "altitude_accuracy": "meet pre-declared altitude"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (tube + nose + fins + bulkheads + motor mount + recovery)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E|F)"
+      ],
+      "report_fields": [
+        "recovery_mass_g",
+        "CG_CP_separation_calibers",
+        "body_tube_buckling_load_factor",
+        "fin_root_max_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "recovery_mass_g",
+        "limit_g": 500,
+        "derivation": "Rulebook recovery subassembly cap",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "CG_CP_separation_calibers",
+        "limit_lower": 1.0,
+        "limit_upper": 2.5,
+        "derivation": "Aerodynamic stability margin; > 1 caliber minimum, < 2.5 prevents over-stability",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "body_tube_buckling_load_factor_at_20g",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bulkhead_deflection_mm_at_20g",
+        "limit_mm": 1.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "fin_root_max_stress_MPa",
+        "limit_MPa": 25,
+        "derivation": "Balsa along-grain allowable shear / bending",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (tube) + solid (fin)",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A body_tube forward end",
+        "B nose_cone base"
+      ],
+      "mediated_by": "friction / shear pin / bonded joint",
+      "load_path": "drag and axial thrust transfer; part of CG-CP geometry"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A body_tube outer surface aft",
+        "C fin root"
+      ],
+      "mediated_by": "bonded/fastened fillet",
+      "load_path": "fin-tip side load reacted into body tube - drives R5"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A body_tube inner wall",
+        "D bulkhead / E motor_mount"
+      ],
+      "mediated_by": "bonded or friction-fit centering rings",
+      "load_path": "motor thrust and bulkhead inertia reacted into tube; drives R3 and R4"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "D bulkhead",
+        "F recovery_subassembly"
+      ],
+      "mediated_by": "eyelet / tether",
+      "load_path": "recovery deployment load"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "CG-CP stability (R2) is inherently whole-rocket; body tube buckling (R3) conditions on bulkhead and motor-mount ring restraints; fin-root stress (R5) is a C-A interface check; bulkhead deflection (R4) depends on the A-D boundary."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "A rocket airframe is by construction a built-up assembly; stability, buckling, and fin loads reference the full geometry.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not required at this design gate.",
+      "thermal_analysis": "Short burn, no thermal spec in rulebook.",
+      "fluid_analysis": "Drag handled by Barrowman, not CFD.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "airframe buckling under axial burn across assembly",
+    "stability caliber computed on assembled rocket",
+    "recovery mass budget summing all recovery-subassembly components",
+    "fin root shear at fin-to-tube interface"
+  ]
+}

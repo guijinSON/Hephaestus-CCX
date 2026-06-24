@@ -1,0 +1,189 @@
+{
+  "id": "177_sp1_stratasys_extreme",
+  "source": {
+    "catalog_ref": "SP1",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "topology_optimized_bracket",
+  "full_prompt": "Design a topology-optimized monolithic bracket for an open-source industrial-FDM bracket redesign benchmark, printable on a large-format FDM system in ULTEM 9085 (yield 69 MPa, E 2.51 GPa, density 1340 kg/m^3), replacing a traditionally machined aluminum cable-tray support bracket. The build envelope is 406 mm x 355 mm x 406 mm (16 x 14 x 16 inches). The bracket must fit a 200 mm x 150 mm x 100 mm design space envelope and mount to an aircraft interior floor beam via four 10 mm bolt holes on a 150 x 80 mm rectangular pattern, supporting a cable tray load of 700 N vertical plus 300 N lateral at a mounting stud 150 mm offset from the floor plane. The bracket must simultaneously satisfy: (R1) max von Mises stress under vertical 700 N plus lateral 300 N combined case must not exceed 46 MPa (ULTEM 9085 yield 69 / SF 1.5), (R2) max displacement at the stud must not exceed 1.5 mm under combined load, (R3) mass must be at least 40% lower than a baseline solid-aluminum bracket filling the design envelope (baseline 6061 block mass = 200*150*100*2700/1e9 = 8.1 kg), so the redesigned ULTEM bracket must be under 4.86 kg (with ULTEM density 1340 vs Al 2700 this is essentially automatic, but the rule is the 40% reduction vs bulk-block), (R4) must print without support in the FDM build volume (self-supporting down to 45 degrees from build plate), and (R5) a linear buckling analysis under 2x combined load must yield a first-mode load factor of at least 2.0. Vibration, thermal, fluid, and radiation analyses are not required. Deliver an STL ready for any FDM slicer plus STEP AP242 and a verification report with max von Mises, stud displacement, bracket mass, print orientation, and first buckling load factor.",
+  "short_prompt": "Topology-optimize a monolithic cable-tray support bracket, printable on a large-format FDM system in ULTEM 9085, replacing a traditionally machined aluminum baseline. Design space is 200 x 150 x 100 mm within a 406 x 355 x 406 mm FDM build envelope. The bracket mounts to an aircraft-interior floor beam via four 10 mm bolts on a 150 x 80 mm pattern and carries a cable-tray stud 150 mm offset from the floor plane. Bolt holes are fully fixed (6 DOF).\n\nLoad cases.\n- LC1 vertical + lateral: 700 N vertical plus 300 N lateral simultaneously at the stud.\n- LC2 buckling: 2x combined (1400 N vertical + 600 N lateral).\n\nBracket mass target is at least 40% lighter than a solid-aluminum-block baseline filling the design space. The part must be self-supporting on FDM at 45 degrees from the build plate.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "40% mass reduction with self-supporting constraint is typically delivered by overhang-aware topology or lattice optimization around the structural FEA.",
+        "examples": [
+          "Altair OptiStruct with AM overhang filter",
+          "Ansys Mechanical Topology"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Large-format FDM ULTEM 9085 cable-tray bracket",
+    "brief": "Redesign a cable-tray support bracket in ULTEM 9085, printable on a large-format FDM platform (406 x 355 x 406 mm), carrying 700 N + 300 N with 40% mass reduction vs bulk-block and 2x buckling margin.",
+    "geometric_constraints": {
+      "design_space_mm": [
+        200,
+        150,
+        100
+      ],
+      "build_envelope_mm": [
+        406,
+        355,
+        406
+      ],
+      "bolt_holes": 4,
+      "bolt_dia_mm": 10,
+      "bolt_pattern_mm": [
+        150,
+        80
+      ],
+      "stud_offset_mm": 150,
+      "self_supporting_overhang_deg": 45
+    },
+    "material": {
+      "name": "ULTEM 9085 PEI",
+      "yield_MPa": 69,
+      "E_GPa": 2.51,
+      "density_kg_m3": 1340
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical_plus_lateral",
+        "vertical_N": 700,
+        "lateral_N": 300,
+        "application": "at stud 150 mm offset"
+      },
+      {
+        "id": "LC2",
+        "name": "buckling_2x_combined",
+        "vertical_N": 1400,
+        "lateral_N": 600
+      }
+    ],
+    "boundary_conditions": {
+      "bolt_holes": "fully fixed, 6 DOF"
+    },
+    "objective": {
+      "primary": "pass structural + buckling",
+      "secondary": "maximize mass reduction vs baseline"
+    },
+    "output_format": {
+      "geometry": [
+        "STL",
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_MPa",
+        "stud_displacement_mm",
+        "bracket_mass_kg",
+        "print_orientation",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 46,
+        "derivation": "ULTEM 9085 yield 69 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "stud_displacement",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "mass_reduction_vs_bulk_aluminum_block",
+        "limit_pct_min": 40,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "FDM_self_supporting_overhang",
+        "limit_deg": 45,
+        "derivation": "FDM best practice for ULTEM",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Altair OptiStruct",
+        "Ansys Mechanical Topology"
+      ],
+      "analysis_types": [
+        "topology optimization loop",
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not part of the submission rubric.",
+      "thermal_analysis": "Ambient indoor use.",
+      "fluid_analysis": "No fluid domain.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "FDM raster anisotropy calibration",
+      "Support-material minimization cost",
+      "Fire-smoke-toxicity (FST) for aircraft interior use"
+    ]
+  },
+  "eval_coverage": [
+    "topology optimization + AM overhang filter",
+    "ULTEM 9085 material envelope",
+    "large-format FDM build-volume constraint",
+    "40% mass-reduction vs bulk-block baseline"
+  ]
+}

@@ -1,0 +1,261 @@
+{
+  "id": "206_oc6_warman_design_build",
+  "source": {
+    "catalog_ref": "OC6",
+    "year": 2026,
+    "tier": "B",
+    "original_sample": "docs/eval/samples/206_oc6_warman_design_build.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "autonomous_mechanism_structural",
+  "part_class": "payload_delivery_robot_frame_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary structural frame of an autonomous payload-delivery machine benchmark intended to collect two payload objects from Zone A, transport them across an obstacle track, and deposit them in Zone B within 60 seconds, explicitly as a multi-part assembly. The entire machine must fit within a 600 mm x 600 mm x 600 mm starting cube at the start line and its total mass must not exceed 10 kg. The structural frame is built from 6061-T6 aluminum tube and plate (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3). The assembly consists of the main chassis box frame (bolted tube + plate construction), the front scoop arm that lifts both payloads, the payload scoop fixture at the end of the arm, the drivetrain cross-member carrying axle mounts, and the bolted fastener set connecting members. Primary load cases: (LC1) payload lift: each of two steel payload cubes weighs 1.5 kg; lift both simultaneously from the front scoop arm at a 0.3 m horizontal moment arm forward of the front axle (total moment 8.83 Nm, total load 29.4 N down); (LC2) track obstacle: drive over a 30 mm step at 0.5 m/s, modeled as 3 g vertical impulse on the front axle with base mass 10 kg; (LC3) collision arrest: full machine travelling at 1.0 m/s decelerates from a fixed wall impact in 50 ms (2 m/s^2 = 20 g equivalent) applied to the front of the frame; (LC4) 60-second duty cycle at 1.5 Hz drivetrain oscillation between +/- nominal 29.4 N payload load (90 cycles total). Pass/fail: LC1-LC3 max von Mises stress below 184 MPa (276/1.5), front-arm deflection at 0.3 m arm tip below 5 mm under LC1, scoop motion must not violate the 600 mm starting envelope until after the start-line crossing. First natural frequency of the payload arm must exceed 15 Hz. Verification is on the assembled multi-body model with bolted interfaces; per-part stress is reported but does not gate pass/fail. Deliverables: STEP model with all bodies, per-case FEA of assembly, modal, and a mass budget spreadsheet breaking out drive, structure, and mechanism mass.",
+  "short_prompt": "Design the primary structural frame of an autonomous payload-delivery machine for the Warman-style design-build benchmark, delivered as a multi-part assembly that collects two payloads from Zone A and deposits them in Zone B within 60 seconds.\n\nThe machine fits a 600 mm x 600 mm x 600 mm starting cube, total mass <= 10 kg, built from 6061-T6 aluminum tube and plate (E 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3).\n\nLoad cases.\n- LC1 payload lift: two 1.5 kg steel cubes on a 0.3 m forward moment arm (total 29.4 N, 8.83 N-m).\n- LC2 track obstacle: 30 mm step at 0.5 m/s as 3 g vertical impulse on the front axle with 10 kg base mass.\n- LC3 collision arrest: 1.0 m/s impact decelerating in 50 ms (20 g equivalent) on the frame front.\n- LC4 duty cycle: 1.5 Hz drivetrain oscillation at +/- 29.4 N for 90 cycles over 60 s.\n\nFirst natural frequency of the payload arm must exceed 15 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Autonomous payload-delivery robot frame (multi-part assembly)",
+    "brief": "Multi-part aluminum primary frame for a dual-payload delivery autonomous machine: chassis box, scoop arm, scoop fixture, drivetrain cross-member, and bolts, all under a 10 kg + 600 mm cube envelope.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "chassis_box_frame",
+        "role": "main structural box-frame carrying the drivetrain, scoop arm pickup, and bumper",
+        "count_min": 1,
+        "geometric_constraints": {
+          "starting_cube_mm": 600
+        },
+        "material_hint": "6061-T6 aluminum tube + plate",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "front_scoop_arm",
+        "role": "cantilevered arm that lifts both payload cubes at a 0.3 m moment arm forward of the front axle",
+        "count_min": 1,
+        "geometric_constraints": {
+          "moment_arm_m": 0.3
+        },
+        "material_hint": "6061-T6 aluminum tube",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "scoop_payload_fixture",
+        "role": "end-effector shape that captures the two 1.5 kg cubes on the arm tip",
+        "count_min": 1,
+        "geometric_constraints": {
+          "payload_count": 2,
+          "payload_mass_each_kg": 1.5
+        },
+        "material_hint": "6061-T6 aluminum plate",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "drivetrain_cross_member",
+        "role": "cross-tube carrying axle mounts and transmitting wheel loads into the chassis box",
+        "count_min": 1,
+        "geometric_constraints": {},
+        "material_hint": "6061-T6 aluminum tube",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "fastener_set",
+        "role": "bolts/nuts connecting chassis, arm, fixture, and cross-member",
+        "count_min": 12,
+        "geometric_constraints": {},
+        "material_hint": "steel commercial fasteners",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "fits within 600 mm x 600 mm x 600 mm starting cube",
+      "coordinate_system": "X forward, Y transverse, Z up; origin at chassis geometric center"
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "youngs_modulus_GPa": 68.9,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2700,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "payload_lift",
+        "F_N": 29.4,
+        "moment_Nm": 8.83,
+        "application": "front scoop arm at 0.3 m arm"
+      },
+      {
+        "id": "LC2",
+        "name": "30mm_step_impact",
+        "g": 3,
+        "application": "front axle"
+      },
+      {
+        "id": "LC3",
+        "name": "wall_collision",
+        "g": 20,
+        "application": "front of frame"
+      },
+      {
+        "id": "LC4",
+        "name": "duty_cycle",
+        "cycles": 90,
+        "frequency_Hz": 1.5,
+        "load_N": 29.4
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "scoop arm bolted to chassis box at shoulder pivot; fixture bolted to arm tip; drivetrain cross-member bolted into chassis; fastener stiffness representative of commercial bolts",
+      "support": "four wheel contact patches pinned during LC1-LC4"
+    },
+    "objective": "minimize total assembly mass while meeting all pass/fail criteria",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "total_mass_kg",
+        "frame_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "front_arm_tip_deflection_mm",
+        "first_arm_natural_frequency_Hz",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "front_arm_tip_deflection",
+        "limit_mm": 5.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 10,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_arm_natural_frequency",
+        "limit_Hz": 15,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "scoop shoulder pivot load into chassis"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "payload lift load from fixture into arm"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "wheel / step impulse into chassis through cross-member"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "fastener set transfers all inter-member loads"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The frame is explicitly described as tube + plate construction with a cantilevered scoop arm and end-effector bolted to the chassis box and a separate drivetrain cross-member; these are distinct structural parts.",
+    "speculation_caveats": "Part-family counts and interface types are speculative; materials and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "docs/eval/samples/206_oc6_warman_design_build.json"
+  }
+}

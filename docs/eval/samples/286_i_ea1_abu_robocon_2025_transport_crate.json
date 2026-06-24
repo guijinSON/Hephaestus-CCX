@@ -1,0 +1,191 @@
+{
+  "id": "286_i_ea1_abu_robocon_2025_transport_crate",
+  "source": {
+    "catalog_ref": "I-EA1",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "robotics_logistics_structural",
+  "part_class": "transport_crate_frame",
+  "full_prompt": "Design a single-unit, stackable transport crate that carries both collegiate robotics benchmark 'Basketball' robots (robot R1 plus robot R2 for one team) from a team's home lab to the competition venue, sized exactly to the rulebook pit-stop transport limit. The external envelope of the loaded crate, including handles, casters, and any protrusions, must fit inside a rectangular box of 1000 mm (length) x 1800 mm (width) x 800 mm (height); the internal cavity must accept both robots with their deployed base footprints retracted, each base a circular plate of diameter 800 mm and overall height up to 2400 mm folded to 800 mm transport height. The loaded crate gross mass including both robots, spare parts, and battery packs must not exceed 240 kg; the empty crate (frame plus panels plus casters) must not exceed 55 kg so that the 185 kg robot + accessory payload fits inside the 240 kg ceiling. The frame shall be welded 6061-T6 aluminium square tube with Young's modulus 69 GPa, Poisson's ratio 0.33, density 2700 kg/m^3, yield strength 276 MPa, and ultimate tensile strength 310 MPa; side panels are 4 mm birch plywood in sliding tracks and are not considered load-bearing. The crate must independently satisfy four load cases: Load Case 1 (Forklift lift) — 185 kg payload applied as a uniformly distributed load on the internal floor while the bottom of the frame is supported only at two 900 mm-spaced forklift tine pockets of 150 mm width each; Load Case 2 (Stack) — a second fully loaded crate (240 kg) placed on top of this crate, distributed evenly across the top frame rails, while the bottom frame is fully fixed; Load Case 3 (Crane lift) — four symmetric lift eyes pulled vertically, each carrying 1/4 of the 240 kg gross plus a 1.5 dynamic amplification factor; Load Case 4 (Side impact) — a horizontal shove of 0.5 g (approximately 1180 N) applied to the midpoint of one long side with opposite long-side bottom rail fixed. Pass/fail criteria: (R1) maximum von Mises stress in any frame member must stay below 184 MPa (276 MPa yield divided by 1.5); (R2) maximum deflection of the internal floor under LC1 must stay below 8 mm so the robots do not contact the floor's central span; (R3) maximum deflection of the top rail under LC2 must stay below 5 mm; (R4) first-mode linear buckling load factor under LC2 must be at least 2.5 since stack compression is slender-column dominated; (R5) total empty-crate mass must be less than or equal to 55 kg. The primary verification is linear static structural FEA of the four load cases plus linear buckling eigenvalue extraction for LC2. Vibration, thermal, fluid, and radiation analyses are explicitly not required. Output one STEP AP242 file of the welded frame as a single solid assembly plus a report listing empty mass in kg, max von Mises stress per load case in MPa, mid-span floor deflection under LC1, top-rail deflection under LC2, and the first buckling load factor.",
+  "short_prompt": "Design a single stackable transport crate that carries both collegiate robotics benchmark robots (R1 + R2) of one team plus spares from lab to venue, sized to the rulebook pit-stop transport limit.\n\nEnvelope: loaded external box <= 1000 x 1800 x 800 mm; internal cavity accepts two 800 mm diameter bases stacked to 800 mm transport height; gross loaded mass <= 240 kg; empty crate (welded 6061-T6 square-tube frame with plywood sliding panels) <= 55 kg.\n\nFactor regime: yield FoS 1.5 for all static cases; stack-column linear buckling eigenvalue >= 2.5.\n\nLoad cases.\n- Forklift lift: 185 kg payload UDL on the internal floor supported at two 900 mm-spaced 150 mm forklift tine pockets.\n- Stack: a second 240 kg loaded crate evenly on the top rails with bottom fully fixed.\n- Crane lift: 4 symmetric lift eyes each taking 1/4 x 240 kg x 1.5 dynamic amplification.\n- Side impact: 0.5 g horizontal (~1180 N) at long-side midpoint, opposite long-side bottom rail fixed.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate robotics benchmark paired-robot transport crate",
+    "brief": "Stackable welded-aluminium transport crate sized to the collegiate robotics benchmark pit-stop envelope (1000 x 1800 x 800 mm) carrying both R1 + R2 robots at a 240 kg gross mass ceiling.",
+    "geometric_constraints": {
+      "external_envelope_mm": {
+        "length": 1000,
+        "width": 1800,
+        "height": 800
+      },
+      "internal_payload": {
+        "robots": 2,
+        "robot_base_diameter_mm": 800,
+        "robot_folded_height_mm": 800
+      },
+      "forklift_tine_pockets": {
+        "count": 2,
+        "spacing_mm": 900,
+        "width_mm": 150
+      },
+      "lift_eyes": 4,
+      "side_panel_material": "4 mm birch plywood (non-structural)"
+    },
+    "material": {
+      "name": "6061-T6 aluminium",
+      "properties": {
+        "youngs_modulus_GPa": 69,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "forklift_lift",
+        "payload_kg": 185,
+        "support": "two 150 mm tine pockets, 900 mm apart"
+      },
+      {
+        "id": "LC2",
+        "name": "stack",
+        "payload_kg": 240,
+        "description": "second fully loaded crate on top"
+      },
+      {
+        "id": "LC3",
+        "name": "crane_lift",
+        "per_eye_kg": 60,
+        "dynamic_amplification": 1.5
+      },
+      {
+        "id": "LC4",
+        "name": "side_impact",
+        "lateral_force_N": 1180,
+        "direction": "horizontal at mid-height"
+      }
+    ],
+    "mass_limits": {
+      "empty_crate_max_kg": 55,
+      "gross_max_kg": 240
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "empty_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "floor_deflection_LC1_mm",
+        "top_rail_deflection_LC2_mm",
+        "buckling_load_factor_LC2"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield_strength / 1.5 = 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "floor_midspan_deflection",
+        "limit_mm": 8,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "top_rail_deflection",
+        "limit_mm": 5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "empty_mass",
+        "limit_kg": 55,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "linear/quadratic beam + shell mix",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "linear buckling (LC2)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Transport vibration not specified in robotics benchmark rulebook; quasi-static handling case only.",
+      "thermal_analysis": "No thermal gradient imposed; indoor logistics.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Air-freight IATA drop test (1.2 m, 6-sided)",
+      "Customs placarding for LiPo battery content",
+      "Humidity / salt-fog environmental spec"
+    ]
+  },
+  "eval_coverage": [
+    "logistics-envelope constraint from international rulebook",
+    "multi-case lift / stack / impact FEA",
+    "buckling under stack load",
+    "mass budget against international transport limit"
+  ]
+}

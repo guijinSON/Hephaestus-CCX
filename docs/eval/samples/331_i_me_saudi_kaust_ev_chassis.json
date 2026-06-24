@@ -1,0 +1,203 @@
+{
+  "id": "331_i_me_saudi_kaust_ev_chassis",
+  "source": {
+    "catalog_ref": "I-ME (Saudi Arabia / research university-hosted)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "ev_capstone_chassis_small",
+  "full_prompt": "Design the primary tubular space-frame chassis for a single-seat electric capstone vehicle intended for campus-ground testing in Dhahran / Thuwal (Saudi Arabia) during the shoulder season when ambient temperatures still reach 45 C. The chassis houses a 60 V LiFePO4 battery pack (20 kg, 300 x 200 x 120 mm) that must remain below 50 C surface temperature during operation. Total dry curb mass below 150 kg (before driver). The space-frame uses AISI 4130 chromoly seamless tubing, main-hoop OD 25.4 mm x 2.4 mm wall, side bracing 22.2 mm x 1.65 mm wall (Young's modulus 205 GPa, yield 460 MPa, ultimate 560 MPa, density 7850 kg/m^3). The battery compartment is shielded by an aluminum 6061-T6 bulkhead (3 mm thickness) on the sun-exposed side. Chassis envelope: 2.4 m length x 1.2 m width x 1.0 m height. Load cases: (LC1) front impact 7 g on 150 kg mass reacting at front bulkhead; (LC2) side impact 15 kN at side-impact bar; (LC3) rollover 1.5 x 150 kg x 9.81 = 2207 N downward at main-hoop apex; (LC4) static gravity with 20 kg battery pack at its mount bolts and 75 kg driver at seat base; (LC5) thermal steady-state: ambient air 45 C, solar flux 950 W/m^2 on the sun-exposed aluminum bulkhead, battery internal heat dissipation 150 W distributed in pack volume, chassis tubes convecting naturally (h = 8 W/m^2/K). Target: keep battery pack surface temperature below 50 C with no active cooling; (LC6) coupled thermal-mechanical: thermal field from LC5 superimposed on LC4 gravity to check residual stress from thermal expansion of dissimilar materials at the Al bulkhead to 4130 tube joint. Pass/fail criteria: (R1) under LC1-LC3 mechanical load cases, max von Mises stress must remain below 306 MPa (460 / 1.5 yield FoS); (R2) chassis dry mass must not exceed 40 kg; (R3) battery pack surface temperature under LC5 must remain below 50 C (primary thermal pass/fail); (R4) under LC6 coupled case, aluminum bulkhead - steel tube joint stress must not exceed 184 MPa (276 / 1.5 yield FoS on the aluminum side, binding); (R5) first torsional natural frequency must exceed 25 Hz. Fluid, radiation, and buckling analyses not primary. Deliverables: STEP AP242 assembly, weld and fastener schedule, mechanical FEA report, steady thermal report with temperature field, coupled thermal-mechanical LC6 report, modal and mass budget.",
+  "short_prompt": "Design the primary tubular space-frame chassis for a single-seat electric capstone vehicle for campus testing in Dhahran / Thuwal (Saudi Arabia), shoulder-season ambient to 45 C. Houses a 60 V LiFePO4 battery pack (20 kg, 300 x 200 x 120 mm) that must remain <= 50 C surface without active cooling. Dry curb < 150 kg (before 75 kg driver).\n\nEnvelope: AISI 4130 tubing (main-hoop 25.4 x 2.4, side 22.2 x 1.65); 6061-T6 3 mm aluminum bulkhead on the sun-exposed side; chassis envelope 2.4 x 1.2 x 1.0 m.\n\nFactor regime: yield FoS 1.5 on mechanical cases (306 MPa); dry mass <= 40 kg; battery surface < 50 C under thermal; dissimilar-material joint yield FoS 1.5 on 6061-T6 side (184 MPa); first torsional mode > 25 Hz.\n\nLoad cases.\n- Front impact: 7 g on 150 kg at the front bulkhead.\n- Side impact: 15 kN at the side-impact bar.\n- Rollover: 1.5 x 150 kg x 9.81 = 2207 N down at the hoop apex.\n- Static gravity: 20 kg battery on its mount bolts + 75 kg driver at the seat base.\n- Steady thermal: 45 C ambient + 950 W/m^2 solar on the Al bulkhead + 150 W battery dissipation, natural convection on tubes (h = 8 W/m^2/K).\n- Coupled thermal-mechanical: LC5 thermal field on top of LC4 gravity at the Al-to-4130 joint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "research university / KFUPM Capstone EV Small Chassis — Hot-Desert Thermal + Structural",
+    "brief": "4130 + 6061 hybrid chassis for 150 kg EV, 45 C ambient, 950 W/m^2 solar, passive battery cooling gate 50 C.",
+    "geometric_constraints": {
+      "envelope_m": {
+        "l": 2.4,
+        "w": 1.2,
+        "h": 1.0
+      },
+      "main_hoop": {
+        "OD_mm": 25.4,
+        "wall_mm": 2.4
+      },
+      "side_brace": {
+        "OD_mm": 22.2,
+        "wall_mm": 1.65
+      },
+      "battery_bulkhead_mm": 3
+    },
+    "material": {
+      "tubes": {
+        "name": "AISI 4130 Chromoly",
+        "E_GPa": 205,
+        "yield_MPa": 460,
+        "ultimate_MPa": 560,
+        "density_kg_m3": 7850
+      },
+      "bulkhead": {
+        "name": "Aluminum 6061-T6",
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "environment": {
+      "ambient_C": 45,
+      "solar_W_m2": 950,
+      "battery_heat_W": 150,
+      "h_conv_W_m2_K": 8
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "front_impact_7g",
+        "magnitude_g": 7,
+        "application": "150 kg at front bulkhead"
+      },
+      {
+        "id": "LC2",
+        "name": "side_impact",
+        "magnitude_N": 15000,
+        "application": "side-impact bar"
+      },
+      {
+        "id": "LC3",
+        "name": "rollover",
+        "magnitude_N": 2207,
+        "application": "main-hoop apex"
+      },
+      {
+        "id": "LC4",
+        "name": "static_gravity_driver_battery",
+        "application": "20 kg at battery mount + 75 kg at seat"
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_steady",
+        "application": "45 C ambient + solar + 150 W battery"
+      },
+      {
+        "id": "LC6",
+        "name": "thermal_mechanical_coupled",
+        "application": "LC5 field + LC4 gravity"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 12,
+      "report_fields": [
+        "chassis_mass_kg",
+        "max_stress_LC1_LC2_LC3_MPa",
+        "battery_surface_temp_LC5_C",
+        "al_steel_joint_stress_LC6_MPa",
+        "first_torsion_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_mechanical",
+        "limit_MPa": 306,
+        "derivation": "460 / 1.5 yield FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "chassis_dry_mass",
+        "limit_kg": 40,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "battery_surface_temp",
+        "limit_C": 50,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "al_steel_joint_stress",
+        "limit_MPa": 184,
+        "derivation": "276 / 1.5 yield FoS on aluminum",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsion_mode",
+        "limit_Hz": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam for tubes; shell for bulkhead; TET10 at joints",
+      "mesh_size_mm": 6,
+      "solver_hints": [
+        "ANSYS Mechanical (coupled thermal-structural)",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x3 mech + 1 gravity)",
+        "steady thermal",
+        "coupled thermal-structural"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "research university/KFUPM EV capstone is not documented in public PDFs (per catalog Tier C drops, Saudi tree). Values align with collegiate formula-class racecar benchmark-style gates + a hot-desert thermal gate. Confirm actual rulebook on acquisition.",
+    "exclusions_explained": {
+      "fluid_analysis": "Convective cooling modeled via h coefficient.",
+      "radiation_analysis": "Solar radiation as surface heat flux BC.",
+      "buckling_analysis": "Stress gate bounds tubes at this slenderness."
+    }
+  },
+  "eval_coverage": [
+    "hybrid steel/Al FEA",
+    "hot-climate thermal gate",
+    "dissimilar-metal joint check",
+    "coupled thermo-structural",
+    "collegiate formula-class racecar benchmark-style impact cases"
+  ]
+}

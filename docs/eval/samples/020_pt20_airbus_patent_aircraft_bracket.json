@@ -1,0 +1,217 @@
+{
+  "id": "020_pt20_airbus_patent_aircraft_bracket",
+  "source": {
+    "catalog_ref": "PT20",
+    "year": 2018,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "aircraft_secondary_structural_bracket",
+  "needs_patent_fetch": true,
+  "full_prompt": "Design a titanium alloy aircraft secondary structural bracket in the spirit of a canonical aircraft-bracket patent with integrated stiffening (US10131419B2-style), for mounting a generic aircraft system component to the internal fuselage frame. Envelope: 180 x 120 x 60 mm. Interfaces: fuselage-frame side has six through-holes for HI-LOK HL-12 (5/16 inch, 7.94 mm) pins on a published fastener grid (three rows of two, 40 mm longitudinal pitch, 35 mm transverse pitch per typical civil-aircraft fuselage-frame bracket practice); system-component side has a machined flange with four NAS-1351 M6 threaded holes on 80 x 50 mm pattern. The bracket carries an integrally machined stiffening rib (the claim feature) running diagonally across the main web to reduce mass while retaining buckling resistance. Material: Ti-6Al-4V per AMS 4911 (yield 795 MPa, UTS 860 MPa, Young's modulus 113.8 GPa, density 4430 kg/m^3). Load cases (values flagged as null when specific patent limit loads are not pinned): LC1 primary axial pull 15 kN along fastener grid axis (placeholder); LC2 transverse shear 8 kN across fastener grid (placeholder); LC3 combined LC1 + LC2 at 75% each; LC4 ultimate factored load = 1.5 x limit load per CS-25 (ultimate-case wording present in the patent specification). Pass/fail per CS-25.305 + EASA AMC 25.571: (R1) max von Mises at limit load (LC1-3) <= yield / 1.0 = 795 MPa with no permanent deformation (limit-load criterion); (R2) max von Mises at ultimate load (1.5 x limit) <= UTS = 860 MPa (no rupture at ultimate); binding SF 1.5 on UTS corresponds to an effective allowable of 573 MPa at limit level; (R3) linear buckling eigenvalue under worst compressive case >= 1.5 (per CS-25 buckling ultimate factor); (R4) fastener bearing stress at HI-LOK HL-12 holes <= 0.9 * yield = 715.5 MPa at limit load; (R5) mass reduction >= 20% vs a non-stiffened flat-plate baseline of equivalent envelope (the patent's central technical effect); (R6) integrated stiffening rib must be present and oriented to match the principal stress trajectory of LC3 (geometric compliance with the patent claim). Deliverables: STEP AP242 single-body part; report with per-case max stress, buckling load factor, fastener bearing check, mass-vs-baseline comparison; qualitative review that the stiffening rib orientation is consistent with the LC3 principal-stress trajectory.",
+  "short_prompt": "Design a titanium-alloy aircraft secondary-structural bracket in the spirit of a canonical aircraft-bracket patent with integrated stiffening (US10131419B2-style), mounting a generic aircraft system component to the internal fuselage frame. Central technical feature: an integrally machined stiffening rib running diagonally across the main web.\n\nEnvelope: 180 x 120 x 60 mm. Fuselage-frame side: six HI-LOK HL-12 (5/16 inch, 7.94 mm) through-holes on a 3x2 grid with 40 mm longitudinal and 35 mm transverse pitch. System-component side: four NAS-1351 M6 threaded holes on 80 x 50 mm.\n\nMaterial: Ti-6Al-4V per AMS 4911.\n\nDesign per CS-25.305 + EASA AMC 25.571 with an ultimate SF of 1.5 (effective allowable 573 MPa at limit).\n\nLoad cases (magnitudes are placeholders when specific patent limits are not pinned).\n- LC1 primary axial pull 15 kN along fastener grid axis.\n- LC2 transverse shear 8 kN across fastener grid.\n- LC3 combined LC1 + LC2 at 75% each.\n- LC4 ultimate factored load = 1.5 x limit per CS-25.\n\nAdditional gates: linear buckling eigenvalue under worst compressive case >= 1.5; fastener bearing at HL-12 holes <= 0.9 * yield = 715.5 MPa at limit; mass reduction >= 20% vs a non-stiffened flat-plate baseline; rib orientation must match the LC3 principal-stress trajectory.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "patent_claim_compliance_review",
+        "reason": "Verifying the stiffening-rib feature matches the patent claim is a qualitative design review step.",
+        "examples": [
+          "manual design review",
+          "rule-based CAD inspection"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Ti-6Al-4V fuselage-frame bracket with integrated diagonal stiffening rib (civil-aircraft patent US10131419B2 style)",
+    "brief": "Design a 180x120x60 mm Ti-6Al-4V bracket with an integrally machined diagonal stiffening rib following a canonical civil-aircraft US10131419B2-style concept; pass CS-25 limit/ultimate with SF 1.5.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 180,
+        "y": 120,
+        "z": 60
+      },
+      "fuselage_interface": {
+        "fastener": "HI-LOK HL-12",
+        "diameter_mm": 7.94,
+        "count": 6,
+        "pattern": "3 rows x 2, 40 mm longitudinal, 35 mm transverse"
+      },
+      "component_interface": {
+        "fastener": "NAS-1351 M6",
+        "count": 4,
+        "pattern_mm": {
+          "x": 80,
+          "y": 50
+        }
+      },
+      "feature": "integrally machined diagonal stiffening rib"
+    },
+    "material": {
+      "name": "Ti-6Al-4V per AMS 4911",
+      "yield_MPa": 795,
+      "ultimate_MPa": 860,
+      "youngs_modulus_GPa": 113.8,
+      "density_kg_m3": 4430
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "axial_limit",
+        "force_N": 15000,
+        "note": "placeholder pending patent fetch"
+      },
+      {
+        "id": "LC2",
+        "name": "shear_limit",
+        "force_N": 8000,
+        "note": "placeholder pending patent fetch"
+      },
+      {
+        "id": "LC3",
+        "name": "combined_limit",
+        "axial_N": 11250,
+        "shear_N": 6000
+      },
+      {
+        "id": "LC4",
+        "name": "ultimate_1.5x_limit",
+        "multiplier": 1.5,
+        "on": "LC3"
+      }
+    ],
+    "boundary_conditions": {
+      "fuselage_interface": "6 fasteners fully constrained",
+      "component_interface": "service loads applied"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_limit_MPa",
+        "max_von_mises_ultimate_MPa",
+        "first_buckling_load_factor",
+        "fastener_bearing_MPa",
+        "mass_reduction_pct_vs_baseline",
+        "rib_orientation_check"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_limit",
+        "limit_MPa": 795,
+        "derivation": "yield (no permanent deformation at limit per CS-25.305)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_ultimate",
+        "limit_MPa": 860,
+        "derivation": "UTS (no rupture at 1.5x limit per CS-25.305)",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<=",
+        "note": "Practical allowable at limit level is 860/1.5 = 573 MPa."
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.5,
+        "derivation": "CS-25 buckling ultimate factor",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "fastener_bearing_stress",
+        "limit_MPa": 715.5,
+        "derivation": "0.9 * yield = 0.9 * 795",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass_reduction_vs_flat_plate_baseline",
+        "limit_pct": 20,
+        "derivation": "patent's central technical effect",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "stiffening_rib_orientation_matches_LC3_principal_stress",
+        "limit": 1,
+        "derivation": "qualitative patent-claim compliance",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      }
+    ],
+    "governing_standard": "CS-25.305 + CS-25.571 + EASA AMC 25.571 (civil airframe)",
+    "recommended_fea_setup": {
+      "element_type": "TET10 or HEX20",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Nastran",
+        "Abaqus",
+        "Ansys Mechanical"
+      ],
+      "analysis_types": [
+        "linear static limit + ultimate",
+        "linear buckling eigenvalue"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static limit/ultimate per CS-25.305.",
+      "thermal_analysis": "Ambient cabin/bay.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "patent_fetch": "Load magnitudes (LC1, LC2) are plausible placeholders; specific US10131419B2 claim values need verification against the patent text. Setting needs_patent_fetch=true at root.",
+    "numeric_source": "CS-25 airframe ultimate SF 1.5; Ti-6Al-4V AMS 4911 allowables; HI-LOK HL-12 fastener data."
+  },
+  "eval_coverage": [
+    "patent-inspired feature (integrally machined stiffening rib)",
+    "CS-25 limit + ultimate dual check",
+    "buckling eigenvalue requirement",
+    "mass vs baseline reduction target"
+  ]
+}

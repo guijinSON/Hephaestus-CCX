@@ -1,0 +1,200 @@
+{
+  "id": "339_i_eu7_baja_sae_germany",
+  "source": {
+    "catalog_ref": "I-EU7",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "baja_roll_cage_primary",
+  "full_prompt": "Design the primary Rear Roll Hoop (RRH) structure of a collegiate off-road benchmark off-road single-seat vehicle compliant with the collegiate off-road benchmark Brasil 2026 rulebook (RATBSB Emenda 7), shared envelope with collegiate off-road benchmark Germany. Vehicle is a four-wheel-drive buggy with Kohler Command Pro CH440 gasoline engine (14 HP), curb mass approximately 275 kg excluding driver, driver mass 90 kg (95th percentile). Primary cage tubes must be seamless AISI 1018 DOM steel (E 200 GPa, yield 370 MPa, ultimate 440 MPa, density 7850 kg/m^3), tube OD 1.00 inch (25.4 mm) x 0.120 inch wall (3.05 mm) per collegiate off-road benchmark US master rule, with secondary members 1.00 inch (25.4 mm) x 0.065 inch (1.65 mm). The cage must enclose a driver envelope with 75 mm helmet clearance above the helmeted driver. Load cases (collegiate off-road benchmark are specified as specific factored impact loads): (LC1) front impact: 6 g on 365 kg (curb + driver) decelerating at the front bulkhead = 21490 N distributed; (LC2) rear impact: 4 g on 365 kg at rear bulkhead = 14326 N; (LC3) side impact: 3 g on 365 kg at the side impact bar = 10744 N; (LC4) rollover: 2 x (curb + driver) x 9.81 = 7162 N vertical downward at the RRH apex while four wheels are pinned; (LC5) roll-cage torsion test: 2200 N*m applied across the full cage span (diagonal wheel-pad couple); (LC6) ground drop from 1 m: 4.43 m/s impact velocity, equivalent 4 g static on 275 kg curb mass (1.1 g * 1000 kg equivalent = 10793 N) reacting at all 4 wheel mounts. Pass/fail (per collegiate off-road benchmark safety gates and FIA Article 253 style FoS): (R1) max von Mises stress under LC1-LC5 must remain below 247 MPa (370 / 1.5 yield FoS); (R2) under LC6 drop, stress below 370 MPa (yield, no permanent bend); (R3) primary cage dry mass must not exceed 35 kg; (R4) torsional stiffness from LC5 must exceed 1500 N*m/deg; (R5) roll-hoop apex deflection under LC4 must remain below 50 mm to keep helmet clearance envelope; (R6) first torsional mode must exceed 20 Hz. Thermal, fluid, radiation, and buckling analyses not primary. Deliverables: STEP AP242 assembly with each tube as a separate body, weld map with fillet callouts per collegiate off-road benchmark T.9 weld requirements, FEA per load case, torsional stiffness derivation, modal report, mass budget.",
+  "short_prompt": "Design the primary Rear Roll Hoop (RRH) structure of a collegiate off-road benchmark Brasil 2026 entry (RATBSB Emenda 7, shared envelope with the Germany round). Curb 275 kg + 90 kg (95th percentile) driver. Primary tubes AISI 1018 DOM 25.4 mm OD x 3.05 mm wall per the US master rule; secondary 25.4 mm x 1.65 mm; 75 mm helmet clearance above the helmeted driver.\n\nFactor regime: FIA Art 253 / Baja yield FoS 1.5 (allowable 247 MPa) for LC1-LC5; LC6 drop limited to yield (370 MPa); cage dry mass <= 35 kg; torsional stiffness > 1500 N-m/deg; roll-hoop apex deflection under rollover < 50 mm; first torsional mode > 20 Hz.\n\nLoad cases.\n- Front impact: 6 g on 365 kg = 21,490 N at the front bulkhead.\n- Rear impact: 4 g on 365 kg = 14,326 N at the rear bulkhead.\n- Side impact: 3 g on 365 kg = 10,744 N at the side-impact bar.\n- Rollover: 2 x 365 x 9.81 = 7,162 N vertical down at the RRH apex, four wheels pinned.\n- Torsion test: 2200 N-m diagonal wheel-pad couple.\n- Ground drop from 1 m: 4.43 m/s impact, 4 g equivalent on 275 kg curb at all four wheel mounts.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate off-road benchmark Germany/Brasil Primary Roll Cage",
+    "brief": "AISI 1018 DOM 1 inch x 0.120 wall primary cage for 365 kg (curb + driver), FIA-style 1.5 FoS, collegiate off-road benchmark impact gates.",
+    "geometric_constraints": {
+      "primary_tube": {
+        "OD_mm": 25.4,
+        "wall_mm": 3.05
+      },
+      "secondary_tube": {
+        "OD_mm": 25.4,
+        "wall_mm": 1.65
+      },
+      "helmet_clearance_mm": 75,
+      "driver_mass_kg": 90
+    },
+    "material": {
+      "name": "AISI 1018 DOM steel",
+      "properties": {
+        "E_GPa": 200,
+        "yield_MPa": 370,
+        "ultimate_MPa": 440,
+        "density_kg_m3": 7850
+      }
+    },
+    "vehicle_mass_kg": {
+      "curb": 275,
+      "wet_with_driver": 365
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "front_impact_6g",
+        "magnitude_N": 21490
+      },
+      {
+        "id": "LC2",
+        "name": "rear_impact_4g",
+        "magnitude_N": 14326
+      },
+      {
+        "id": "LC3",
+        "name": "side_impact_3g",
+        "magnitude_N": 10744
+      },
+      {
+        "id": "LC4",
+        "name": "rollover_2x",
+        "magnitude_N": 7162
+      },
+      {
+        "id": "LC5",
+        "name": "cage_torsion",
+        "magnitude_Nm": 2200
+      },
+      {
+        "id": "LC6",
+        "name": "drop_1m",
+        "magnitude_g": 4,
+        "application": "on 275 kg curb"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 20,
+      "report_fields": [
+        "cage_mass_kg",
+        "max_stress_LC1_LC5_MPa",
+        "apex_deflection_LC4_mm",
+        "torsional_stiffness_Nm_per_deg",
+        "first_torsion_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 247,
+        "derivation": "370 / 1.5 yield FoS per collegiate off-road benchmark T.9 + FIA Art.253",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_drop",
+        "limit_MPa": 370,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "cage_dry_mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "torsional_stiffness",
+        "limit_Nm_per_deg": 1500,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "apex_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_torsion_mode",
+        "limit_Hz": 20,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (BEAM188) with tube section; solid at welded nodes",
+      "mesh_size_mm": 10,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x6)",
+        "torsional stiffness (LC5)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "Not mandated by collegiate off-road benchmark for primary cage.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Welded tube network; stress gate dominates."
+    }
+  },
+  "eval_coverage": [
+    "welded-tube cage FEA",
+    "multi-impact load set",
+    "torsional stiffness gate",
+    "FIA Article 253 + collegiate off-road benchmark T.9 compliance",
+    "mass + modal"
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "id": "075_jp20_jsme_robomec",
+  "source": {
+    "catalog_ref": "JP20",
+    "year": 2025,
+    "tier": "B"
+  },
+  "domain": "robotics_structural",
+  "part_class": "payload_handling_arm",
+  "full_prompt": "Design a payload-handling robotic arm for a student mechanical-design benchmark (2025 theme: automated payload sorting on a 3 m linear track). The arm must reach at least 600 mm horizontally from its base and must lift a 2 kg payload at full reach. The arm base is mounted to a 3 m long linear track and must not overturn while carrying the 2 kg payload at full extension; the base footprint is 300 mm x 300 mm. The arm consists of two links and a 2-finger parallel gripper; total arm mass target is below 5 kg. Cycle time for a pick-place on the track is 10 seconds (this drives actuator sizing but is not a structural gate). Structural pass/fail: at full 600 mm reach with 2 kg payload, the arm-tip vertical deflection must not exceed 5 mm; the root link stress under this load must not exceed 80 MPa (Al 6061-T6 yield 276 MPa with SF 3.5 against repeated operation for 1e6 cycles, approximating high-cycle fatigue). The 2-finger gripper must apply 20 N clamping force with grip-finger deflection under 0.5 mm. Under an emergency-stop lateral impact (100 N at arm tip), the arm must not plastically yield. Primary verification is linear static structural FEA for full-reach gravity load, gripper clamping, and E-stop impact. Fatigue high-cycle check is performed as a stress-amplitude margin (not a separate FEA class; use Goodman diagram check on cyclic stress amplitude). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the arm assembly, a mass budget, and a report listing arm mass in kg, tip deflection at 2 kg in mm, root stress at full reach in MPa, and cycle time in s.",
+  "short_prompt": "Design a payload-handling robotic arm mounted on a 3 m linear track (2025 theme: automated payload sorting). The arm must reach at least 600 mm horizontally and lift a 2 kg payload at full reach. Base footprint 300 x 300 mm; total arm mass <= 5 kg. Target cycle time 10 s for a pick-place (drives actuator sizing, not structural). 1e6-cycle high-cycle fatigue handled via a Goodman/S-N margin on the root link (target stress <= 80 MPa under full-reach load).\n\nLoad cases.\n- LC1 full-reach static gravity: 2 kg (19.6 N) at arm tip 600 mm out; tip deflection <= 5 mm, root stress <= 80 MPa.\n- LC2 gripper clamping: 20 N parallel-gripper clamp force; grip-finger deflection <= 0.5 mm.\n- LC3 emergency-stop lateral impact: 100 N at arm tip, no plastic yield.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "fatigue_check",
+        "reason": "1e6-cycle Goodman diagram check is a post-processing step on FEA stress amplitude, not a separate FEA category.",
+        "examples": [
+          "Goodman / SN diagram spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Payload-handling robotic arm",
+    "brief": "Design a 2-link arm with 2-finger gripper reaching 600 mm to lift 2 kg, arm mass ≤ 5 kg, tip deflection ≤ 5 mm.",
+    "geometric_constraints": {
+      "reach_mm_min": 600,
+      "payload_kg": 2,
+      "base_footprint_mm": 300,
+      "track_length_m": 3
+    },
+    "material": {
+      "typical_links": "Al 6061-T6",
+      "Al6061_T6": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "full_reach_2kg_gravity",
+        "magnitude_N": 19.62,
+        "location": "arm tip"
+      },
+      {
+        "id": "LC2",
+        "name": "gripper_clamp_20N",
+        "magnitude_N": 20,
+        "description": "parallel gripper clamping force"
+      },
+      {
+        "id": "LC3",
+        "name": "e_stop_lateral_impact",
+        "magnitude_N": 100,
+        "location": "arm tip"
+      }
+    ],
+    "boundary_conditions": {
+      "base": "fixed to track carriage"
+    },
+    "objective": {
+      "minimize": "arm_mass",
+      "cycle_time_s_max": 10
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "arm_mass_kg",
+        "tip_deflection_mm",
+        "root_stress_MPa",
+        "gripper_finger_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "arm_mass_kg",
+        "limit_kg": 5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tip_deflection_mm",
+        "limit_mm": 5.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "root_stress_MPa",
+        "limit_MPa": 80,
+        "derivation": "Al 6061-T6 yield 276 / 3.5 (fatigue margin)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "gripper_finger_deflection_mm",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 1.0,
+        "derivation": "No plastic yield under E-stop impact",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell + solid",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static x3"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "cantilever arm deflection",
+    "fatigue-margin stress check",
+    "gripper force + stiffness",
+    "E-stop lateral impact"
+  ]
+}

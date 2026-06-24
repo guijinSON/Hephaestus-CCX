@@ -1,0 +1,224 @@
+{
+  "id": "293_i_ea8_arliss_2025_open_class_cansat_shell",
+  "source": {
+    "catalog_ref": "I-EA8",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_smallsat_structural",
+  "part_class": "cansat_shell_open_class",
+  "full_prompt": "Design the structural shell of an ARLISS 2025 Open-class CanSat. Per the ARLISS 2025 introduction document, the Open class allows a cylindrical envelope of diameter <= 146 mm and mass <= 1050 g, deployed at ~3.7 km AGL from a commercial high-power rocket and required to survive both the launch load (peak ~20 g axial during motor burn) and the landing touchdown. The shell dimensions are: outer diameter 146.0 mm (with -0.2 mm tolerance to fit the fairing ID), overall height 300 mm, wall thickness to be designed. Two interface features are required: (a) an upper mounting ring of 8 mm thickness with six M3 through-holes on a 120 mm bolt circle to interface with the recovery parachute bridle and internal bulkhead; (b) a lower skid plate of 10 mm thickness bonded to the base, providing a landing impact surface of 120 mm diameter. Material for the shell is woven CFRP [0/90]s laminate with equivalent Ex = 55 GPa, Ey = 55 GPa, Gxy = 4 GPa, nu_xy = 0.05, density 1550 kg/m^3, in-plane tensile allowable 600 MPa, compressive 550 MPa, interlaminar shear 55 MPa. Landing skid is 6061-T6 aluminium. Load cases: LC1 (Launch axial) — 20 g axial compressive acceleration on the full 1050 g CanSat mass distributed along the shell length, with the upper ring bolted to a simulated bulkhead as the load reaction; LC2 (Launch lateral) — 5 g lateral acceleration with base fixed; LC3 (Deployment pyro shock) — 500 g lateral shock over 1 ms at the upper ring (worst-case separation event); LC4 (Landing impact) — 20 m/s vertical terminal velocity (representative of failed parachute deployment) against a rigid ground; LC5 (Nominal landing) — 10 m/s terminal velocity against a rigid ground (nominal parachute descent). Pass/fail: (R1) under LC1, composite shell peak stress < 400 MPa (tensile allowable / 1.5) and no local buckling (linear eigenvalue factor >= 3.0); (R2) under LC2, max von Mises anywhere < 400 MPa; (R3) under LC3, peak stress < 300 MPa (allowing a Miner's-rule transient margin); (R4) under LC4, max deflection of shell inward < 5 mm and no structural failure at 1.5x safety factor; (R5) under LC5, no plastic deformation of skid plate or shell, max von Mises in skid < 184 MPa; (R6) total shell + skid + ring mass < 350 g so internal payload has 700 g margin; (R7) outer diameter under LC1 must not exceed 146.2 mm (fairing ID clearance). Primary verification: linear static structural FEA for LC1, LC2, LC3; linear buckling eigenvalue for LC1; explicit dynamic FEA (LS-DYNA / Abaqus Explicit) for LC4, LC5. Thermal, fluid, vibration modal, and radiation analyses are not required for this benchmark. Output one STEP AP242 assembly plus a report listing total shell mass, max stress per case per material, buckling factor under LC1, inward deflection under LC4, and OD change under LC1.",
+  "short_prompt": "Design the structural shell of an ARLISS 2025 Open-class CanSat. Open class allows a cylindrical envelope <= 146 mm OD and <= 1050 g wet, deployed from a commercial HPR at ~3.7 km AGL.\n\nEnvelope: 146.0 mm OD x 300 mm tall, wall to be sized; 8 mm-thick upper ring with 6 x M3 on a 120 mm bolt circle (bridle + bulkhead); 10 mm-thick 6061-T6 lower skid plate of 120 mm diameter bonded to the base; woven CFRP [0/90]s shell.\n\nFactor regime: FoS 1.5 on composite tensile allowable for linear cases; buckling eigenvalue >= 3.0 under axial launch; deflection and residual-envelope gates under explicit impact cases; fairing-ID clearance preserves OD <= 146.2 mm.\n\nLoad cases.\n- Launch axial 20 g distributed along the shell with the upper ring treated as bulkhead-bolted.\n- Launch lateral 5 g with base fixed.\n- Deployment pyro shock: 500 g over 1 ms at the upper ring (separation).\n- Failed-chute landing at 20 m/s onto rigid ground.\n- Nominal-chute landing at 10 m/s onto rigid ground.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_solver",
+        "reason": "Landing impacts (LC4, LC5) require explicit dynamic solution.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ARLISS 2025 Open CanSat shell",
+    "brief": "CFRP cylindrical shell Ø146 x 300 mm with aluminium skid, sized to ARLISS Open class 1050 g cap, surviving 20 g launch and failed-chute 20 m/s impact.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 146.0,
+      "height_mm": 300,
+      "upper_ring_thickness_mm": 8,
+      "upper_ring_bolt_holes": 6,
+      "upper_ring_bolt_circle_mm": 120,
+      "skid_diameter_mm": 120,
+      "skid_thickness_mm": 10,
+      "fairing_ID_clearance_mm": 146.2
+    },
+    "material": {
+      "shell": {
+        "name": "CFRP [0/90]s woven",
+        "Ex_GPa": 55,
+        "Ey_GPa": 55,
+        "Gxy_GPa": 4,
+        "density_kg_m3": 1550,
+        "tension_MPa": 600,
+        "compression_MPa": 550,
+        "ILSS_MPa": 55
+      },
+      "skid": {
+        "name": "6061-T6",
+        "youngs_modulus_GPa": 69,
+        "yield_MPa": 276,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_axial",
+        "accel_g": 20
+      },
+      {
+        "id": "LC2",
+        "name": "launch_lateral",
+        "accel_g": 5
+      },
+      {
+        "id": "LC3",
+        "name": "pyro_shock",
+        "shock_g": 500,
+        "duration_ms": 1
+      },
+      {
+        "id": "LC4",
+        "name": "failed_chute_impact",
+        "velocity_m_s": 20
+      },
+      {
+        "id": "LC5",
+        "name": "nominal_landing",
+        "velocity_m_s": 10
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 3,
+      "report_fields": [
+        "total_mass_g",
+        "max_stress_per_case_per_material_MPa",
+        "buckling_factor_LC1",
+        "inward_deflection_LC4_mm",
+        "OD_change_LC1_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_composite_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "peak_stress",
+        "limit_MPa": 300,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4a",
+        "type": "structural_analysis",
+        "metric": "inward_deflection",
+        "limit_mm": 5,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_skid",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "shell_skid_ring_mass",
+        "limit_g": 350,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "outer_diameter_under_load",
+        "limit_mm": 146.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "composite shell + hex solid",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus",
+        "LS-DYNA"
+      ],
+      "analysis_types": [
+        "linear static (x3)",
+        "linear buckling (LC1)",
+        "explicit dynamic (LC4, LC5)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not mandated.",
+      "thermal_analysis": "Short flight, low thermal soak.",
+      "fluid_analysis": "Descent rate prescribed by parachute sizing, not body CFD.",
+      "radiation_analysis": "Not applicable for sub-orbital flight."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Vibration qualification to Orion motor sweep",
+      "Bond-line pull test"
+    ]
+  },
+  "eval_coverage": [
+    "CanSat envelope + mass",
+    "multi-regime launch + deploy + landing",
+    "failed-parachute contingency",
+    "fairing clearance tolerance under load"
+  ]
+}

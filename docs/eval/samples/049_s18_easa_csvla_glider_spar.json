@@ -1,0 +1,211 @@
+{
+  "id": "049_s18_easa_csvla_glider_spar",
+  "source": {
+    "catalog_ref": "S18",
+    "year": 2018,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "vla_wing_main_spar",
+  "full_prompt": "Design the main wing spar for a Very Light Aeroplane (VLA) with MTOW 600 kg, wingspan 10.0 m, governed by EASA CS-VLA (Amendment 1, 2018). CS-VLA 337 specifies symmetric maneuver limit load factors n1 = +3.8 and n3 = -1.5. CS-VLA 303 specifies ultimate = 1.5 x limit. CS-VLA 341 specifies gust envelope with a derived gust velocity per Appendix. CS-VLA 625 adds a fitting factor of 1.15 on ultimate for primary fittings; this brief evaluates the spar itself, not the root fitting, so only the 1.5 factor applies.\n\nGeometry. Rectangular-section wooden main spar (classic CS-VLA spruce) or composite alternative. This brief fixes a Sitka-spruce-laminate spar with plywood shear webs. Spar centerline at 30% chord. Root half-span 5.0 m. Wing chord tapers from 1.5 m at root to 1.1 m at tip. Spar caps: 80 mm wide x variable thickness 20-40 mm (design variable). Spar web: 2-ply birch plywood 6 mm each side. Ribs at 10 equal stations. Spar root attaches via a 3-bolt titanium end-fitting (out of scope for this brief).\n\nMaterial. Sitka spruce per MIL-HDBK-1B: E_L = 11 GPa, rho = 400 kg/m^3, F_bending_L = 65 MPa, F_compression_L = 35 MPa (pass through grain), F_shear_perp_L = 7 MPa. Plywood web birch 6 mm plies: shear strength 10 MPa, E_in_plane = 8 GPa. No knockdown factor required for aircraft-grade spruce since airworthiness values are already minimum.\n\nService envelope. MTOW 600 kg * 9.81 = 5886 N. Wing loading W/S with S ~ 12 m^2 => 49 kg/m^2. CS-VLA 337: n1 = +3.8, n3 = -1.5 limit. CS-VLA 341 gust: derived gust velocity Ude at VC = 15.2 m/s (CS-VLA Appendix); compute gust-superposed load factor using Pratt formula with wing mass ratio mu_g. Typical result n_gust_VC = 3.2 (less than maneuver 3.8; maneuver governs for the spar). Root bending moment at n = +3.8: M_root_limit = n * W * eta * b/2 where eta is spanwise CP location (approx 0.4): M_root_limit = 3.8 * 5886 * 0.4 * 5.0 = 44,734 N*m. Root shear V_root_limit = 3.8 * 5886/2 = 11,184 N. Ultimate = 1.5 x limit => M_root_ult = 67,101 N*m, V_root_ult = 16,776 N.\n\nLoad cases. LC1 (positive maneuver ultimate n = +5.7): M_root = 67,101 N*m, V_root = 16,776 N. LC2 (negative maneuver ultimate n = -2.25): M_root = -26,487 N*m, V_root = -6,621 N. LC3 (positive gust ultimate n = 4.8 approximately): M_root = 56,500 N*m, V_root = 14,130 N. LC4 (landing condition per CS-VLA 473): vertical 3 g at main landing gear attach equivalent with 1.5 x factor, producing a local rear-spar moment 12,000 N*m. LC5 (wing-tip deflection at positive limit maneuver): max tip deflection at limit must be <= 12% of semispan = 0.6 m for VLA handling quality.\n\nPass/fail criteria. (R1) Spar-cap longitudinal stress at ultimate (LC1, LC3) must not exceed F_bending_L for spruce compression-side = 35 MPa (compression-critical) or F_bending_L tension-side = 65 MPa. (R2) Plywood web shear stress at ultimate must not exceed 10 MPa. (R3) Interlaminar / grain-perpendicular shear in spar caps at ultimate must not exceed 7 MPa. (R4) LC4 rear-spar local bending stress under landing must not exceed 35 MPa compression / 65 MPa tension. (R5) LC5 wing-tip deflection at limit (not ultimate) <= 0.6 m. (R6) Spar mass <= 9 kg per half-span (18 kg total). (R7) CS-VLA 471 (wheel-side landing) asymmetric case not evaluated here (out of scope for a spar design-for-pass); retained as out-of-scope note.\n\nSolver and analysis expectations. Primary: composite-laminate FEM (shell + continuum shell) or Euler-Bernoulli beam model for caps + plate-bending shear web for plywood. Mesh 10 mm shells. Buckling of the compression cap is a production concern; for this brief treat local buckling via allowable-stress method (F_compression_L = 35 MPa already embeds the Eulerian reduction for typical spruce cap slenderness). Modal, thermal, fluid, radiation NOT required; buckling as a separate linear eigenvalue is NOT required.\n\nDeliverables. STEP AP242 of spar structure, spar mass in kg, max spruce stress per LC (compression / tension / shear), web shear stress, wing-tip deflection at limit, and a pass/fail summary against CS-VLA 303/337/341.",
+  "short_prompt": "Design the main wing spar of a 600 kg MTOW Very Light Aeroplane (wingspan 10 m), traditionally a Sitka-spruce spar with birch-plywood shear webs. Design to EASA CS-VLA Amendment 1 (2018): 25.337-equivalent maneuver limits n1 = +3.8 and n3 = -1.5, ultimate = 1.5 x limit per CS-VLA 303, with gust envelope per CS-VLA 341 Appendix.\n\nEnvelope: rectangular spar at 30% chord, half-span 5.0 m, wing chord 1.5 m root to 1.1 m tip, spar caps 80 mm wide with 20-40 mm design-variable thickness, 6 mm 2-ply plywood webs, 10 equally spaced ribs, 3-bolt Ti end fitting (out of scope).\n\nLoad cases.\n- LC1 positive maneuver ultimate (n = +5.7): root M = 67,101 N*m, V = 16,776 N.\n- LC2 negative maneuver ultimate (n = -2.25): root M = -26,487 N*m, V = -6,621 N.\n- LC3 positive gust ultimate (n ~ 4.8): root M = 56,500 N*m, V = 14,130 N.\n- LC4 CS-VLA 473 landing equivalent: local rear-spar bending 12,000 N*m.\n- LC5 wing-tip deflection at positive-limit maneuver <= 0.6 m (handling-quality proxy, 12% of semispan).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Spruce-plywood main spar for Very Light Aeroplane per CS-VLA",
+    "brief": "600 kg MTOW VLA main spar, n +3.8/-1.5 limit, ultimate 1.5x; spruce cap stress, plywood web shear, tip deflection <= 12% semispan.",
+    "geometric_constraints": {
+      "half_span_m": 5.0,
+      "root_chord_m": 1.5,
+      "tip_chord_m": 1.1,
+      "spar_at_chord_pct": 30,
+      "spar_cap_width_mm": 80,
+      "spar_cap_thickness_mm": {
+        "min": 20,
+        "max": 40
+      },
+      "ply_web_mm": 6,
+      "rib_count": 10
+    },
+    "material": {
+      "spar_cap": {
+        "name": "Sitka spruce",
+        "E_L_GPa": 11,
+        "density_kg_m3": 400,
+        "F_tension_L_MPa": 65,
+        "F_compression_L_MPa": 35,
+        "F_shear_perp_MPa": 7
+      },
+      "web": {
+        "name": "birch plywood",
+        "E_in_plane_GPa": 8,
+        "F_shear_MPa": 10
+      }
+    },
+    "service_envelope": {
+      "n1_pos": 3.8,
+      "n3_neg": -1.5,
+      "ultimate_factor": 1.5,
+      "VC_m_s": 55,
+      "Ude_VC_m_s": 15.2,
+      "MTOW_kg": 600
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pos_maneuver_ultimate_n5.7",
+        "M_root_Nm": 67101,
+        "V_root_N": 16776
+      },
+      {
+        "id": "LC2",
+        "name": "neg_maneuver_ultimate_n-2.25",
+        "M_root_Nm": -26487,
+        "V_root_N": -6621
+      },
+      {
+        "id": "LC3",
+        "name": "pos_gust_ultimate",
+        "M_root_Nm": 56500,
+        "V_root_N": 14130
+      },
+      {
+        "id": "LC4",
+        "name": "landing_rear_spar_local",
+        "M_local_Nm": 12000
+      },
+      {
+        "id": "LC5",
+        "name": "tip_deflection_at_limit",
+        "tip_limit_m_max": 0.6
+      }
+    ],
+    "boundary_conditions": {
+      "root": "fixed through 3-bolt end fitting"
+    },
+    "objective": {
+      "minimize": "spar_mass",
+      "target_kg_max_per_side": 9
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "EASA CS-VLA Amendment 1",
+      "revision": "2018"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "spar_cap_longitudinal_stress_ultimate",
+        "limit_MPa": 35,
+        "derivation": "Compression-side F_compression_L for spruce (governing)",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "plywood_web_shear_stress_ultimate",
+        "limit_MPa": 10,
+        "derivation": "Birch plywood shear allowable",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "grain_perpendicular_shear_ultimate",
+        "limit_MPa": 7,
+        "derivation": "Spruce F_shear_perp_L",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "rear_spar_local_bending_under_landing",
+        "limit_MPa": 35,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "wing_tip_deflection_at_limit",
+        "limit_m": 0.6,
+        "derivation": "12% of semispan handling-quality proxy",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "spar_mass_per_side",
+        "limit_kg": 9,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell or beam for caps + plate for webs",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "Nastran",
+        "ANSYS Mechanical",
+        "hand calc"
+      ],
+      "analysis_types": [
+        "linear static x4"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Flutter per CS-VLA 629 out of scope.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Lift reduced to bending.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compression-cap local buckling handled via spruce compression allowable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Flutter and divergence per CS-VLA 629",
+      "Moisture-content durability of wood",
+      "CS-VLA 471 asymmetric landing"
+    ]
+  },
+  "eval_coverage": [
+    "CS-VLA 337 +3.8/-1.5 g maneuver",
+    "Wood-material-specific allowables",
+    "Tip deflection handling-quality proxy"
+  ]
+}

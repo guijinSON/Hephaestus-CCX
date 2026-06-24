@@ -1,0 +1,194 @@
+{
+  "id": "078_kr3_nura_rocket",
+  "source": {
+    "catalog_ref": "KR3",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "student_rocket_airframe",
+  "full_prompt": "Design the airframe and internal structure of a university-student rocket for a national student-rocket launch benchmark. Gross lift-off weight (GLOW) must be 9 kg with a tolerance of plus or minus 500 g (8.5 kg to 9.5 kg total). Apogee altitude is hard-capped at 400 m above launch rail height — exceeding 400 m is disqualification. Total propellant mass must not exceed 400 g. Static stability margin (CG-to-CP separation) must be between 1.0 and 2.5 calibers (one caliber equals one body-tube outside diameter). Ammonium perchlorate and potassium perchlorate oxidizers are explicitly prohibited per the rulebook safety rules; allowable propellants are typically KNSB (potassium nitrate / sorbitol) or commercially certified solid motors not on the banned list. Body tube ID is selected to accommodate the team's internal electronics bay and recovery system; this prompt targets 98 mm ID, total length approximately 1.8 m, and a phenolic or carbon-wrapped body tube. The airframe must survive (a) peak motor thrust phase with 12 g axial acceleration (equivalent quasi-static), (b) 8 g lateral gust, and (c) 10 g recovery deployment shock. Internal bulkheads must not deflect more than 1.5 mm under the 12 g axial load. The fin root attachment must survive a 75 N side force at the fin tip. A linear buckling eigenvalue on the body tube under 12 g axial must yield a load factor of at least 1.5. Primary verification is structural FEA (linear static + linear buckling) plus a stability-margin check via Barrowman / OpenRocket (non-FEA). Propellant mass and altitude cap are compliance checks tied to propellant data sheets and OpenRocket simulation output. Vibration, thermal, fluid (CFD), and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the airframe + internal bays, a mass budget, and a report listing GLOW in kg, propellant mass in g, stability caliber, body tube buckling load factor at 12 g, and predicted apogee in m.",
+  "short_prompt": "Design the airframe and internal structure of a university-student rocket for a national student-rocket launch benchmark. GLOW 9 kg +/- 500 g; apogee hard-capped at 400 m above launch-rail height (exceeding 400 m disqualifies); total propellant mass <= 400 g. Allowed propellants exclude ammonium perchlorate and potassium perchlorate (rulebook safety list; KNSB or certified non-banned solid motors acceptable - propellant-sheet compliance check). Static stability margin between 1.0 and 2.5 calibers (Barrowman / OpenRocket). Body-tube ID 98 mm, total length ~1.8 m, phenolic or carbon-wrapped body tube. Body-tube linear buckling under the 12 g axial must have load factor >= 1.5.\n\nLoad cases.\n- LC1 motor-burn axial (equivalent quasi-static): 12 G; bulkhead deflection <= 1.5 mm.\n- LC2 lateral gust: 8 G.\n- LC3 recovery deployment shock: 10 G axial.\n- LC4 fin-tip side load: 75 N at the fin tip.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "aerodynamic_stability_and_trajectory",
+        "reason": "Stability caliber and apogee are computed from Barrowman / OpenRocket, not FEA.",
+        "examples": [
+          "OpenRocket",
+          "RASAero II"
+        ]
+      },
+      {
+        "tool": "propellant_compliance_check",
+        "reason": "Banned oxidizer list is a catalog lookup.",
+        "examples": [
+          "propellant safety data sheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "University-student rocket airframe",
+    "brief": "Design a ~9 kg GLOW rocket, apogee ≤ 400 m, propellant ≤ 400 g, 1-2.5 caliber stability, no ammonium/potassium perchlorate, 12 g axial survival.",
+    "geometric_constraints": {
+      "GLOW_kg": 9,
+      "GLOW_tolerance_kg": 0.5,
+      "body_tube_ID_mm": 98,
+      "rocket_length_m_approx": 1.8
+    },
+    "material": {
+      "body_tube": "phenolic or carbon-wrapped cardboard"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "motor_axial_12g",
+        "magnitude_g": 12,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_gust_8g",
+        "magnitude_g": 8,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "recovery_shock_10g",
+        "magnitude_g": 10,
+        "direction": "axial"
+      },
+      {
+        "id": "LC4",
+        "name": "fin_tip_side_load",
+        "magnitude_N": 75,
+        "location": "fin tip"
+      }
+    ],
+    "boundary_conditions": {
+      "motor_mount": "fixed during burn"
+    },
+    "objective": {
+      "apogee_m_target": 400,
+      "apogee_m_max": 400
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "GLOW_kg",
+        "propellant_mass_g",
+        "stability_calibers",
+        "body_tube_buckling_load_factor",
+        "predicted_apogee_m"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "GLOW_kg",
+        "limit_lower_kg": 8.5,
+        "limit_upper_kg": 9.5,
+        "derivation": "9 kg ± 500 g",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "predicted_apogee_m",
+        "limit_m": 400,
+        "derivation": "Hard apogee cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "propellant_mass_g",
+        "limit_g": 400,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "stability_calibers",
+        "limit_lower": 1.0,
+        "limit_upper": 2.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "body_tube_load_factor_LC1",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "bulkhead_deflection_mm",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (tube) + solid (fin)",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "Not in gate.",
+      "fluid_analysis": "Drag via Barrowman.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "GLOW band compliance",
+    "apogee cap compliance",
+    "propellant mass and oxidizer ban",
+    "stability caliber band",
+    "body tube buckling"
+  ]
+}

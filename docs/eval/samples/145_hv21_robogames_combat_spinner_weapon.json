@@ -1,0 +1,219 @@
+{
+  "id": "145_hv21_robogames_combat_spinner_weapon",
+  "source": {
+    "catalog_ref": "HV21 (user-assigned international combat-robot league; catalog HV20)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "combat_robotics",
+  "part_class": "horizontal_spinner_weapon_disc",
+  "full_prompt": "Design a monolithic AR500 wear-resistant alloy-steel horizontal-spinner weapon disc for a international combat-robot league 2026 Middleweight class (30 lb / 13.6 kg) combat robot, per international combat-robot league Combat Robot rules for weight class limits, power-on-light requirements, and BattleBots-adjacent good-engineering-practice. The spinner disc is the primary weapon, mounted on a vertical central drive shaft and spun up by a brushless outrunner to ~9000 rpm in a 3-minute match, delivering impact kinetic energy to opposing robots through 2 integral tooth features. The weapon disc is a single monolithic waterjet-cut and surface-ground AR500 plate (no welds, no bolted-on teeth; integral 2 teeth + integral central shaft bore + integral balancing-fluting). Geometry: 220 mm outer diameter x 14 mm thick steel disc with 2 integral teeth spaced at 180 deg; each tooth is a 25 mm long x 30 mm wide x 14 mm thick protrusion extending outward from the 210 mm base circle; the tooth leading edge is a 2 mm radius fillet (hardened impact zone); each tooth trailing face has a 45 deg rake. Central shaft bore: 20 mm diameter keyed hub (matching a 20 mm hardened shaft with 6 mm keyway), reinforced with 4 integral M6 clamping-bolt holes on a 40 mm bolt-circle to share torque with the shaft key. Eight integral balancing flutes (6 mm diameter x 4 mm deep blind pockets) on the non-tooth side for dynamic balance trimming. Overall bounding envelope 220 x 220 x 14 mm. Material AR500: E 210 GPa, nu 0.30, density 7850 kg/m^3, yield 1380 MPa, UTS 1620 MPa, hardness 500 HB through-thickness. Three load cases per combat-robot weapon design practice. Load Case 1 (centrifugal body loading at 9000 rpm): 9000 rpm = 942 rad/s, peak tip speed 104 m/s, produces radial centrifugal body force density rho*omega^2*r integrated through the disc + teeth; this is the pure spin case with no impact. Load Case 2 (single-tooth impact on 3 mm aluminum opponent armor): 8 kN tangential force on one tooth tip for 300 microseconds peak contact (2.4 J per strike), applied 100 times in a 3-minute match at 9000 rpm matches time between impacts; load reacted at the shaft bore through the key and clamp bolts; the disc is still spinning at 9000 rpm (centrifugal + impact superposition). Load Case 3 (catastrophic hammer-to-hardened-steel hit): 40 kN tangential impulse on one tooth representing striking a hardened-steel opposing weapon at full speed (rare, fault-case, tooth may deform but must not fracture catastrophically); disc still spinning at 9000 rpm. Pass/fail: (R1) under LC1 pure spin, peak von Mises must not exceed 690 MPa (yield/2.0 AR500); (R2) under LC2 tooth impact during spin, peak stress must not exceed 920 MPa (yield/1.5 transient) and no fracture (use max-principal stress < UTS/1.5 = 1080 MPa as a secondary gate); (R3) under LC3 hardened-steel hit, peak stress <= UTS 1620 MPa (allowed plastic deformation, no through-crack); (R4) first six natural frequencies (spinning disc with lumped shaft-bearing stiffness boundary) must exceed 700 Hz to stay above the 150 Hz motor controller PWM ripple and the 42 Hz + harmonics of the chassis-drive vibration; (R5) critical spin-burst speed: linear buckling eigenvalue analysis of the disc under centrifugal loading must show the first buckling mode occur above 13500 rpm (50% above operating 9000 rpm), preventing disc burst within the match envelope; (R6) spinner mass must not fall below 2.2 kg nor exceed 4.0 kg (too light = low KE, too heavy = can't reach 9000 rpm in 45 s spin-up; competitive combat weapons target 2.5-3.5 kg); (R7) static imbalance moment with balancing flutes must be correctable to below 5 g-mm (weapon disc imbalance above this damages bearings within one match). Thermal analysis: weapon-disc impact heating is localized and surface only; no thermal gate required. Fluid analysis not required (air drag handled as torque budget, not structural load). Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic AR500 wear-resistant alloy-steel horizontal-spinner weapon disc for an international combat-robot league Middleweight (30 lb / 13.6 kg) entry, spun up to ~9000 rpm in a 3-minute match. The disc is a single waterjet-cut and surface-ground AR500 plate with two integral 180-degree-spaced teeth (2 mm leading-edge fillet, 45-degree rake on the trailing face), a central keyed 20 mm shaft bore with four M6 clamp-bolts on 40 mm BCD, and eight blind balancing flutes on the non-tooth face. Apply yield/2.0 continuous and yield/1.5 transient safety factors with UTS/1.5 principal-stress gate; catastrophic LC3 is a fault case (plastic deformation allowed, no through-crack).\n\nEnvelope: 220 x 220 x 14 mm.\n\nLoad cases.\n- LC1 pure spin at 9000 rpm (942 rad/s, 104 m/s tip speed): centrifugal body loading rho*omega^2*r integrated through disc and teeth.\n- LC2 single-tooth impact on 3 mm aluminum armor during spin: 8 kN tangential for 300 us (2.4 J/strike), 100 strikes/match, superposed on 9000 rpm spin.\n- LC3 catastrophic hardened-steel hit during spin: 40 kN tangential impulse on one tooth, still 9000 rpm.\nAlso require a spin-burst buckling factor above 13500 rpm (50% margin), first six modes >700 Hz, mass 2.2-4.0 kg, and residual static imbalance below 5 g-mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "international combat-robot league middleweight horizontal-spinner weapon disc",
+    "brief": "AR500 220x14 mm 2-tooth horizontal spinner at 9000 rpm; centrifugal + tooth-impact + burst-speed gates.",
+    "geometric_constraints": {
+      "disc_mm": {
+        "od": 220,
+        "thickness": 14,
+        "base_circle_mm": 210
+      },
+      "teeth": {
+        "count": 2,
+        "spacing_deg": 180,
+        "length_mm": 25,
+        "width_mm": 30,
+        "leading_fillet_mm": 2,
+        "rake_deg": 45
+      },
+      "hub_mm": {
+        "bore": 20,
+        "keyway_mm": 6,
+        "clamp_bolts": 4,
+        "bcd_mm": 40,
+        "bolt_mm": 6
+      },
+      "balance_flutes": {
+        "count": 8,
+        "diameter_mm": 6,
+        "depth_mm": 4
+      },
+      "bounding_envelope_mm": {
+        "x": 220,
+        "y": 220,
+        "z": 14
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "AR500 wear-resistant steel",
+      "properties": {
+        "youngs_modulus_GPa": 210,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 7850,
+        "yield_MPa": 1380,
+        "ultimate_tensile_strength_MPa": 1620,
+        "hardness_HB": 500
+      }
+    },
+    "weight_class": {
+      "class": "middleweight",
+      "limit_lb": 30,
+      "limit_kg": 13.6
+    },
+    "operating": {
+      "spin_rpm": 9000,
+      "tip_speed_m_s": 104,
+      "match_duration_s": 180,
+      "impacts_per_match": 100
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pure_spin_9000rpm",
+        "rpm": 9000
+      },
+      {
+        "id": "LC2",
+        "name": "tooth_impact_aluminum",
+        "tangential_N": 8000,
+        "duration_us": 300,
+        "rpm": 9000
+      },
+      {
+        "id": "LC3",
+        "name": "hardened_steel_hit",
+        "tangential_N": 40000,
+        "rpm": 9000
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "max_principal_stress_MPa",
+        "first_six_freqs_Hz",
+        "burst_rpm_eigenvalue",
+        "imbalance_g_mm",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 690,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 920,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_principal_stress",
+        "limit_MPa": 1620,
+        "derivation": "UTS no_fracture_fault_case",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 700,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "burst_rpm_via_eigenvalue",
+        "limit_rpm": 13500,
+        "derivation": "1.5x_operating",
+        "applies_to": [
+          "centrifugal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg_max": 4.0,
+        "limit_kg_min": 2.2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "between"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) + contact for tooth impact",
+      "mesh_size_mm_in_critical_regions": 0.8,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Explicit for LC2/LC3"
+      ],
+      "analysis_types": [
+        "linear static with centrifugal body load (LC1)",
+        "transient contact impact (LC2, LC3)",
+        "modal rotating reference frame",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Impact heating localized/surface only.",
+      "fluid_analysis": "Air drag is torque budget, not structural load.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Brushless motor spin-up torque",
+      "Tooth hardfacing weld-on option",
+      "BattleBots-style grapple hazard"
+    ]
+  },
+  "eval_coverage": [
+    "centrifugal body loading at 9000 rpm",
+    "single-tooth impact impulse during spin",
+    "burst-speed eigenvalue safety margin",
+    "imbalance tolerance for bearing life"
+  ]
+}

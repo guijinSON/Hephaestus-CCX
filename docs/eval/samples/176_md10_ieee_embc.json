@@ -1,0 +1,190 @@
+{
+  "id": "176_md10_ieee_embc",
+  "source": {
+    "catalog_ref": "MD10",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "medical_wearable",
+  "part_class": "flex_pcb_sensor_patch",
+  "full_prompt": "Design a wearable flex-PCB biosensor patch housing (open-source medical-device brief) targeting continuous 3-lead ECG + reflectance PPG (pulse oximetry) monitoring over a 72-hour deployment on an adult chest. The patch is a single flexible polyimide (Kapton HN, E 2.5 GPa, tensile 231 MPa) PCB substrate encapsulated in a medical-grade silicone-gel over-mold (Dow MG 7-9800, Shore A 30, tensile 2.5 MPa, biocompat ISO 10993-10) with dimensions 80 mm x 35 mm x 4 mm total thickness, weighing no more than 8 g including a 30 mAh Li-polymer battery. Three dry Ag/AgCl electrodes contact skin in a triangular layout with 35 mm electrode-to-electrode pitch, and a single optical PPG window is located at the center. Pass/fail criteria: (R1) patch must flex over a 30 mm minimum skin radius of curvature without peel-off or silicone delamination, implying maximum substrate strain at 30 mm bend radius must remain below 2% (well within Kapton HN reversible strain), (R2) skin contact pressure through the silicone over-mold must not exceed 2 kPa at rest to enable 72-hour wear without pressure ulcer per ISO 10536-2 guidance, (R3) steady-state skin-side temperature increase from the patch electronics (100 mW average dissipation) at 30 C skin must not exceed 2 C to stay below IEC 60601-1 thermal comfort Clause 11.1.2.2 minus 2 C margin, (R4) patch must survive 100-cycle flex fatigue at 30 mm bend radius with no change in ECG signal amplitude greater than 5%, and (R5) total patch mass must not exceed 8 g and profile must not exceed 4 mm total thickness. Thermal analysis is required for R3. Vibration, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly with flex substrate, over-mold, electrodes, and battery as sub-bodies plus a verification report listing substrate strain at 30 mm bend, skin contact pressure, skin-side temperature rise, flex fatigue result, total mass, and total thickness.",
+  "short_prompt": "Design a wearable flex-PCB biosensor patch for continuous 3-lead ECG + reflectance PPG monitoring over 72 h on an adult chest. The patch is a flexible polyimide (Kapton HN) PCB with medical-grade silicone gel overmold (Dow MG 7-9800, Shore A 30), roughly 80 x 35 x 4 mm, 8 g max including a 30 mAh Li-polymer battery. Three dry Ag/AgCl electrodes are in a triangular layout with 35 mm pitch, with a central optical PPG window.\n\nDesign to IEC 60601-1 Clause 11.1.2.2 (skin-contact surface temperature) and ISO 10536-2-style pressure-ulcer prevention guidance. The patch back is adhered to skin via silicone; the front is free.\n\nLoad cases.\n- LC1 bend: pure bend about the transverse axis at 30 mm radius.\n- LC2 skin contact at rest (pressure distribution through the overmold).\n- LC3 thermal steady state: 100 mW electronics dissipation against 30 C skin.\n- LC4 flex fatigue: 100 bend cycles at 30 mm radius, check ECG amplitude change.\n\nTotal mass and total thickness are wearability constraints.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "thin_film_bend_strain",
+        "reason": "Pure-bend substrate strain at radius R is closed-form eps = t/2R, cross-checked by FEA.",
+        "examples": [
+          "beam-bending closed form",
+          "DuPont Kapton HN bend test data"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Flex-PCB ECG + PPG wearable patch",
+    "brief": "Design a 80 x 35 x 4 mm flexible polyimide PCB patch with silicone over-mold and 3 Ag/AgCl electrodes, passing 30 mm bend radius, 2 kPa skin pressure, 2 C skin-side temperature rise, 100-cycle flex fatigue, and 8 g mass.",
+    "geometric_constraints": {
+      "patch_mm": [
+        80,
+        35,
+        4
+      ],
+      "electrode_pitch_mm": 35,
+      "battery_mAh": 30
+    },
+    "material": {
+      "substrate": "Kapton HN polyimide, E 2.5 GPa, tensile 231 MPa",
+      "over_mold": "Silicone gel MG 7-9800, Shore A 30",
+      "electrodes": "Ag/AgCl dry"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "bend_30mm",
+        "radius_mm": 30,
+        "application": "pure bend about transverse axis"
+      },
+      {
+        "id": "LC2",
+        "name": "skin_contact",
+        "target_pressure_kPa_max": 2
+      },
+      {
+        "id": "LC3",
+        "name": "thermal_steady",
+        "skin_C": 30,
+        "dissipation_mW": 100
+      },
+      {
+        "id": "LC4",
+        "name": "flex_fatigue",
+        "cycles": 100,
+        "radius_mm": 30
+      }
+    ],
+    "boundary_conditions": {
+      "patch_back": "adhered to skin via silicone",
+      "patch_front": "free surface"
+    },
+    "objective": {
+      "primary": "pass 72 h wearable comfort + signal integrity",
+      "secondary": "minimize patch mass and thickness"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "substrate_strain_at_30mm_pct",
+        "skin_contact_pressure_kPa",
+        "skin_side_temperature_rise_C",
+        "flex_fatigue_result",
+        "total_mass_g",
+        "total_thickness_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "substrate_strain_at_30mm",
+        "limit_pct": 2.0,
+        "derivation": "Kapton HN reversible-strain margin",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "skin_contact_pressure",
+        "limit_kPa": 2.0,
+        "derivation": "ISO 10536-2 72h wear guideline",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "skin_side_temperature_rise",
+        "limit_C": 2.0,
+        "derivation": "IEC 60601-1 11.1.2.2 with 2 C margin",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "ecg_signal_amplitude_change_after_100_cycles",
+        "limit_pct": 5,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_mass_and_thickness",
+        "mass_limit_g": 8,
+        "thickness_limit_mm": 4,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for substrate, solid for over-mold",
+      "mesh_size_mm_in_critical_regions": 0.2,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "geometric nonlinear bend",
+        "contact pressure",
+        "steady-state thermal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Wearable motion is handled as quasi-static bending.",
+      "fluid_analysis": "Sweat moisture out of scope for this brief.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Membrane in bending, not compressive buckling."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Sweat ingress and re-adhesion testing",
+      "Full IEC 60601-2-47 ambulatory ECG spec",
+      "BLE radio compliance (FCC/ETSI)"
+    ]
+  },
+  "eval_coverage": [
+    "flex-PCB bend radius structural pass/fail",
+    "skin-side thermal comfort",
+    "multi-day wear pressure limit",
+    "flex fatigue signal-integrity check"
+  ]
+}

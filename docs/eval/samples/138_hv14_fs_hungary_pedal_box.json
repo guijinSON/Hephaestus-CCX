@@ -1,0 +1,210 @@
+{
+  "id": "138_hv14_fs_hungary_pedal_box",
+  "source": {
+    "catalog_ref": "HV14 (user-assigned collegiate formula-class racecar benchmark)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "fsae_controls",
+  "part_class": "brake_pedal_box_mount_plate",
+  "full_prompt": "Design a monolithic 6061-T6 aluminum brake-pedal-box mount plate for a collegiate formula-class racecar benchmark / FSEast 2026 Class 1 CV vehicle running FS Rules 2026 base. The mount plate bolts to the front bulkhead and carries the pivoting brake pedal, two Tilton 78-series master cylinders, and a pedal-position sensor. Per FS Rules 2026 T.4.8, the brake pedal must be designed to withstand a pedal force of at least 2000 N without any failure of the brake system or pedal box. Plate is a single machined 6061-T6 billet (no welds, no bolted gussets). Geometry: plate 240 mm wide x 180 mm tall x 8 mm thick, top edge integrated with a 40 mm tall x 240 mm x 6 mm wall vertical stiffener lip, bottom edge clean. Pedal-pivot boss: integral 20 mm OD x 35 mm long cylindrical stub with M10 (10.5 mm clearance) through-bore, centered horizontally, 60 mm above the bottom edge. Two master-cylinder mounting holes: 9 mm (M8 clearance) each, horizontally spaced 90 mm, centered at 90 mm above the bottom, between the pivot boss and the stiffener lip. Six M6 (6.5 mm clearance) holes for front-bulkhead attachment arranged 2 rows x 3 columns on the back face on 100 mm x 80 mm pattern. One 12 mm cable pass-through hole for the pedal-position sensor harness. Overall bounding envelope 240 x 180 x 50 mm. Material 6061-T6 with E 68.9 GPa, nu 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa, endurance 97 MPa at 5e8 cycles. Three load cases. Load Case 1 (FS T.4.8 mandatory 2 kN pedal force): 2.0 kN horizontal force at the pedal pad (represented at a 200 mm pedal arm length upper tip, but the load reacts at the pivot and at the two master-cylinder pushrods distributed per a 3:1 pedal-ratio equalizer; at the mount plate this appears as 2.0 kN horizontally at the pivot boss reacted by two 500 N + 500 N + front-bulkhead bolts); for CAD/FEA simplicity apply 2.0 kN at the pivot boss horizontally toward the driver and 2.0 kN at each master-cylinder boss forward (total 4.0 kN forward at the two master-cylinder holes). The six bulkhead bolts are fully fixed. Load Case 2 (emergency panic brake at 3x FS rule = 6 kN): 6.0 kN scaled FS T.4.8 rule extension for emergency-braking safety margin, same direction as LC1. Load Case 3 (1 million-cycle fatigue service): 800 N pedal force per cycle (40% of LC1) representing typical endurance-event service, applied at the pivot boss and master-cylinder bosses in proportion. Pass/fail: (R1) under LC1 FS T.4.8, peak von Mises must not exceed 138 MPa (yield/2.0, FS T.4.8 brake-system safety allowable); (R2) under LC2 6 kN emergency, peak stress 184 MPa (yield/1.5 transient); (R3) under LC3 fatigue at 1e6 cycles, local stress range at any hole or fillet must not exceed 97 MPa; (R4) first six natural frequencies must exceed 80 Hz to decouple from driver foot-modulation frequencies 2-20 Hz and chassis harmonics <80 Hz; (R5) maximum deflection at the pivot boss under LC1 must not exceed 2.0 mm to preserve consistent brake pedal feel; (R6) plate mass must not exceed 0.9 kg. Thermal, fluid, buckling, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 6061-T6 aluminum brake-pedal-box mount plate for a collegiate formula-class racecar (FS 2026, FSEast event). The plate is a single billet-machined 6061-T6 part with a top-edge stiffener lip, an integral pedal-pivot boss, two master-cylinder holes (Tilton 78-series, 3:1 pedal ratio), a cable pass-through, and six front-bulkhead attachment holes; no welds. Design per FS Rules 2026 T.4.8 (pedal must withstand a 2 kN force with no brake-system or pedal-box failure), using yield/2.0 and yield/1.5 (transient) safety factors.\n\nEnvelope: 240 x 180 x 50 mm (plate 8 mm thick with a 40 mm x 6 mm stiffener lip).\n\nLoad cases.\n- LC1 T.4.8 mandatory 2 kN: 2.0 kN horizontal at the pivot boss plus 2.0 kN forward at each master-cylinder boss (total 4.0 kN forward at the two MC holes), six bulkhead bolts fixed.\n- LC2 emergency panic brake (3x T.4.8 = 6 kN): same direction, scaled safety margin transient.\n- LC3 1e6-cycle fatigue: 800 N pedal force (40% of LC1) spectrum at pivot and MC bosses.\nAlso check first six modes above 80 Hz (decouple foot-modulation 2-20 Hz and chassis <80 Hz) and pivot-boss deflection under LC1 below 2 mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FS Hungary brake pedal box mount plate",
+    "brief": "Monolithic 6061-T6 plate 240x180x8 with integral pivot boss + 2 master-cyl holes + stiffener lip; FS T.4.8 2 kN pedal force rule.",
+    "geometric_constraints": {
+      "plate_mm": {
+        "w": 240,
+        "h": 180,
+        "t": 8
+      },
+      "stiffener_lip_mm": {
+        "height": 40,
+        "wall": 6
+      },
+      "pivot_boss_mm": {
+        "od": 20,
+        "length": 35,
+        "bore_mm": 10.5,
+        "z_above_bottom_mm": 60
+      },
+      "master_cyl_holes": {
+        "count": 2,
+        "diameter_mm": 9,
+        "spacing_mm": 90,
+        "z_above_bottom_mm": 90
+      },
+      "bulkhead_bolts": {
+        "count": 6,
+        "diameter_mm": 6.5,
+        "pattern_mm": [
+          100,
+          80
+        ]
+      },
+      "cable_pass_mm": 12,
+      "bounding_envelope_mm": {
+        "x": 240,
+        "y": 180,
+        "z": 50
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "endurance_5e8_MPa": 97
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "FS_T4.8_2kN",
+        "pivot_force_N": 2000,
+        "mc_force_each_N": 2000
+      },
+      {
+        "id": "LC2",
+        "name": "emergency_6kN",
+        "pivot_force_N": 6000
+      },
+      {
+        "id": "LC3",
+        "name": "fatigue_1e6",
+        "cycles": 1000000,
+        "pivot_force_N": 800
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_six_freqs_Hz",
+        "pivot_boss_deflection_mm",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 138,
+        "derivation": "yield/2.0 FS T.4.8 brake system",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield/1.5 emergency transient",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 97,
+        "cycles": 1000000,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "pivot_boss_deflection",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.9,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "S-N fatigue",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Plate geometry not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Rigid tie to front bulkhead frame tube stresses",
+      "Bolt preload and torque-angle",
+      "Pedal-feel feedback vs plate flex"
+    ]
+  },
+  "eval_coverage": [
+    "FS T.4.8 mandatory 2 kN pedal force gate",
+    "emergency 3x safety scalar",
+    "fatigue endurance service spectrum",
+    "brake-feel deflection cap"
+  ]
+}

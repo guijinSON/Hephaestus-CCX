@@ -1,0 +1,746 @@
+{
+  "id": "184_sa1_ukseds_ort",
+  "source": {
+    "catalog_ref": "SA1",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/184_sa1_ukseds_ort.json",
+    "multipart_basis": "Decomposition mirrors a 6-wheel rocker-bogie Mars-analog rover: central warm box (Al tubing + CFRP panel), left and right rocker links, bogie links, differential bar, wheel-drive modules, arm/payload mount, and battery bay, typical of UKSEDS Olympus Rover Trials Advanced-stream entrants."
+  },
+  "domain": "planetary_robotics",
+  "part_class": "mars_analog_rover_chassis_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a Mars-analog Advanced-stream rover chassis for an open-source planetary rover trials benchmark. The chassis is a 6-wheel rocker-bogie rover with 700 mm length x 500 mm width x 400 mm height envelope, total operating mass not exceeding 50 kg (including 3 kg removable science/arm payload), powered by a 14.4 V 20 Ah Li-ion battery for at least 2 hours operation on a Mars-analog terrain with slopes up to 20 degrees, loose regolith, rocks up to 100 mm in height, and typical traverse speed 0.1 m/s. The chassis is fabricated from 6061-T6 aluminum tubing + carbon-fiber panels (tubing yield 276 MPa, panel E 45 GPa tensile 500 MPa). Loads: (LC1) static 50 kg at 20 deg slope with 1.2x dynamic factor during traverse, (LC2) a 100 mm rock impact at 0.1 m/s wheel-hub equivalent impulse of 150 N, (LC3) a 3 kg manipulator arm fully extended 800 mm horizontal with a 1.5 kg sample grasp generating 36 N-m at chassis-arm interface, (LC4) 1 g vertical dropout from a 150 mm step giving a 2g effective ground reaction, (LC5) cold-cycle thermal excursion from -20 C to +35 C (Mars-analog field operations on an analog-day). Pass/fail: (R1) chassis max von Mises stress under any load case must not exceed 184 MPa (6061-T6 yield 276 / SF 1.5), (R2) rover must climb 20 deg slope without slip (required traction coefficient vs wheel load), (R3) arm manipulation at full extension must not tilt chassis by more than 5 degrees, (R4) chassis first natural frequency must be at least 15 Hz (3x terrain-vibration peak), and (R5) chassis must survive -20 to +35 C cycle without thermally induced yield (thermal stress combined with mechanical case not exceeding 184 MPa). Thermal analysis is required for R5. Vibration is required for R4. Fluid and radiation analyses are not required. Deliver a STEP AP242 assembly with chassis, wheels, rocker-bogie links, arm mount, and battery bay as sub-bodies plus a verification report listing max von Mises, slope-climb margin, arm-tilt angle, first natural frequency, and thermal-cycle stress.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a multi-part assembly rather than a single solid body. The decomposition comprises (A) central_warm_box, (B) rocker_link_left, (C) rocker_link_right, (D) bogie_links, (E) differential_bar, (F) wheel_drive_modules, (G) arm_mount_bracket, (H) battery_bay, (I) cfrp_top_deck. The final FEM verification runs on the ASSEMBLED model only \u2014 per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a Mars-analog Advanced-stream rover chassis for an open-source planetary rover trials benchmark.\n\nThe chassis is a 6-wheel rocker-bogie rover with 700 mm length x 500 mm width x 400 mm height envelope, total operating mass not exceeding 50 kg (including 3 kg removable science/arm payload), powered by a 14.4 V 20 Ah Li-ion battery for at least 2 hours operation on a Mars-analog terrain with slopes up to 20 degrees, loose regolith, rocks up to 100 mm in height, and typical traverse speed 0.1 m/s.\n\nThe chassis is fabricated from 6061-T6 aluminum tubing + carbon-fiber panels (tubing yield 276 MPa, panel E 45 GPa tensile 500 MPa).\n\nLoad cases: LC1 static 50 kg at 20 deg slope with 1.2x dynamic factor; LC2 a 100 mm rock impact at 0.1 m/s wheel-hub equivalent impulse of 150 N; LC3 a 3 kg manipulator arm fully extended 800 mm horizontal with a 1.5 kg sample grasp generating 36 N-m at chassis-arm interface; LC4 1 g vertical dropout from a 150 mm step giving a 2g effective ground reaction; LC5 cold-cycle thermal excursion from -20 C to +35 C.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "rocker_bogie_kinematics",
+        "reason": "Wheel load distribution and tipping-point kinematics of the rocker-bogie are closed-form Jacobian-based calculations, not FEA.",
+        "examples": [
+          "Lindemann/JPL rocker-bogie MATLAB model"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Mars-analog Advanced-stream rocker-bogie rover chassis (multi-part assembly)",
+    "brief": "Design a 700 x 500 x 400 mm 50 kg 6-wheel rocker-bogie rover chassis in Al 6061-T6 + CFRP passing 20-deg slope, 100 mm rock impact, arm manipulation, step dropout, and -20 to +35 C thermal cycle. [Multi-part assembly] central_warm_box (x1), rocker_link_left (x1), rocker_link_right (x1), bogie_links (x2), differential_bar (x1), wheel_drive_modules (x6), arm_mount_bracket (x1), battery_bay (x1), cfrp_top_deck (x1). FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "envelope_mm": [
+        700,
+        500,
+        400
+      ],
+      "operating_mass_kg_max": 50,
+      "wheels": 6,
+      "slope_deg": 20,
+      "rock_height_mm": 100
+    },
+    "material": {
+      "tubing": "6061-T6 Al, yield 276 MPa",
+      "panels": "CFRP quasi-iso, E 45 GPa, tensile 500 MPa"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "slope_traverse",
+        "mass_kg": 50,
+        "slope_deg": 20,
+        "dynamic_factor": 1.2
+      },
+      {
+        "id": "LC2",
+        "name": "rock_impact",
+        "impulse_N": 150,
+        "speed_m_s": 0.1
+      },
+      {
+        "id": "LC3",
+        "name": "arm_extension",
+        "reach_mm": 800,
+        "arm_kg": 3,
+        "sample_kg": 1.5,
+        "moment_Nm": 36
+      },
+      {
+        "id": "LC4",
+        "name": "step_dropout",
+        "step_mm": 150,
+        "g_factor": 2
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_cycle",
+        "T_min_C": -20,
+        "T_max_C": 35
+      }
+    ],
+    "boundary_conditions": {
+      "wheels": "contact with ground, rolling",
+      "arm_base": "bolted to chassis"
+    },
+    "objective": {
+      "primary": "pass all load cases + thermal cycle",
+      "secondary": "minimize chassis mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "slope_climb_margin",
+        "arm_tilt_deg",
+        "first_natural_frequency_Hz",
+        "thermal_cycle_combined_stress_MPa",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "central_warm_box",
+        "role": "welded aluminum tubing frame hosting electronics, payload mount, and differential bar pivot",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_LxWxH_mm": [
+            450,
+            350,
+            200
+          ],
+          "tube_profile_mm": [
+            25,
+            25,
+            2
+          ],
+          "mass_kg_max": 6
+        },
+        "material_hint": "6061-T6 aluminum SHS 25x25x2, TIG-welded, yield 276 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "rocker_link_left",
+        "role": "left rocker arm connecting front wheel and rear bogie; pivots about central warm box",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 550,
+          "tube_profile_mm": [
+            25,
+            25,
+            2
+          ],
+          "pivot_bore_mm": 12
+        },
+        "material_hint": "6061-T6 aluminum welded assembly, yield 276 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "rocker_link_right",
+        "role": "right rocker arm, mirror of B",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 550,
+          "tube_profile_mm": [
+            25,
+            25,
+            2
+          ],
+          "pivot_bore_mm": 12
+        },
+        "material_hint": "6061-T6 aluminum welded assembly, yield 276 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "bogie_links",
+        "role": "left and right bogies connecting middle + rear wheels, pivoting from rocker",
+        "count_min": 2,
+        "geometric_constraints": {
+          "length_mm": 300,
+          "tube_profile_mm": [
+            20,
+            20,
+            2
+          ],
+          "pivot_bore_mm": 10
+        },
+        "material_hint": "6061-T6 aluminum welded assembly, yield 276 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "differential_bar",
+        "role": "passive differential linkage across warm box top averaging left/right rocker angles",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 400,
+          "diameter_mm": 12,
+          "pivot_offset_mm": 180
+        },
+        "material_hint": "6061-T6 aluminum bar with spherical-eye bearings at ends",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "wheel_drive_modules",
+        "role": "six wheel-drive assemblies (hub motor + rim + tyre) providing rolling contact, 150 N rock-impact path",
+        "count_min": 6,
+        "geometric_constraints": {
+          "wheel_diameter_mm": 180,
+          "wheel_width_mm": 80,
+          "hub_motor_W": 30
+        },
+        "material_hint": "6061 aluminum rim with EPDM tyre, brushless hub motor",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "arm_mount_bracket",
+        "role": "bolted interface carrying 3 kg manipulator + 36 N-m reaction moment at LC3",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plate_LxW_mm": [
+            150,
+            120
+          ],
+          "thickness_mm": 6,
+          "bolt_pattern_mm": [
+            100,
+            80
+          ]
+        },
+        "material_hint": "6061-T6 Al plate 6 mm with M6 bolt grid",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "battery_bay",
+        "role": "bay housing 14.4 V 20 Ah Li-ion pack within central warm box with retention and thermal isolation",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_LxWxH_mm": [
+            200,
+            120,
+            80
+          ],
+          "mass_supported_kg": 3,
+          "thermal_conductance_W_K": 0.5
+        },
+        "material_hint": "6061 Al tray lined with Aerogel for LC5 cold cycle",
+        "speculation": true
+      },
+      {
+        "part_id": "I",
+        "name": "cfrp_top_deck",
+        "role": "quasi-iso CFRP panel closing top of warm box and carrying science payload deck",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            450,
+            350
+          ],
+          "panel_thickness_mm": 3,
+          "laminate_lay_up": "quasi-iso 8-ply"
+        },
+        "material_hint": "CFRP quasi-iso, E 45 GPa, tensile 500 MPa",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "see original brief",
+      "coordinate_system": "inherit from original"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 184,
+        "derivation": "Al 6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "slope_climb_traction_coefficient",
+        "limit_mu_min": 0.364,
+        "derivation": "mu >= tan(20 deg) = 0.364",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "chassis_tilt_under_arm",
+        "limit_deg": 5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 15,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "thermal_cycle_combined_stress",
+        "limit_MPa": 184,
+        "derivation": "combined thermal + mechanical still < yield / 1.5",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across all inter-part interfaces (welds, rocker pivots, differential bar, bogie pivots, bolted deck and arm mount) <= 1.0 under governing LC1 + LC3.",
+        "metric": "max DCR across IF1..IFn",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Rocker and bogie pivot bearings must retain rotational freedom (torque to actuate < 1 N-m) under LC4 step-dropout loading.",
+        "metric": "pivot actuation torque Nm",
+        "threshold": 1,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[5].geometric_constraints",
+          "prompt.parts[6].count_min",
+          "prompt.parts[6].geometric_constraints",
+          "prompt.parts[7].count_min",
+          "prompt.parts[7].geometric_constraints",
+          "prompt.parts[8].count_min",
+          "prompt.parts[8].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam for tubing, shell for panels",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "thermal + thermal-stress"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "left rocker B pivots on pin through central warm box A; transfers vertical load + slope reactions"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "right rocker C pivots on pin through central warm box A; mirror of IF1"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "left bogie (D instance 1) pivots on rear end of left rocker B"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "right bogie (D instance 2) pivots on rear end of right rocker C"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "differential bar E couples to left rocker B via spherical-eye; averages rocker angles"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "C",
+        "E"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "differential bar E couples to right rocker C via spherical-eye"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "B",
+        "F"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "front + middle left wheel modules F bolt to left rocker B and bogie D; transfer LC2 rock impact"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "D",
+        "F"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "rear wheel modules F bolt to bogie D ends"
+    },
+    {
+      "id": "IF9",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "arm mount bracket G is bolted to top of central warm box A; carries LC3 36 N-m moment"
+    },
+    {
+      "id": "IF10",
+      "between": [
+        "A",
+        "H"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "battery bay H is bolted within central warm box A"
+    },
+    {
+      "id": "IF11",
+      "between": [
+        "A",
+        "I"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "CFRP top deck I bolts to flanges on central warm box A perimeter; provides torsional closure"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Rocker-bogie suspension compliance, differential-bar load averaging, first natural frequency, and thermal-cycle combined stress only manifest on the fully assembled rover; per-part metrics are reported but do not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A rocker-bogie rover is inherently articulated \u2014 rockers, bogies, differential bar, warm box, and wheel modules cannot be modeled as a single body.",
+    "speculation_caveats": "parts[] counts and interfaces[] reflect JPL-style rocker-bogie rover architecture typical of UKSEDS Olympus Rover Trials entries but are speculative; not a specific rulebook decomposition.",
+    "original_sample_preserved_at": "docs/eval/samples/184_sa1_ukseds_ort.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R_asm1",
+      "R_asm2"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[5].geometric_constraints",
+      "prompt.parts[6].count_min",
+      "prompt.parts[6].geometric_constraints",
+      "prompt.parts[7].count_min",
+      "prompt.parts[7].geometric_constraints",
+      "prompt.parts[8].count_min",
+      "prompt.parts[8].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3",
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3,LC4",
+      "metric": "max_von_mises",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "slope_climb_traction_coefficient",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "chassis_tilt_under_arm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_MODAL",
+      "solver": "calculix",
+      "analysis_card": "*FREQUENCY",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "generated_modal_step",
+      "metric": "first_natural_frequency",
+      "metric_source": "modal eigenfrequency block",
+      "outputs": [
+        "model.dat: eigenfrequencies"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_THERMAL",
+      "solver": "calculix",
+      "analysis_card": "*HEAT TRANSFER",
+      "physics_card": null,
+      "load_cases": [
+        "LC5"
+      ],
+      "deck_step": "generated_thermal_step",
+      "metric": "thermal_cycle_combined_stress",
+      "metric_source": "thermal temperature block",
+      "outputs": [
+        "model.dat: temperatures"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_005",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "max DCR across IF1..IFn",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm2_006",
+      "requirement_id": "R_asm2",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "pivot actuation torque Nm",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_007",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

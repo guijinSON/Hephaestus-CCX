@@ -1,0 +1,218 @@
+{
+  "id": "041_s10_stanag_4703_light_uas",
+  "source": {
+    "catalog_ref": "S10",
+    "year": 2014,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "fixed_wing_uas_main_spar",
+  "full_prompt": "Design the main wing spar of a fixed-wing tactical unmanned aircraft with MTOW 140 kg, wingspan 5.2 m, governed by STANAG 4703 / AEP-83 Light UAS airworthiness (Edition A v1 2014). STANAG 4703 Section 4 (Structure) prescribes a symmetric maneuvering envelope, gust-load envelope, ultimate factor of safety 1.5 over limit load, and minimum margin-of-safety >=0 at ultimate. Applicable categories: Category II light UAS (5.7 < MTOW <= 150 kg).\n\nAircraft parameters. MTOW 140 kg (1373 N), wing area S = 2.5 m^2, wing loading 56 kg/m^2, cruise speed VC = 40 m/s EAS, dive speed VD = 55 m/s EAS, stall speed VS = 18 m/s EAS. Maneuvering envelope per STANAG 4703 Section 4.2.3: positive limit load factor n1 = +4.0, negative limit n3 = -2.0, gust load factor at VC from Pratt's formula with a derived gust velocity Ude = 15.2 m/s (STANAG 4703 Table B2 reference) and airplane mass ratio mu_g computed from wing loading.\n\nSpar geometry. Single-cell carbon/epoxy composite C-spar located at 25% chord. Root half-span 2.6 m. Wing chord tapers from 550 mm at root to 330 mm at tip (taper ratio 0.6). Spar cap dimensions (design variables): cap width w_c and cap thickness t_c; web thickness t_w; all 4-12 mm range. Ribs at 8 equal-spaced stations. Spar joint at wing root carries 4 M8 titanium bolts in double shear through a root-end fitting into the fuselage. The spar and fuselage root fitting are pre-manufactured fixed components here; only the spar cap cross-section and web thickness are in design scope.\n\nMaterial. IM7/8552 unidirectional CFRP in spar caps: E1 = 165 GPa, E2 = 8.8 GPa, G12 = 5.0 GPa, nu12 = 0.3, Xt = 2560 MPa, Xc = 1590 MPa, Yt = 73 MPa, Yc = 185 MPa, S = 90 MPa, rho = 1570 kg/m^3. Web plain-weave 8552/AS4: quasi-isotropic layup assumed with effective strength 450 MPa tension, 380 MPa compression; shear 90 MPa. Treat material safety via composite-specific ultimate FoS 1.5 (per STANAG 4703 Section 4.2.1 combined with composite reduction) times a Building-Block knockdown of 0.8 => effective allowable = rated / 1.5 / 0.8 = rated / 1.875 (equivalent to raising FoS to 1.875 on composites).\n\nLoad cases at limit. LC1 (positive maneuvering, n1 = +4.0): lift distribution approximated as elliptical giving root bending moment M_x_lim = n1 * W * 0.4 * b/2 = 4.0 * 1373 * 0.4 * 2.6 = 5,711 N*m, root shear V_z_lim = n1 * W/2 = 2,746 N. LC2 (negative maneuvering, n3 = -2.0): M_x_lim = -2,856 N*m, V_z_lim = -1,373 N. LC3 (positive gust at VC with Ude = 15.2 m/s giving equivalent n = 3.5): M_x_lim = 5,000 N*m, V_z_lim = 2,400 N. LC4 (ground landing, 3 g nose-down equivalent rear spar load): bending 1,500 N*m. All at limit; ultimate = 1.5 x limit per STANAG 4703.\n\nPass/fail criteria. (R1) Spar-cap maximum longitudinal composite stress at ultimate (1.5 x limit) must satisfy sigma_1 <= Xt / 1.0 in tension and sigma_1 >= -Xc / 1.0 in compression WITH an additional composite knockdown applied so effective allowables are Xt_eff = 2560 / 1.25 = 2048 MPa and Xc_eff = 1590 / 1.25 = 1272 MPa per STANAG 4703 Section 4.2.1 composite factor (1.5 structural FoS subsumes the 1.5 x limit; the additional 1.25 accounts for environment + scatter). (R2) Web shear stress at ultimate must not exceed S_eff = 90 / 1.25 = 72 MPa. (R3) Tsai-Wu or max-stress failure index <= 1.0 under each ultimate load case at the critical spar-cap plies. (R4) Root-bolt bearing stress at ultimate <= 1425 MPa (1.5 * Ftu_Ti = 1.5 * 950). (R5) Wing-tip deflection at limit LC1 <= b/20 = 5.2/20 * 1000 = 260 mm (airworthiness rigidity proxy; not mandated by STANAG 4703 but standard practice). (R6) Spar mass <= 3.5 kg.\n\nSolver and analysis expectations. Primary: composite laminate FEM (shell or continuum-shell) in NASTRAN, ANSYS Composite PrepPost, or Abaqus Standard, with Tsai-Wu or max-stress evaluation at each ply. Closed-form beam-theory cross-check for spar-cap axial stress at root is recommended. Buckling analysis of the web panels between ribs is NOT required for this benchmark (but would be in production; noted as excluded). Modal, thermal, fluid, and radiation analyses are NOT required.\n\nDeliverables. STEP AP242 of spar structure, composite layup per cap and web, spar mass in kg, max ply stress and Tsai-Wu index per load case, root-bolt bearing stress, and wing-tip deflection at LC1.",
+  "short_prompt": "Design the main wing CFRP C-spar of a fixed-wing tactical UAS with MTOW 140 kg and wingspan 5.2 m (Category II light UAS). Design to STANAG 4703 / AEP-83 Light UAS airworthiness (Edition A v1, 2014) with ultimate factor of safety 1.5 on limit and a composite environment/scatter knockdown of 1.25 on material allowables.\n\nEnvelope: half-span 2.6 m, wing chord 550 mm root to 330 mm tip, spar at 25% chord, 8 ribs, root-end fitting with 4 M8 Ti bolts in double shear.\n\nLoad cases (limit; ultimate = 1.5 x limit).\n- LC1 positive maneuver (n1 = +4.0): root M_x = 5,711 N*m, V_z = 2,746 N.\n- LC2 negative maneuver (n3 = -2.0): root M_x = -2,856 N*m, V_z = -1,373 N.\n- LC3 positive gust at VC with Ude = 15.2 m/s (n ~ 3.5): root M_x = 5,000 N*m, V_z = 2,400 N.\n- LC4 ground landing equivalent rear-spar bending: M = 1,500 N*m.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Fixed-wing UAS main spar per STANAG 4703 Category II",
+    "brief": "140 kg MTOW UAS CFRP main spar; n1 +4.0 / n3 -2.0 / gust; ultimate = 1.5 x limit; Tsai-Wu + max-stress <= 1.0.",
+    "geometric_constraints": {
+      "half_span_m": 2.6,
+      "root_chord_mm": 550,
+      "tip_chord_mm": 330,
+      "taper_ratio": 0.6,
+      "spar_at_chord_pct": 25,
+      "rib_count": 8,
+      "root_bolt": {
+        "count": 4,
+        "size": "M8 titanium",
+        "shear": "double"
+      }
+    },
+    "material": {
+      "cap": {
+        "name": "IM7/8552 UD",
+        "E1_GPa": 165,
+        "E2_GPa": 8.8,
+        "G12_GPa": 5.0,
+        "Xt_MPa": 2560,
+        "Xc_MPa": 1590,
+        "Yt_MPa": 73,
+        "Yc_MPa": 185,
+        "S_MPa": 90,
+        "density_kg_m3": 1570
+      },
+      "web": {
+        "name": "8552/AS4 plain weave QI",
+        "tension_MPa": 450,
+        "compression_MPa": 380,
+        "shear_MPa": 90
+      }
+    },
+    "maneuver_envelope": {
+      "n1_pos": 4.0,
+      "n3_neg": -2.0,
+      "VC_m_s": 40,
+      "VD_m_s": 55,
+      "VS_m_s": 18,
+      "Ude_m_s_at_VC": 15.2
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pos_maneuver_n4",
+        "M_x_limit_Nm": 5711,
+        "V_z_limit_N": 2746
+      },
+      {
+        "id": "LC2",
+        "name": "neg_maneuver_n-2",
+        "M_x_limit_Nm": -2856,
+        "V_z_limit_N": -1373
+      },
+      {
+        "id": "LC3",
+        "name": "pos_gust_VC",
+        "M_x_limit_Nm": 5000,
+        "V_z_limit_N": 2400
+      },
+      {
+        "id": "LC4",
+        "name": "landing_3g_rear",
+        "M_x_limit_Nm": 1500
+      }
+    ],
+    "boundary_conditions": {
+      "root": "fixed via 4x M8 Ti bolts in double shear"
+    },
+    "objective": {
+      "minimize": "spar_mass",
+      "target_kg_max": 3.5
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "STANAG 4703 / AEP-83 Ed A v1",
+      "revision": "2014-09-16"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "cap_longitudinal_stress_tension_ultimate",
+        "limit_MPa": 2048,
+        "derivation": "Xt / 1.25 composite environment+scatter knockdown on top of ultimate 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "web_shear_stress_ultimate",
+        "limit_MPa": 72,
+        "derivation": "S / 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "Tsai_Wu_or_max_stress_failure_index_ultimate",
+        "limit": 1.0,
+        "derivation": "Composite failure criterion per STANAG 4703 Section 4.2.1",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "root_bolt_bearing_stress_ultimate",
+        "limit_MPa": 1425,
+        "derivation": "1.5 * Ftu_Ti = 1.5 * 950",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "wing_tip_deflection_at_limit",
+        "limit_mm": 260,
+        "derivation": "b/20 rigidity proxy",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "spar_mass",
+        "limit_kg": 3.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "composite shell or continuum shell",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard",
+        "Nastran composites"
+      ],
+      "analysis_types": [
+        "linear static x4 composite"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Flutter out of scope; static aeroelasticity not considered.",
+      "thermal_analysis": "Ambient assumed.",
+      "fluid_analysis": "Lift/load already reduced to bending moments.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Web panel buckling excluded at this stage; noted for production phase."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Flutter analysis per STANAG 4703 Section 4.4",
+      "Web panel buckling (production work)",
+      "Damage-tolerance / BVID per MIL-HDBK-17 Vol. 3"
+    ]
+  },
+  "eval_coverage": [
+    "STANAG 4703 maneuver + gust envelope",
+    "composite Tsai-Wu / max-stress",
+    "ultimate 1.5 + composite knockdown",
+    "root-bolt bearing"
+  ]
+}

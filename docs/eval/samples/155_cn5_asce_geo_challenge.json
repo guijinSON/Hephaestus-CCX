@@ -1,0 +1,190 @@
+{
+  "id": "155_cn5_asce_geo_challenge",
+  "source": {
+    "catalog_ref": "CN5",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "geotechnical",
+  "part_class": "mse_retaining_wall",
+  "full_prompt": "Design a single mechanically stabilized earth (MSE) retaining wall. The wall face must be vertical, 1.0 m wide and 0.70 m tall, retaining a sand backfill of unit weight 17.0 kN/m^3 and friction angle 32 degrees, with the wall built up of horizontal lifts 100 mm thick separated by paper strip reinforcement and a plywood face. A surcharge load of 4.8 kPa must be applied over a 0.30 m wide patch at the rear of the retained fill, 50 mm from the wall face, to simulate the loading platen, plus an additional concentrated 45 kg mass dropped from 0.30 m height applied to the top of the surcharge patch in a controlled pluck-test equivalent static equal to 1.1 kN. Paper reinforcement strips are 60 gsm kraft paper with measured tensile strength 8 N per 25 mm width (320 N per meter width), arranged on a schedule the designer selects. The wall must simultaneously satisfy these pass/fail criteria: (R1) sliding factor of safety of the wall block against horizontal thrust from retained soil plus surcharge must be at least 1.5, (R2) overturning factor of safety about the toe must be at least 2.0, (R3) internal pullout factor of safety of the critical reinforcement layer must be at least 1.5 using classic Coulomb active earth pressure plus pullout resistance of paper strips, (R4) reinforcement tensile rupture factor of safety must be at least 1.5 against the paper ultimate tensile strength, (R5) total paper reinforcement mass used must not exceed 20 g as an efficiency target. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly of the wall with each reinforcement layer as a distinct body plus a geotech report listing sliding, overturning, pullout, and rupture FoS, and total paper mass.",
+  "short_prompt": "Design a single mechanically stabilized earth (MSE) retaining wall 1.0 m wide and 0.70 m tall with a vertical face, retaining a sand backfill (unit weight 17.0 kN/m^3, friction angle 32 degrees). The wall is built from horizontal 100 mm lifts separated by paper-strip reinforcement and a plywood face; paper reinforcement is 60 gsm kraft with measured tensile strength 8 N per 25 mm width (320 N/m). The designer selects the reinforcement schedule.\n\nLoad cases (applied statically).\n- Surcharge: 4.8 kPa over a 0.30 m wide patch at the rear of the retained fill, 50 mm back from the wall face (loading platen proxy).\n- Pluck-test shock: a 45 kg mass dropped 0.30 m onto the surcharge patch, treated as an equivalent static 1.1 kN.\nSliding FoS against horizontal thrust (soil + surcharge) >= 1.5, overturning FoS about the toe >= 2.0, internal pullout FoS of the critical reinforcement layer >= 1.5 (Coulomb active earth pressure + paper-strip pullout), reinforcement tensile-rupture FoS >= 1.5 against the paper ultimate, total paper mass <= 20 g.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "classical_earth_pressure_calc",
+        "reason": "Active/passive Coulomb wedges, sliding, overturning, and pullout are closed-form limit-equilibrium calculations, not FEA.",
+        "examples": [
+          "Rankine/Coulomb spreadsheet",
+          "FHWA MSE design tables"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "0.7 m MSE wall with paper reinforcement",
+    "brief": "Design a 1.0 m wide x 0.7 m tall paper-reinforced MSE wall retaining sand (17.0 kN/m^3, phi 32 deg) under 4.8 kPa surcharge plus pluck-equivalent 1.1 kN, meeting sliding, overturning, pullout, and rupture FoS.",
+    "geometric_constraints": {
+      "face_width_m": 1.0,
+      "face_height_m": 0.7,
+      "lift_thickness_mm": 100,
+      "vertical_face": true
+    },
+    "material": {
+      "backfill": {
+        "unit_weight_kN_m3": 17.0,
+        "phi_deg": 32
+      },
+      "reinforcement": {
+        "paper_gsm": 60,
+        "tensile_strength_N_per_m": 320
+      },
+      "face": "plywood, non-load-bearing"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "retained_soil",
+        "application": "Coulomb active earth pressure distribution"
+      },
+      {
+        "id": "LC2",
+        "name": "surcharge_patch",
+        "magnitude_kPa": 4.8,
+        "patch_width_m": 0.3,
+        "offset_from_face_m": 0.05
+      },
+      {
+        "id": "LC3",
+        "name": "pluck_equivalent",
+        "magnitude_N": 1100,
+        "derivation": "45 kg dropped 0.30 m reduced to equivalent static",
+        "application": "vertical on top of surcharge patch"
+      }
+    ],
+    "boundary_conditions": {
+      "base": "frictional base with coefficient tan(32 deg)",
+      "face": "plywood panels pinned between lifts"
+    },
+    "objective": {
+      "primary": "pass all FoS",
+      "secondary": "minimize paper reinforcement mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "sliding_FoS",
+        "overturning_FoS",
+        "pullout_FoS",
+        "rupture_FoS",
+        "total_paper_mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "sliding_factor_of_safety",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "overturning_factor_of_safety",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "pullout_factor_of_safety",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "rupture_factor_of_safety",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_paper_mass",
+        "limit_g": 20,
+        "derivation": "efficiency target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "2D plane-strain continuum or limit-equilibrium hand calc",
+      "solver_hints": [
+        "PLAXIS 2D",
+        "GeoStudio SLOPE/W",
+        "manual Coulomb"
+      ],
+      "analysis_types": [
+        "limit equilibrium + optional 2D plane-strain"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static pluck load only.",
+      "thermal_analysis": "Indoor test environment.",
+      "fluid_analysis": "Dry sand, no water table.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Seismic MSE (AASHTO LRFD 11.10.7)",
+      "Creep of paper reinforcement",
+      "Drainage design behind face"
+    ]
+  },
+  "eval_coverage": [
+    "limit-equilibrium geotech checks over FEA optional",
+    "pluck-equivalent static load",
+    "reinforcement mass efficiency",
+    "paper-tensile material envelope"
+  ]
+}

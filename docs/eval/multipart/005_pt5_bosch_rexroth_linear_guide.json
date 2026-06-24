@@ -1,0 +1,323 @@
+{
+  "id": "005_pt5_bosch_rexroth_linear_guide",
+  "source": {
+    "catalog_ref": "PT5",
+    "year": 2024,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/005_pt5_bosch_rexroth_linear_guide.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "industrial_machinery",
+  "part_class": "linear_guide_carriage_subframe_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design an aluminum subframe linear-guide carriage assembly that mounts a moving payload onto two parallel size-35 ball-rail runner blocks, carrying a combined load at a cantilevered arm, and that passes the catalog load-moment envelope. The deliverable is an explicit multi-body assembly consisting of: (A) one aluminum subframe plate machined from 6082-T6 billet (400 mm along travel x 250 mm across rails x 30 mm nominal thickness); (B) four size-35 full-length (FNS-equivalent) ball-rail runner block bodies (two per rail), each mounted via its catalog 72 x 40 mm four-hole pattern; (C) sixteen M8 grade 8.8 socket-head screws (4 per runner) clamping the subframe to the runner blocks; (D) one cantilevered payload arm attached to the top face of the subframe, delivering load 150 mm above and 75 mm forward of the rail centerline midplane; (E) two parallel size-35 guide rails (reference envelopes only, considered fixed in the analysis) at 200 mm center-to-center spacing.\n\nThe representative 2024 catalog values for the size-35 full-length ball-rail runner block are: dynamic load rating C = 59.6 kN, static load rating C0 = 89.5 kN, static moment capacities Mx = 1.12 kN*m, My = 1.12 kN*m, Mz = 1.21 kN*m. The subframe plate is EN AW-6082-T6 (yield 260 MPa, UTS 310 MPa, Young's modulus 70 GPa, Poisson 0.33, density 2700 kg/m^3).\n\nService load at the payload tip: vertical 3,000 N downward, horizontal (cross-rail) 1,500 N, and a dynamic duty cycle that develops accelerations up to 5 m/s^2 in the travel direction (inertial load 5 * (payload + subframe mass)). Each runner block sees a share of vertical force, cross-force, and rolling/pitching/yawing moments that must be computed by statics on the assembled model.\n\nPass/fail: (R1) equivalent per-runner dynamic load P <= 0.5 * C = 29.8 kN for an assumed L10h life >= 10,000 hours at 0.5 m/s mean speed (rounded catalog practice); (R2) max per-runner static load F0 <= C0 / 4 = 22.4 kN with catalog static safety factor S0 >= 4 for mechanical-automation service; (R3) combined moment utilization (Mx/Mx_max) + (My/My_max) + (Mz/Mz_max) + (F0/C0) <= 1.0 per catalog combined-load interaction formula; (R4) subframe aluminum max von Mises stress <= 260 / 1.5 = 173 MPa (SF 1.5 on yield for machine frame service); (R5) subframe deflection at the payload attach point under service load <= 0.1 mm (positioning stiffness typical for size-35 ball-rail applications); (R6) first natural frequency of the loaded subframe >= 80 Hz to avoid resonance with typical servo bandwidth (nominally 20 Hz), i.e. isolation ratio >= 4; (R_asm1) every M8 runner screw DCR <= 1.0 under combined service load; (R_asm2) payload-arm-to-subframe joint DCR <= 1.0 (regardless of whether that joint is bolted or machined integrally -- the bolted variant must be designed to carry the tip loads through its clamp).\n\nThe subframe must be machined from a single billet with standard flatness IT8 across the rail mounting surface and parallelism 0.05 mm between the two rail reference surfaces. The final FEM check runs on the fully assembled model: subframe + 4 runner bodies + 16 M8 screws + cantilever payload arm + 2 rail reference envelopes, with each M8 screw modeled as a pretensioned fastener and the runner-block-to-rail interaction represented by catalog runner stiffness.\n\nDeliverables: STEP AP242 of the subframe with explicit assembly containing runner-block envelopes, M8 screws, payload arm, and rail reference envelopes as distinct bodies tagged with part_family and instance_index; report with per-runner load, combined interaction utilization, max aluminum stress, payload-tip deflection, first-mode natural frequency, per-part max stress, and assembly-level connection DCR.",
+  "short_prompt": "Design an aluminum-subframe linear-guide carriage delivered as an explicit multi-body assembly mounting a payload onto two parallel size-35 ball-rail runner blocks. The subframe is EN AW-6082-T6 (yield 260 MPa, UTS 310 MPa, E = 70 GPa, rho = 2700 kg/m^3), 400 x 250 x 30 mm; four size-35 FNS-equivalent runner blocks (two per rail) are clamped by sixteen M8 grade 8.8 socket-head screws (72 x 40 mm four-hole pattern per runner); rails are at 200 mm center-to-center; the payload arm attaches 150 mm above and 75 mm forward of the rail centerline midplane. Catalog size-35: C = 59.6 kN, C0 = 89.5 kN, Mx = 1.12 kN*m, My = 1.12 kN*m, Mz = 1.21 kN*m.\n\nService load at the payload tip: 3000 N vertical, 1500 N cross-rail, plus travel-direction accelerations up to 5 m/s^2.\n\nPer-runner dynamic load <= C/2 = 29.8 kN (L10h >= 10,000 h at 0.5 m/s); per-runner static load <= C0/4 = 22.4 kN (S0 >= 4); combined (Mx/Mx_max) + (My/My_max) + (Mz/Mz_max) + (F0/C0) <= 1.0. Subframe von Mises <= 260/1.5 = 173 MPa; payload-tip deflection <= 0.1 mm; first natural frequency >= 80 Hz (isolation >= 4 over 20 Hz servo bandwidth).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "connection_integrity"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "linear_guide_life_calculator",
+        "reason": "L10h = (C/P)^3 * (100 km / s * 2 * stroke * freq) is a closed-form catalog formula.",
+        "examples": [
+          "ball-rail catalog selection tool",
+          "manufacturer-neutral linear guide selection tool"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Aluminum subframe on dual size-35 ball rails (multi-part assembly)",
+    "brief": "Multi-body carriage assembly: 6082-T6 subframe + 4 size-35 runner blocks + 16 M8 bolts + cantilever payload arm + 2 rail reference envelopes, carrying a 3 kN vertical + 1.5 kN cross + 5 m/s^2 travel-inertial payload. Final FEM check runs on the assembled model only.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "aluminum_subframe_plate",
+        "role": "primary plate machined from 6082-T6 billet that ties the four runner blocks to the cantilevered payload arm",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 400,
+          "width_mm": 250,
+          "thickness_mm": 30,
+          "flatness_IT": 8,
+          "rail_parallelism_mm": 0.05
+        },
+        "material_hint": "EN AW-6082-T6",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "size35_runner_block",
+        "role": "ball-rail runner block (full-length flanged FNS-equivalent) bolted to the subframe",
+        "count_min": 4,
+        "geometric_constraints": {
+          "size": "35",
+          "mounting_hole_pattern_mm": {
+            "x": 72,
+            "y": 40
+          },
+          "bolts_per_runner": 4
+        },
+        "material_hint": "",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "runner_mount_bolt",
+        "role": "M8 grade 8.8 socket-head screw clamping subframe to runner block",
+        "count_min": 16,
+        "geometric_constraints": {
+          "thread": "M8",
+          "grade": "8.8"
+        },
+        "material_hint": "grade 8.8 steel",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "payload_cantilever_arm",
+        "role": "arm that projects the payload attach point 150 mm above and 75 mm forward of the rail centerline midplane",
+        "count_min": 1,
+        "geometric_constraints": {
+          "height_above_subframe_mm": 150,
+          "forward_offset_mm": 75
+        },
+        "material_hint": "",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "guide_rail_reference",
+        "role": "size-35 parallel rail modeled as a fixed reference envelope; runner-to-rail stiffness from catalog",
+        "count_min": 2,
+        "geometric_constraints": {
+          "size": "35",
+          "center_to_center_mm": 200
+        },
+        "material_hint": "",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "approximately 400 (travel) x 250 (across rails) x 180 mm (including cantilever arm)",
+      "coordinate_system": "X along travel direction; Y across rails; Z up. Rails at Y = +/-100 mm; payload arm offset 75 mm forward in X"
+    },
+    "material": {
+      "subframe": {
+        "name": "EN AW-6082-T6",
+        "yield_MPa": 260,
+        "ultimate_MPa": 310,
+        "youngs_modulus_GPa": 70,
+        "density_kg_m3": 2700
+      }
+    },
+    "runner_block_catalog": {
+      "part": "Size-35 full-length ball-rail runner block (flanged)",
+      "C_kN": 59.6,
+      "C0_kN": 89.5,
+      "Mx_kNm": 1.12,
+      "My_kNm": 1.12,
+      "Mz_kNm": 1.21
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "service_static",
+        "payload_vertical_N": 3000,
+        "payload_cross_N": 1500,
+        "travel_accel_m_s2": 5,
+        "application": "at payload tip, 150 mm above + 75 mm forward of rail centerline midplane"
+      }
+    ],
+    "boundary_conditions": {
+      "rails": "considered fixed reference; runner-to-rail interaction modeled by catalog stiffness",
+      "runner_bolt_pattern": "bolts fully constrained at 4x runner block footprints",
+      "inter_part_fastener_stiffness": "each M8 runner screw modeled as pretensioned with axial + shear stiffness per VDI 2230 for grade 8.8; payload arm clamped to subframe by its own bolted interface"
+    },
+    "objective": {
+      "minimize": "subframe mass subject to stiffness + life + connection-DCR constraints"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "per_runner_load_kN",
+        "combined_interaction_utilization",
+        "subframe_max_von_mises_MPa",
+        "payload_tip_deflection_mm",
+        "first_natural_freq_Hz",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "per_runner_dynamic_equivalent_load",
+        "limit_kN": 29.8,
+        "derivation": "P <= C/2 for L10h >= 10,000 h target at 0.5 m/s mean (catalog practice)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "per_runner_static_load",
+        "limit_kN": 22.4,
+        "derivation": "C0 / 4 with static SF S0 >= 4 per catalog",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "combined_interaction_utilization",
+        "limit": 1.0,
+        "derivation": "(Mx/Mx_max) + (My/My_max) + (Mz/Mz_max) + (F0/C0) per catalog combined-load formula",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "subframe_max_von_mises",
+        "limit_MPa": 173,
+        "derivation": "yield / 1.5 = 260 / 1.5 (machine-frame SF)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "payload_tip_deflection",
+        "limit_mm": 0.1,
+        "derivation": "positioning stiffness typical for size-35 precision applications",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 80,
+        "derivation": "isolation ratio >=4 over 20 Hz servo bandwidth",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "type": "connection_integrity",
+        "metric": "connection_DCR",
+        "limit": 1.0,
+        "derivation": "assembly-scope DCR on every M8 runner screw and payload-arm joint",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "Industrial ball-rail linear guide catalog 2024",
+    "recommended_fea_setup": {
+      "element_type": "HEX20 or TET10",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "Simcenter 3D"
+      ],
+      "analysis_types": [
+        "linear static + modal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "M8 screws carry runner reactions into the subframe mounting face"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "screw preload + shear on subframe upper face"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "screw threaded into runner block body"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "payload arm bolted to subframe top face transferring cantilever moment + shear"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "runner ball-contact on rail groove (catalog stiffness, fixed reference)"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A linear-guide carriage is inherently a bolted multi-body (subframe + 4 runners + 16 screws + payload arm + rails); load distribution across runners and the combined-load catalog interaction depend on explicit modeling of each block.",
+    "speculation_caveats": "payload arm (D) is speculated as a distinct bolted body; in some designs it may be machined integrally with the subframe. Rail reference envelopes (E) are included as fixed references to scope the runner-block interaction.",
+    "original_sample_preserved_at": "docs/eval/samples/005_pt5_bosch_rexroth_linear_guide.json"
+  }
+}

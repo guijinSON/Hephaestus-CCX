@@ -1,0 +1,211 @@
+{
+  "id": "270_a30_roboboat_hull",
+  "source": {
+    "catalog_ref": "A30",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "marine_structural",
+  "part_class": "autonomous_surface_vehicle_hull",
+  "full_prompt": "Design a single-piece monolithic catamaran hull (one pontoon of a twin-hull design, mirrored for the other side) for a 2026 RoboBoat autonomous surface vehicle, compliant with the 2026 RoboBoat Team Handbook. Per handbook specs, total vehicle mass is capped at 50 kg (typical) and the bounding box for the complete vehicle is 2.0 m (length) x 1.2 m (width) x 0.6 m (height) with depth in water approximately 0.3 m. Each pontoon is 1.8 m long, 0.30 m wide at waterline, 0.35 m tall, made from vacuum-infused glass/polyester with a 12 mm Divinycell H60 foam core. Material: E-glass/polyester (skin); E1 = 25 GPa, E2 = 8 GPa, long-tensile strength 400 MPa, density 1900 kg/m^3; H60 PVC foam core; density 60 kg/m^3, out-of-plane compressive 0.75 MPa, out-of-plane shear 0.5 MPa. Skin layup: [0/90/+45/-45] x 2, 0.4 mm per ply, total 3.2 mm per skin, plus core. Load cases: (R1) Hydrostatic hogging: full vehicle weight (50 kg x 9.81 = 491 N) supported by single pontoon at midspan (worst hogging, waves throwing mass to one side); max skin fiber stress <= 400 / 3.0 = 133 MPa; max core shear <= 0.5 MPa; max midship deflection <= L/200 = 9 mm. (R2) Green-water impact: wave impact on the bow with equivalent static pressure 15 kPa over the first 300 mm x 300 mm of the hull; max fiber stress <= 133 MPa; no core delamination. (R3) Collision/docking impact: 500 N point load applied horizontally at any point on the hull waterline; max fiber stress <= 133 MPa; local indentation <= 5 mm. (R4) Hull pontoon mass (per side, structural only) <= 6 kg. (R5) Buoyancy reserve: swept volume of each pontoon must give reserve buoyancy >= 1.5 x total vehicle half-weight => pontoon displacement at 75% submerged >= 37.5 kg; geometric verification (not FEA). (R6) Dry hull shall survive external crush (hydrostatic 2 m depth, 20 kPa external differential) with linear buckling eigenvalue >= 3.0. Primary verification: laminate-composite structural FEA (linear static for R1-R3) + buckling (R6). Vibration, thermal, fluid, radiation NOT required (wave impact reduced to equivalent pressure). Deliverables: STEP AP242 pontoon, laminate schedule, and a report listing pontoon structural mass in kg, max fiber stress per case, max core shear, first buckling load factor, buoyancy reserve.",
+  "short_prompt": "Design a single-piece monolithic catamaran pontoon (one of a twin-hull pair, mirrored for the other side) for a 2026 RoboBoat autonomous surface vehicle, compliant with the 2026 RoboBoat Team Handbook. Vehicle total mass capped at ~50 kg, overall vehicle bounding 2.0 x 1.2 x 0.6 m with ~0.3 m draft. Each pontoon is a vacuum-infused E-glass/polyester skin ([0/90/+45/-45] x 2, 0.4 mm ply) over a 12 mm Divinycell H60 PVC foam core. Buoyancy reserve (R5) and minimum depth buckling margin are mandatory.\n\nEnvelope: each pontoon 1.8 m long, 0.30 m wide at waterline, 0.35 m tall.\n\nLoad cases.\n- LC1 hydrostatic hogging: full 50 kg vehicle weight (491 N) supported by a single pontoon at midspan; midship deflection <= L/200 = 9 mm.\n- LC2 green-water bow impact: 15 kPa equivalent static pressure over 300 x 300 mm at the bow.\n- LC3 docking impact: 500 N horizontal point load anywhere on the waterline; local indentation <= 5 mm.\n- LC4 buoyancy reserve: pontoon displacement at 75% submergence >= 37.5 kg (geometric).\n- LC5 dry-hull crush at 2 m external-differential equivalent (20 kPa), linear buckling eigenvalue >= 3.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "RoboBoat 2026 catamaran pontoon",
+    "brief": "Glass/polyester sandwich pontoon for 50 kg USV. Hogging, wave-slam, collision loads + buoyancy reserve.",
+    "geometric_constraints": {
+      "pontoon_length_m": 1.8,
+      "pontoon_width_waterline_m": 0.3,
+      "pontoon_height_m": 0.35,
+      "vehicle_total_mass_kg_max": 50,
+      "vehicle_bounding_box_m": "2.0 x 1.2 x 0.6",
+      "skin_layup": "[0/90/+45/-45] x 2",
+      "ply_thickness_mm": 0.4,
+      "core_thickness_mm": 12
+    },
+    "material": {
+      "skin": {
+        "name": "E-glass / polyester",
+        "E1_GPa": 25,
+        "E2_GPa": 8,
+        "long_tensile_strength_MPa": 400,
+        "density_kg_m3": 1900
+      },
+      "core": {
+        "name": "Divinycell H60",
+        "density_kg_m3": 60,
+        "compressive_strength_MPa": 0.75,
+        "shear_strength_MPa": 0.5
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hydrostatic_hogging",
+        "supported_force_N": 491,
+        "description": "all vehicle weight at midspan of one pontoon"
+      },
+      {
+        "id": "LC2",
+        "name": "wave_slam",
+        "slam_pressure_kPa": 15,
+        "patch_mm": "300 x 300"
+      },
+      {
+        "id": "LC3",
+        "name": "docking_collision",
+        "force_N": 500,
+        "direction": "horizontal at waterline"
+      },
+      {
+        "id": "LC4",
+        "name": "external_crush",
+        "external_pressure_kPa": 20
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "crossbeam attachment pads fixed",
+      "loads": "distributed hydrostatic, patch wave, point collision"
+    },
+    "objective": {
+      "minimize": "pontoon_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "pontoon_structural_mass_kg",
+        "max_fiber_stress_LC1_MPa",
+        "max_fiber_stress_LC2_MPa",
+        "max_fiber_stress_LC3_MPa",
+        "max_core_shear_MPa",
+        "first_buckling_load_factor",
+        "buoyancy_reserve_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_core_shear",
+        "limit_MPa": 0.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1c",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection",
+        "limit_mm": 9,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "pontoon_structural_mass",
+        "limit_kg": 6,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "buoyancy_reserve",
+        "limit_kg": 37.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "sandwich laminated shell",
+      "mesh_size_mm_in_critical_regions": 20,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Low-speed ASV.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Wave-slam pre-reduced to equivalent pressure.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "sandwich laminate skin + core",
+    "slam/collision patch loads",
+    "buoyancy reserve geometric check"
+  ]
+}

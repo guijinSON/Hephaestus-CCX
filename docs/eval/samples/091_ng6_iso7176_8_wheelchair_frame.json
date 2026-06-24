@@ -1,0 +1,220 @@
+{
+  "id": "091_ng6_iso7176_8_wheelchair_frame",
+  "source": {
+    "catalog_ref": "NG6",
+    "year": 2014,
+    "tier": "A+"
+  },
+  "domain": "medical_devices",
+  "part_class": "manual_wheelchair_frame",
+  "full_prompt": "Design one representative manual rigid-frame adult wheelchair frame (cross-tube or rigid-fold, depending on design choice) compliant with ISO 7176-8:2014 (static, impact, and fatigue strength) for a nominal occupant mass of 100 kg (ISO wheelchair test dummy). The frame must be a single welded or bolted tubular aluminum assembly (typical 6061-T6 aluminum, 25-32 mm OD seat tubes, 1.5-2.5 mm wall), supporting a 450 mm wide x 400 mm deep seat, 4 wheels (two 610 mm / 24 inch rear drive wheels + two 200 mm / 8 inch front casters), armrests, footrest(s), and a backrest, total assembly mass target <= 15 kg. The frame must pass three independent ISO 7176-8 evaluations: (A) STATIC: 1.25 times the nominal downward seat load (i.e. 1.25 * 100 kg * 9.81 m/s^2 = 1226 N) applied through the seat dummy test plate; 1.25 x nominal on backrest, armrest, and footrest per the clause-specific static pad locations; permanent deformation must not exceed the clause limits and the frame must not fracture. (B) IMPACT: 6666 equivalent curb-drop impacts from 50 mm height per the double-drum / curb-drop rig with the 100 kg dummy installed; no fracture or loss of function (ISO 7176-8 curb-drop cycle count). (C) FATIGUE: 200,000 cycles on the two-drum fatigue machine with 100 kg dummy at the prescribed drum geometry; no fracture or loss of function. Target material is 6061-T6 aluminum alloy (yield 276 MPa, UTS 310 MPa, E = 68.9 GPa, density 2700 kg/m3). Deliverable is a single CAD assembly of the frame (tubes + welded gussets + wheel/axle mounts + caster forks + seat/back + armrest + footrest) suitable for linear-static structural FEA under ISO 7176-8 clause-specific static loads, explicit-dynamics curb-drop impact, and fatigue life evaluation to 200000 + 6666 cycles. Vibration, thermal, fluid, radiation, buckling analyses are NOT required. Explicit-dynamics impact solver and fatigue solver are mandatory non-FEA-static solvers.",
+  "short_prompt": "Design an adult manual rigid-frame wheelchair (welded/bolted tubular aluminum 6061-T6, 450 x 400 mm seat, 610 mm rear wheels + 200 mm casters, armrests, footrest, backrest) qualified to ISO 7176-8:2014 for a 100 kg ISO test dummy. Total assembly mass <= 15 kg.\n\nEnvelope: frame tubes 25-32 mm OD x 1.5-2.5 mm wall; geometry otherwise per the designer.\n\nLoad cases (ISO 7176-8 clauses).\n- LC1 seat static: 1.25 x nominal = 1226 N through the seat test pad.\n- LC2 backrest static: 1.25 x nominal at the backrest pad.\n- LC3 armrest/footrest static: 1.25 x nominal at each clause-specific pad.\n- LC4 curb drop: 6666 drops from 50 mm height with 100 kg dummy, no fracture or loss of function.\n- LC5 double-drum fatigue: 200,000 cycles on the two-drum rig with 100 kg dummy, no fracture.\n\nCurb-drop impact needs an explicit-dynamics solver; double-drum needs a fatigue-life solver.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_impact_solver",
+        "reason": "Curb-drop 50 mm impact from 6666 drops requires transient dynamics with large-displacement contact (not linear static FEA).",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus/Explicit"
+        ]
+      },
+      {
+        "tool": "fatigue_life_solver",
+        "reason": "200000-cycle double-drum fatigue cannot be evaluated with a single static FEA run.",
+        "examples": [
+          "fe-safe",
+          "nCode DesignLife"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Adult manual wheelchair frame qualified to ISO 7176-8",
+    "brief": "Design a rigid manual wheelchair frame for a 100 kg ISO test dummy passing static (1.25 x nominal), impact (6666 x 50 mm drops), and fatigue (200000 double-drum cycles) per ISO 7176-8.",
+    "geometric_constraints": {
+      "seat_width_mm": 450,
+      "seat_depth_mm": 400,
+      "rear_wheel_diameter_mm": 610,
+      "front_caster_diameter_mm": 200,
+      "frame_tube_OD_mm_range": [
+        25,
+        32
+      ],
+      "frame_tube_wall_mm_range": [
+        1.5,
+        2.5
+      ]
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "E_GPa": 68.9,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310,
+      "density_kg_m3": 2700
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_seat_1.25x",
+        "magnitude_N": 1226,
+        "derivation": "1.25 * 100 kg * 9.81 m/s^2",
+        "application": "ISO 7176-8 seat static test pad"
+      },
+      {
+        "id": "LC2",
+        "name": "static_backrest_1.25x",
+        "application": "per ISO 7176-8 backrest clause"
+      },
+      {
+        "id": "LC3",
+        "name": "static_armrest_footrest_1.25x",
+        "application": "per ISO 7176-8 armrest / footrest clauses"
+      },
+      {
+        "id": "LC4",
+        "name": "curb_drop_50mm",
+        "drop_height_mm": 50,
+        "dummy_kg": 100,
+        "cycles": 6666,
+        "application": "ISO 7176-8 curb-drop fatigue"
+      },
+      {
+        "id": "LC5",
+        "name": "double_drum_fatigue",
+        "dummy_kg": 100,
+        "cycles": 200000,
+        "application": "ISO 7176-8 two-drum fatigue rig"
+      }
+    ],
+    "boundary_conditions": {
+      "wheel_contacts": "rear wheel and caster contact points provide vertical + tangential reaction",
+      "static_tests": "hard floor under wheels; loads applied via ISO 7176-8 test pads"
+    },
+    "objective": {
+      "primary": "pass all ISO 7176-8 tests",
+      "secondary": "total frame assembly mass <= 15 kg"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "frame_mass_kg",
+        "max_static_von_mises_MPa",
+        "impact_max_plastic_strain",
+        "fatigue_life_double_drum_cycles",
+        "fatigue_life_curb_drop_cycles"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "static_load_factor_on_nominal",
+        "limit": 1.25,
+        "derivation": "ISO 7176-8 clause 8 static tests",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_static",
+        "limit_MPa": 276,
+        "derivation": "yield of 6061-T6; no permanent deformation beyond ISO 7176-8 clause limits",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "curb_drop_cycles_no_fracture",
+        "limit": 6666,
+        "derivation": "ISO 7176-8 curb-drop test",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "double_drum_cycles_no_fracture",
+        "limit": 200000,
+        "derivation": "ISO 7176-8 two-drum fatigue test",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "frame_assembly_mass_kg",
+        "limit_kg": 15,
+        "derivation": "practical manual-chair mass target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell for tubes, solid for welded gussets, rigid dummy",
+      "solver_hints": [
+        "Abaqus",
+        "LS-DYNA",
+        "nCode DesignLife"
+      ],
+      "analysis_types": [
+        "linear static",
+        "explicit-dynamics impact",
+        "fatigue life"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not required by ISO 7176-8.",
+      "thermal_analysis": "Not required.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Short thick tubes not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "ISO 7176-19 vehicle tiedown separately",
+      "EN 12184 electric wheelchair EMC",
+      "ISO 10535 hoist compatibility"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "three-mode qualification (static + impact + fatigue)",
+    "explicit-dynamics curb-drop impact",
+    "high-cycle fatigue (>=200000 cycles)",
+    "medical assistive device structural scope",
+    "100 kg ISO test dummy"
+  ]
+}

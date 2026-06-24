@@ -1,0 +1,196 @@
+{
+  "id": "279_a39_grabcad_cubesat",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A39",
+    "year": 2014,
+    "tier": "A"
+  },
+  "domain": "space_structural",
+  "part_class": "cubesat_1u_challenge",
+  "full_prompt": "Design a 1U CubeSat chassis per the 2014 open-CAD platform CubeSat Challenge brief, which explicitly references Cal Poly CDS Rev 14.1 (1U envelope, 1.33 kg/U mass limit, rail specs). The challenge asks for a 1U primary structure that houses a PC/104 PCB stack and that can be qualified to typical launch-vehicle ICD loads. Envelope: 100 x 100 x 113.5 mm outer; 4 longitudinal rails 8.5 x 8.5 mm protruding 6.5 mm above +Z / -Z faces; 4 M3 standoff holes on 93 x 82.5 mm rectangular pattern for PC/104 stack. Rail straightness <= 0.1 mm, rail Ra <= 1.6 um, hard-anodized per MIL-A-8625 Type III. Total 1U mass cap (structure + payload) <= 1.33 kg (per 14.1 updated value) or 2.0 kg depending on revision; use 1.33 kg here. Structure-only mass <= 150 g. Material: 7075-T6 aluminum hard anodized (E = 71.7 GPa, yield 503 MPa, ultimate 572 MPa, density 2810 kg/m^3). Load cases (launch qualification): (R1) 20 g quasi-static in each of three orthogonal axes with lumped 1.33 kg at CM; max von Mises <= yield / 1.25 = 402 MPa. (R2) Modal first frequency hard-mounted at rail contact >= 100 Hz. (R3) Random vibration 14.1 Grms 20-2000 Hz with 3-sigma margin; max von Mises <= 402 MPa. (R4) Mass <= 150 g. (R5) CM offset from geometric center <= 20 mm each axis. (R6) Post-test dimensional envelope retention per CDS 14.1. Primary verification: structural FEA (linear static x3) + modal + random vibration PSD. Vibration secondary. Thermal, fluid, radiation NOT required. Deliverables: STEP AP242 + Parasolid, and a report listing structure mass in g, CM offset in mm, first 3 modal frequencies, max stress in quasi-static and random cases.",
+  "short_prompt": "Design a 1U CubeSat primary structure per the 2014 open-CAD platform CubeSat Challenge, referencing Cal Poly CDS Rev 14.1. Four longitudinal rails 8.5 x 8.5 mm protrude >= 6.5 mm above the +Z / -Z faces; rail straightness <= 0.1 mm, Ra <= 1.6 um, hard-anodized per MIL-A-8625 Type III. Internal PC/104 stack mounts on 4 M3 standoffs on a 93 x 82.5 mm rectangular pattern. Total 1U mass (structure + payload) <= 1.33 kg per CDS 14.1; CM offset <= 20 mm per axis; post-test dimensional envelope retention per CDS 14.1.\n\nEnvelope: outer 100 x 100 x 113.5 mm.\n\nLoad cases (launch qualification).\n- LC1 quasi-static 20 g in each of three orthogonal axes on the 1.33 kg lumped CM.\n- LC2 modal: hard-mounted at rail contact, first frequency >= 100 Hz.\n- LC3 random vibration: 14.1 Grms over 20-2000 Hz with 3-sigma margin.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "open-CAD platform CubeSat 1U chassis",
+    "brief": "1U chassis per Cal Poly CDS 14.1, hard-anodized 7075-T6, passes 20 g quasi-static + 14.1 Grms.",
+    "geometric_constraints": {
+      "envelope_X_mm": 100,
+      "envelope_Y_mm": 100,
+      "envelope_Z_mm": 113.5,
+      "rail_cross_section_mm": "8.5 x 8.5",
+      "rail_protrusion_mm_min": 6.5,
+      "stack_standoff_pattern_mm": "93 x 82.5",
+      "CM_offset_mm_max": 20,
+      "mass_g_max": 150
+    },
+    "material": {
+      "name": "7075-T6 aluminum hard-anodized",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "yield_strength_MPa": 503,
+        "ultimate_tensile_strength_MPa": 572,
+        "density_kg_m3": 2810
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static_20g_x",
+        "acceleration_g": 20,
+        "applied_mass_kg": 1.33
+      },
+      {
+        "id": "LC2",
+        "name": "quasi_static_20g_y",
+        "acceleration_g": 20,
+        "applied_mass_kg": 1.33
+      },
+      {
+        "id": "LC3",
+        "name": "quasi_static_20g_z",
+        "acceleration_g": 20,
+        "applied_mass_kg": 1.33
+      },
+      {
+        "id": "LC4",
+        "name": "modal"
+      },
+      {
+        "id": "LC5",
+        "name": "random_vibration",
+        "grms": 14.1,
+        "band_Hz": [
+          20,
+          2000
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "rail contact constrained (P-POD)",
+      "applied_mass": "lumped 1.33 kg at CM coupled to stack holes"
+    },
+    "objective": {
+      "minimize": "structure_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "structure_mass_g",
+        "CM_offset_mm",
+        "first_three_modal_frequencies_Hz",
+        "max_von_mises_quasi_static_MPa",
+        "max_von_mises_random_3sigma_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 402,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 100,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "max_von_mises_stress_3sigma",
+        "limit_MPa": 402,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "structure_mass",
+        "limit_g": 150,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "CM_offset",
+        "limit_mm": 20,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "envelope_compliance_post_qual",
+        "limit": "CDS 14.1",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order hex or tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal",
+        "random vibration PSD"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "TVAC is separate mission gate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "TID/DD analysis separate.",
+      "buckling_analysis": "Not driving for 1U."
+    }
+  },
+  "eval_coverage": [
+    "1U CubeSat challenge mirror",
+    "triaxial quasi-static + random vibration",
+    "Cal Poly CDS 14.1 envelope compliance"
+  ]
+}

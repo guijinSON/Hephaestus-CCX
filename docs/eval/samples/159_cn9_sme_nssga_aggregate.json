@@ -1,0 +1,193 @@
+{
+  "id": "159_cn9_sme_nssga_aggregate",
+  "source": {
+    "catalog_ref": "CN9",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "civil_mining_structural",
+  "part_class": "crusher_foundation_pedestal",
+  "full_prompt": "Design a reinforced concrete foundation pedestal for a primary jaw crusher at a new 2 million ton per year aggregate mine. The crusher is a 1100 mm x 800 mm (44 in x 32 in) feed-opening jaw crusher of 75 metric ton operating mass driven by a 200 kW motor at a stroke rate of 250 rpm, and the pedestal must be sized and reinforced to be safely supported on a soil site with an allowable bearing pressure of 250 kPa and an elastic modulus of the subgrade of 40 MPa. The pedestal is a rectangular block 4.5 m long x 3.0 m wide x 1.8 m deep of normal-weight reinforced concrete fc' 27.6 MPa with ASTM A615 Grade 60 rebar (Fy 414 MPa). The pedestal must carry simultaneously: (LC1) the 75 t (735 kN) dead weight of the crusher centered on top of the pedestal, (LC2) a vertical dynamic unbalanced machine force amplitude of 90 kN at 4.17 Hz (250 rpm) per typical DIN 4024 Class III treatment, (LC3) a horizontal machine dynamic force amplitude of 30 kN at the same 4.17 Hz, and (LC4) a 160 t (1570 kN) feed-hopper surcharge load at one end of the pedestal. Pass/fail criteria: (R1) peak soil bearing pressure under the factored 1.2D+1.6L+1.0E combination must not exceed 250 kPa, (R2) flexural and shear demand-to-capacity ratios of the pedestal rebar per ACI 318-19 Chapter 22 must remain at or below 1.0 under all load cases, (R3) amplitude of vertical velocity at the pedestal top under the 4.17 Hz dynamic force must remain below the DIN 4150-3 machinery vibration limit of 5.0 mm/s rms, (R4) the first natural frequency of the pedestal-soil system must be at least 1.5x the 4.17 Hz forcing frequency or below 0.5x it to avoid resonance. Thermal, fluid, and radiation analyses are not required. Forced harmonic analysis (vibration) is required because LC2 and LC3 are harmonic machine forces. Deliver a STEP AP242 solid body of the pedestal with rebar cage as sub-bodies plus a structural report with peak bearing pressure, ACI 318 DCRs, vertical velocity amplitude, and first natural frequency.",
+  "short_prompt": "Design a reinforced concrete foundation pedestal for a primary jaw crusher at a new 2 Mt/yr aggregate mine. The crusher has a 1100 x 800 mm feed opening, 75 t operating mass, 200 kW motor, and 250 rpm stroke rate. The pedestal is a rectangular block 4.5 m long x 3.0 m wide x 1.8 m deep of normal-weight reinforced concrete (f'c 27.6 MPa, ASTM A615 Grade 60 rebar), bearing on soil with allowable 250 kPa and subgrade modulus 40 MPa. Design per ACI 318-19 Chapter 22 with DIN 4024 Class III machinery treatment and DIN 4150-3 vibration limits. Forced harmonic analysis is required because LC2 and LC3 are machine harmonics.\n\nLoad cases.\n- LC1 crusher dead weight: 735 kN (75 t) centered on top.\n- LC2 vertical dynamic unbalance: 90 kN amplitude at 4.17 Hz (250 rpm).\n- LC3 horizontal dynamic: 30 kN amplitude at 4.17 Hz.\n- LC4 feed-hopper surcharge: 1570 kN (160 t) at one end of the pedestal.\nPeak factored bearing pressure under 1.2D+1.6L+1.0E <= 250 kPa, rebar DCR <= 1.0, pedestal-top vertical velocity amplitude <= 5.0 mm/s rms (DIN 4150-3), and first pedestal-soil natural frequency either >=1.5x or <=0.5x 4.17 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "machine_foundation_lumped_stiffness",
+        "reason": "Soil-foundation lumped-parameter stiffness and damping per DIN 4024/Richart is a closed-form block-on-halfspace model used alongside FEA for the natural-frequency check.",
+        "examples": [
+          "Richart/Lysmer lumped-parameter",
+          "DIN 4024 spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Jaw crusher RC foundation pedestal 4.5 x 3.0 x 1.8 m",
+    "brief": "Design a 4.5 x 3.0 x 1.8 m reinforced concrete pedestal for a 75 t jaw crusher with 90 kN vertical and 30 kN horizontal dynamic forces at 4.17 Hz plus 160 t hopper surcharge, meeting soil bearing, ACI 318-19 DCR, DIN 4150-3 vibration, and resonance separation.",
+    "geometric_constraints": {
+      "pedestal_length_m": 4.5,
+      "pedestal_width_m": 3.0,
+      "pedestal_depth_m": 1.8,
+      "feed_opening_mm": [
+        1100,
+        800
+      ]
+    },
+    "material": {
+      "concrete": {
+        "fc_prime_MPa": 27.6
+      },
+      "rebar": "ASTM A615 Grade 60, Fy 414 MPa",
+      "soil": {
+        "allowable_bearing_kPa": 250,
+        "subgrade_modulus_MPa": 40
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "crusher_dead",
+        "magnitude_kN": 735,
+        "application": "centered on pedestal top"
+      },
+      {
+        "id": "LC2",
+        "name": "vertical_dynamic",
+        "amplitude_kN": 90,
+        "frequency_Hz": 4.17,
+        "application": "vertical harmonic at crusher pad"
+      },
+      {
+        "id": "LC3",
+        "name": "horizontal_dynamic",
+        "amplitude_kN": 30,
+        "frequency_Hz": 4.17,
+        "application": "horizontal harmonic at crusher pad"
+      },
+      {
+        "id": "LC4",
+        "name": "hopper_surcharge",
+        "magnitude_kN": 1570,
+        "application": "at one end of pedestal"
+      }
+    ],
+    "boundary_conditions": {
+      "soil": "lumped vertical + horizontal + rocking springs per DIN 4024 or Winkler base"
+    },
+    "objective": {
+      "primary": "pass bearing, ACI DCR, vibration, and resonance checks",
+      "secondary": "minimize concrete volume"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "peak_bearing_pressure_kPa",
+        "max_rebar_DCR",
+        "pedestal_top_velocity_mm_s",
+        "first_natural_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "peak_soil_bearing_pressure",
+        "limit_kPa": 250,
+        "derivation": "site allowable bearing",
+        "applies_to": [
+          "LC1",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_rebar_DCR",
+        "limit": 1.0,
+        "derivation": "ACI 318-19 Chapter 22",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "pedestal_top_vertical_velocity_rms",
+        "limit_mm_s": 5.0,
+        "derivation": "DIN 4150-3 machinery limit",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency_margin",
+        "limit_Hz_lower": 2.085,
+        "limit_Hz_upper": 6.255,
+        "rule": "f1 >= 1.5 * 4.17 Hz (>=6.255 Hz) OR f1 <= 0.5 * 4.17 Hz (<=2.085 Hz)",
+        "derivation": "DIN 4024 resonance separation around 4.17 Hz forcing",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "custom"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid concrete with embedded reinforcement, Winkler soil",
+      "mesh_size_mm_in_critical_regions": 150,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "SAP2000"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "harmonic response"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Outdoor ambient; no thermal gradient governs.",
+      "fluid_analysis": "No fluid interaction.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compact block is not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fatigue of rebar under cyclic machine loads",
+      "Haul road geometry and crusher primary feed chute",
+      "Ventilation and dust control integration"
+    ]
+  },
+  "eval_coverage": [
+    "machine-foundation harmonic response with DIN 4024 lumped parameters",
+    "ACI 318-19 concrete foundation check",
+    "DIN 4150-3 vibration velocity pass/fail",
+    "resonance separation ratio check"
+  ]
+}

@@ -1,0 +1,193 @@
+{
+  "id": "069_jp14_unisec_hybrid_rocket",
+  "source": {
+    "catalog_ref": "JP14",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "hybrid_rocket_airframe_and_oxidizer_tank",
+  "full_prompt": "Design the airframe and oxidizer (N2O) tank of a student hybrid rocket for a university hybrid-rocket benchmark. The oxidizer tank is filled with self-pressurizing nitrous oxide (N2O) and must be rated for a maximum expected operating pressure of 6 MPa (60 bar) with a burst safety factor of 2.0 (burst pressure >= 12 MPa per ASME-style pressure-vessel practice for student rockets). The airframe body tube ID is 100 mm and total rocket length approximately 2.5 m. The rocket targets an apogee in the 1-2 km range with a GLOW (gross lift-off weight) of approximately 10 kg. The airframe must survive (a) peak axial thrust of approximately 400 N during motor burn (peak G at burnout approximately 20 g axial), (b) a lateral gust of 10 g, and (c) recovery deployment shock of 15 g axial. Recovery descent rate under main parachute must be at least 1 m/s descent and no faster than 10 m/s (competition cap) to protect ground personnel. The N2O tank must undergo a hydrostatic proof test at 1.5 x MEOP = 9 MPa with no permanent deformation and no leakage before flight. Tank material is typically 6061-T6 aluminum (yield 276 MPa) or a CFRP-wrapped aluminum liner. For the 6 MPa MEOP in a 100 mm ID Al 6061-T6 tank, hoop stress = P*r/t must stay below 276/1.25 = 221 MPa (yield FoS 1.25), so minimum wall t >= (6 * 50) / 221 = 1.36 mm; add ultrasonic-thickness margin and set 2.0 mm nominal. Primary verification is structural FEA (linear static on airframe + tank) plus a pressure-vessel check at proof pressure 9 MPa. Vibration modal analysis on the airframe should confirm the first longitudinal mode is above 50 Hz to decouple from motor burn oscillations. Thermal, fluid (combustion chamber CFD not needed at structural gate), and radiation analyses are explicitly NOT required at this design gate. Deliverables: STEP AP242 of the airframe + tank, a mass budget, and a report listing tank wall thickness in mm, hoop stress at 6 MPa in MPa, first longitudinal mode in Hz, airframe buckling load factor at 20 g axial, and proof-test residual deformation in mm.",
+  "short_prompt": "Design the airframe and oxidizer (N2O) tank of a student hybrid rocket for a university hybrid-rocket benchmark. ASME-style pressure-vessel practice: MEOP 6 MPa, proof 1.5 x MEOP = 9 MPa (no permanent deformation, no leakage), burst 2.0 x MEOP = 12 MPa. Airframe body-tube ID 100 mm, rocket length ~2.5 m, GLOW ~10 kg, target apogee 1-2 km. Tank material typically 6061-T6 (or CFRP-wrapped Al liner). First longitudinal mode of the airframe >= 50 Hz (motor-burn decoupling). Recovery main-chute descent 1-10 m/s.\n\nLoad cases.\n- LC1 tank MEOP: 6 MPa internal.\n- LC2 tank proof: 9 MPa hydrostatic, held with no permanent deformation.\n- LC3 tank burst check: 12 MPa.\n- LC4 airframe axial at burnout: 20 G axial (linear buckling load factor >= 1.5).\n- LC5 lateral gust: 10 G.\n- LC6 recovery deployment shock: 15 G axial.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "pressure_vessel_code_check",
+        "reason": "ASME-style hoop stress and burst SF are analytical code checks paired with the FEA.",
+        "examples": [
+          "ASME BPVC Section VIII hand calc"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student hybrid rocket: airframe + N2O tank",
+    "brief": "Design a 100 mm ID, 2.5 m long hybrid rocket with N2O tank at 6 MPa MEOP, burst SF 2, 9 MPa proof test, apogee 1-2 km, GLOW ~ 10 kg.",
+    "geometric_constraints": {
+      "body_tube_ID_mm": 100,
+      "rocket_length_m_approx": 2.5,
+      "GLOW_kg_approx": 10,
+      "apogee_km_range": [
+        1,
+        2
+      ]
+    },
+    "material": {
+      "tank": "Al 6061-T6 or CFRP-wrapped Al liner",
+      "Al6061_T6": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "tank_MEOP",
+        "magnitude_MPa": 6,
+        "description": "N2O self-pressurization"
+      },
+      {
+        "id": "LC2",
+        "name": "tank_proof",
+        "magnitude_MPa": 9,
+        "description": "1.5 x MEOP hydrostatic proof"
+      },
+      {
+        "id": "LC3",
+        "name": "tank_burst",
+        "magnitude_MPa": 12,
+        "description": "2 x MEOP burst check"
+      },
+      {
+        "id": "LC4",
+        "name": "airframe_axial_burnout",
+        "magnitude_g": 20,
+        "direction": "axial"
+      },
+      {
+        "id": "LC5",
+        "name": "lateral_gust",
+        "magnitude_g": 10,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC6",
+        "name": "recovery_shock",
+        "magnitude_g": 15,
+        "direction": "axial"
+      }
+    ],
+    "boundary_conditions": {
+      "tank": "bulkhead fixed",
+      "airframe": "motor mount fixed during burn"
+    },
+    "objective": {
+      "minimize": "dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "tank_wall_thickness_mm",
+        "hoop_stress_at_6MPa_MPa",
+        "first_long_mode_Hz",
+        "buckling_load_factor_LC4",
+        "proof_test_residual_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "hoop_stress_at_MEOP_MPa",
+        "limit_MPa": 221,
+        "derivation": "Al 6061-T6 yield 276 / FoS 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "proof_test_residual_deformation_mm",
+        "limit_mm": 0.1,
+        "derivation": "No permanent deformation after 9 MPa proof",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "burst_pressure_SF",
+        "limit": 2.0,
+        "derivation": "Burst >= 2 x MEOP",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor_LC4",
+        "limit": 1.5,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_long_mode_Hz",
+        "limit_Hz": 50,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (tank) + shell/solid (airframe)",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Combustion thermal is a separate gate.",
+      "fluid_analysis": "Chamber CFD not at structural gate.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "pressure-vessel hoop + proof + burst",
+    "airframe axial buckling",
+    "first mode decoupling",
+    "recovery shock"
+  ]
+}

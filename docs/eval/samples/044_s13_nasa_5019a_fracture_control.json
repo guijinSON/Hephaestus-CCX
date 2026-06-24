@@ -1,0 +1,225 @@
+{
+  "id": "044_s13_nasa_5019a_fracture_control",
+  "source": {
+    "catalog_ref": "S13",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "fracture_critical_bracket",
+  "full_prompt": "Design and qualify a flight-critical aluminum 2024-T351 bracket that is classified as a Fracture Critical Part (FCP) per NASA-STD-5019A w/Change-4 (2024-07-29). The bracket holds a 4 kg instrument on a primary load path where failure would cause loss of mission. NASA-STD-5019A Section 4.3 requires the part to be certified by safe-life analysis with a life factor of 4x expected service life (or proof-test logic), and Section 5.2 requires the starting flaw size to be the NDI minimum detectable threshold for the chosen inspection method.\n\nGeometry. Machined 2024-T351 plate bracket 180 mm x 90 mm x 12 mm, featuring four M6 mounting holes on an 150 mm x 60 mm rectangular pattern and a central 25 mm cutout for harness routing. Load introduction is a single M10 pin through a 10.5 mm hole 50 mm from the mounting edge, lateral to the pin axis (bending + shear). Bracket is a single monolithic part.\n\nMaterial. Al 2024-T351 per MMPDS S-basis: E = 73.1 GPa, nu = 0.33, rho = 2780 kg/m^3, Fty = 324 MPa, Ftu = 441 MPa. Fracture toughness K_IC (through thickness, L-T orientation at 20 C) = 36 MPa*m^0.5. Fatigue crack growth Paris constants (R = 0.1, lab air): C = 2.5e-11 m/cycle (MPa*m^0.5)^-m, m = 3.3.\n\nService life. Expected operational cycles in orbit: 2000 cycles from launch vibration + deployment + on-orbit dynamic events over 10-year mission. Safe-life factor = 4 per NASA-STD-5019A => required analysis life = 8000 cycles.\n\nLoad environment. LC1 (limit): pin-bearing force at limit 3000 N (combined launch + deployment). Ultimate = 1.4 x limit = 4200 N per NASA-STD-5001B. Average cyclic stress range at the critical ligament (between the pin hole and nearest edge): Delta sigma = 120 MPa at R = 0.1 (computed from limit stress cycling up from 10% of limit).\n\nInitial flaw. NDI method: fluorescent penetrant inspection (PT) at Standard NDI reliability per NASA-STD-5019A Table 5-1 => initial crack depth a_i = 0.030 in = 0.762 mm, surface corner crack at the critical ligament edge, shape a_i/c_i = 1.0 (quarter-circle corner crack).\n\nPass/fail criteria. (R1) Safe-life crack growth from a_i = 0.762 mm to critical a_crit (determined by K_I = K_IC) under the cyclic stress history must yield >= 8000 cycles (4 x 2000 service). Use Paris law da/dN = C * (Delta K)^m with Newman-Raju SIF solutions for a corner crack; critical flaw a_crit is reached when K_I = K_IC at peak stress. Numerically for a corner crack at ligament with Delta sigma = 120 MPa, a_crit approx 6.5 mm (a/t = 0.54), and cycles from 0.762 to 6.5 mm under the given Paris law compute to roughly 18,500 cycles (implementation-dependent). Must exceed 8000. (R2) Peak stress at ultimate load = 1.4 x limit = 4200 N bearing, must not exceed Ftu = 441 MPa. (R3) Peak stress at yield load = 1.25 x limit = 3750 N bearing, must not exceed Fty = 324 MPa. (R4) K_I at peak stress and critical flaw depth at ultimate condition must not exceed K_IC = 36 MPa*m^0.5 (residual strength check). (R5) The NDI method declared must meet Standard reliability per NASA-STD-5019A Table 5-1 (binary compliance). (R6) Bracket mass <= 450 g. Fracture Critical classification is self-declared in the deliverables.\n\nSolver and analysis expectations. Primary verification is a linear static FEM for peak stress (R2, R3) plus a Paris-law crack-growth integration using Newman-Raju SIF solutions for the corner-crack geometry (R1). A K-solution may be taken from NASGRO or computed via a J-integral FEM extraction. Residual-strength check (R4) is closed-form. Vibration, thermal, fluid, and radiation analyses are NOT required; buckling not required.\n\nDeliverables. STEP AP242 of bracket, mass in g, peak stress at ultimate and yield in MPa, a_crit in mm, cycles-to-failure from integration, and the declared NDI method with its a_i value.",
+  "short_prompt": "Design a Fracture Critical (FCP) primary-load-path aluminum bracket holding a 4 kg instrument, qualified by safe-life analysis per NASA-STD-5019A w/Change-4 (2024-07-29). Section 4.3 requires a safe-life factor of 4x expected service life; Section 5.2 requires the initial flaw to equal the NDI minimum-detectable threshold for the chosen method.\n\nEnvelope: machined 2024-T351 plate ~180 x 90 x 12 mm with four M6 mounting holes on a 150 x 60 mm rectangular pattern, central harness cutout, and a single M10 pin hole 50 mm from the mounting edge.\n\nLoad cases.\n- LC1 pin-bearing cyclic service: 3,000 N limit, cyclic Delta sigma = 120 MPa at R = 0.1 in the critical ligament; expected 2,000 cycles, required analytical life 8,000 cycles (4x).\n- LC2 ultimate: 1.4 x limit = 4,200 N.\n- LC3 yield: 1.25 x limit = 3,750 N.\n- LC4 residual strength at peak stress with a crack grown to a_crit, NDI method declared (PT, a_i = 0.762 mm Standard reliability).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "fracture_mechanics_crack_growth",
+        "reason": "NASA-STD-5019A safe-life is Paris-law + SIF analytic solutions.",
+        "examples": [
+          "NASGRO",
+          "AFGROW",
+          "FASTRAN",
+          "spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Al 2024-T351 Fracture-Critical bracket per NASA-STD-5019A",
+    "brief": "Primary-load-path bracket, 4x safe-life (>=8000 cycles from a_i = 0.762 mm PT NDI), K_I < K_IC, ultimate and yield stress within MMPDS allowables.",
+    "geometric_constraints": {
+      "plate_mm": {
+        "x": 180,
+        "y": 90,
+        "z": 12
+      },
+      "mounting_holes": {
+        "count": 4,
+        "diameter_mm": 6.6,
+        "pattern_mm": {
+          "x": 150,
+          "y": 60
+        },
+        "size": "M6"
+      },
+      "pin_hole": {
+        "diameter_mm": 10.5,
+        "offset_mm": 50,
+        "pin_size": "M10"
+      },
+      "harness_cutout_mm": 25
+    },
+    "material": {
+      "name": "Al 2024-T351",
+      "basis": "MMPDS S-basis",
+      "properties": {
+        "E_GPa": 73.1,
+        "nu": 0.33,
+        "density_kg_m3": 2780,
+        "Fty_MPa": 324,
+        "Ftu_MPa": 441,
+        "K_IC_MPa_sqrt_m": 36,
+        "paris_C": 2.5e-11,
+        "paris_m": 3.3,
+        "R_ratio": 0.1
+      }
+    },
+    "service_life": {
+      "expected_cycles": 2000,
+      "safe_life_factor": 4,
+      "required_analysis_cycles": 8000,
+      "mission_years": 10
+    },
+    "ndi": {
+      "method": "fluorescent_penetrant_PT",
+      "reliability": "Standard",
+      "a_i_mm": 0.762,
+      "shape_a_over_c": 1.0
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pin_bearing_limit",
+        "force_N_limit": 3000,
+        "delta_sigma_MPa": 120
+      },
+      {
+        "id": "LC2",
+        "name": "ultimate_load",
+        "force_N_ult": 4200
+      },
+      {
+        "id": "LC3",
+        "name": "yield_load",
+        "force_N_yield": 3750
+      },
+      {
+        "id": "LC4",
+        "name": "residual_strength"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting_holes": "fully fixed"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_g_max": 450
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "NASA-STD-5019A w/Change-4",
+      "revision": "2024-07-29"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "cycles_to_failure_paris_law",
+        "limit_cycles": 8000,
+        "derivation": "4 x 2000 expected service cycles per NASA-STD-5019A Section 4.3 safe-life",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_stress_at_ultimate",
+        "limit_MPa": 441,
+        "derivation": "Ftu per MMPDS",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "peak_stress_at_yield",
+        "limit_MPa": 324,
+        "derivation": "Fty per MMPDS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "K_I_at_peak_stress_and_a_crit",
+        "limit_MPa_sqrt_m": 36,
+        "derivation": "K_IC per MMPDS L-T at 20 C",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "NDI_method_reliability_standard",
+        "limit": 1,
+        "derivation": "NASA-STD-5019A Table 5-1",
+        "applies_to": [
+          "plan"
+        ],
+        "operator": "==",
+        "note": "binary"
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "bracket_mass",
+        "limit_g": 450,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 for peak stress; SIF analytic for crack",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical",
+        "NASGRO for crack growth"
+      ],
+      "analysis_types": [
+        "linear static ultimate",
+        "Paris-law + Newman-Raju SIF"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Cyclic stress history pre-derived as Delta sigma.",
+      "thermal_analysis": "Isothermal 20 C.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Tension-dominated ligament; not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Proof-test logic alternative path per NASA-STD-5019A Section 4.3.3",
+      "Environmental knockdown (salt-fog / humidity)",
+      "Load spectrum block ordering effects"
+    ]
+  },
+  "eval_coverage": [
+    "4x safe-life crack-growth integration",
+    "NDI minimum-detectable initial flaw",
+    "residual strength K_I < K_IC",
+    "FCP declaration path"
+  ]
+}

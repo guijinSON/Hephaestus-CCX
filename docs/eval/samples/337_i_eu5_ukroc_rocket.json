@@ -1,0 +1,186 @@
+{
+  "id": "337_i_eu5_ukroc_rocket",
+  "source": {
+    "catalog_ref": "I-EU5",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "model_rocket_payload_bay",
+  "full_prompt": "Design the payload bay of a UKRoC 2025 school / university rocket entry that carries one or two raw Grade A large chicken eggs (mass approximately 60 g each) from launch to a recovery touchdown, both eggs surviving uncracked. Target apogee window 800 ft AGL (244 m) +/- 25 ft, flight duration 41-44 s from launch to touchdown, vehicle total GLOW 650 g including the 60 g (or 120 g for two-egg class) payload and motor. The payload bay is a cylindrical section of 41 mm outer diameter, length 180 mm, wall thickness 1.6 mm, made of filament-wound GFRP (E 18 GPa, tensile 300 MPa, density 1900 kg/m^3). Inside the bay is a 3D-printed PLA egg carriage with conforming internal geometry for the eggs, plus closed-cell polyethylene foam padding (foam stiffness modeled as linear with E 2 MPa, limiting its role to cushioning). Motor is an Aerotech F-class solid, peak thrust 50 N, total impulse 70 N*s. Recovery via a 46 cm diameter 6-line parachute deploying at apogee; descent rate 4.6 m/s at sea level. Touchdown is onto grass field (modeled as 2 g impact deceleration equivalent, since foam + parachute moderate impact to ~45 g peak at the egg, which is below the typical 80 g failure threshold for raw eggs). Load cases: (LC1) peak motor thrust 50 N axial on payload bay lower bulkhead + gravity on 650 g vehicle; LC1 stress is primarily in compression; (LC2) parachute opening shock at apogee: 150 N at the upper eyelet, tension; (LC3) ground impact: 2 g equivalent static on full 650 g decelerating structure; the egg itself sees a higher internal peak due to foam, but the bay wall only feels the 2 g average; (LC4) scrutineering / handling drop from 1 m onto concrete bench: 50 g equivalent static momentarily at the bay bottom edge; (LC5) integration stack weight: 500 g axial on top of the bay during assembly. Pass/fail: (R1) max von Mises stress under LC1-LC3 must remain below 150 MPa (300 / 2.0 FoS); (R2) under LC4 handling drop, stress must remain below 300 MPa (yield/ultimate, non-flight case); (R3) payload bay dry mass (GFRP shell + PLA egg carriage + foam) must not exceed 95 g to preserve GLOW budget; (R4) first natural frequency of bay with egg mass must exceed 100 Hz; (R5) eggshell impact acceleration under LC3 must remain below 45 g peak (this is an egg-level gate, verified via foam-element compression model - not a primary bay FEA gate but listed for completeness). Thermal, fluid, radiation, and buckling analyses not primary. Deliverables: STEP AP242 assembly (GFRP tube + PLA carriage + foam), FEA per load case, modal report, mass budget, and a note on egg-protection foam compression calculation.",
+  "short_prompt": "Design the payload bay of a UKRoC 2025 school/university rocket entry carrying one or two raw Grade A chicken eggs (60 g each) uncracked from launch to touchdown. Target apogee 800 ft AGL (244 m) +/- 25 ft, flight duration 41-44 s, GLOW 650 g including payload and motor (Aerotech F-class, 50 N peak, 70 N-s impulse). 46 cm 6-line parachute at apogee, 4.6 m/s descent to grass.\n\nEnvelope: filament-wound GFRP bay tube, 41 mm OD x 180 mm long x 1.6 mm wall; 3D-printed PLA egg carriage conforming to the egg; closed-cell polyethylene foam (E = 2 MPa, cushion-only).\n\nFactor regime: GFRP material FoS 2.0 for flight cases (allowable 150 MPa); scrutineering drop allowed to full yield/ultimate; dry mass (GFRP + PLA carriage + foam) <= 95 g; loaded first frequency > 100 Hz; egg peak accel gate 45 g (egg-level, foam-compression calc).\n\nLoad cases.\n- Peak motor thrust 50 N axial on the lower bulkhead + gravity on 650 g vehicle.\n- Parachute opening shock: 150 N at the upper eyelet tension.\n- Ground impact at 4.6 m/s: 2 g equivalent static on 650 g (bay-level; egg peak ~45 g is separate).\n- Bench drop from 1 m onto concrete: 50 g equivalent static at the bay bottom edge.\n- Integration stack weight: 500 g axial on top of the bay.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "UKRoC 2025 Egg-Payload Rocket Bay",
+    "brief": "GFRP tube payload bay with PLA carriage + foam for egg transport, 800 ft apogee, 41-44 s duration, 46 cm parachute.",
+    "geometric_constraints": {
+      "OD_mm": 41,
+      "length_mm": 180,
+      "wall_mm": 1.6,
+      "egg_count": 1,
+      "egg_mass_g": 60
+    },
+    "material": {
+      "shell": {
+        "name": "GFRP filament-wound",
+        "E_GPa": 18,
+        "tensile_MPa": 300,
+        "density_kg_m3": 1900
+      },
+      "carriage": {
+        "name": "PLA FDM",
+        "E_GPa": 3.5,
+        "tensile_MPa": 50,
+        "density_kg_m3": 1250
+      },
+      "foam": {
+        "name": "closed-cell PE foam",
+        "E_MPa": 2,
+        "density_kg_m3": 45
+      }
+    },
+    "mission": {
+      "target_apogee_ft": 800,
+      "target_duration_s": [
+        41,
+        44
+      ],
+      "GLOW_g": 650,
+      "motor": "Aerotech F-class, 50 N peak, 70 Ns total",
+      "descent_rate_mps": 4.6
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "peak_thrust",
+        "magnitude_N": 50,
+        "application": "lower bulkhead axial"
+      },
+      {
+        "id": "LC2",
+        "name": "parachute_open",
+        "magnitude_N": 150,
+        "application": "upper eyelet tension"
+      },
+      {
+        "id": "LC3",
+        "name": "ground_impact_2g",
+        "magnitude_g": 2,
+        "application": "full structure"
+      },
+      {
+        "id": "LC4",
+        "name": "handling_drop_50g",
+        "magnitude_g": 50,
+        "application": "bay bottom edge"
+      },
+      {
+        "id": "LC5",
+        "name": "integration_stack",
+        "magnitude_N_axial": 4.9,
+        "application": "top of bay"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 3,
+      "report_fields": [
+        "bay_dry_mass_g",
+        "max_stress_flight_MPa",
+        "max_stress_handling_MPa",
+        "first_natural_freq_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_flight",
+        "limit_MPa": 150,
+        "derivation": "300 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_handling",
+        "limit_MPa": 300,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "bay_dry_mass",
+        "limit_g": 95,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_freq_loaded",
+        "limit_Hz": 100,
+        "applies_to": [
+          "with_egg_mass"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for GFRP tube, TET10 for PLA carriage, solid for foam block (linear E)",
+      "mesh_size_mm": 1,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "UKRoC current-year rulebook PDF not scraped; envelope and apogee/duration taken from UKRoC public brief + the US student rocketry benchmark equivalent (UKRoC is the UK sister event).",
+    "exclusions_explained": {
+      "thermal_analysis": "Short mission at sea level.",
+      "fluid_analysis": "Parachute descent reduced to shock load LC2.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Short tube; stress gate bounds."
+    }
+  },
+  "eval_coverage": [
+    "fragile-payload FEA",
+    "multi-material assembly (GFRP + PLA + foam)",
+    "handling vs flight stress separation",
+    "modal with lumped mass",
+    "small-scale mass budget"
+  ]
+}

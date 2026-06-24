@@ -1,0 +1,167 @@
+{
+  "id": "230_df14_auvsi_robosub",
+  "source": {
+    "catalog_ref": "DF14",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "auv_structural",
+  "part_class": "auv_pressure_hull",
+  "full_prompt": "Design the primary pressure hull of an autonomous underwater vehicle benchmark operating in a test pool (38 ft / 11.6 m maximum depth). Vehicle displacement ~45 kg, hull diameter 200 mm OD, cylindrical length 500 mm with two hemispherical endcaps (one O-ring flange access, one integrated). Material: 6061-T6 aluminum (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3), wall thickness nominal 6 mm cylinder + 5 mm endcaps, with anti-corrosion hard-anodized coating. Hull hosts 8 penetrators (4 M16 wet-mate connectors + 2 thruster shafts + 1 acoustic transducer + 1 pressure port). Design depth: 11.6 m freshwater + 2x safety factor = 23.2 m equivalent, giving MEOP 228 kPa external gauge. Load cases: (LC1) MEOP 228 kPa external (-0.228 MPa gauge inside cavity); (LC2) proof pressure 1.5 x MEOP = 342 kPa; (LC3) burst 2.5 x MEOP = 570 kPa must not ultimate-fail; (LC4) thruster reaction: 50 N thrust per thruster at two opposing penetrators produces +/- 100 N couple on hull endcaps; (LC5) handling drop: 1 m drop onto hard surface (10 g impulse); (LC6) O-ring flange preload: 8 x M6 bolts at 10 N-m torque = 18 kN total axial clamp on the flange; (LC7) thermal: fresh-water 15 C to tropical pool 30 C swing. Pass/fail per ANSI/AIAA S-080A + ASME BPVC VIII analog: (R1) max von Mises under LC1-LC2 <= 184 MPa (yield 276 / 1.5); (R2) burst LC3 no ultimate failure (stress <= 310 MPa); (R3) linear-buckling eigenvalue of external-pressure-loaded cylinder under LC1 >= 3.0; (R4) hull + endcap dry mass <= 8 kg; (R5) penetrator boss local stress under LC6 <= 184 MPa; (R6) hull first longitudinal mode above 150 Hz. Deliverables: STEP AP242, pressure FEA per case, buckling eigenvalue, thermal FEA, modal, and mass report.",
+  "short_prompt": "Design the primary pressure hull of an autonomous underwater vehicle operating in a test pool (11.6 m max depth). Material class: hard-anodized 6061-T6 aluminum. Design per ANSI/AIAA S-080A + ASME BPVC Section VIII Div 2 analog rules with 1.5 FoS on yield and 2.0 FoS on MEOP for proof, 2.5 for burst.\n\nEnvelope: 200 mm OD cylinder, 500 mm cylindrical length + two hemispherical endcaps (one O-ring flange, one integrated); nominal wall 6 mm cylinder, 5 mm endcaps; 8 penetrators (4 M16 wet-mate + 2 thruster shafts + 1 acoustic + 1 pressure port); vehicle displacement ~45 kg, hull target <= 8 kg.\n\nLoad cases.\n- LC1 MEOP: 228 kPa external (11.6 m x 2 FoS, 23.2 m equivalent).\n- LC2 proof: 342 kPa (1.5 x MEOP).\n- LC3 burst: 570 kPa (2.5 x MEOP), no ultimate failure.\n- LC4 thruster couple: +/- 100 N per opposing-penetrator pair from 50 N thrusters.\n- LC5 handling drop: 1 m drop, 10 g impulse.\n- LC6 O-ring flange preload: 8 x M6 at 10 N-m = 18 kN total axial clamp.\n- LC7 thermal: 15 C to 30 C pool swing.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "AUV pressure hull",
+    "brief": "6061-T6 Al pressure hull for 11.6 m test-pool operation, 200 mm OD.",
+    "geometric_constraints": {
+      "OD_mm": 200,
+      "cylinder_length_mm": 500,
+      "wall_mm": 6,
+      "endcap_mm": 5,
+      "penetrators": 8,
+      "MEOP_kPa": 228
+    },
+    "material": {
+      "name": "Aluminum 6061-T6 hard anodized",
+      "youngs_modulus_GPa": 68.9,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2700,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "MEOP",
+        "P_kPa_external": 228
+      },
+      {
+        "id": "LC2",
+        "name": "proof",
+        "P_kPa": 342
+      },
+      {
+        "id": "LC3",
+        "name": "burst",
+        "P_kPa": 570
+      },
+      {
+        "id": "LC4",
+        "name": "thruster_couple",
+        "F_N": 100
+      },
+      {
+        "id": "LC5",
+        "name": "drop_1m_10g",
+        "g": 10
+      },
+      {
+        "id": "LC6",
+        "name": "flange_preload",
+        "F_N_total_axial": 18000
+      },
+      {
+        "id": "LC7",
+        "name": "thermal",
+        "range_C": [
+          15,
+          30
+        ]
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "hull_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "burst_margin_MPa",
+        "buckling_eigenvalue",
+        "first_longitudinal_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "burst_stress",
+        "limit_MPa": 310,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "external_pressure_eigenvalue",
+        "limit": 3.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "hull_dry_mass",
+        "limit_kg": 8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "penetrator_boss_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_longitudinal_mode",
+        "limit_Hz": 150,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

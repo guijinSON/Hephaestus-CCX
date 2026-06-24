@@ -1,0 +1,223 @@
+{
+  "id": "115_e5_chem_e_car_pressurized_reservoir",
+  "source": {
+    "catalog_ref": "E5",
+    "year": 2026,
+    "tier": "A+"
+  },
+  "domain": "chemistry_propulsion",
+  "part_class": "pressurized_reservoir",
+  "full_prompt": "Design a monolithic 6061-T6 aluminum cylindrical pressurized reservoir that stores the working fluid for a student chemistry-car reservoir benchmark vehicle. The full vehicle must fit within a 40 cm x 30 cm x 20 cm envelope and mass no more than 2.0 kg; the reservoir itself must fit within a 25 cm x 12 cm x 12 cm sub-envelope and mass no more than 0.5 kg while supplying between 0 and 500 mL of water payload into the chemical reaction vessel on demand. The reservoir is a single seamless part, with no welds, no bonded seams, no bolted end caps; both end closures are integral domed heads. Working fluid is either compressed air or inert CO2 per the benchmark rules (no stored gaseous hazard class above category 2). Cylinder ID 100 mm, wall thickness 3.0 mm, cylindrical section length 180 mm, hemispherical end caps of 50 mm inside radius, a single 1/4-inch NPT port (internal thread 13.7 mm minor diameter) at one dome, and a single 1/8-inch NPT port at the opposite dome for a pressure-relief valve. Overall envelope 100 mm OD x 240 mm length (capped). The benchmark-specified Maximum Allowable Operating Pressure (MAOP) is 689 kPa (100 psi), and the benchmark rules require a minimum safety factor of 2.0 on pressurized reservoirs (proof pressure 1.5x MAOP = 1034 kPa; burst pressure calculation at 2.0x MAOP = 1378 kPa). Material 6061-T6 aluminum with Young's modulus 68.9 GPa, Poisson's ratio 0.33, density 2700 kg/m^3, yield strength 276 MPa, ultimate tensile strength 310 MPa. Three load cases. Load Case 1 (proof pressure): 1034 kPa internal, all external ports capped, ambient 20 C, duration 10 minutes. Load Case 2 (operating cycle): 689 kPa internal at 20 C, with vibration input from 5-200 Hz sine sweep at 1 g representing drivetrain-induced base excitation. Load Case 3 (thermal overpressure): 900 kPa internal at 50 C representing solar heating during outdoor staging per the benchmark EHS review. Pass/fail: (R1) under LC1 proof pressure, peak von Mises in the vessel wall must not exceed 138 MPa (yield / 2.0 per the explicit benchmark SF >= 2 requirement on pressurized reservoirs); (R2) under LC2 operating pressure the peak stress must not exceed 92 MPa (yield / 3.0 for long-term cyclic duty per ASME BPVC Section VIII Div.1 aluminum UG-23 allowable); (R3) a modal analysis must keep the first five natural frequencies above 250 Hz to avoid resonance with the 5-200 Hz drivetrain band (R3 is a vibration analysis requirement); (R4) a linear buckling eigenvalue analysis under an external-collapse scenario (vacuum inside, 101 kPa outside due to accidental venting during refill) must yield a first-mode factor of at least 3.0; (R5) under LC3 thermal overpressure, peak stress must remain below 183 MPa (yield at 50 C / 1.5 accounting for 5% yield knockdown); (R6) mass of the reservoir must not exceed 0.5 kg, and when combined with a 500 mL water payload (0.5 kg) plus structure, the total vehicle budget cannot exceed 2.0 kg; (R7) internal volume must be at least 1.25x the nominal 500 mL payload to accommodate gas headspace. Fluid analysis and radiation analysis are not required; thermal analysis enters only through LC3 temperature derate. Deliver STEP AP242 geometry plus a report.",
+  "short_prompt": "Design a monolithic seamless 6061-T6 aluminum pressurized reservoir (cylindrical body with integral hemispherical end caps, no welds or bolted heads, one 1/4\" NPT service port and one 1/8\" NPT relief port) storing compressed air or CO2 for a student chemistry-car reservoir benchmark. Vehicle envelope 400 x 300 x 200 mm and <= 2.0 kg total; reservoir sub-envelope 250 x 120 x 120 mm and <= 0.5 kg, with internal volume >= 1.25x the 500 mL water payload. Benchmark SF >= 2.0 on MAOP. Allowables: yield/2.0 at proof, yield/3.0 at continuous operating per ASME BPVC Section VIII Div.1 UG-23, 5% yield knockdown at 50 C; buckling SF 3.0 on external collapse.\n\nEnvelope: 100 mm ID x 3.0 mm wall x 180 mm cylindrical straight, 50 mm hemi-caps (240 mm overall length capped, 100 mm OD).\n\nLoad cases.\n- LC1 proof: 1034 kPa (1.5x MAOP) internal at 20 C for 10 min.\n- LC2 operating with vibration: 689 kPa internal at 20 C with 5-200 Hz / 1 g base vibration from the drivetrain; first five modes must be >= 250 Hz.\n- LC3 thermal overpressure: 900 kPa internal at 50 C (solar staging).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Aluminum pressurized reservoir for student chemistry-car reservoir benchmark",
+    "brief": "Seamless 6061-T6 cylinder with integral hemi-heads. 100 ID x 180 straight x 50 mm hemi. MAOP 689 kPa, benchmark SF >= 2.",
+    "geometric_constraints": {
+      "cylinder_inside_diameter_mm": 100,
+      "wall_thickness_mm": 3.0,
+      "cylinder_length_mm": 180,
+      "dome_inside_radius_mm": 50,
+      "ports": [
+        {
+          "type": "1/4 NPT",
+          "count": 1
+        },
+        {
+          "type": "1/8 NPT",
+          "count": 1
+        }
+      ],
+      "vessel_bounding_envelope_mm": {
+        "diameter": 100,
+        "length": 240
+      },
+      "vehicle_bounding_envelope_mm": {
+        "x": 400,
+        "y": 300,
+        "z": 200
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "pressures": {
+      "MAOP_kPa": 689,
+      "proof_kPa": 1034,
+      "burst_kPa_rule_derived": 1378
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof",
+        "internal_kPa": 1034,
+        "temp_C": 20,
+        "duration_min": 10
+      },
+      {
+        "id": "LC2",
+        "name": "operating_with_vibration",
+        "internal_kPa": 689,
+        "temp_C": 20,
+        "vibration_Hz": [
+          5,
+          200
+        ],
+        "vibration_g": 1
+      },
+      {
+        "id": "LC3",
+        "name": "thermal_overpressure",
+        "internal_kPa": 900,
+        "temp_C": 50
+      }
+    ],
+    "payload_envelope": {
+      "water_mL_range": [
+        0,
+        500
+      ],
+      "vehicle_mass_limit_kg": 2.0,
+      "vessel_mass_limit_kg": 0.5
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_five_natural_frequencies_Hz",
+        "first_buckling_load_factor",
+        "mass_g",
+        "internal_volume_mL"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 138,
+        "derivation": "yield/2.0 (benchmark SF>=2)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 92,
+        "derivation": "yield/3.0 (ASME VIII Div.1 UG-23 long-term)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_five_natural_frequencies",
+        "limit_Hz": 250,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "external_collapse"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_at_50C",
+        "limit_MPa": 183,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "internal_volume",
+        "limit_mL": 625,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) or axisymmetric where applicable",
+      "mesh_size_mm_in_critical_regions": 0.75,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal free-free",
+        "linear buckling (external pressure)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Chemistry reaction is outside the reservoir; internal fluid is low-velocity gas.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Relief valve sizing and set pressure",
+      "Fatigue S-N for cyclic pressurization",
+      "NPT thread engagement"
+    ]
+  },
+  "eval_coverage": [
+    "benchmark-explicit SF >= 2 on pressurized reservoir",
+    "temperature-derated allowable at 50 C",
+    "external-collapse buckling",
+    "drivetrain vibration resonance avoidance"
+  ]
+}

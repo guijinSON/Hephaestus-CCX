@@ -1,0 +1,197 @@
+{
+  "id": "187_sa4_birds_program",
+  "source": {
+    "catalog_ref": "SA4",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "satellite_structural",
+  "part_class": "birds_aprs_payload_tray",
+  "full_prompt": "Design a 1U CubeSat APRS-DP (Automatic Packet Reporting System Digipeater) payload tray and mounting bracket as an open-source ISS-airlock-deployed 1U benchmark. The tray is a monolithic PC/104-compatible aluminum 6061-T6 support structure 90 x 96 mm with 4 mounting holes on the 85.60 x 82.55 mm pattern, attaching to a standardized 1U CubeSat spine by four M3 brass inserts, and carrying a VHF/UHF APRS transceiver board (75 g) plus a sub-miniature RF coaxial connector to a deployable dipole antenna. The tray is a single plate 2.5 mm thick with a peripheral stiffening rib and a 40 mm diameter cut-out for the RF connector, total mass budget <= 25 g. Qualification loads per JX-ESPC-100134 and the 1U CubeSat assembly/integration plan: (LC1) quasi-static 9 g along any axis, (LC2) sine vibration 2.0 g at 5-100 Hz, (LC3) random vibration GRMS 7.7 at 20-2000 Hz, (LC4) thermal vacuum -20 to +50 C. Pass/fail: (R1) quasi-static max von Mises on the tray must not exceed 138 MPa (yield 276 / SF 2.0), (R2) first natural frequency of the tray-plus-board as a mass-loaded stiffness problem must be at least 200 Hz to decouple from the 1U chassis primary mode, (R3) total tray mass at or below 25 g, (R4) displacement at the center of the board under 9 g axial must not exceed 0.5 mm to protect solder joints, and (R5) thermal-stress combined with mechanical under LC4 + LC1 must not exceed 138 MPa. Vibration is required for R2. Thermal is required for R5. Fluid and radiation analyses are not required. Deliver a STEP AP242 solid body of the tray plus a structural + thermal report listing max von Mises, first natural frequency, total mass, center-of-board displacement, and thermal-cycle combined stress.",
+  "short_prompt": "Design a 1U CubeSat APRS-DP (Automatic Packet Reporting System digipeater) payload tray: a monolithic Al 6061-T6 PC/104-compatible plate 90 x 96 mm x 2.5 mm, mounting to a 1U CubeSat spine through four M3 brass inserts on an 85.60 x 82.55 mm hole pattern, with a 40 mm RF-connector cutout and a peripheral stiffening rib, carrying a ~75 g VHF/UHF APRS transceiver board with a sub-miniature RF connector to a deployable dipole. Tray mass budget <=25 g. Mount holes are fixed via four M3 bolts; the board is a 75 g lumped mass on the tray.\n\nQualification per JX-ESPC-100134 (JSSOD airlock-deployed 1U assembly/integration).\n\nLoad cases.\n- LC1 quasi-static: 9 g along any axis.\n- LC2 sine vibration: 2.0 g, 5-100 Hz.\n- LC3 random vibration: 7.7 GRMS, 20-2000 Hz.\n- LC4 thermal cycle: -20 to +50 C.\n\nFirst natural frequency must decouple from the 1U chassis primary mode, and board-center displacement under quasi-static is a solder-joint fatigue guard.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "PCB_lumped_mass_stiffness",
+        "reason": "PC/104 board added-mass and lumped stiffness are precomputed from IPC-D-275 / Steinberg fatigue method rather than meshed in full.",
+        "examples": [
+          "Steinberg PCB fatigue method",
+          "IPC-D-275"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "1U CubeSat APRS-DP payload tray",
+    "brief": "Design a 90 x 96 mm 2.5 mm Al 6061-T6 APRS payload tray for a 1U CubeSat, <=25 g, with 40 mm RF cutout, passing 9 g quasi-static, modal >=200 Hz, thermal -20/+50 C.",
+    "geometric_constraints": {
+      "tray_mm": [
+        90,
+        96
+      ],
+      "tray_thickness_mm": 2.5,
+      "mount_hole_pattern_mm": [
+        85.6,
+        82.55
+      ],
+      "RF_cutout_dia_mm": 40,
+      "mass_max_g": 25
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "yield_MPa": 276,
+      "E_GPa": 69
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static",
+        "g_any_dir": 9
+      },
+      {
+        "id": "LC2",
+        "name": "sine_vib",
+        "g": 2.0,
+        "freq_Hz": [
+          5,
+          100
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "random_vib",
+        "GRMS": 7.7,
+        "freq_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_cycle",
+        "T_min_C": -20,
+        "T_max_C": 50
+      }
+    ],
+    "boundary_conditions": {
+      "mount_holes": "4 M3 bolts to CubeSat spine",
+      "board": "75 g lumped mass on tray"
+    },
+    "objective": {
+      "primary": "pass CubeSat QT and JX-ESPC-100134 envelope",
+      "secondary": "minimize tray mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_MPa",
+        "first_natural_frequency_Hz",
+        "total_tray_mass_g",
+        "board_center_displacement_mm",
+        "thermal_cycle_combined_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 138,
+        "derivation": "yield 276 / SF 2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 200,
+        "derivation": "decouple from chassis primary mode",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_tray_mass",
+        "limit_g": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "board_center_displacement",
+        "limit_mm": 0.5,
+        "derivation": "Steinberg PCB fatigue guard",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "thermal_cycle_combined_stress",
+        "limit_MPa": 138,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for tray",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "thermal-stress"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Vacuum environment.",
+      "radiation_analysis": "Handled at board level.",
+      "buckling_analysis": "Thin plate; dominant mode is in-plane bending, not buckling."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Amateur radio regulatory coordination (IARU)",
+      "Link-budget for APRS downlink",
+      "Antenna deployment mechanism"
+    ]
+  },
+  "eval_coverage": [
+    "Steinberg PCB fatigue non-FEA solver",
+    "CubeSat mass budget + mount-hole pattern",
+    "thermal-mechanical combined stress",
+    "modal separation 200 Hz floor"
+  ]
+}

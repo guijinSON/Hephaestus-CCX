@@ -1,0 +1,200 @@
+{
+  "id": "184_sa1_ukseds_ort",
+  "source": {
+    "catalog_ref": "SA1",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "planetary_robotics",
+  "part_class": "mars_analog_rover_chassis",
+  "full_prompt": "Design a Mars-analog Advanced-stream rover chassis for an open-source planetary rover trials benchmark. The chassis is a 6-wheel rocker-bogie rover with 700 mm length x 500 mm width x 400 mm height envelope, total operating mass not exceeding 50 kg (including 3 kg removable science/arm payload), powered by a 14.4 V 20 Ah Li-ion battery for at least 2 hours operation on a Mars-analog terrain with slopes up to 20 degrees, loose regolith, rocks up to 100 mm in height, and typical traverse speed 0.1 m/s. The chassis is fabricated from 6061-T6 aluminum tubing + carbon-fiber panels (tubing yield 276 MPa, panel E 45 GPa tensile 500 MPa). Loads: (LC1) static 50 kg at 20 deg slope with 1.2x dynamic factor during traverse, (LC2) a 100 mm rock impact at 0.1 m/s wheel-hub equivalent impulse of 150 N, (LC3) a 3 kg manipulator arm fully extended 800 mm horizontal with a 1.5 kg sample grasp generating 36 N-m at chassis-arm interface, (LC4) 1 g vertical dropout from a 150 mm step giving a 2g effective ground reaction, (LC5) cold-cycle thermal excursion from -20 C to +35 C (Mars-analog field operations on an analog-day). Pass/fail: (R1) chassis max von Mises stress under any load case must not exceed 184 MPa (6061-T6 yield 276 / SF 1.5), (R2) rover must climb 20 deg slope without slip (required traction coefficient vs wheel load), (R3) arm manipulation at full extension must not tilt chassis by more than 5 degrees, (R4) chassis first natural frequency must be at least 15 Hz (3x terrain-vibration peak), and (R5) chassis must survive -20 to +35 C cycle without thermally induced yield (thermal stress combined with mechanical case not exceeding 184 MPa). Thermal analysis is required for R5. Vibration is required for R4. Fluid and radiation analyses are not required. Deliver a STEP AP242 assembly with chassis, wheels, rocker-bogie links, arm mount, and battery bay as sub-bodies plus a verification report listing max von Mises, slope-climb margin, arm-tilt angle, first natural frequency, and thermal-cycle stress.",
+  "short_prompt": "Design a Mars-analog 6-wheel rocker-bogie rover chassis for planetary rover trials: overall envelope on the order of 700 x 500 x 400 mm, total operating mass up to 50 kg (including a 3 kg removable science/arm payload), powered by a 14.4 V 20 Ah Li-ion battery for 2 h operation on analog terrain with slopes to 20 deg, rocks to 100 mm, traverse speed ~0.1 m/s. The chassis is 6061-T6 aluminum tubing plus CFRP panels. Wheels contact ground in rolling contact; the arm base is bolted to the chassis.\n\nLoad cases.\n- LC1 slope traverse: 50 kg static on a 20 deg slope with 1.2x dynamic factor.\n- LC2 rock impact: 150 N wheel-hub-equivalent impulse at 0.1 m/s on a 100 mm rock.\n- LC3 arm extension: 3 kg arm fully extended 800 mm with a 1.5 kg sample, producing 36 N-m at the chassis-arm interface.\n- LC4 step dropout: 150 mm step giving a 2 g effective ground reaction.\n- LC5 thermal cycle: -20 C to +35 C analog-day excursion.\n\nTraction for 20-deg slope (mu vs wheel load) and first natural frequency (at least 3x terrain-vibration peak) are governing checks.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "rocker_bogie_kinematics",
+        "reason": "Wheel load distribution and tipping-point kinematics of the rocker-bogie are closed-form Jacobian-based calculations, not FEA.",
+        "examples": [
+          "Lindemann/JPL rocker-bogie MATLAB model"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Mars-analog Advanced-stream rocker-bogie rover chassis",
+    "brief": "Design a 700 x 500 x 400 mm 50 kg 6-wheel rocker-bogie rover chassis in Al 6061-T6 + CFRP passing 20-deg slope, 100 mm rock impact, arm manipulation, step dropout, and -20 to +35 C thermal cycle.",
+    "geometric_constraints": {
+      "envelope_mm": [
+        700,
+        500,
+        400
+      ],
+      "operating_mass_kg_max": 50,
+      "wheels": 6,
+      "slope_deg": 20,
+      "rock_height_mm": 100
+    },
+    "material": {
+      "tubing": "6061-T6 Al, yield 276 MPa",
+      "panels": "CFRP quasi-iso, E 45 GPa, tensile 500 MPa"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "slope_traverse",
+        "mass_kg": 50,
+        "slope_deg": 20,
+        "dynamic_factor": 1.2
+      },
+      {
+        "id": "LC2",
+        "name": "rock_impact",
+        "impulse_N": 150,
+        "speed_m_s": 0.1
+      },
+      {
+        "id": "LC3",
+        "name": "arm_extension",
+        "reach_mm": 800,
+        "arm_kg": 3,
+        "sample_kg": 1.5,
+        "moment_Nm": 36
+      },
+      {
+        "id": "LC4",
+        "name": "step_dropout",
+        "step_mm": 150,
+        "g_factor": 2
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_cycle",
+        "T_min_C": -20,
+        "T_max_C": 35
+      }
+    ],
+    "boundary_conditions": {
+      "wheels": "contact with ground, rolling",
+      "arm_base": "bolted to chassis"
+    },
+    "objective": {
+      "primary": "pass all load cases + thermal cycle",
+      "secondary": "minimize chassis mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "slope_climb_margin",
+        "arm_tilt_deg",
+        "first_natural_frequency_Hz",
+        "thermal_cycle_combined_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 184,
+        "derivation": "Al 6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "slope_climb_traction_coefficient",
+        "limit_mu_min": 0.364,
+        "derivation": "mu >= tan(20 deg) = 0.364",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "chassis_tilt_under_arm",
+        "limit_deg": 5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 15,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "thermal_cycle_combined_stress",
+        "limit_MPa": 184,
+        "derivation": "combined thermal + mechanical still < yield / 1.5",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam for tubing, shell for panels",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "thermal + thermal-stress"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "No fluid interaction in Mars-analog test.",
+      "radiation_analysis": "Not in-scope for an analog field rover.",
+      "buckling_analysis": "Tubing structure dominated by bending, not buckling."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Dust ingress protection (IP)",
+      "EMI/EMC qualification",
+      "Extended endurance > 2 h"
+    ]
+  },
+  "eval_coverage": [
+    "rocker-bogie kinematics non-FEA solver",
+    "multi-load structural + modal + thermal stack",
+    "slope-climb traction check",
+    "planetary-analog rover envelope"
+  ]
+}

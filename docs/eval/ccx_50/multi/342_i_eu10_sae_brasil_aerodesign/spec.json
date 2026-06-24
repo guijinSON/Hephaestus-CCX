@@ -1,0 +1,855 @@
+{
+  "id": "342_i_eu10_sae_brasil_aerodesign",
+  "source": {
+    "catalog_ref": "I-EU9 (I-LA thread SAE Brasil AeroDesign)",
+    "year": 2025,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/342_i_eu10_sae_brasil_aerodesign.json",
+    "multipart_basis": "Design-specific decomposition of a SAE Brasil AeroDesign Regular-class airframe expanded around the wing spar focus: wing main spar, ~10 ribs, skin panels, fuselage truss, tail boom, tail surfaces, main landing gear, motor mount, and payload bay. No rulebook citations fabricated; all load magnitudes and pass/fail thresholds preserved from the original brief."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "aerodesign_wing_spar_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary wing spar of a SAE Brasil AeroDesign 2025 Regular class aircraft. Regular class constraints: wingspan b <= 2.5 m, takeoff distance <= 61 m (200 ft), maximum take-off weight (MTOW = empty + payload) optimized to maximize payload score per the SAE Brasil scoring formula. For this design target: wingspan 2.4 m, rectangular planform with chord 0.32 m, NACA 4412 airfoil, empty weight (We) 3.2 kg, payload weight (Wp) 12 kg, giving MTOW 15.2 kg. Cruise speed 16 m/s at sea level ISA (density 1.225 kg/m^3). Takeoff loads drive spar sizing because the full 15.2 kg load is supported at ~ 1.2 g near liftoff with maximum dynamic pressure on the wing. The spar is a rectangular-section hollow box beam running the full span, fabricated from balsa caps + carbon pultruded-rod caps + 1 mm plywood web sandwich, simplified in FEA as a homogeneous transversely isotropic beam with effective E 35 GPa, tensile 400 MPa, compressive 350 MPa, density 650 kg/m^3 (composite average). Spar nominal cross-section 30 mm x 15 mm x 2 mm wall-equivalent. Wing-root joins the fuselage via two M4 steel bolts. Load cases: (LC1) static 1 g trim with elliptical lift distribution across 2.4 m span supporting 15.2 kg (total lift 149 N); (LC2) +2.5 g pull-up at dive speed (limit): total lift 373 N elliptical; (LC3) ultimate 1.5 x LC2 = 3.75 g equivalent, total 559 N - per SAE Brasil structural conservative factor; (LC4) landing hard-impact 3 g on MLG attached to fuselage while wings are in 1 g trim; (LC5) ground gust wingtip 80 N horizontal; (LC6) scoring-weight: SAE Brasil Regular payload scoring is (Wp)^2 / (We) - a design optimization metric; spar must survive the declared MTOW, not scored directly here. Pass/fail: (R1) under LC3 ultimate, max composite stress must remain below 200 MPa (400 / 2.0 FoS) in tension and 175 MPa (350 / 2.0) in compression; (R2) wingtip vertical deflection under LC1 must remain below 2% of half-span (24 mm); (R3) first wing bending natural frequency must exceed 6 Hz to clear servo bandwidth; (R4) spar dry mass must not exceed 0.45 kg to preserve We budget; (R5) root bolt bearing stress under LC3 ultimate must remain below 350 MPa. Thermal, fluid, radiation analyses not required; buckling check captured by compressive stress gate at this slenderness. Deliverables: STEP AP242 of spar, composite cap stack-up (balsa + pultruded rod schedule), FEA for LC1-LC5, modal check, mass report.\n\n--- ASSEMBLY RECONFIGURATION ---\nDelivered as a multi-part assembly reflecting the physical AeroDesign airframe integrated around the spar: the CFRP/balsa wing main spar, wing ribs distributed along the span, balsa-sheet skin panels bonded to the rib/spar structure, a balsa+ply fuselage truss housing the payload bay, a tail boom extending aft, tail surfaces (horizontal + vertical stabilizers), main landing gear bonded/bolted under the fuselage, and an engine/motor mount at the firewall. The spar root pins through 2x M4 steel bolts into the fuselage truss. Final FEM verification runs on the ASSEMBLED model only; per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case (LC3 ultimate). All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design the primary wing spar of a SAE Brasil AeroDesign 2025 Regular class aircraft. Regular class constraints: wingspan <= 2.5 m, takeoff distance <= 61 m (200 ft), MTOW optimized to maximize payload score per SAE Brasil scoring formula.\n\nEnvelope: wingspan 2.4 m, rectangular planform, chord 0.32 m, NACA 4412 airfoil, empty weight 3.2 kg, payload 12 kg, MTOW 15.2 kg. Cruise 16 m/s at sea level ISA (1.225 kg/m^3). Spar rectangular-section hollow box running full span; nominal cross-section 30 mm x 15 mm x 2 mm wall-equivalent; wing-root joins fuselage via two M4 steel bolts.\n\nMaterial: balsa caps + carbon pultruded-rod caps + 1 mm plywood web sandwich, simplified as homogeneous transversely isotropic (effective E 35 GPa, tensile 400 MPa, compressive 350 MPa).\n\nLoad cases: (LC1) static 1 g trim with elliptical lift on 15.2 kg (total 149 N); (LC2) +2.5 g pull-up at dive speed: total 373 N elliptical; (LC3) ultimate 1.5 x LC2 = 3.75 g, total 559 N per SAE Brasil conservative factor; (LC4) landing 3 g on MLG at fuselage while wings in 1 g trim; (LC5) ground gust wingtip 80 N horizontal.\n\nPass/fail: (R1) LC3 ultimate max composite stress < 200 MPa tension (400/2.0) and 175 MPa compression (350/2.0); (R2) LC1 wingtip deflection < 24 mm (2% half-span); (R3) first wing bending > 6 Hz; (R4) spar dry mass <= 0.45 kg; (R5) LC3 root bolt bearing < 350 MPa.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "scoring_formula_optimizer",
+        "reason": "SAE Brasil AeroDesign Regular scoring formula (Wp)^2 / (We) is an outer-loop design optimizer that calls the structural FEA to validate each MTOW candidate.",
+        "examples": [
+          "Python optimizer",
+          "XFLR5 + MATLAB"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "SAE Brasil AeroDesign 2025 Regular Class Airframe (multi-part assembly around wing spar)",
+    "brief": "Balsa + pultruded-CF composite box-beam wing spar + Regular-class airframe, 2.4 m span, 15.2 kg MTOW, +2.5 g limit, ultimate 1.5x, SAE Brasil FoS. Decomposition: wing main spar, ~10 ribs, skin panels, fuselage truss, tail boom, tail surfaces, MLG, motor mount, payload bay. FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "span_m": 2.4,
+      "chord_m": 0.32,
+      "airfoil": "NACA 4412",
+      "spar_section_mm": {
+        "h": 30,
+        "w": 15,
+        "wall_equiv": 2
+      },
+      "root_bolts": {
+        "count": 2,
+        "size": "M4"
+      }
+    },
+    "material": {
+      "name": "Balsa + pultruded-CFRP caps + plywood web (composite effective)",
+      "properties": {
+        "E_GPa": 35,
+        "tensile_MPa": 400,
+        "compressive_MPa": 350,
+        "density_kg_m3": 650
+      }
+    },
+    "mass_kg": {
+      "empty_We": 3.2,
+      "payload_Wp": 12,
+      "MTOW": 15.2
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_1g",
+        "magnitude_N": 149
+      },
+      {
+        "id": "LC2",
+        "name": "pullup_+2p5g_limit",
+        "magnitude_N": 373
+      },
+      {
+        "id": "LC3",
+        "name": "ultimate_1p5xLC2",
+        "magnitude_N": 559
+      },
+      {
+        "id": "LC4",
+        "name": "hard_landing_3g",
+        "magnitude_g": 3,
+        "application": "MLG on fuselage"
+      },
+      {
+        "id": "LC5",
+        "name": "ground_gust",
+        "magnitude_N": 80,
+        "application": "wingtip horizontal"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "spar_mass_kg",
+        "tensile_stress_LC3_MPa",
+        "compressive_stress_LC3_MPa",
+        "tip_deflection_LC1_mm",
+        "first_bending_freq_Hz",
+        "root_bolt_bearing_LC3_MPa",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "wing_main_spar",
+        "role": "full-span hollow box-beam wing spar with balsa + pultruded CFRP caps + ply web; primary wing bending member",
+        "count_min": 1,
+        "geometric_constraints": {
+          "span_mm": 2400,
+          "section_mm": [
+            30,
+            15
+          ],
+          "wall_equiv_mm": 2,
+          "cap_taper": "stepped pultruded-rod count from root to tip"
+        },
+        "material_hint": "balsa + pultruded CFRP caps + 1 mm plywood shear web",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "wing_rib",
+        "role": "NACA 4412 rib, laser-cut balsa, threaded onto spar at regular station intervals along the span",
+        "count_min": 10,
+        "geometric_constraints": {
+          "chord_mm": 320,
+          "thickness_mm": 3,
+          "station_spacing_mm": 240
+        },
+        "material_hint": "balsa sheet 3 mm",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "skin_panel",
+        "role": "balsa / Monokote skin panels bonded over ribs forming the wing aerodynamic surface and D-tube torsion box",
+        "count_min": 4,
+        "geometric_constraints": {
+          "d_tube_wrap": "from leading edge to spar on upper + lower (2 pieces per side)",
+          "skin_thickness_mm": 1.5
+        },
+        "material_hint": "1.5 mm balsa sheet + Monokote",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "fuselage_truss",
+        "role": "balsa/ply fuselage truss carrying wing root, payload bay, MLG mount, and firewall",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 900,
+          "cross_section_mm": [
+            120,
+            150
+          ],
+          "wing_root_bolt_hardpoints": 2
+        },
+        "material_hint": "balsa longerons + 3 mm plywood bulkheads",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "tail_boom",
+        "role": "aft-extending boom tying fuselage to empennage",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 700,
+          "section_mm_OD": 20,
+          "wall_mm": 1
+        },
+        "material_hint": "pultruded CFRP tube 20 mm OD",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "tail_surfaces",
+        "role": "horizontal + vertical stabilizer/elevator/rudder assemblies bolted/bonded to tail boom",
+        "count_min": 2,
+        "geometric_constraints": {
+          "horizontal_span_mm": 700,
+          "vertical_height_mm": 300,
+          "surface_build": "balsa rib + film covering"
+        },
+        "material_hint": "balsa + Monokote",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "main_landing_gear",
+        "role": "glass/CFRP leaf-spring main landing gear bolted to fuselage truss; reacts 3 g hard-landing LC4",
+        "count_min": 1,
+        "geometric_constraints": {
+          "track_mm": 450,
+          "leaf_thickness_mm": 6,
+          "bolt_pattern": "4x M4 into ply bulkhead"
+        },
+        "material_hint": "GFRP leaf spring",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "motor_mount",
+        "role": "firewall/motor mount at front of fuselage truss carrying the propeller motor",
+        "count_min": 1,
+        "geometric_constraints": {
+          "mount_pattern": "standard .46-size firewall, 4x M4",
+          "engine_offset_mm": 20
+        },
+        "material_hint": "3 mm plywood firewall + aluminum standoffs",
+        "speculation": true
+      },
+      {
+        "part_id": "I",
+        "name": "payload_bay",
+        "role": "internal payload compartment within fuselage truss retaining 12 kg payload during LC1-LC4",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_mm": [
+            400,
+            80,
+            80
+          ],
+          "retention": "hook-and-loop + perimeter tape"
+        },
+        "material_hint": "3 mm plywood floor + balsa walls",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "span_m": 2.4,
+      "fuselage_length_mm": 1600,
+      "coordinate_system": "aircraft axes: X along fuselage (nose+), Y along wing (right+), Z up; origin at firewall"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "tensile_stress_ultimate",
+        "limit_MPa": 200,
+        "derivation": "400 / 2.0 FoS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "compressive_stress_ultimate",
+        "limit_MPa": 175,
+        "derivation": "350 / 2.0 FoS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "wingtip_deflection_1g",
+        "limit_mm": 24,
+        "derivation": "2% of half-span 1200 mm",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_bending_freq",
+        "limit_Hz": 6,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "spar_dry_mass",
+        "limit_kg": 0.45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "root_bolt_bearing_ultimate",
+        "limit_MPa": 350,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "type": "structural_analysis",
+        "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces (spar-rib slots, rib-skin bond, wing-root 2x M4 into fuselage, MLG bolts, motor mount, tail boom) <= 1.0 under LC3 ultimate.",
+        "metric": "max_DCR_across_IF1_to_IF8",
+        "threshold": 1.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "scope": "assembled_only",
+        "operator": "<="
+      },
+      {
+        "id": "R_asm2",
+        "type": "structural_analysis",
+        "description": "Wing-root-to-fuselage 2x M4 bolted joint (IF4) bearing in ply bulkhead under LC3 ultimate must remain below 35 MPa (plywood bearing allowable).",
+        "metric": "wing_root_plywood_bearing_MPa",
+        "limit_MPa": 35,
+        "applies_to": [
+          "LC3"
+        ],
+        "scope": "assembled_only",
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[5].geometric_constraints",
+          "prompt.parts[6].count_min",
+          "prompt.parts[6].geometric_constraints",
+          "prompt.parts[7].count_min",
+          "prompt.parts[7].geometric_constraints",
+          "prompt.parts[8].count_min",
+          "prompt.parts[8].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      },
+      {
+        "id": "R_FEA_COVERAGE_LC2",
+        "type": "structural_analysis",
+        "metric": "generated_static_response_norm",
+        "limit": "finite",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "is_finite",
+        "derivation": "Generated coverage gate: ensures the declared load case is present in the CCX deck and checked from model.dat.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      },
+      {
+        "id": "R_FEA_COVERAGE_LC4",
+        "type": "structural_analysis",
+        "metric": "generated_static_response_norm",
+        "limit": "finite",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "is_finite",
+        "derivation": "Generated coverage gate: ensures the declared load case is present in the CCX deck and checked from model.dat.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      },
+      {
+        "id": "R_FEA_COVERAGE_LC5",
+        "type": "structural_analysis",
+        "metric": "generated_static_response_norm",
+        "limit": "finite",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "is_finite",
+        "derivation": "Generated coverage gate: ensures the declared load case is present in the CCX deck and checked from model.dat.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam with orthotropic composite properties for spar; shell for skins/ribs; TET10 near root bolt region",
+      "mesh_size_mm": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "XFLR5 + Nastran",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "modal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "ribs threaded onto spar with CA-glue bond at each station",
+      "load_path": "lift distribution from ribs into spar at ~10 stations; primary LC1/LC3 wing load path"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "skin bonded to rib perimeters forming D-tube torsion box",
+      "load_path": "wing torsion (LC5 ground gust) closed through skin-rib bond"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "skin bonded directly to spar cap forming D-tube leading-edge wrap",
+      "load_path": "closes shear flow in leading-edge torsion box"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "2x M4 steel bolts through spar root bushings into plywood bulkhead",
+      "load_path": "wing root bending + shear into fuselage; governs R5 bearing gate"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "D",
+        "G"
+      ],
+      "mediated_by": "4x M4 bolts into fuselage bulkhead",
+      "load_path": "LC4 hard-landing 3 g reacted from MLG into fuselage truss"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "D",
+        "H"
+      ],
+      "mediated_by": "4x M4 bolts into firewall",
+      "load_path": "engine thrust + vibration into fuselage truss"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "D",
+        "E"
+      ],
+      "mediated_by": "tail boom bonded into aft fuselage bulkhead",
+      "load_path": "tail-surface aero loads transferred forward into fuselage"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "E",
+        "F"
+      ],
+      "mediated_by": "tail surfaces bolted/bonded to boom",
+      "load_path": "horizontal + vertical tail aero loads into boom"
+    },
+    {
+      "id": "IF9",
+      "between": [
+        "D",
+        "I"
+      ],
+      "mediated_by": "payload bay retained within fuselage by hook-and-loop + perimeter tape",
+      "load_path": "12 kg payload inertial reaction into fuselage under LC1-LC4"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Tip deflection (R2) and modal (R3) only meaningful on the rib+skin+spar D-tube; root bolt bearing (R5) requires spar, bushing, and plywood bulkhead together; MLG landing (LC4) and tail aero loads are whole-airframe load paths.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The physical AeroDesign airframe is an assembly of spar, ribs, skins, fuselage truss, tail, MLG, and motor mount; the spar alone cannot satisfy the LC4 MLG landing path or the payload retention requirement.",
+    "speculation_caveats": "Count of ribs (~10) and skin panel subdivisions are typical for a 2.4 m AeroDesign wing; no new rulebook thresholds invented.",
+    "original_sample_preserved_at": "docs/eval/samples/342_i_eu10_sae_brasil_aerodesign.json"
+  },
+  "rulebook_citations": {},
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1a",
+      "R1b",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R_asm1",
+      "R_asm2"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[5].geometric_constraints",
+      "prompt.parts[6].count_min",
+      "prompt.parts[6].geometric_constraints",
+      "prompt.parts[7].count_min",
+      "prompt.parts[7].geometric_constraints",
+      "prompt.parts[8].count_min",
+      "prompt.parts[8].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1a_000",
+      "requirement_id": "R1a",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "tensile_stress_ultimate",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R1b_001",
+      "requirement_id": "R1b",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "compressive_stress_ultimate",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_002",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "wingtip_deflection_1g",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_003",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_OTHER",
+      "solver": "calculix",
+      "analysis_card": "*DYNAMIC",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "generated_dynamic_step",
+      "metric": "first_bending_freq",
+      "metric_source": "dynamic/static response block",
+      "outputs": [
+        "model.dat: dynamic displacement response"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_004",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "spar_dry_mass",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_005",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "root_bolt_bearing_ultimate",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_006",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "max_DCR_across_IF1_to_IF8",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm2_007",
+      "requirement_id": "R_asm2",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "wing_root_plywood_bearing_MPa",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_008",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[8]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_FEA_COVERAGE_LC2_009",
+      "requirement_id": "R_FEA_COVERAGE_LC2",
+      "requirement_path": "requirements.pass_fail_criteria[9]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC2",
+      "metric": "generated_static_response_norm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_FEA_COVERAGE_LC4_010",
+      "requirement_id": "R_FEA_COVERAGE_LC4",
+      "requirement_path": "requirements.pass_fail_criteria[10]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC4",
+      "metric": "generated_static_response_norm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_FEA_COVERAGE_LC5_011",
+      "requirement_id": "R_FEA_COVERAGE_LC5",
+      "requirement_path": "requirements.pass_fail_criteria[11]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC5"
+      ],
+      "deck_step": "generated_static_step:LC5",
+      "metric": "generated_static_response_norm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

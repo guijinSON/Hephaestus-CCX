@@ -1,0 +1,185 @@
+{
+  "id": "179_sp3_ansys_hall_of_fame",
+  "source": {
+    "catalog_ref": "SP3",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_rotor",
+  "part_class": "uav_propeller",
+  "full_prompt": "Design a CFD-and-FEA-coupled small UAV propeller as an open-source multiphysics benchmark, replicating a typical simulation-driven design pattern. The propeller is a two-blade carbon-fiber / epoxy composite propeller of 280 mm diameter (11 inch) for a quadcopter propulsion stack, driven by a brushless DC motor at 8000 rpm (133 Hz), producing a design thrust of 8.0 N per propeller in hover at sea level (air density 1.225 kg/m^3). Material is a quasi-isotropic carbon/epoxy lay-up (E1 = E2 = 70 GPa, tensile strength 600 MPa, density 1600 kg/m^3). The propeller must simultaneously satisfy: (R1) max von Mises stress at the blade root under 8000 rpm centrifugal plus aerodynamic pressure from CFD must not exceed 300 MPa (tensile 600 / SF 2.0), (R2) blade tip deflection under combined centrifugal plus aerodynamic load must not exceed 2.0 mm (0.7% of diameter) to preserve blade-to-airframe clearance, (R3) first natural frequency at 0 rpm must be at least 1.5x the 133 Hz operating rotational frequency = 200 Hz to avoid 1P resonance, and the first mode at 8000 rpm (with centrifugal stiffening) must stay clear of 1P and 2P by at least 10%, (R4) CFD steady thrust at 8000 rpm in hover must match 8.0 N +/- 5% (target figure of merit >= 0.7), and (R5) propeller mass must not exceed 15 g per blade or 30 g total for the two-blade prop. Fluid analysis (CFD) is required for R4. Vibration (modal + Campbell) is required for R3. Thermal and radiation analyses are not required. Deliver a STEP AP242 solid body of the propeller plus a report listing blade-root max von Mises, tip deflection, first natural frequency at 0 and 8000 rpm, CFD hover thrust and figure of merit, and total mass.",
+  "short_prompt": "Design a two-blade carbon-fiber / epoxy UAV propeller for a quadcopter propulsion stack: 280 mm (11 inch) diameter, 8 mm hub ID, quasi-isotropic carbon/epoxy laminate, driven at 8000 rpm (133 Hz) by a BLDC motor and producing a design hover thrust of 8.0 N per propeller at sea level (air density 1.225 kg/m^3). Hub is clamped to the motor shaft; blades are free.\n\nLoad cases.\n- LC1 centrifugal + aero: 8000 rpm centrifugal plus aerodynamic pressure from steady hover CFD.\n- LC2 hover CFD target: 8.0 N thrust +/- 5% at 8000 rpm, figure of merit target.\n- LC3 modal / Campbell: first mode at 0 rpm above 200 Hz; at 8000 rpm, separation from 1P/2P by at least 10%.\n\nTotal mass is a UAV-prop budget constraint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "fluid_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "BEMT_propeller_preprocessor",
+        "reason": "Blade element momentum theory gives the baseline thrust / torque prior to CFD, used as an initial-guess pre-solver.",
+        "examples": [
+          "QPROP",
+          "JBLADE",
+          "XROTOR"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "11-inch quadcopter carbon/epoxy propeller",
+    "brief": "Design a 280 mm 2-blade carbon/epoxy UAV propeller for 8000 rpm producing 8.0 N hover thrust per prop, passing root stress, tip deflection, modal separation from 1P/2P, CFD thrust accuracy, and 30 g pair mass.",
+    "geometric_constraints": {
+      "diameter_mm": 280,
+      "blade_count": 2,
+      "hub_ID_mm": 8,
+      "operating_rpm": 8000
+    },
+    "material": {
+      "name": "Carbon/epoxy quasi-isotropic laminate",
+      "E_GPa": 70,
+      "tensile_MPa": 600,
+      "density_kg_m3": 1600
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "centrifugal_plus_aero",
+        "rpm": 8000,
+        "aero_pressure": "from steady CFD"
+      },
+      {
+        "id": "LC2",
+        "name": "hover_CFD",
+        "target_thrust_N": 8.0,
+        "tolerance_pct": 5,
+        "air_density_kg_m3": 1.225
+      },
+      {
+        "id": "LC3",
+        "name": "modal_Campbell",
+        "first_mode_Hz_min": 200,
+        "separation_from_1P_2P_pct": 10
+      }
+    ],
+    "boundary_conditions": {
+      "hub": "clamped to motor shaft",
+      "blade": "free"
+    },
+    "objective": {
+      "primary": "meet thrust / efficiency at 8000 rpm",
+      "secondary": "minimize propeller mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "blade_root_max_von_mises_MPa",
+        "tip_deflection_mm",
+        "first_natural_frequency_0rpm_Hz",
+        "first_natural_frequency_8000rpm_Hz",
+        "hover_thrust_N",
+        "figure_of_merit",
+        "total_mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "blade_root_max_von_mises",
+        "limit_MPa": 300,
+        "derivation": "carbon/epoxy tensile 600 / 2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "blade_tip_deflection",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "modal_separation_from_1P_2P",
+        "limit_Hz_min_first_mode": 200,
+        "limit_pct_min_separation": 10,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "custom"
+      },
+      {
+        "id": "R4",
+        "type": "fluid_analysis",
+        "metric": "hover_thrust_accuracy",
+        "limit_N_target": 8.0,
+        "limit_pct_tolerance": 5,
+        "limit_FoM_min": 0.7,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_g": 30,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (composite layup)",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS Mechanical + Fluent",
+        "ANSYS CFX"
+      ],
+      "analysis_types": [
+        "one-way FSI",
+        "modal with rotational pre-stress",
+        "steady RANS"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient air, no thermal constraint.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Thin blade dominated by centrifugal tension, not buckling."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Composite ply-by-ply failure criteria (Hashin, Puck)",
+      "Unsteady aeroacoustics (tonal noise)",
+      "Ingestion / bird-strike resilience"
+    ]
+  },
+  "eval_coverage": [
+    "one-way FSI CFD -> FEA coupling",
+    "Campbell diagram modal separation",
+    "thrust + efficiency CFD pass/fail",
+    "composite laminate propeller design"
+  ]
+}

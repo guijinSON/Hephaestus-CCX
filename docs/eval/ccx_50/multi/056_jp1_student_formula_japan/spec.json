@@ -1,0 +1,526 @@
+{
+  "id": "056_jp1_student_formula_japan",
+  "source": {
+    "catalog_ref": "JP1",
+    "year": 2025,
+    "tier": "A+",
+    "original_sample": "docs/eval/samples/056_jp1_student_formula_japan.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "automotive_structural",
+  "part_class": "chassis_frame_and_impact_attenuator",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary structure of a collegiate formula-style racecar per 2025 collegiate formula-style racecar regulations (2nd edition, 2025-02-12), delivered as a multi-part assembly because the rulebook explicitly defines the primary structure as two sub-assemblies - (1) the tubular Space Frame chassis (Main Hoop, Front Hoop, Main Hoop Bracing, Side Impact Structure, Front Bulkhead, Front Bulkhead Support) and (2) an Impact Attenuator mounted forward of the Front Bulkhead - whose pass/fail (driver template, tube sizing, 7 m/s barrier impact, 60 degree tilt test) all reference the assembled frame + IA combination.\n\nAssembly layout. (A) Main Hoop: steel tube OD 25.4 mm x wall >= 2.4 mm (1.0 inch x 0.095 inch), looped behind driver, SAE/AISI 1010 or equivalent. (B) Front Hoop: steel tube same minimum section, looped in front of driver. (C) Main Hoop Bracing tubes: same minimum section, triangulating Main Hoop to rear frame. (D) Side Impact Structure tubes: tubular members along each side at driver's hip/shoulder height. (E) Front Bulkhead: closed tubular loop at the front of the chassis, forward of the driver's feet by at least 300 mm. (F) Front Bulkhead Support tubes: triangulation between Front Bulkhead and Front Hoop. (G) Impact Attenuator (IA): deformable forward structure bolted to the Front Bulkhead that absorbs the 300 kg / 7 m/s barrier impact.\n\nGeometric envelope. Wheelbase >= 1525 mm. 95th-percentile male driver template (circle-line-circle per rulebook) must fit entirely inside chassis with helmet >= 50 mm rearward of the straight line from top of Main Hoop to top of Front Hoop, and >= 50 mm rearward of the Main Hoop itself. Front Bulkhead >= 300 mm forward of the foremost foot component.\n\nMaterial. Primary-structure tubing: SAE/AISI 1010 mild steel (or equivalent) with yield strength >= 305 MPa and ultimate tensile >= 365 MPa, OD 25.4 mm, wall >= 2.4 mm (per rulebook T.3.4 minimum; non-critical members may use different sections per applicable rule clauses, out of scope here).\n\nLoad cases. LC1 (IA barrier impact): 300 kg equivalent vehicle at 7 m/s into rigid non-yielding barrier; the IA mounted to the Front Bulkhead must produce average deceleration <= 20 g and peak deceleration <= 40 g. LC2 (static tilt test): vehicle tilted to 60 degrees static; must not tip and must not leak fluid.\n\nPass/fail criteria (assembly-level). (R1) Main Hoop tube OD = 25.4 mm (T.3.4). (R2) Main Hoop tube wall >= 2.4 mm (T.3.4). (R3) Wheelbase >= 1525 mm (T.1.2). (R4) IA average deceleration under LC1 <= 20 g. (R5) IA peak deceleration under LC1 <= 40 g. (R6) Tilt-test first-failure angle >= 60 degrees under LC2.\n\nAssembly policy. The IA pass/fail (R4, R5) is a measurement on the IA mounted to the Front Bulkhead (A-G interface); the tilt test (R6) is a whole-vehicle integrity check across the assembled space frame + IA; driver-template checks (not numerically graded in this brief but implied) reference the A-B-C-D-E-F layout simultaneously. Pass/fail has no meaning on any tube evaluated alone.\n\nSolver and analysis expectations. Primary: linear-static FEM for chassis stiffness and rollover-style tilt equivalent; nonlinear explicit dynamics (LS-DYNA / Abaqus Explicit / Radioss) for IA crush of LC1, with a quasi-static energy check as a fallback. Vibration, thermal, fluid, and ionizing-radiation analyses explicitly NOT required at this design gate.\n\nDeliverables. STEP AP242 of the assembled space frame + IA, material certificate listing tube OD/wall/alloy, and a report listing Main Hoop OD/wall in mm, wheelbase in mm, 95th-percentile template clearance in mm, IA average / peak deceleration in g, and tilt first-failure angle in degrees.",
+  "short_prompt": "Design the primary structure of a collegiate formula-style racecar per 2025 collegiate formula-style racecar regulations (2nd edition, 2025-02-12), delivered as a multi-part assembly of a tubular Space Frame chassis + an Impact Attenuator mounted forward of the Front Bulkhead. Primary-structure tubing: SAE/AISI 1010 mild steel (or equivalent) with yield >= 305 MPa and UTS >= 365 MPa; Main Hoop and Front Hoop are OD 25.4 mm (1.0 in), wall >= 2.4 mm (0.095 in) per rulebook T.3.4.\n\nEnvelope. Wheelbase >= 1525 mm (T.1.2). 95th-percentile male driver template: helmet >= 50 mm rearward of the line from top of Main Hoop to top of Front Hoop, and >= 50 mm rearward of the Main Hoop itself. Front Bulkhead >= 300 mm forward of foremost foot component.\n\nLoad cases.\n- LC1 IA barrier impact: 300 kg equivalent vehicle at 7 m/s into rigid non-yielding barrier; average deceleration <= 20 g, peak <= 40 g.\n- LC2 static tilt test: 60 degrees, no tip, no fluid leak.\n\nPass limits: Main Hoop OD = 25.4 mm and wall >= 2.4 mm (T.3.4); wheelbase >= 1525 mm; IA average <= 20 g, peak <= 40 g; tilt first-failure angle >= 60 deg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics",
+        "reason": "IA 7 m/s barrier impact is formally a nonlinear transient dynamics problem; equivalent quasi-static energy is the FEA fallback.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Altair Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-style racecar space frame + impact attenuator as multi-part assembly",
+    "brief": "Rule-compliant tubular space frame (Main Hoop, Front Hoop, bracing, side impact, bulkhead, bulkhead support) + front Impact Attenuator meeting 2025 rulebook; tube sizing, wheelbase, IA deceleration, tilt test all apply to the assembly.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "main_hoop",
+        "role": "primary-structure hoop behind driver",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tube_OD_mm": 25.4,
+          "tube_wall_mm_min": 2.4,
+          "material": "SAE/AISI 1010 or equivalent"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "front_hoop",
+        "role": "primary-structure hoop in front of driver",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tube_OD_mm": 25.4,
+          "tube_wall_mm_min": 2.4
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "main_hoop_bracing",
+        "role": "triangulation tubes from Main Hoop to rear frame",
+        "count_min": 2,
+        "geometric_constraints": {
+          "tube_OD_mm": 25.4,
+          "tube_wall_mm_min": 2.4
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "side_impact_structure",
+        "role": "tubular side impact members at driver hip/shoulder height",
+        "count_min": 3,
+        "geometric_constraints": {
+          "side": "2 sides"
+        }
+      },
+      {
+        "part_id": "E",
+        "name": "front_bulkhead",
+        "role": "closed tubular bulkhead forward of driver's feet",
+        "count_min": 1,
+        "geometric_constraints": {
+          "forward_of_feet_mm_min": 300
+        }
+      },
+      {
+        "part_id": "F",
+        "name": "front_bulkhead_support",
+        "role": "triangulation between Front Bulkhead and Front Hoop",
+        "count_min": 2,
+        "geometric_constraints": {}
+      },
+      {
+        "part_id": "G",
+        "name": "impact_attenuator",
+        "role": "deformable forward structure absorbing 300 kg / 7 m/s barrier impact",
+        "count_min": 1,
+        "geometric_constraints": {
+          "mounted_to": "Front Bulkhead"
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "wheelbase_mm_min": 1525,
+      "front_bulkhead_to_feet_clearance_mm_min": 300,
+      "driver_template_rearward_of_hoop_line_mm_min": 50
+    },
+    "material": {
+      "name": "Mild steel SAE/AISI 1010 (or equivalent)",
+      "properties": {
+        "yield_strength_MPa_min": 305,
+        "ultimate_tensile_strength_MPa_min": 365
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "IA_barrier_impact",
+        "mass_kg": 300,
+        "velocity_m_s": 7,
+        "description": "300 kg equivalent vehicle into rigid barrier at 7 m/s"
+      },
+      {
+        "id": "LC2",
+        "name": "tilt_test",
+        "angle_deg": 60,
+        "description": "Static tilt; no leakage, no tip-over"
+      }
+    ],
+    "boundary_conditions": {
+      "chassis": "fixed at rear suspension mounts during tilt equivalent",
+      "IA": "mounted to Front Bulkhead as flat plate"
+    },
+    "objective": {
+      "primary": "rule_compliance",
+      "secondary": "minimize chassis mass subject to stiffness targets"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (space frame tubes + IA)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E|F|G)"
+      ],
+      "report_fields": [
+        "main_hoop_tube_OD_mm",
+        "main_hoop_tube_wall_mm",
+        "wheelbase_mm",
+        "template_clearance_mm",
+        "IA_avg_decel_g",
+        "IA_peak_decel_g",
+        "tilt_first_failure_angle_deg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "main_hoop_tube_OD_mm",
+        "limit_mm": 25.4,
+        "derivation": "Rulebook T.3.4 primary structure steel tubing minimum",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "main_hoop_tube_wall_mm",
+        "limit_mm": 2.4,
+        "derivation": "Rulebook T.3.4 nominal wall",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "wheelbase_mm",
+        "limit_mm": 1525,
+        "derivation": "Rulebook T.1.2",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "IA_avg_decel_g",
+        "limit_g": 20,
+        "derivation": "Rulebook IA 7.5 g target / 20 g average cap at 7 m/s, 300 kg",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "IA_peak_decel_g",
+        "limit_g": 40,
+        "derivation": "Rulebook peak deceleration cap",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "tilt_first_failure_angle_deg",
+        "limit_deg": 60,
+        "derivation": "Rulebook tilt test 60 deg no leak/tip",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[6].count_min",
+          "prompt.parts[6].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (chassis), shell or solid (IA crush)",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "LS-DYNA",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (chassis)",
+        "explicit dynamics (IA)"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A main_hoop / B front_hoop / C bracing / D side_impact / E bulkhead / F bulkhead_support"
+      ],
+      "mediated_by": "welded tube joints forming space frame",
+      "load_path": "chassis load path; tilt-test integrity and driver-template clearance depend on assembled geometry"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "E front_bulkhead",
+        "G impact_attenuator"
+      ],
+      "mediated_by": "bolted flat-plate mount",
+      "load_path": "barrier impact energy absorbed by G and transmitted into bulkhead"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "full chassis (A-F)",
+        "ground / test rig"
+      ],
+      "mediated_by": "suspension mounts (tilt test fixture)",
+      "load_path": "60 deg tilt equivalent; rollover stability and fluid containment"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Tube sizing (R1, R2) is a rulebook callout on the assembled primary structure; wheelbase (R3) is measured on the assembled chassis; IA deceleration (R4, R5) requires IA bolted to Front Bulkhead (G-E interface); tilt test (R6) is a whole-vehicle check. No component evaluated alone has meaningful pass/fail."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "The rulebook defines primary structure as an enumerated list of tubular sub-assemblies plus an IA; the tests are on the assembled vehicle.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not part of chassis/IA rule compliance.",
+      "thermal_analysis": "Not relevant to structural gate.",
+      "fluid_analysis": "Aero package is a separate rule section.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "rule-compliance numeric checks on assembled frame",
+    "tube sizing / driver template clearance across hoops + bulkhead",
+    "impact attenuator deceleration gate at IA-bulkhead interface",
+    "static tilt test on whole vehicle"
+  ],
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[6].count_min",
+      "prompt.parts[6].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "main_hoop_tube_OD_mm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "main_hoop_tube_wall_mm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "wheelbase_mm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "IA_avg_decel_g",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "IA_peak_decel_g",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_005",
+      "requirement_id": "R6",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC2",
+      "metric": "tilt_first_failure_angle_deg",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_006",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

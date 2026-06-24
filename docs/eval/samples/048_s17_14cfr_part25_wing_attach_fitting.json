@@ -1,0 +1,242 @@
+{
+  "id": "048_s17_14cfr_part25_wing_attach_fitting",
+  "source": {
+    "catalog_ref": "S17",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "wing_attach_primary_fitting",
+  "full_prompt": "Design a primary wing-attach-lug fitting for a narrow-body transport-category airplane, certified under 14 CFR Part 25 (Transport Category Airplanes). Governing clauses: 25.303 (ultimate factor = 1.5 x limit), 25.305 (strength and deformation), 25.337 (symmetric maneuver +2.5 / -1.0 g), 25.341 (gust and continuous turbulence), 25.561 (9 g forward emergency-landing dynamic condition for fittings on primary load paths), and 25.625 (fitting factor 1.15 applied to ultimate load for all fittings carrying primary loads).\n\nGeometry. Single-lug fitting machined from 7075-T7351 Al plate, 200 mm x 150 mm x 40 mm envelope. Lug hole diameter 40 mm (for a 38 mm diameter titanium attach pin with bushing). Lug thickness around pin 30 mm. Four M16 titanium attachment bolts bolt the fitting to the fuselage frame on a 160 mm x 100 mm rectangular pattern. Lug is monolithic with the bolt flange. Geometry must allow NDI access to the bolt holes and lug ligament.\n\nMaterial. 7075-T7351 thick plate per MMPDS S-basis: E = 71.7 GPa, nu = 0.33, rho = 2810 kg/m^3, Fty (L) = 414 MPa, Ftu (L) = 476 MPa, bearing-yield allowable (e/D = 2) = 662 MPa, bearing-ultimate allowable (e/D = 2) = 834 MPa. Pin: Ti-6Al-4V, Fty 860 MPa, Ftu 950 MPa. Bolts: A286, rated ultimate per bolt 145 kN (M16).\n\nService envelope.\nSymmetric maneuver (25.337): n_pos = +2.5, n_neg = -1.0 limit.\nGust (25.341): combined maneuver + gust load factor envelope, for this fitting max limit axial pin load = 320 kN (derived from wing lift at n=2.5 and fuselage reaction at the attach point).\nEmergency landing (25.561): 9 g forward quasi-static on all occupants and cargo equivalent, applied as a 180 kN horizontal shear at the lug for this fitting.\nLimit loads at lug (positive): axial pin-bearing 320 kN, side load 80 kN, down load 95 kN.\nUltimate = 1.5 x limit (25.303): axial pin-bearing 480 kN, side 120 kN, down 142.5 kN.\nWith fitting factor 1.15 per 25.625 on the ultimate: equivalent ultimate design loads become axial 552 kN, side 138 kN, down 164 kN.\nEmergency-landing ultimate = 1.5 x 180 = 270 kN forward shear at lug (or the 25.561 dynamic-equivalent value without additional factor per 25.561(b) - this brief uses 1.5 x limit for conservatism).\n\nLoad cases.\nLC1 (positive symmetric maneuver ultimate with fitting factor): axial 552 kN pin-bearing.\nLC2 (gust ultimate with fitting factor): combined axial 480 * 1.15 = 552 kN + side 138 kN + down 164 kN.\nLC3 (negative maneuver ultimate with fitting factor): axial -220 kN (reverse direction).\nLC4 (25.561 emergency landing): 270 kN forward shear at lug.\n\nPass/fail criteria. (R1) Lug bearing stress under LC1-LC4 ultimate with fitting factor must not exceed bearing-ultimate allowable 834 MPa. Sigma_bearing = P / (d_pin * t_lug) = 552,000 / (40 * 30) = 460 MPa at LC1 (pass with margin). (R2) Lug ligament net-section tension stress under LC1 ultimate with fitting factor must not exceed Ftu = 476 MPa. Net section = (W_lug - d_hole) * t_lug = (100 - 40) * 30 = 1800 mm^2; sigma = 552,000 / 1800 = 307 MPa (pass). (R3) Lug shear-out stress on two shear-out planes must not exceed 0.6 * Ftu = 285.6 MPa shear allowable: A_shear = 2 * (e - d/2) * t = 2 * (50 - 20) * 30 = 1800 mm^2; tau = 552,000 / 1800 = 307 MPa (FAIL - designer must increase edge distance e or lug thickness t; retained as the binding check). (R4) Bolt-flange pattern: each of the 4 M16 A286 bolts must not exceed 145 kN ultimate; worst bolt at LC2 combined = approximately 552/4 + 164*0.1/0.2 = 138 + 82 = 220 kN (FAIL - designer must add bolts or reposition). Retained as binding check. (R5) Emergency-landing LC4 lug shear must not exceed 0.6*Ftu: tau = 270,000 / 1800 = 150 MPa (pass). (R6) Fitting mass <= 4.5 kg. (R7) 25.625 fitting factor 1.15 must be visibly applied in the load log (procedural compliance).\n\nSolver and analysis expectations. Primary: linear static FEM at ultimate x 1.15 fitting factor for LC1-LC4 with pin-bearing contact in the lug hole. TET10 mesh 1 mm in the ligament and shear-out planes. Lug closed-form check per FAA AC 25.625 and Bruhn Chapter D1.14 is also required as a cross-check. Vibration, thermal, fluid, radiation, buckling NOT required.\n\nDeliverables. STEP AP242 of fitting, mass in kg, ultimate load applied per LC, bearing / net-section / shear-out stress per LC with margin-of-safety, bolt load per bolt with margin, and a loads-log entry showing the 1.15 fitting factor.",
+  "short_prompt": "Design a primary wing-attach single-lug fitting for a narrow-body transport airplane (machined 7075-T7351 plate with a Ti-6Al-4V pin and A286 bolts). Certify under 14 CFR Part 25, with the 1.5 ultimate factor per 25.303, the 1.15 fitting factor per 25.625 applied to primary fittings, and Section 25.337 maneuver, 25.341 gust, and 25.561 9g emergency-landing conditions all addressed.\n\nEnvelope: 200 x 150 x 40 mm fitting with a 40 mm diameter lug hole (38 mm Ti pin with bushing), 30 mm lug thickness, 50 mm edge distance, and four M16 A286 mounting bolts on a 160 x 100 mm pattern.\n\nLoad cases (values are ultimate with the 1.15 fitting factor already applied).\n- LC1 positive symmetric maneuver: axial pin-bearing 552 kN.\n- LC2 gust combined: axial 552 kN + side 138 kN + down 164 kN.\n- LC3 negative maneuver: axial -220 kN.\n- LC4 25.561 emergency landing: 270 kN forward shear at the lug.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "closed_form_lug_analysis",
+        "reason": "Bruhn / AC 25.625 lug equations cross-check the FEM.",
+        "examples": [
+          "Bruhn Chapter D1.14",
+          "hand calc",
+          "MathCAD"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Wing-attach lug fitting per 14 CFR Part 25",
+    "brief": "7075-T7351 primary lug with 40 mm pin hole; ultimate = 1.5 x limit x 1.15 fitting factor; 25.337 maneuver + 25.341 gust + 25.561 9g emergency.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 200,
+        "y": 150,
+        "z": 40
+      },
+      "lug_hole_mm": 40,
+      "pin_diameter_mm": 38,
+      "lug_thickness_mm": 30,
+      "edge_distance_mm": 50,
+      "bolt_pattern": {
+        "count": 4,
+        "size": "M16 A286",
+        "pattern_mm": {
+          "x": 160,
+          "y": 100
+        }
+      }
+    },
+    "material": {
+      "lug": {
+        "name": "Al 7075-T7351",
+        "basis": "MMPDS S-basis",
+        "E_GPa": 71.7,
+        "Fty_MPa": 414,
+        "Ftu_MPa": 476,
+        "bearing_ult_MPa": 834,
+        "bearing_yield_MPa": 662
+      },
+      "pin": {
+        "name": "Ti-6Al-4V",
+        "Fty_MPa": 860,
+        "Ftu_MPa": 950
+      },
+      "bolt": {
+        "name": "A286 M16",
+        "ultimate_kN": 145
+      }
+    },
+    "service_envelope": {
+      "n_pos": 2.5,
+      "n_neg": -1.0,
+      "axial_limit_kN": 320,
+      "side_limit_kN": 80,
+      "down_limit_kN": 95,
+      "ultimate_factor": 1.5,
+      "fitting_factor_25_625": 1.15,
+      "emergency_landing_g": 9,
+      "emergency_shear_limit_kN": 180
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pos_maneuver_ultimate_x_fitting",
+        "axial_kN": 552
+      },
+      {
+        "id": "LC2",
+        "name": "gust_combined",
+        "axial_kN": 552,
+        "side_kN": 138,
+        "down_kN": 164
+      },
+      {
+        "id": "LC3",
+        "name": "neg_maneuver",
+        "axial_kN": -220
+      },
+      {
+        "id": "LC4",
+        "name": "25_561_emergency_9g",
+        "forward_shear_kN": 270
+      }
+    ],
+    "boundary_conditions": {
+      "bolt_flange": "fully fixed to fuselage frame"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_kg_max": 4.5
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "14 CFR Part 25",
+      "revision": "current eCFR"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "lug_bearing_stress_ultimate_with_fitting_factor",
+        "limit_MPa": 834,
+        "derivation": "Bearing-ultimate allowable (e/D=2) per MMPDS 7075-T7351 plate",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "lug_net_section_tension_stress_ultimate",
+        "limit_MPa": 476,
+        "derivation": "Ftu per MMPDS; 25.303 ultimate 1.5 + 25.625 fitting 1.15 already baked into load",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "lug_shear_out_stress_ultimate",
+        "limit_MPa": 285.6,
+        "derivation": "0.6 * Ftu shear allowable",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_bolt_ultimate_load",
+        "limit_kN": 145,
+        "derivation": "A286 M16 rated ultimate",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "lug_shear_under_25_561_emergency",
+        "limit_MPa": 285.6,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "fitting_mass",
+        "limit_kg": 4.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "fitting_factor_1_15_documented",
+        "limit": 1,
+        "derivation": "14 CFR 25.625 procedural compliance",
+        "applies_to": [
+          "load_log"
+        ],
+        "operator": "==",
+        "note": "binary"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 with pin-bearing contact",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static x4 ultimate",
+        "Bruhn lug closed-form cross-check"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static per Part 25 limit-and-ultimate; dynamic not in scope here.",
+      "thermal_analysis": "Ambient assumed.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Tension-dominated lug; not driving."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fatigue / damage tolerance per 25.571",
+      "Bird-strike residual strength",
+      "Material-allowables building-block test per Part 25 Subpart F"
+    ]
+  },
+  "eval_coverage": [
+    "25.303 ultimate 1.5 x",
+    "25.625 fitting factor 1.15",
+    "25.337 maneuver + 25.341 gust + 25.561 emergency",
+    "lug bearing / net-section / shear-out closed-form"
+  ]
+}

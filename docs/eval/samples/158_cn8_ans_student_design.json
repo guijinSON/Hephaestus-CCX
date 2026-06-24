@@ -1,0 +1,207 @@
+{
+  "id": "158_cn8_ans_student_design",
+  "source": {
+    "catalog_ref": "CN8",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "nuclear_structural",
+  "part_class": "pwr_fuel_assembly_top_nozzle",
+  "full_prompt": "Design a single PWR fuel assembly top nozzle (end fitting) compatible with a standard 17x17 reference assembly. The top nozzle is a single monolithic welded or machined part made from Type 304 stainless steel (Young's modulus 193 GPa at 20 C and 170 GPa at 300 C, density 8000 kg/m^3, yield strength 205 MPa at 20 C and 138 MPa at 300 C, ultimate 515 MPa at 20 C). The nozzle envelope must fit a 214 mm x 214 mm square plan and 100 mm tall, with a central array of 24 hold-down springs and four corner guide-thimble attachment posts on a 300 mm spacing consistent with the 17x17 grid. The nozzle carries simultaneously: (LC1) a primary coolant differential pressure of 0.35 MPa across the flow plate at steady operation with water at 300 C and 15.5 MPa, (LC2) a hold-down spring pre-load of 40 kN total distributed across 24 springs to prevent fuel lift-off at full flow, (LC3) a seismic-uplift transient of 1.5 g vertical on the full 650 kg assembly, and (LC4) an emergency handling lift load of 20 kN applied at the central lift lug with the four guide-thimble posts supported. The design must satisfy pass/fail criteria per ASME Section III Division 1 Subsection NB at 300 C: (R1) primary membrane stress Pm must not exceed Sm at 300 C which is 115 MPa for Type 304, (R2) primary membrane plus bending Pm + Pb must not exceed 1.5 Sm which is 173 MPa, (R3) maximum displacement at the hold-down spring interface must not exceed 1.0 mm under LC2, (R4) a linear buckling eigenvalue under LC3 must yield a first-mode load factor of at least 2.0, and (R5) the nozzle mass must not exceed 8.0 kg to stay within the reference assembly weight budget. Thermal analysis is required only to set material properties at 300 C; no transient thermal pass/fail. Vibration (modal), fluid CFD, and radiation dose analyses are explicitly not required for this structural entry. Deliver a STEP AP242 solid body plus a stress report with Pm, Pm+Pb per load case, hold-down interface displacement, first buckling load factor, and total mass.",
+  "short_prompt": "Design a single PWR fuel-assembly top nozzle (end fitting) compatible with a standard 17x17 reference assembly, as a monolithic welded or machined Type 304 stainless steel body. Envelope is 214 x 214 mm square plan by 100 mm tall, with 24 hold-down springs in a central array and four corner guide-thimble attachment posts on a 300 mm spacing consistent with the 17x17 grid. Design per ASME Section III Division 1 Subsection NB at 300 C (properties set at 300 C; no transient thermal pass/fail).\n\nLoad cases (applied to the same nozzle).\n- LC1 primary coolant differential: 0.35 MPa across the flow plate at steady operation (water at 300 C, 15.5 MPa).\n- LC2 hold-down spring pre-load: 40 kN total distributed across 24 springs to prevent fuel lift-off at full flow.\n- LC3 seismic uplift transient: 1.5 g vertical on the 650 kg assembly.\n- LC4 emergency handling lift: 20 kN at the central lift lug with the four guide-thimble posts supported.\nPrimary membrane Pm <= Sm (115 MPa at 300 C), Pm+Pb <= 1.5 Sm (173 MPa), hold-down interface displacement under LC2 <= 1.0 mm, linear-buckling factor under LC3 >= 2.0, total nozzle mass <= 8.0 kg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ASME_III_NB_stress_linearization",
+        "reason": "Pm and Pm+Pb are extracted by linearization along Stress Classification Lines per ASME BPVC Section III NB-3215, applied as post-processing on the FEA stress field.",
+        "examples": [
+          "ANSYS SCL post",
+          "Abaqus /WBPOST linearization macro"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "17x17 PWR top nozzle",
+    "brief": "Design a monolithic Type 304 SS top nozzle (214 x 214 x 100 mm) for a 17x17 PWR assembly with 40 kN spring preload, 0.35 MPa dP, 1.5 g seismic uplift, 20 kN handling lift, meeting ASME III NB limits at 300 C.",
+    "geometric_constraints": {
+      "plan_mm": [
+        214,
+        214
+      ],
+      "height_mm": 100,
+      "guide_thimble_spacing_mm": 300,
+      "spring_count": 24,
+      "monolithic": true
+    },
+    "material": {
+      "name": "Type 304 Stainless Steel",
+      "properties_20C": {
+        "E_GPa": 193,
+        "yield_MPa": 205,
+        "ultimate_MPa": 515,
+        "density_kg_m3": 8000
+      },
+      "properties_300C": {
+        "E_GPa": 170,
+        "yield_MPa": 138,
+        "Sm_MPa": 115
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "steady_dP",
+        "magnitude_MPa": 0.35,
+        "application": "differential pressure across flow plate"
+      },
+      {
+        "id": "LC2",
+        "name": "spring_preload",
+        "magnitude_N": 40000,
+        "distribution": "24 springs",
+        "application": "compression at spring seats"
+      },
+      {
+        "id": "LC3",
+        "name": "seismic_uplift",
+        "acceleration_g": 1.5,
+        "assembly_mass_kg": 650,
+        "application": "vertical inertia"
+      },
+      {
+        "id": "LC4",
+        "name": "handling_lift",
+        "magnitude_N": 20000,
+        "application": "central lift lug with guide-thimble supports"
+      }
+    ],
+    "boundary_conditions": {
+      "guide_thimble_posts": "pinned to posts",
+      "flow_plate": "pressure face both sides per LC1"
+    },
+    "objective": {
+      "primary": "pass ASME III NB limits at 300 C",
+      "secondary": "minimize mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "Pm_per_case_MPa",
+        "Pm_plus_Pb_per_case_MPa",
+        "spring_interface_displacement_mm",
+        "first_buckling_load_factor",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "Pm",
+        "limit_MPa": 115,
+        "derivation": "Sm for Type 304 at 300 C per ASME II-D",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "Pm_plus_Pb",
+        "limit_MPa": 173,
+        "derivation": "1.5 Sm per ASME III NB-3221",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "spring_interface_displacement",
+        "limit_mm": 1.0,
+        "derivation": "hold-down margin for lift-off prevention",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "derivation": "seismic uplift buckling margin",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 8.0,
+        "derivation": "17x17 reference assembly weight budget",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral with SCL-aligned prism layer for linearization",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "linear buckling eigenvalue (LC3)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Flow-induced vibration qualification is a separate program, not part of this entry.",
+      "fluid_analysis": "dP is prescribed as a static differential pressure; CFD not required.",
+      "radiation_analysis": "Gamma/neutron dose is not a structural pass/fail for this artifact."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Irradiation embrittlement over cycle life (ASTM E185)",
+      "Primary + secondary stress (P + Q) with thermal transients",
+      "Fatigue usage per ASME III NB-3222.4"
+    ]
+  },
+  "eval_coverage": [
+    "ASME III NB primary membrane / membrane+bending linearization",
+    "material properties at operating temperature 300 C",
+    "seismic uplift buckling eigenvalue",
+    "nuclear-adjacent fuel-assembly geometry"
+  ]
+}

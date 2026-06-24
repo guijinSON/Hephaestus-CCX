@@ -1,0 +1,190 @@
+{
+  "id": "250_a10_imeche_uas_waterdrop",
+  "source": {
+    "catalog_ref": "A10",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "uas_payload_dispenser",
+  "full_prompt": "Design a single-part monolithic water-payload reservoir-with-dispenser for a fixed-wing unmanned aircraft system (UAS) used in autonomous waypoint navigation challenges. Aircraft MTOM is capped at 10.0 kg; the mission requires accurate release of a water payload at a designated target. Reservoir specification: capacity 1.0 L water (1.0 kg); mounted to underside of fuselage via four M4 threaded inserts on a 80 mm x 60 mm rectangular pattern; overall bounding box 200 mm x 80 mm x 80 mm. A single solenoid-actuated 12 mm diameter nozzle port is integral to the reservoir bottom. Material: PA12 (nylon 12) laser-sintered, E = 1.65 GPa, yield = 48 MPa, ultimate = 50 MPa, density = 1010 kg/m^3. Load cases: (R1) Static full-reservoir weight at 1 g: 1.0 kg x 9.81 = 9.81 N downward on the four mounting inserts; max von Mises in mount interface <= yield / 2.0 = 24 MPa. (R2) Aerodynamic pressure during cruise at 20 m/s + 2.5 g pull-up with full reservoir: effective vertical load 2.5 g x 1.0 kg = 24.5 N plus aerodynamic drag 3 N on frontal area; max von Mises <= 24 MPa. (R3) Release dynamics: 50 ms solenoid open causes transient water hammer pressure spike of 2.0 bar (200 kPa) internal; max von Mises <= ultimate / 2.0 = 25 MPa. (R4) Hard landing: 5 g vertical on reservoir with 1 kg water mass = 49 N; max von Mises <= 24 MPa. (R5) Reservoir dry mass <= 120 g. (R6) The reservoir wall when empty (non-pressurized) shall resist external crush of 0.3 bar differential (takeoff aerodynamic) without buckling; linear buckling eigenvalue >= 3.0. Primary verification: structural FEA for R1-R4, linear buckling eigenvalue for R6. Vibration, thermal, fluid (the water hammer is modeled as an equivalent static 2 bar internal pressure, not a CFD problem), radiation explicitly NOT required at this gate. Deliverables: STEP AP242 monolithic reservoir, dispenser interface drawing, and a report listing dry mass in g, max von Mises per load case in MPa, first buckling load factor.",
+  "short_prompt": "Design a single-part monolithic 1 L water-payload reservoir-with-dispenser mounted on the underside of a fixed-wing UAS (MTOM capped at 10 kg) used for autonomous waypoint-drop challenges. Reservoir is PA12 laser-sintered, mounted via four M4 threaded inserts on an 80 x 60 mm rectangular pattern, with a single solenoid-actuated 12 mm nozzle integral to the bottom.\n\nEnvelope: bounding box 200 x 80 x 80 mm; internal capacity 1.0 L water (1.0 kg).\n\nLoad cases.\n- LC1 static 1 g full-reservoir weight (9.81 N) on the four mounting inserts.\n- LC2 2.5 g pull-up at 20 m/s cruise with full reservoir, plus 3 N frontal aero drag.\n- LC3 release water-hammer transient: 2.0 bar (200 kPa) internal pressure spike modelled as equivalent static.\n- LC4 hard landing: 5 g vertical at 1 kg water (49 N).\n- LC5 empty-reservoir crush: 0.3 bar external differential during takeoff, linear buckling eigenvalue check.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "UAS water-payload reservoir with integrated solenoid dispenser",
+    "brief": "1.0 L PA12 sintered reservoir with integrated solenoid dispenser for MTOM 10 kg UAS. Four static load cases + buckling under external crush.",
+    "geometric_constraints": {
+      "capacity_L": 1.0,
+      "bounding_box_mm": "200 x 80 x 80",
+      "mounting_inserts": {
+        "count": 4,
+        "size": "M4",
+        "pattern_mm": "80 x 60"
+      },
+      "nozzle_diameter_mm": 12,
+      "monolithic": true
+    },
+    "material": {
+      "name": "PA12 (nylon 12), laser-sintered",
+      "properties": {
+        "youngs_modulus_GPa": 1.65,
+        "yield_strength_MPa": 48,
+        "ultimate_tensile_strength_MPa": 50,
+        "density_kg_m3": 1010
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_1g",
+        "force_N": 9.81,
+        "direction": "vertical down"
+      },
+      {
+        "id": "LC2",
+        "name": "cruise_2.5g_plus_drag",
+        "vertical_N": 24.5,
+        "drag_N": 3
+      },
+      {
+        "id": "LC3",
+        "name": "water_hammer",
+        "internal_pressure_bar": 2.0
+      },
+      {
+        "id": "LC4",
+        "name": "hard_landing_5g",
+        "force_N": 49,
+        "direction": "vertical up"
+      },
+      {
+        "id": "LC5",
+        "name": "external_crush",
+        "external_pressure_bar": 0.3
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "four M4 insert holes fully fixed",
+      "loads": "body-load on water mass or uniform internal pressure"
+    },
+    "objective": {
+      "minimize": "dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "dry_mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 24,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 24,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 25,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 24,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_g": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x4 cases)",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not required at this design gate.",
+      "thermal_analysis": "Ambient conditions.",
+      "fluid_analysis": "Water-hammer pressure spike pre-reduced to equivalent static internal pressure.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "polymer material pass/fail",
+    "water hammer as equivalent static pressure",
+    "external crush buckling"
+  ]
+}

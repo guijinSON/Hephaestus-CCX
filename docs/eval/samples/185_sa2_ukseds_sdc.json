@@ -1,0 +1,211 @@
+{
+  "id": "185_sa2_ukseds_sdc",
+  "source": {
+    "catalog_ref": "SA2",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "satellite_structural",
+  "part_class": "3u_cubesat_primary_structure",
+  "full_prompt": "Design a 3U CubeSat primary structure benchmark compliant with Cal Poly CubeSat Design Specification (CDS) Rev 14 for 3U deployers. The structure is a monolithic 6061-T6 aluminum skeletonized chassis with external envelope 100.0 +/- 0.1 mm x 100.0 +/- 0.1 mm x 340.5 +/- 0.3 mm (stacked 3U), four deployer rails on the long corners (8.5 x 8.5 mm rails, at least 85% of each 340.5 mm long rail in contact with the P-POD), and a total mass at or below 4.0 kg (3 x 1.33 kg) per CDS Rev 14 3U mass cap. The structure must support internal electronics stacks using the standard PC/104 form factor (90 x 96 mm boards, 4 mounting holes at 85.60 x 82.55 mm), spaced up to 12 boards along the long axis. Loads per GEVS-SE GSFC-STD-7000 typical qualification levels for a secondary payload on a launcher like Falcon 9 / Vega / PSLV: (LC1) quasi-static 12 g axial + 7 g lateral simultaneously, (LC2) sine vibration 2.5 g at 5-100 Hz, (LC3) random vibration GRMS 14.1 at 20-2000 Hz, (LC4) shock response 1000 g peak 100-10000 Hz. Material 6061-T6 (yield 276 MPa, ultimate 310 MPa, E 69 GPa, density 2700 kg/m^3). Pass/fail: (R1) quasi-static max von Mises stress must not exceed 137 MPa (yield / SF 2.0 per NASA-STD-5001B Category A bracket), (R2) first natural frequency must be at least 100 Hz to clear the launcher primary interface per ECSS-E-HB-32-26A, (R3) total structure mass at or below 4.0 kg, (R4) a linear buckling analysis under 12 g axial + 7 g lateral must yield a first-mode load factor of at least 2.0, and (R5) deployer rail flatness tolerance must be +/- 0.1 mm along the 340.5 mm rail length. Vibration analysis (modal + random) is required for R2. Thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 solid body plus a structural report with max von Mises, first natural frequency, total mass, first buckling load factor, and rail flatness.",
+  "short_prompt": "Design a monolithic 3U CubeSat primary structure to Cal Poly CubeSat Design Specification Rev 14 for 3U deployers. Envelope 100 x 100 x 340.5 mm (+/-0.1 / +/-0.1 / +/-0.3 mm), four 8.5 x 8.5 mm deployer rails on the long corners with at least 85% contact along the 340.5 mm length, total mass at or below 4.0 kg. Internal PC/104 stack of up to 12 boards along the long axis. Structure is 6061-T6 aluminum. Structure is constrained in the P-POD by the four rails.\n\nQualification loads per GEVS-SE GSFC-STD-7000 (typical secondary-payload levels on a Falcon 9 / Vega / PSLV-class launcher) with a NASA-STD-5001B Category A SF of 2.0 on the quasi-static case.\n\nLoad cases.\n- LC1 quasi-static: 12 g axial + 7 g lateral simultaneously.\n- LC2 sine vibration: 2.5 g, 5-100 Hz.\n- LC3 random vibration: 14.1 GRMS, 20-2000 Hz.\n- LC4 shock: 1000 g peak, 100-10000 Hz.\n\nFirst natural frequency must clear the launcher primary-interface band (>=100 Hz), and deployer-rail flatness must remain within +/-0.1 mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "CDS_rev14_compliance_check",
+        "reason": "CDS Rev 14 envelope/rail/mass compliance is a rule-checklist on the geometry, not FEA.",
+        "examples": [
+          "Cal Poly CDS checklist PDF"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CDS Rev 14 3U CubeSat primary structure",
+    "brief": "Design a 6061-T6 monolithic 3U CubeSat chassis (100 x 100 x 340.5 mm, <=4.0 kg) compliant with Cal Poly CDS Rev 14, passing GEVS quasi-static, modal >=100 Hz, and 2x buckling margin.",
+    "geometric_constraints": {
+      "envelope_mm": [
+        100,
+        100,
+        340.5
+      ],
+      "envelope_tolerance_mm": [
+        0.1,
+        0.1,
+        0.3
+      ],
+      "deployer_rail_cross_section_mm": [
+        8.5,
+        8.5
+      ],
+      "rail_contact_pct_min": 85,
+      "pc104_board_mm": [
+        90,
+        96
+      ]
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "yield_MPa": 276,
+      "ultimate_MPa": 310,
+      "E_GPa": 69,
+      "density_kg_m3": 2700
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static",
+        "axial_g": 12,
+        "lateral_g": 7
+      },
+      {
+        "id": "LC2",
+        "name": "sine_vib",
+        "g": 2.5,
+        "freq_Hz": [
+          5,
+          100
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "random_vib",
+        "GRMS": 14.1,
+        "freq_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "shock",
+        "peak_g": 1000,
+        "freq_Hz": [
+          100,
+          10000
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "deployer_rails": "constrained in P-POD by 4 rails with 85% contact"
+    },
+    "objective": {
+      "primary": "pass CDS Rev 14 + GEVS quasi-static",
+      "secondary": "minimize structure mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_MPa",
+        "first_natural_frequency_Hz",
+        "total_mass_kg",
+        "first_buckling_load_factor",
+        "rail_flatness_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 137,
+        "derivation": "Al 6061-T6 yield 276 / SF 2.0 per NASA-STD-5001B Category A",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 100,
+        "derivation": "typical launcher first-mode cutoff",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 4.0,
+        "derivation": "Cal Poly CDS Rev 14 3U cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "deployer_rail_flatness",
+        "limit_mm": 0.1,
+        "derivation": "Cal Poly CDS Rev 14 rail tolerance",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "random vibration",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Structure-only submission; thermal is a separate subsystem.",
+      "fluid_analysis": "Vacuum environment.",
+      "radiation_analysis": "Not in structural pass/fail."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Full GEVS qualification campaign",
+      "Deployables (antennas, solar arrays)",
+      "Outgassing TML/CVCM per ASTM E595"
+    ]
+  },
+  "eval_coverage": [
+    "CDS Rev 14 envelope + rail + mass compliance",
+    "GEVS quasi-static + random + shock envelope",
+    "launcher-decoupling first natural frequency",
+    "NASA-STD-5001B Category A SF"
+  ]
+}

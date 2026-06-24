@@ -1,0 +1,203 @@
+{
+  "id": "244_a4_farmars_lox_methane_tank",
+  "source": {
+    "catalog_ref": "A4",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_cryogenic_tank",
+  "part_class": "cryogenic_propellant_tank",
+  "full_prompt": "Design a monolithic cryogenic LOX (liquid oxygen) propellant tank for a student-developed LOX/LCH4 bipropellant rocket with total-impulse budget under 200,000 lb-sec. The tank is a seamless 316L stainless steel pressure vessel, spin-formed hemispherical domes, internal diameter 200 mm, cylindrical barrel length 600 mm, one forward fill/vent AN-8 port on the forward dome and one aft feed AN-12 port on the aft dome, both welded bosses integral to domes (welds permitted for cryogenic tanks but must be X-ray inspected). Propellant: LOX at 90 K (boiling). Maximum Operating Pressure (MOP) = 30 bar (3 MPa). Material 316L stainless steel at 90 K (cryogenic derating): Young's modulus 210 GPa, yield strength 450 MPa at 90 K (austenitic steel strengthens at cryogenic temperature), ultimate tensile strength 720 MPa at 90 K, density 8000 kg/m^3. Requirements: (R1) proof pressure 1.5 x MOP = 45 bar held for 5 minutes; max von Mises at proof <= yield / 1.1 = 409 MPa; (R2) burst pressure 2.5 x MOP = 75 bar; max von Mises at burst <= ultimate / 1.25 = 576 MPa; (R3) all welds shall be full-penetration and inspected to ASME BPVC Sec IX; fatigue life for the mission (10 pressurization cycles) shall satisfy stress range margin >= 2.0 (stress range <= fatigue endurance / 2.0); (R4) dry mass <= 6.5 kg; (R5) during LOX loading the external tank skin shall not exceed 100 C nor drop below -200 C on instrumented points; (R6) thermal contraction from 293 K to 90 K shall not produce max von Mises exceeding 250 MPa at mounting lugs. Primary verification: structural FEA at proof (45 bar at 90 K), burst (75 bar at 90 K), plus a coupled thermal-structural step cooling from 293 K to 90 K; vibration analysis NOT required at this gate (first mission gate is pressure qualification); fluid and radiation NOT required. Deliverables: STEP AP242, weld map, and a report listing wall thickness, dry mass, max von Mises at proof and burst, thermal-contraction lug stress, and mass in kg.",
+  "short_prompt": "Design a monolithic cryogenic LOX tank for a student LOX/LCH4 bipropellant rocket (total-impulse budget under 200,000 lb-sec). The tank is a seamless 316L stainless steel pressure vessel with spin-formed hemispherical domes, one forward AN-8 fill/vent boss and one aft AN-12 feed boss, both welded integral to the domes (welds permitted but to be X-rayed per ASME BPVC Sec IX). Propellant is LOX at 90 K; MOP = 30 bar. Fatigue life target is 10 pressurization cycles with a stress-range margin >= 2.0.\n\nEnvelope: internal diameter 200 mm, cylindrical barrel length 600 mm.\n\nLoad cases.\n- LC1 proof: 1.5 x MOP = 45 bar at 90 K, held for 5 minutes.\n- LC2 burst: 2.5 x MOP = 75 bar at 90 K.\n- LC3 thermal contraction: uniform cooldown from 293 K to 90 K; check lug / mount region stress.\n- LC4 LOX loading: instrumented skin temperature must stay within -200 C to +100 C.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "LOX cryogenic propellant tank (student bipropellant rocket)",
+    "brief": "316L stainless LOX tank, MOP 30 bar, 90 K service. Proof 1.5x, burst 2.5x MOP. Includes coupled cryogenic thermal-structural contraction case.",
+    "geometric_constraints": {
+      "internal_diameter_mm": 200,
+      "cylindrical_barrel_length_mm": 600,
+      "end_caps": "hemispherical, spin-formed",
+      "ports": [
+        {
+          "location": "forward dome",
+          "type": "AN-8",
+          "purpose": "fill/vent"
+        },
+        {
+          "location": "aft dome",
+          "type": "AN-12",
+          "purpose": "engine feed"
+        }
+      ],
+      "welds": "full-penetration, X-ray inspected (allowed for cryogenic tanks)"
+    },
+    "material": {
+      "name": "316L stainless steel (cryogenic)",
+      "properties_at_90K": {
+        "youngs_modulus_GPa": 210,
+        "yield_strength_MPa": 450,
+        "ultimate_tensile_strength_MPa": 720,
+        "density_kg_m3": 8000
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof",
+        "internal_pressure_bar": 45,
+        "T_K": 90,
+        "hold_time_s": 300
+      },
+      {
+        "id": "LC2",
+        "name": "burst",
+        "internal_pressure_bar": 75,
+        "T_K": 90
+      },
+      {
+        "id": "LC3",
+        "name": "cryogenic_contraction",
+        "T_start_K": 293,
+        "T_end_K": 90
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_skin_limits",
+        "description": "loading transient; external skin within [-200, 100] C"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "rear feed boss + mid-body stringer lugs fixed",
+      "internal_pressure": "on inner wall",
+      "thermal": "inner wall held at 90 K; outer wall free convection with insulation layer"
+    },
+    "objective": {
+      "minimize": "dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "wall_thickness_mm",
+        "dry_mass_kg",
+        "max_von_mises_proof_MPa",
+        "max_von_mises_burst_MPa",
+        "lug_stress_cryo_contraction_MPa",
+        "external_skin_T_range_C"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 409,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 576,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "fatigue_stress_range_margin",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_kg": 6.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5a",
+        "type": "thermal_analysis",
+        "metric": "external_skin_T_max",
+        "limit_C": 100,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5b",
+        "type": "thermal_analysis",
+        "metric": "external_skin_T_min",
+        "limit_C": -200,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "lug_stress_cryo_contraction",
+        "limit_MPa": 250,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order shell / solid-shell",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Abaqus Standard (COUPLED TEMP-DISPLACEMENT)",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static (proof, burst)",
+        "coupled thermal-structural (contraction)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Sloshing out of scope; tank is hydrostatic for qualification.",
+      "radiation_analysis": "Not applicable at ground-hold.",
+      "vibration_analysis": "Pressure qualification gate precedes dynamic qualification.",
+      "buckling_analysis": "Tank is internally pressurized."
+    }
+  },
+  "eval_coverage": [
+    "coupled thermal-structural contraction",
+    "cryogenic property derating (austenitic steel at 90 K)",
+    "proof + burst + fatigue cycles"
+  ]
+}

@@ -1,0 +1,187 @@
+{
+  "id": "077_kr2_nuriho_cubesat",
+  "source": {
+    "catalog_ref": "KR2",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cubesat_6u_structure",
+  "full_prompt": "Design the primary structure of a 6U CubeSat for a national-launcher 6th round secondary-payload call. The 6U envelope is 100 mm x 200 mm x 300 mm per the Cal Poly CubeSat Design Specification Rev.14 6U form factor. Total wet mass must not exceed 9.6 kg (program target, heritage from prior 6U national mission). Average on-orbit payload power budget is 12.5 W with peak 25 W, which drives heat sink sizing but not structural FEA. Launch environment per the national-launcher secondary payload user manual: quasi-static limit load 13 g axial and 8 g lateral; random vibration 14.1 Grms equivalent (NASA GEVS qualification spectrum, 20-2000 Hz); pyroshock 1500 G peak SRS at 1000-10000 Hz at the separation interface. First-mode natural frequency: longitudinal >= 140 Hz, lateral >= 60 Hz (tighter than international CDS to match upper-stage coupled-loads requirement). Material is Al 7075-T7351 or Al 6061-T6 for the structure with Ti-6Al-4V inserts at load points. Stress allowables per NASA-STD-5001B: yield FoS 1.25, ultimate FoS 1.4. Primary verification is structural FEA (linear static triaxial, modal, random-vibration harmonic response). Vibration is a primary gate. Thermal is a separate gate. Fluid and radiation analyses are explicitly NOT required at this structural gate (LEO radiation tolerance is a separate component-level qualification). Deliverables: STEP AP242 of the 6U primary structure, a mass and power budget, and a report listing wet mass in kg, first longitudinal mode in Hz, first lateral mode in Hz, max quasi-static stress in MPa with FoS, and 3-sigma random vib stress in MPa.",
+  "short_prompt": "Design the primary structure of a 6U CubeSat for a national-launcher 6th round secondary-payload call. 6U envelope 100 x 200 x 300 mm per Cal Poly CubeSat Design Specification Rev.14; total wet mass <= 9.6 kg. Primary structure Al 7075-T7351 or Al 6061-T6 with Ti-6Al-4V inserts at load points. Stress allowables per NASA-STD-5001B (yield FoS 1.25, ultimate FoS 1.4). Natural frequencies: longitudinal >= 140 Hz, lateral >= 60 Hz (tighter than international CDS for upper-stage decoupling). Average / peak on-orbit power 12.5 / 25 W drives thermal sinks, not structural FEA.\n\nLoad cases at the deployer-rail separation interface.\n- LC1 quasi-static 13 g axial.\n- LC2 quasi-static 8 g lateral.\n- LC3 random vibration 14.1 Grms over 20-2000 Hz (NASA GEVS qualification spectrum).\n- LC4 pyroshock SRS: 1500 G peak over 1000-10000 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "6U CubeSat primary structure for national launcher secondary payload",
+    "brief": "Design a 6U CubeSat (100 x 200 x 300 mm, ≤ 9.6 kg) for a national-launcher 6th round secondary payload slot, with 14.1 Grms, 13 g axial, first long mode ≥ 140 Hz.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "X": 100,
+        "Y": 200,
+        "Z": 300
+      },
+      "wet_mass_kg_max": 9.6,
+      "avg_power_W": 12.5,
+      "peak_power_W": 25
+    },
+    "material": {
+      "primary_structure": "Al 7075-T7351 or Al 6061-T6",
+      "inserts": "Ti-6Al-4V at load points",
+      "Al7075_T7351": {
+        "E_GPa": 71.7,
+        "yield_MPa": 435,
+        "ultimate_MPa": 505
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "qs_axial_13g",
+        "magnitude_g": 13,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "qs_lateral_8g",
+        "magnitude_g": 8,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "random_vib",
+        "Grms": 14.1,
+        "band_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "shock_SRS",
+        "peak_G": 1500,
+        "band_Hz": [
+          1000,
+          10000
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "deployer_rails": "fixed along P-POD/ISIPOD rail contact"
+    },
+    "objective": {
+      "minimize": "structural_mass",
+      "first_long_mode_Hz_min": 140,
+      "first_lat_mode_Hz_min": 60
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "wet_mass_kg",
+        "first_long_mode_Hz",
+        "first_lat_mode_Hz",
+        "max_qs_stress_MPa",
+        "three_sigma_random_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "wet_mass_kg",
+        "limit_kg": 9.6,
+        "derivation": "national-launcher 6U slot mass cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_qs_stress_MPa",
+        "limit_fraction_of_yield": 0.8,
+        "derivation": "NASA-STD-5001B yield FoS 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_long_mode_Hz",
+        "limit_Hz": 140,
+        "derivation": "upper-stage decoupling",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_lat_mode_Hz",
+        "limit_Hz": 60,
+        "derivation": "upper-stage decoupling",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "three_sigma_random_stress_MPa",
+        "limit_fraction_of_yield": 0.8,
+        "derivation": "NASA FoS 1.25 on 3-sigma peak",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "random vibration harmonic response",
+        "shock SRS"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Separate thermal gate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Component-level radiation is separate qualification."
+    }
+  },
+  "eval_coverage": [
+    "national-launcher 6U envelope + mass",
+    "quasi-static + random vib + shock",
+    "first mode decoupling (tighter upper-stage spec)",
+    "NASA FoS 1.25 yield"
+  ]
+}

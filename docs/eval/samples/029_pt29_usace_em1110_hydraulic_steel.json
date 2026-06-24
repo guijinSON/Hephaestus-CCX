@@ -1,0 +1,235 @@
+{
+  "id": "029_pt29_usace_em1110_hydraulic_steel",
+  "source": {
+    "catalog_ref": "PT29",
+    "year": 1993,
+    "tier": "A"
+  },
+  "domain": "civil_hydraulic",
+  "part_class": "lock_miter_gate_strut_arm",
+  "full_prompt": "Design a strut arm for a navigation lock miter gate per USACE EM 1110-2-2105 (Design of Hydraulic Steel Structures), supporting hydrostatic + hydrodynamic water loads transferred from the gate leaf to the sill. The canonical lock is a 110 x 1,200 ft lock with gate leaf 66 ft (20.1 m) high x 55 ft (16.8 m) wide half-span. Strut arm envelope: 12 m long x 400 mm x 400 mm box section welded from ASTM A709 Grade 50 structural steel (yield 345 MPa, UTS 450 MPa, E 200 GPa, density 7850 kg/m^3, Charpy 20 J at -18 C per USACE cold-climate requirement); corrosion protection coal-tar epoxy per CW-09940. Interfaces: gate-side pin connection 200 mm diameter steel pin; sill-side pin connection 200 mm diameter steel pin; strut arm is straight with no intermediate fabrication splices. Load cases per EM 1110-2-2105 Table 3-1: LC1 Normal operating: hydrostatic from 66 ft water column with normal pool differential 33 ft = 1,044 kN total thrust on one gate leaf, reacted through the strut arm in axial compression; LC2 Unusual operating: 50-year storm differential 40 ft = 1,265 kN; LC3 Extreme: 100-year check flood 50 ft differential = 1,580 kN + transient hydrodynamic overpressure from gate slam (50% amplification) = 2,370 kN; LC4 Ice load 5 kPa hydrostatic ice pressure over submerged gate area = 150 kN additional axial; LC5 Barge impact 400 kN lateral per EM 1110-2-2602; LC6 fatigue from daily lockage cycles ~30 cycles/day over 50-year life = 550,000 cycles at normal operating amplitude. Pass/fail per EM 1110-2-2105 Table 3-1: (R1) Normal LC1 max von Mises <= 0.5 x yield = 173 MPa (SF 2.0 normal); (R2) Unusual LC2 + LC4 <= 0.75 x yield = 259 MPa (SF 1.33); (R3) Extreme LC3 <= 0.9 x yield = 311 MPa (SF 1.11); (R4) barge impact LC5 combined with LC1 <= 0.9 x yield = 311 MPa; (R5) column buckling slenderness kL/r <= 120 (compression member per AISC 360 for hydraulic structures); (R6) weld fatigue per AWS D1.1 + AISC 360 Appendix 3 fatigue Category B for rolled/welded stringer detail at 550,000 cycles >= infinite-life 3.5 x 10^6 cycle threshold - so must satisfy variable-amplitude fatigue with DEL; (R7) mass <= 15 tonnes; (R8) coating DFT >= 400 um coal-tar epoxy per CW-09940. Deliverables: STEP AP242 weldment + AWS D1.1 weld procedures; AISC LRFD load combinations with EM 1110-2-2105 safety factors applied; fatigue DEL report.",
+  "short_prompt": "Design a strut arm for a navigation lock miter gate per USACE EM 1110-2-2105 (Design of Hydraulic Steel Structures), supporting hydrostatic + hydrodynamic water loads from the gate leaf to the sill. Canonical lock: 110 x 1,200 ft with gate leaf 66 ft (20.1 m) x 55 ft (16.8 m) half-span.\n\nGeometry: straight 12 m long 400 x 400 mm welded box section, no intermediate splices. Pin connections 200 mm diameter at each end.\n\nMaterial: ASTM A709 Grade 50 plate, Charpy 20 J at -18 C per USACE cold-climate requirement. Corrosion protection: coal-tar epoxy per CW-09940, DFT >= 400 um.\n\nLoad cases per EM 1110-2-2105 Table 3-1.\n- LC1 Normal: hydrostatic 66 ft column with 33 ft differential = 1,044 kN axial thrust.\n- LC2 Unusual: 50-year storm differential 40 ft = 1,265 kN.\n- LC3 Extreme: 100-year check flood 50 ft differential = 1,580 kN + transient gate-slam overpressure (50% amplification) = 2,370 kN.\n- LC4 Ice: 5 kPa hydrostatic ice pressure over submerged gate area = 150 kN additional axial.\n- LC5 Barge impact 400 kN lateral per EM 1110-2-2602.\n- LC6 fatigue: ~30 lockage cycles/day over 50 years = 550,000 cycles at normal-operating amplitude.\n\nSafety factors per EM 1110-2-2105 Table 3-1: Normal SF 2.0; Unusual SF 1.33; Extreme SF 1.11. Slenderness kL/r <= 120. Weld fatigue per AWS D1.1 + AISC 360 Appendix 3 Category B (variable-amplitude DEL). Mass <= 15 tonnes.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "aisc_column_buckling_calc",
+        "reason": "AISC 360 compression-member strength is a closed-form code check.",
+        "examples": [
+          "AISC Manual",
+          "spColumn"
+        ]
+      },
+      {
+        "tool": "fatigue_DEL_rainflow",
+        "reason": "Variable-amplitude fatigue per Miner's rule.",
+        "examples": [
+          "nCode DesignLife",
+          "rainflow script"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ASTM A709 Grade 50 lock miter gate strut arm per USACE EM 1110-2-2105",
+    "brief": "Design a 12 m box-section strut arm for a 66 ft x 55 ft miter gate, surviving normal/unusual/extreme + ice + barge impact + 50-year fatigue per EM 1110-2-2105.",
+    "geometric_constraints": {
+      "length_m": 12,
+      "section_mm": {
+        "x": 400,
+        "y": 400
+      },
+      "wall_thickness_mm": "design variable >= 12",
+      "pin_diameter_mm": 200,
+      "pin_connections": 2,
+      "splices_allowed": false,
+      "coating": "coal-tar epoxy CW-09940 >= 400 um DFT"
+    },
+    "material": {
+      "name": "ASTM A709 Grade 50",
+      "yield_MPa": 345,
+      "ultimate_MPa": 450,
+      "charpy_J_at_minus18C": 20,
+      "density_kg_m3": 7850
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "normal_33ft_head",
+        "axial_kN": 1044
+      },
+      {
+        "id": "LC2",
+        "name": "unusual_40ft_head",
+        "axial_kN": 1265
+      },
+      {
+        "id": "LC3",
+        "name": "extreme_50ft_head_plus_slam",
+        "axial_kN": 2370
+      },
+      {
+        "id": "LC4",
+        "name": "ice_load",
+        "axial_kN": 150
+      },
+      {
+        "id": "LC5",
+        "name": "barge_impact",
+        "lateral_kN": 400
+      },
+      {
+        "id": "LC6",
+        "name": "fatigue_lockage_550k",
+        "cycles": 550000,
+        "amplitude": "LC1"
+      }
+    ],
+    "boundary_conditions": {
+      "sill_pin": "pinned, 2 DOF rotation free",
+      "gate_pin": "pinned, 2 DOF rotation free"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "slenderness_kL_over_r",
+        "column_buckling_factor",
+        "fatigue_DEL_life",
+        "mass_kg",
+        "coating_DFT_um"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_normal",
+        "limit_MPa": 173,
+        "derivation": "0.5 * yield per EM 1110-2-2105 Table 3-1 normal",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_unusual",
+        "limit_MPa": 259,
+        "derivation": "0.75 * yield per EM 1110-2-2105 unusual",
+        "applies_to": [
+          "LC2",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_extreme",
+        "limit_MPa": 311,
+        "derivation": "0.9 * yield per EM 1110-2-2105 extreme",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_barge_plus_normal",
+        "limit_MPa": 311,
+        "derivation": "0.9 * yield per EM 1110-2-2602 impact",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "slenderness_kL_over_r",
+        "limit": 120,
+        "derivation": "AISC 360 compression member for hydraulic",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "fatigue_weld_category_B_DEL_life",
+        "limit_cycles": 3500000,
+        "derivation": "AWS D1.1 + AISC 360 Appendix 3 Category B infinite life threshold",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_tonnes": 15,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R8",
+        "type": "structural_analysis",
+        "metric": "coating_dry_film_thickness",
+        "limit_um": 400,
+        "derivation": "CW-09940 coal-tar epoxy",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "USACE EM 1110-2-2105 + USACE EM 1110-2-2602 + AISC 360-22 + AWS D1.1 + CW-09940",
+    "recommended_fea_setup": {
+      "element_type": "shell (box walls) + solid at pin fittings",
+      "mesh_size_mm_in_critical_regions": 20,
+      "solver_hints": [
+        "SAP2000",
+        "Ansys Mechanical",
+        "Abaqus",
+        "SCIA Engineer"
+      ],
+      "analysis_types": [
+        "linear static x6 + column buckling + AWS fatigue DEL"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Hydrodynamic gate-slam treated as static overpressure amplification; full dynamic analysis out of scope.",
+      "thermal_analysis": "Charpy handles low-temperature toughness.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "EM 1110-2-2105 Table 3-1 safety factors (normal 2.0, unusual 1.33, extreme 1.11); ASTM A709 Gr 50 allowables."
+  },
+  "eval_coverage": [
+    "tiered load-combo safety factors (normal / unusual / extreme)",
+    "column buckling slenderness check",
+    "variable-amplitude fatigue",
+    "coating DFT spec"
+  ]
+}

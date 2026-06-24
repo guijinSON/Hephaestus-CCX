@@ -1,0 +1,223 @@
+{
+  "id": "032_s1_nasa_5001b_spacecraft_bracket",
+  "source": {
+    "catalog_ref": "S1",
+    "year": 2022,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "monolithic_bracket",
+  "full_prompt": "Design a single-part aluminum spacecraft secondary-structure bracket that mounts an avionics box (1.8 kg lumped mass) to the primary structure of a protoflight spacecraft. The bracket is a monolithic machined 7075-T7351 aluminum part. The governing standard is NASA-STD-5001B w/Change-3 (2022), which specifies, for metallic protoflight hardware, a yield factor of safety of 1.25 and an ultimate factor of safety of 1.4 applied to limit load, and an ultimate factor of safety of 1.4 for buckling. No additional model factor is applied because the analysis uses correlated FEM in the linear range.\n\nGeometry. The bracket must fit within a bounding envelope of 160 mm x 100 mm x 60 mm. The base is a flat planar flange 160 mm x 60 mm with four M6 through-clearance holes (6.6 mm diameter) on a 140 mm x 40 mm rectangular pattern; this flange bolts to the primary structure. The top face carries a 90 mm x 80 mm interface plate with four M5 threaded inserts (inserts not modeled; treat interface as rigid patch) to which the 1.8 kg avionics box is attached. The bracket is a single monolithic body; no welds, no bonded joints, no fasteners internal to the bracket.\n\nMaterial. Al 7075-T7351 per MMPDS S-basis: Young's modulus 71.7 GPa, Poisson's ratio 0.33, density 2810 kg/m^3, tensile yield strength Fty 414 MPa (60 ksi), ultimate tensile strength Ftu 476 MPa (69 ksi).\n\nLoad cases. The bracket must independently survive three quasi-static limit-load cases derived from launch vehicle coupled loads analysis, applied at the 1.8 kg avionics box center of mass with the four base bolt holes fully fixed. LC1 (axial): 20 g applied along the spacecraft thrust axis. LC2 (lateral): 10 g applied in-plane of the mounting flange. LC3 (combined): 15 g axial + 7 g lateral applied simultaneously. The equivalent limit force for LC1 is 1.8 kg * 20 * 9.81 = 353 N. In addition, an enveloping random-vibration-equivalent quasi-static load of 25 g (Miles equation 3-sigma equivalent for a 14.1 Grms random input, assuming Q=10 and a component first mode near 100 Hz) is applied as LC4 along each of three orthogonal axes, run separately. All factors of safety are applied to these limit loads per NASA-STD-5001B Table 3.\n\nPass/fail criteria. Every load case must simultaneously satisfy all of the following. (R1) Yield criterion: maximum von Mises stress under limit load multiplied by 1.25 must not exceed Fty = 414 MPa; equivalently, stress at limit load must not exceed 414 / 1.25 = 331.2 MPa. (R2) Ultimate criterion: maximum von Mises stress under limit load multiplied by 1.4 must not exceed Ftu = 476 MPa; equivalently, stress at limit load must not exceed 476 / 1.4 = 340.0 MPa. (R3) A linear buckling eigenvalue analysis under the worst compressive case (LC3) must yield a first-mode load factor of at least 1.4 (NASA-STD-5001B ultimate factor for buckling, Section 4.2.3). (R4) Fundamental natural frequency must be at least 100 Hz with the avionics box mass attached (typical spacecraft stiffness requirement; this value is a commonly cited project-level gate, not mandated by 5001B itself — retained as a decoupling requirement). (R5) Bracket mass must not exceed 180 g.\n\nSolver and analysis expectations. Primary verification is linear static structural FEA for LC1-LC4, plus a linear buckling eigenvalue extraction for LC3, plus a free-free + constrained modal analysis for R4. Mesh critical fillets with second-order tetrahedral elements at 2 mm characteristic size. Thermal, fluid, and radiation analyses are explicitly not required for this benchmark. Random-vibration response analysis itself is not required because the random environment is enveloped by the quasi-static LC4 via a Miles equivalent; if the analyst chooses to run a true PSD random vibration analysis that is acceptable but not mandatory.\n\nDeliverables. STEP AP242 solid, mass in grams, max von Mises per load case in MPa at limit load, first buckling load factor for LC3, and first three natural frequencies in Hz.",
+  "short_prompt": "Design a single-part aluminum spacecraft secondary-structure bracket that mounts a 1.8 kg avionics box to the primary structure of a protoflight spacecraft. The bracket is a monolithic machined 7075-T7351 part with no welds, bonded joints, or internal fasteners. Design per NASA-STD-5001B w/Change-3 (2022), which specifies a yield FoS of 1.25 and an ultimate FoS of 1.4 on limit load, plus an ultimate FoS of 1.4 for buckling. Correlated-FEM assumption means no additional model factor.\n\nEnvelope: 160 x 100 x 60 mm. Base flange 160 x 60 mm with four M6 through-clearance holes (6.6 mm diameter) on 140 x 40 mm. Top interface 90 x 80 mm with four M5 threaded inserts (rigid-patch idealization).\n\nMaterial: Al 7075-T7351 per MMPDS S-basis.\n\nLoad cases (applied at the 1.8 kg avionics CoM with base bolts fixed).\n- LC1 axial: 20 g along the thrust axis (limit force 1.8 x 20 x 9.81 = 353 N).\n- LC2 lateral: 10 g in-plane of the mounting flange.\n- LC3 combined: 15 g axial + 7 g lateral simultaneously.\n- LC4 random-vib-equivalent quasi-static envelope: 25 g along each of three orthogonal axes (Miles 3-sigma for 14.1 Grms, Q = 10, first mode near 100 Hz).\n\nAdditional gates: first buckling load factor under LC3 >= 1.4; first natural frequency with avionics attached >= 100 Hz; mass <= 180 g.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Aluminum avionics-box bracket under NASA-STD-5001B protoflight factors",
+    "brief": "Monolithic 7075-T7351 bracket supporting a 1.8 kg avionics box, governed by NASA-STD-5001B yield 1.25 / ultimate 1.4 / buckling 1.4 metallic protoflight FoS.",
+    "geometric_constraints": {
+      "bounding_envelope_mm": {
+        "x": 160,
+        "y": 100,
+        "z": 60
+      },
+      "base_flange_mm": {
+        "x": 160,
+        "y": 60
+      },
+      "base_bolt_holes": {
+        "count": 4,
+        "diameter_mm": 6.6,
+        "pattern_mm": {
+          "x": 140,
+          "y": 40
+        },
+        "size": "M6"
+      },
+      "top_interface_mm": {
+        "x": 90,
+        "y": 80
+      },
+      "top_inserts": {
+        "count": 4,
+        "size": "M5"
+      },
+      "monolithic": true,
+      "prohibited": [
+        "welds",
+        "bonded joints",
+        "internal fasteners"
+      ]
+    },
+    "material": {
+      "name": "Al 7075-T7351",
+      "basis": "MMPDS S-basis",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2810,
+        "yield_strength_MPa": 414,
+        "ultimate_tensile_strength_MPa": 476
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "axial_20g",
+        "magnitude_g": 20,
+        "direction": "thrust axis",
+        "equivalent_force_N": 353
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_10g",
+        "magnitude_g": 10,
+        "direction": "in-plane of base flange"
+      },
+      {
+        "id": "LC3",
+        "name": "combined_15ax_7lat",
+        "axial_g": 15,
+        "lateral_g": 7
+      },
+      {
+        "id": "LC4",
+        "name": "random_vib_miles_equiv_25g",
+        "magnitude_g": 25,
+        "direction": "each of 3 orthogonal axes",
+        "source": "Miles equation envelope of 14.1 Grms random, Q=10, f_n~100 Hz"
+      }
+    ],
+    "boundary_conditions": {
+      "base_bolt_holes": "fully fixed, all 6 DOF",
+      "top_interface": "rigid patch loaded with avionics box inertia"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_mass_g_max": 180
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "first_buckling_load_factor_LC3",
+        "first_three_modes_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "NASA-STD-5001B w/Change-3",
+      "revision": "2022-10-24"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_at_limit_load",
+        "limit_MPa": 331.2,
+        "derivation": "Fty / 1.25 = 414 / 1.25 (NASA-STD-5001B metallic protoflight yield FoS)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_at_limit_load",
+        "limit_MPa": 340.0,
+        "derivation": "Ftu / 1.4 = 476 / 1.4 (NASA-STD-5001B metallic protoflight ultimate FoS)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.4,
+        "derivation": "NASA-STD-5001B Section 4.2.3 ultimate buckling FoS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "fundamental_natural_frequency",
+        "limit_Hz": 100,
+        "derivation": "Project-level decoupling requirement with launch-vehicle primary modes",
+        "applies_to": [
+          "constrained_modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 180,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Nastran",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "linear buckling LC3",
+        "constrained modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient qualification assumed; thermal cycling out of scope for this bracket benchmark.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable — structural FoS assessment only."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fastener joint analysis per NASA-STD-5020B",
+      "Fatigue / fracture control per NASA-STD-5019A",
+      "Workmanship-level torque margins"
+    ]
+  },
+  "eval_coverage": [
+    "dual yield + ultimate FoS at identical stress field",
+    "linear buckling with standard-cited 1.4 factor",
+    "Miles-equation random-vib-to-quasi-static envelope",
+    "decoupling natural-frequency gate"
+  ]
+}

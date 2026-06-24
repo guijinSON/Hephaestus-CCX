@@ -1,0 +1,168 @@
+{
+  "id": "225_df9_nasa_herc",
+  "source": {
+    "catalog_ref": "DF9",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "human_powered_rover_structural",
+  "part_class": "herc_rover_frame",
+  "full_prompt": "Design the primary chassis frame of a two-person tandem human-powered planetary rover benchmark. Rover folds into a 5 ft x 5 ft x 5 ft (1.52 m x 1.52 m x 1.52 m) stowed cube at the start line, then unfolds to a deployed configuration for the course. Maximum empty rover mass (without crew) <= 113 kg (250 lb) per benchmark handbook. Two riders sit in tandem, each with harness-restrained seating and independent pedaling drivetrain to the ground wheels. Wheelbase in deployed configuration: 2.1 m, track width: 1.3 m, with four independently-sprung wheels each rated for an obstacle impact of 3 g over a 30 cm berm. Frame material: 6061-T6 aluminum tubing (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3), primary tubes 38 mm OD x 1.6 mm wall. Course obstacles per benchmark handbook: 8 terrain features including crater edges, dune traverse at 10 deg slope, boulder field requiring ground clearance 20 cm, plus four tool-task stations where the rover stops and the crew operates on-board sampling arms. Load cases: (LC1) dual-crew loading: 2 x 85 kg = 170 kg crew + 113 kg rover = 283 kg total, 1 g static; (LC2) 30 cm berm crossing: 3 g vertical impulse on one wheel; (LC3) lateral slope: 10 deg side slope with full 283 kg weight, 0.17 g lateral; (LC4) pedaling reaction: 600 N horizontal at each pedal drive at 1.5 Hz for the 900-second course (1350 cycles per pedal); (LC5) tool-task reaction: 500 N vertical + 300 N horizontal at the tool-mount bracket on the frame during sampling; (LC6) stow-cube compliance: frame must fold into 5x5x5 ft cube without plastic deformation at hinge joints. Pass/fail: (R1) max von Mises in aluminum tubes under LC1-LC5 <= 184 MPa (yield 276 / 1.5); (R2) wheel-axle deflection under LC2 berm <= 10 mm; (R3) hinge-joint tube stress under fold/deploy cycle below 184 MPa; (R4) empty rover mass <= 113 kg (250 lb); (R5) first torsional frame mode above 10 Hz; (R6) stowed-cube envelope compliance verified geometrically. Deliverables: STEP AP242, FEA per case, modal, mass report, and stow-cube compliance check.",
+  "short_prompt": "Design the primary chassis frame of a two-person tandem human-powered planetary rover that folds into a 5 ft (1.52 m) stowed cube at the start line and unfolds in the deployed configuration. Two riders sit in tandem, each with harness restraint and an independent pedaling drivetrain; four independently-sprung wheels clear a 30 cm berm under 3 g. Material class: 6061-T6 aluminum tubing (nominal 38 mm OD x 1.6 mm wall). No external standard is named in the source; design to a 1.5 FoS on yield.\n\nEnvelope: stowed 1.52 m cube; deployed wheelbase 2.1 m, track 1.3 m, ground clearance >= 20 cm; empty rover mass <= 113 kg (250 lb).\n\nLoad cases.\n- LC1 dual-crew static: 2 x 85 kg + 113 kg = 283 kg at 1 g.\n- LC2 berm: 3 g vertical impulse on one wheel over a 30 cm berm.\n- LC3 side slope: 0.17 g lateral (10 deg) with 283 kg.\n- LC4 pedaling reaction: 600 N horizontal at each pedal drive at 1.5 Hz, 1350 cycles per pedal over the 900 s course.\n- LC5 tool-task reaction: 500 N vertical + 300 N horizontal at the tool-mount bracket during sampling.\n- LC6 stow-cube fold/deploy: no plastic deformation at hinge joints through the fold cycle.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Human-powered planetary rover frame",
+    "brief": "Two-crew human-powered rover frame folding into 5x5x5 ft stowed cube at 113 kg empty.",
+    "geometric_constraints": {
+      "stowed_cube_ft": 5,
+      "stowed_cube_m": 1.524,
+      "empty_mass_kg_max": 113,
+      "empty_mass_lb_max": 250,
+      "wheelbase_m": 2.1,
+      "track_width_m": 1.3,
+      "ground_clearance_cm_min": 20,
+      "tubes_od_mm": 38,
+      "tubes_wall_mm": 1.6
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "youngs_modulus_GPa": 68.9,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2700,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "dual_crew_static",
+        "total_mass_kg": 283
+      },
+      {
+        "id": "LC2",
+        "name": "berm_30cm_3g",
+        "g": 3
+      },
+      {
+        "id": "LC3",
+        "name": "10deg_side_slope",
+        "g_lateral": 0.17
+      },
+      {
+        "id": "LC4",
+        "name": "pedaling",
+        "F_N_per_pedal": 600,
+        "freq_Hz": 1.5,
+        "cycles_per_pedal": 1350
+      },
+      {
+        "id": "LC5",
+        "name": "tool_task",
+        "F_V_N": 500,
+        "F_H_N": 300
+      },
+      {
+        "id": "LC6",
+        "name": "fold_deploy_cycle",
+        "application": "hinge joints"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "empty_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "wheel_axle_deflection_mm",
+        "first_torsional_mode_Hz",
+        "stow_cube_compliance"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "wheel_axle_deflection_at_berm",
+        "limit_mm": 10,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "hinge_joint_stress_during_fold",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "empty_rover_mass",
+        "limit_kg": 113,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 10,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "stowed_cube_envelope",
+        "limit_m": 1.524,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

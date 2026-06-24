@@ -1,0 +1,187 @@
+{
+  "id": "166_cn16_wfsa_ferry",
+  "source": {
+    "catalog_ref": "CN16",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "naval_architecture_safety",
+  "part_class": "riverine_ferry_hull",
+  "full_prompt": "Design a full riverine passenger ferry hull for an inland-waterway route roughly 200 km long. The hull must carry 150 passengers plus 6 crew plus 6,000 kg of cargo and baggage across a calm-to-moderate inland waterway with a minimum navigable depth of 2.0 m in the dry season. The hull is a welded marine-grade steel monohull of LOA 30.0 m, beam 8.0 m, depth molded 2.5 m, and design draft 1.4 m fully loaded. Hull structural material is ASTM A131 Grade A shipbuilding steel (yield 235 MPa, ultimate 400 MPa, E 200 GPa, density 7850 kg/m^3). Pass/fail criteria for the ferry as a whole: (R1) intact stability per IMO Resolution A.749 (18) - GMt must be at least 0.35 m and the righting arm GZ curve must show positive righting up to at least 40 degrees heel with area under GZ curve 0-30 degrees at least 0.055 m-rad, (R2) damage stability after one-compartment flooding per SOLAS 2020 Chapter II-1 must retain residual GMt at least 0.05 m and margin line at least 76 mm above the damaged waterline, (R3) minimum passenger deck freeboard in the fully loaded condition must be at least 760 mm per inland-waterway rule, (R4) hull longitudinal bending stress under still-water hogging condition must not exceed 157 MPa which is yield divided by 1.5, and (R5) average passenger deck area per passenger must be at least 0.45 m^2. Vibration, thermal, fluid CFD, and radiation analyses are not required. Deliver a STEP AP242 assembly of the ferry hull including watertight bulkheads, plus a stability booklet with GMt, GZ curve to 60 degrees, damage stability result, freeboard, longitudinal bending stress, and passenger-area allocation.",
+  "short_prompt": "Design the hull and watertight subdivision of a riverine passenger ferry: a welded shipbuilding-steel monohull, LOA 30.0 m x beam 8.0 m x molded depth 2.5 m, design draft 1.4 m, carrying 150 passengers + 6 crew + 6 t cargo across an inland waterway with 2 m minimum navigable depth.\n\nStability follows IMO Resolution A.749(18) intact and SOLAS 2020 Chapter II-1 damage stability; hull girder follows IACS UR S7 still-water bending.\n\nLoad cases.\n- LC1 full-load intact: fully loaded 150 PAX + crew + cargo, still water.\n- LC2 one-compartment damage: any single compartment flooded.\n- LC3 still-water hog: hogging moment per IACS UR S7.\n\nAlso check inland-waterway passenger-deck freeboard and passenger-area allocation per PAX.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "IMO_A749_intact_stability_solver",
+        "reason": "Intact and damage stability are closed-form hydrostatic + righting-arm calculations, not FEA.",
+        "examples": [
+          "Maxsurf Stability",
+          "GHS",
+          "Orca3D"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "30 m inland passenger ferry, 150 PAX",
+    "brief": "Design a 30.0 m x 8.0 m x 2.5 m steel monohull ferry for 150 PAX + 6 crew + 6 t cargo on an inland river, meeting IMO A.749 intact + SOLAS damage stability, 760 mm freeboard, hull girder stress, and passenger-area allocation.",
+    "geometric_constraints": {
+      "LOA_m": 30.0,
+      "beam_m": 8.0,
+      "depth_m": 2.5,
+      "design_draft_m": 1.4,
+      "passenger_capacity": 150,
+      "crew": 6,
+      "cargo_kg": 6000
+    },
+    "material": {
+      "name": "ASTM A131 Grade A shipbuilding steel",
+      "yield_MPa": 235,
+      "ultimate_MPa": 400,
+      "E_GPa": 200
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "full_load_intact",
+        "application": "fully loaded 150 PAX + crew + cargo"
+      },
+      {
+        "id": "LC2",
+        "name": "one_compartment_damage",
+        "application": "any single compartment flooded"
+      },
+      {
+        "id": "LC3",
+        "name": "still_water_hog",
+        "application": "hogging moment per IACS UR S7"
+      }
+    ],
+    "boundary_conditions": {
+      "hull": "freely floating in still water, weight + buoyancy balanced"
+    },
+    "objective": {
+      "primary": "pass intact + damage stability + freeboard + girder stress",
+      "secondary": "minimize steel tonnage"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "GMt_m",
+        "area_under_GZ_0_30deg_m_rad",
+        "residual_GMt_damage_m",
+        "min_freeboard_mm",
+        "max_hull_girder_stress_MPa",
+        "passenger_deck_area_per_PAX_m2"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "intact_GMt_and_GZ",
+        "limit_GMt_m": 0.35,
+        "limit_area_0_30deg_m_rad": 0.055,
+        "limit_positive_range_deg": 40,
+        "derivation": "IMO Resolution A.749 (18) Chapter 3",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "damage_stability",
+        "limit_residual_GMt_m": 0.05,
+        "limit_margin_line_mm": 76,
+        "derivation": "SOLAS 2020 Chapter II-1",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "passenger_deck_freeboard",
+        "limit_mm": 760,
+        "derivation": "inland-waterway passenger freeboard rule",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_hull_girder_stress",
+        "limit_MPa": 157,
+        "derivation": "yield 235 / 1.5",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "passenger_deck_area_per_PAX",
+        "limit_m2": 0.45,
+        "derivation": "passenger-capacity allocation rule",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for plating, beam for framing",
+      "mesh_size_mm_in_critical_regions": 100,
+      "solver_hints": [
+        "Maxsurf Stability",
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "hydrostatic stability",
+        "linear static girder bending"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Propulsion vibration not in scope.",
+      "thermal_analysis": "Tropical ambient only.",
+      "fluid_analysis": "No seakeeping CFD required on inland river at low speed.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not in pass/fail for this brief."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Evacuation analysis per IMO MSC.1/Circ.1533",
+      "Life-saving appliance equipment list",
+      "Seasonal dredging and siltation"
+    ]
+  },
+  "eval_coverage": [
+    "IMO Resolution A.749 intact stability + SOLAS damage stability",
+    "passenger safety-driven freeboard and deck allocation",
+    "hull-girder bending stress",
+    "riverine ferry design with single-compartment damage"
+  ]
+}

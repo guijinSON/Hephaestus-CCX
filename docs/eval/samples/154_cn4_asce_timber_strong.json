@@ -1,0 +1,197 @@
+{
+  "id": "154_cn4_asce_timber_strong",
+  "source": {
+    "catalog_ref": "CN4",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "civil_wood_structural",
+  "part_class": "light_wood_frame_structure",
+  "full_prompt": "Design a 2-story light wood-frame building module. The module must be 2.44 m x 2.44 m (8 ft x 8 ft) in plan with a story height of 2.44 m (8 ft) per floor for a total height of 4.88 m (16 ft), built entirely from nominal 2x4 (38 mm x 89 mm) Douglas Fir-Larch, Southern Pine, Hem-Fir, or SPF lumber with wood structural panel sheathing on shear walls and horizontal diaphragms. The building must carry simultaneously a floor live load of 1.92 kPa (40 psf) over the full second-floor area, a floor dead load of 0.72 kPa (15 psf), a roof live load of 0.96 kPa (20 psf), a roof dead load of 0.72 kPa (15 psf), and a concentrated lateral racking load of 2.22 kN (500 lbf) applied at the roof level in the weak direction to simulate wind or seismic. Douglas Fir-Larch No.2 members have reference design values per NDS 2024: bending Fb 900 psi (6.2 MPa), tension parallel Ft 575 psi (4.0 MPa), compression parallel Fc 1350 psi (9.3 MPa), modulus of elasticity E 1,600,000 psi (11.0 GPa). All pass/fail criteria must be satisfied: (R1) every stud, plate, joist, rafter, header, and shear wall must achieve a demand-to-capacity ratio at or below 1.0 per NDS 2024 with appropriate adjustment factors, (R2) floor mid-span deflection under 1.0 live plus 1.0 dead must not exceed span/360 which is 6.8 mm, (R3) inter-story drift under the 2.22 kN racking load must not exceed H/400 which is 6.1 mm, (R4) total structural lumber volume in the module must not exceed 0.15 m^3 as an efficiency target. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly of the full 2-story module plus a cut list tagged with species and grade, and a structural report listing member DCR maxima, mid-floor deflection, roof drift, and total lumber volume.",
+  "short_prompt": "Design a 2-story light wood-frame building module 2.44 x 2.44 m (8 ft x 8 ft) in plan with a 2.44 m story height (4.88 m overall), built entirely from nominal 2x4 (38 x 89 mm) Douglas Fir-Larch, Southern Pine, Hem-Fir, or SPF lumber with wood structural panel sheathing on shear walls and horizontal diaphragms. Design per NDS 2024 with appropriate adjustment factors (DCR <= 1.0 on every stud, plate, joist, rafter, header, and shear wall).\n\nLoad cases applied simultaneously.\n- Floor live 1.92 kPa (40 psf) over the full second-floor area.\n- Floor dead 0.72 kPa (15 psf).\n- Roof live 0.96 kPa (20 psf).\n- Roof dead 0.72 kPa (15 psf).\n- Concentrated lateral racking load 2.22 kN (500 lbf) at the roof level in the weak direction (wind/seismic proxy).\nAlso require floor midspan deflection under 1.0L+1.0D <= span/360 (6.8 mm), inter-story drift under the racking load <= H/400 (6.1 mm), and total structural lumber volume <= 0.15 m^3.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "NDS_ASD_capacity_check",
+        "reason": "NDS 2024 member capacity with adjustment factors (CD, CM, Ct, CL, CP, Cfu, Ci, Cr) is a closed-form spreadsheet check on top of the linear FEA demands.",
+        "examples": [
+          "AWC ConnectionCalc",
+          "manual NDS spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "2-story 8x8 ft light wood-frame module",
+    "brief": "Design a 2.44 m x 2.44 m x 4.88 m 2-story light wood-frame module in 2x4 lumber with roof/floor gravity, a 2.22 kN racking load, passing NDS 2024 DCR, deflection, drift, and lumber-volume targets.",
+    "geometric_constraints": {
+      "plan_m": [
+        2.44,
+        2.44
+      ],
+      "story_height_m": 2.44,
+      "stories": 2,
+      "lumber_size_nominal": "2x4 (38 mm x 89 mm)"
+    },
+    "material": {
+      "species_allowed": [
+        "DF-L",
+        "SP",
+        "HF",
+        "SPF"
+      ],
+      "grade": "No.2",
+      "properties_DFL_No2": {
+        "Fb_MPa": 6.2,
+        "Ft_MPa": 4.0,
+        "Fc_MPa": 9.3,
+        "E_GPa": 11.0
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "floor_live",
+        "magnitude_kPa": 1.92,
+        "application": "uniform on second floor"
+      },
+      {
+        "id": "LC2",
+        "name": "floor_dead",
+        "magnitude_kPa": 0.72,
+        "application": "uniform on second floor"
+      },
+      {
+        "id": "LC3",
+        "name": "roof_live",
+        "magnitude_kPa": 0.96,
+        "application": "uniform on roof"
+      },
+      {
+        "id": "LC4",
+        "name": "roof_dead",
+        "magnitude_kPa": 0.72,
+        "application": "uniform on roof"
+      },
+      {
+        "id": "LC5",
+        "name": "racking_lateral",
+        "magnitude_N": 2220,
+        "application": "concentrated at roof, weak direction"
+      }
+    ],
+    "boundary_conditions": {
+      "sole_plates": "fixed to foundation platform"
+    },
+    "objective": {
+      "primary": "pass all NDS 2024 DCR and deflection limits",
+      "secondary": "minimize total lumber volume"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_member_DCR",
+        "mid_floor_deflection_mm",
+        "roof_drift_mm",
+        "total_lumber_volume_m3"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_member_DCR",
+        "limit": 1.0,
+        "derivation": "NDS 2024 ASD with adjustment factors",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mid_floor_deflection",
+        "limit_mm": 6.8,
+        "derivation": "span/360 for 2.44 m joist span",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "roof_drift",
+        "limit_mm": 6.1,
+        "derivation": "H/400 for 2.44 m story",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_lumber_volume",
+        "limit_m3": 0.15,
+        "derivation": "efficiency target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam for studs/plates/joists, shell for sheathing diaphragms",
+      "mesh_size_mm_in_critical_regions": 100,
+      "solver_hints": [
+        "SAP2000",
+        "RISA-3D",
+        "WoodWorks Sizer"
+      ],
+      "analysis_types": [
+        "linear static gravity and lateral"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Floor vibration checks are not in scope.",
+      "thermal_analysis": "Not a thermal envelope problem.",
+      "fluid_analysis": "Lateral load is a prescribed point force.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fire-resistance rating",
+      "Connector-level toenail and nail-schedule layout",
+      "Long-term creep deflection"
+    ]
+  },
+  "eval_coverage": [
+    "NDS 2024 adjustment-factor closed-form check over linear FEA",
+    "species/grade library with four legal choices",
+    "combined gravity + lateral racking",
+    "lumber-volume efficiency target"
+  ]
+}

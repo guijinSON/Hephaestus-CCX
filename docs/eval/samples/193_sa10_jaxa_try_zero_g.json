@@ -1,0 +1,181 @@
+{
+  "id": "193_sa10_jaxa_try_zero_g",
+  "source": {
+    "catalog_ref": "SA10",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "microgravity_experiment_box",
+  "full_prompt": "Design a small astronaut-operated microgravity experiment box as an ISS microgravity experiment box benchmark, to be performed by an ISS crew member inside the Japanese Experiment Module. The experiment demonstrates Newton's third law via a spring-coupled mass pair and records video with an embedded GoPro. The full apparatus is stowed in a single Cargo Transfer Bag (CTB) subdivision and must be fully assembled, operated, and safed by a single crew member in under 10 minutes.\n\nGeometry. The box is a rectangular enclosure 200 mm x 150 mm x 100 mm machined from 5052-H32 aluminum sheet (1.5 mm) with folded and riveted construction. A clear Lexan front window (3 mm polycarbonate) provides line-of-sight for the GoPro through a 120 mm x 90 mm aperture. The interior houses two 50 g brass cylinders on a 400 mm rail with a pre-loaded compression spring (spring constant 10 N/m, pre-compression 100 mm) that releases when the astronaut pulls a single lanyard. All internal edges are radiused minimum 3 mm per ISS-EVA-004 astronaut handling. The GoPro mounts on an internal crossbar via a standard M5 x 0.5 quick-release mount. Four 6 mm diameter external lanyard points on the corners allow Velcro tether restraint.\n\nMaterial. 5052-H32 aluminum (Young's modulus 70.3 GPa, density 2680 kg/m^3, yield strength 193 MPa, ultimate 228 MPa). Lexan 9034 polycarbonate window (Young's modulus 2.3 GPa, density 1200 kg/m^3, yield 62 MPa, flammability NASA-STD-6001B Test 1 compliant). Rivets are 3/32 inch 2117-T4 aluminum. Spring is 302 stainless.\n\nLoad cases. (LC1) Launch random vibration 20-2000 Hz at 6.8 g-rms per NASA-STD-5002 CTB requirement, applied in each of three axes independently. (LC2) Astronaut grip-and-tether load: 40 N pulled through a single corner lanyard point simulating worst-case one-handed handling. (LC3) Spring-release reaction: when the lanyard is pulled, the internal spring releases 10 N along the rail axis producing a reaction couple on the box. (LC4) On-orbit free-drift contingency: 20 N at any point if the astronaut accidentally bumps the box into the module wall.\n\nPass/fail criteria. (R1) Maximum von Mises stress in the aluminum enclosure and rivet joints must not exceed 129 MPa (yield / 1.5) for all four load cases. (R2) Maximum stress in the Lexan window must not exceed 31 MPa (yield / 2.0 for polycarbonate brittle SF). (R3) Total wet mass must not exceed 1.5 kg (ISS microgravity hardware class cap). (R4) First natural frequency must be above 100 Hz to stay above CTB random-vibration peak. (R5) No sharp edges: minimum 3 mm radius on all astronaut-accessible surfaces (geometric check, not FEA). (R6) All materials must be NASA-STD-6001B Test 1 (flammability) and offgassing-compliant (NASA-STD-6001B Test 7).\n\nSolver and analysis expectations. Linear static structural FEA for LC2, LC3, LC4. Random-vibration PSD analysis for LC1. Modal analysis for R4. R5 is a CAD geometric check (edge radius query). R6 is material-certificate-based, not FEA. Thermal analysis is not required for this 10-minute experiment. Fluid and radiation analyses are not applicable.\n\nDeliverables. STEP (AP242) + Parasolid of the enclosure with window, rail, spring assembly, and GoPro mount. Mass budget. Report with LC1-LC4 stress extrema, first 5 modal frequencies, edge-radius compliance summary, and material compliance statement.",
+  "short_prompt": "Design a small astronaut-operated microgravity experiment box demonstrating Newton's third law via a spring-coupled mass pair, with an embedded GoPro recording through a front window, stowed in a single CTB subdivision and assembled / operated / safed by a single ISS crew member in under 10 min. The box is a folded-and-riveted 5052-H32 aluminum sheet enclosure, 200 x 150 x 100 mm, wall 1.5 mm, with a 3 mm Lexan 9034 front window (120 x 90 mm aperture), internal 400 mm rail carrying two 50 g brass cylinders on a 10 N/m pre-compressed spring released by a lanyard, an M5 GoPro quick-release mount, and four 6 mm corner lanyard points. All internal edges radiused >=3 mm per ISS-EVA-004. Rivets are 3/32-in 2117-T4 aluminum; spring is 302 SS.\n\nGoverning standards: NASA-STD-5002 (CTB random vibration) and NASA-STD-6001B Tests 1 and 7 (flammability / offgassing).\n\nLoad cases.\n- LC1 CTB random vibration: 6.8 GRMS, 20-2000 Hz, each axis independently.\n- LC2 astronaut grip + tether: 40 N through a single corner lanyard point (worst-case one-handed handling).\n- LC3 spring-release reaction: 10 N along the rail axis on lanyard pull.\n- LC4 on-orbit wall bump: 20 N at any external face.\n\nTotal wet mass must stay within the 1.5 kg ISS microgravity hardware cap; first natural frequency must stay above the CTB random-vibration peak; minimum accessible edge radius >=3 mm is a geometric check.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ISS microgravity experiment box benchmark",
+    "geometric_constraints": {
+      "enclosure_mm": {
+        "x": 200,
+        "y": 150,
+        "z": 100
+      },
+      "wall_sheet_mm": 1.5,
+      "window": "Lexan 9034, 3 mm thick, 120 x 90 mm aperture",
+      "edge_radius_min_mm": 3,
+      "lanyard_points": 4,
+      "assembly_method": "folded + riveted"
+    },
+    "materials": [
+      {
+        "name": "Al-5052-H32",
+        "role": "enclosure",
+        "youngs_modulus_GPa": 70.3,
+        "density_kg_m3": 2680,
+        "yield_strength_MPa": 193,
+        "uts_MPa": 228
+      },
+      {
+        "name": "Lexan 9034",
+        "role": "window",
+        "youngs_modulus_GPa": 2.3,
+        "density_kg_m3": 1200,
+        "yield_strength_MPa": 62
+      },
+      {
+        "name": "2117-T4 rivets",
+        "role": "fastening",
+        "diameter_in": 0.09375
+      }
+    ],
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "ctb_random_vibration",
+        "spec": "NASA-STD-5002 CTB",
+        "g_rms": 6.8,
+        "frequency_Hz_range": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC2",
+        "name": "astronaut_grip_tether",
+        "magnitude_N": 40,
+        "application": "single corner lanyard"
+      },
+      {
+        "id": "LC3",
+        "name": "spring_release_reaction",
+        "magnitude_N": 10,
+        "axis_orientation": "along internal rail"
+      },
+      {
+        "id": "LC4",
+        "name": "kibo_wall_bump",
+        "magnitude_N": 20,
+        "application": "any external face"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_aluminum",
+        "limit_MPa": 129,
+        "derivation": "yield / 1.5 = 193 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_lexan",
+        "limit_MPa": 31,
+        "derivation": "yield / 2.0 brittle polymer SF",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_wet_mass",
+        "limit_kg": 1.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 100,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "geometric_check",
+        "metric": "min_edge_radius",
+        "limit_mm": 3,
+        "applies_to": [
+          "astronaut_accessible_surfaces"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "material_compliance",
+        "metric": "flammability_and_offgassing",
+        "standard": "NASA-STD-6001B Test 1 and Test 7",
+        "applies_to": [
+          "all_materials"
+        ],
+        "verification": "material_certificate"
+      }
+    ]
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "10-minute experiment at stable ISS cabin temperature. No thermal gradient.",
+      "fluid_analysis": "Microgravity; no convection.",
+      "radiation_analysis": "Pressurized ISS volume; short lifetime."
+    }
+  },
+  "eval_coverage": [
+    "astronaut-handled hardware safety (edge radii + material compliance)",
+    "spring-release reaction as internal quasi-static load",
+    "dual-material (aluminum + polycarbonate) stress limit enforcement"
+  ]
+}

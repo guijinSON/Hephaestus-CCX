@@ -1,0 +1,180 @@
+{
+  "id": "092_ng7_iso7176_19_wheelchair_tiedown",
+  "source": {
+    "catalog_ref": "NG7",
+    "year": 2022,
+    "tier": "A"
+  },
+  "domain": "medical_devices",
+  "part_class": "wheelchair_vehicle_tiedown_anchor_bracket",
+  "full_prompt": "Design one representative 4-point tiedown securement anchor bracket set for a wheelchair used as a vehicle seat, compliant with ISO 7176-19:2022 (WTORS — wheelchair tiedown and occupant restraint systems). The artifact consists of four welded or bolted steel anchor brackets (two front, two rear) integrated into the wheelchair frame that receive the securement hook of a 4-point strap WTORS system per SAE J2249 / ISO 10542 compatibility. Each bracket must survive the ISO 7176-19 20 g frontal impact sled test with a Hybrid III 50th-percentile adult male anthropomorphic test device (ATD) of 85 kg seated in the chair and a combined 85 kg ISO wheelchair test dummy for the wheelchair mass contribution per standard (total ~170 kg test mass). Each rear anchor carries approximately half the rearward reaction of the 20 g deceleration acting on the wheelchair + dummy mass plus the contribution from the front belt anchor on the same side, consistent with the ISO 7176-19 load vectors (typical design anchor load 10-15 kN per rear anchor, within the 11 kN webbing rated capacity envelope). The brackets must also pass the static pull-out equivalent: each anchor must sustain a quasi-static pull along the strap-hook axis of at least 11 kN (matching strap webbing rated break strength per ISO 10542 minimum) without fracture or permanent deformation exceeding 10 mm. Target material AISI 4130 steel (yield 460 MPa, UTS 560 MPa) or equivalent structural steel. Wheelchair frame interface follows the ISO 7176-19 hook-geometry envelope. Deliverable is a single CAD assembly showing the four brackets integrated onto a representative wheelchair frame interface, with weld/bolt patterns, suitable for (a) explicit-dynamics sled-simulation FEA at 20 g (Abaqus/Explicit, LS-DYNA, or Radioss), (b) linear static quasi-static pull-out FEA at 11 kN per anchor. Vibration, thermal, fluid, radiation, buckling NOT required.",
+  "short_prompt": "Design a set of four welded/bolted steel tiedown anchor brackets (two front, two rear) integrated into a wheelchair frame, receiving a 4-point strap WTORS hook per ISO 7176-19:2022 and compatible with SAE J2249 / ISO 10542 strap geometry. Target material AISI 4130 or equivalent structural steel. Permanent deformation at any anchor <= 10 mm and no fracture.\n\nEnvelope: bracket geometry must accept the ISO 7176-19 / SAE J2249 strap-hook envelope and weld/bolt cleanly to a tubular wheelchair frame member.\n\nLoad cases.\n- LC1 frontal sled: 20 g frontal impact pulse with an 85 kg Hybrid III 50th-percentile ATD seated in the chair plus ~85 kg wheelchair mass (~170 kg total test mass).\n- LC2 quasi-static pull-out: 11 kN along the strap-hook axis applied to each anchor individually (matches ISO 10542 webbing rated strength).\n\nThe sled test requires an explicit-dynamics solver; the pull-out case is linear/nonlinear static.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_sled_simulation",
+        "reason": "ISO 7176-19 20 g frontal sled test is a transient impact simulation with ATD kinematics; not linear static.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus/Explicit",
+          "MADYMO"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Wheelchair tiedown anchor brackets for ISO 7176-19 sled test",
+    "brief": "Design four ISO 7176-19 compliant tiedown anchor brackets to survive a 20 g frontal sled test with 85 kg ATD + 11 kN strap capacity.",
+    "geometric_constraints": {
+      "anchor_count": 4,
+      "anchor_layout": "2 front + 2 rear",
+      "hook_envelope": "per ISO 7176-19 / SAE J2249 strap hook geometry"
+    },
+    "material": {
+      "name": "AISI 4130 steel",
+      "yield_strength_MPa": 460,
+      "ultimate_tensile_strength_MPa": 560,
+      "E_GPa": 205,
+      "density_kg_m3": 7850
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "20g_frontal_sled",
+        "magnitude_g": 20,
+        "ATD_mass_kg": 85,
+        "wheelchair_mass_kg": 85,
+        "total_test_mass_kg": 170,
+        "application": "ISO 7176-19 frontal impact sled pulse"
+      },
+      {
+        "id": "LC2",
+        "name": "quasi_static_pullout_per_anchor",
+        "magnitude_kN": 11,
+        "direction": "along strap-hook axis",
+        "application": "each of 4 anchors individually"
+      }
+    ],
+    "boundary_conditions": {
+      "wheelchair_frame_interface": "weld or bolt to tubular frame member as in real production",
+      "sled_test": "wheelchair on sled platform, strap anchors attached to sled floor/wall per SAE J2249 envelope"
+    },
+    "objective": {
+      "primary": "pass all criteria",
+      "secondary": "minimize anchor bracket mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly (4 brackets + frame interface)",
+      "report_fields": [
+        "max_von_mises_per_anchor_MPa",
+        "max_plastic_strain",
+        "permanent_deformation_mm",
+        "anchor_mass_g_each"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "frontal_sled_deceleration_g",
+        "limit_g": 20,
+        "derivation": "ISO 7176-19 frontal impact pulse",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "quasi_static_anchor_pull_kN",
+        "limit_kN": 11,
+        "derivation": "ISO 10542 webbing rated break strength envelope",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "permanent_deformation_at_anchor_mm",
+        "limit_mm": 10,
+        "derivation": "ISO 7176-19 permissible anchor deformation",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "fracture_occurs",
+        "limit": "no fracture",
+        "derivation": "ISO 7176-19 integrity criterion",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "=="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid (brackets), beam (frame tube), rigid (ATD)",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "LS-DYNA",
+        "Abaqus/Explicit",
+        "MADYMO"
+      ],
+      "analysis_types": [
+        "explicit-dynamics sled simulation",
+        "linear/nonlinear static pull-out"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Impact pulse, not modal.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Short brackets not buckling-governed."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "ATD kinematics and biomechanical injury metrics (HIC, neck Nij)",
+      "Postural support device interactions",
+      "Belt webbing routing and slack"
+    ],
+    "uncertainty_flags": [
+      {
+        "field": "ATD_mass_kg",
+        "value": 85,
+        "note": "ISO 7176-19 references Hybrid III 50th-percentile adult male; confirm exact total test mass per 2022 edition."
+      }
+    ]
+  },
+  "eval_coverage": [
+    "20 g explicit-dynamics sled simulation",
+    "quasi-static pull-out at strap rated capacity",
+    "medical assistive + automotive-safety crossover",
+    "multi-anchor assembly design",
+    "permanent deformation pass/fail"
+  ]
+}

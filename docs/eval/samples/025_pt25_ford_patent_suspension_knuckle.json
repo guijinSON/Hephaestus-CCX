@@ -1,0 +1,244 @@
+{
+  "id": "025_pt25_ford_patent_suspension_knuckle",
+  "source": {
+    "catalog_ref": "PT25",
+    "year": 2018,
+    "tier": "B"
+  },
+  "domain": "automotive_chassis",
+  "part_class": "front_suspension_knuckle",
+  "needs_patent_fetch": true,
+  "full_prompt": "Design a forged aluminum front suspension steering knuckle for a mid-size passenger vehicle (sprung mass ~1,800 kg) per a canonical automotive-suspension-knuckle patent concept (US20180257713A1-style): carry wheel vertical + lateral + longitudinal loads, support the lower ball joint, upper strut, tie rod, brake caliper, and wheel hub bearing. Envelope: 300 x 200 x 150 mm. Interfaces: wheel-hub bearing bore 85 mm H7 with 4-bolt pattern M12 on 90 mm PCD; lower ball joint taper bore Morse #6 (18 mm small dia); strut-mounting two-bolt clevis for M14 grade 10.9 bolts 50 mm apart; tie rod tapered hole 16 mm small dia; brake caliper mounting two-bolt pattern M12 x 1.5 on 90 mm center (ISO/TS 16949 caliper interface). Material: forged aluminum AA6082-T6 (yield 260 MPa, UTS 310 MPa, E 70 GPa, density 2700 kg/m^3, elongation 10%). Representative load cases derived from SAE Fatigue Design Handbook ground-vehicle wheel-load spectra for a 1,800 kg sedan with 450 kg per front wheel static: LC1 vertical 3 g = 450 x 3 x 9.81 = 13,240 N at wheel center; LC2 lateral 0.9 g = 3,970 N (cornering / g-out); LC3 longitudinal 1.0 g = 4,414 N (brake locked-wheel); LC4 combined vertical + lateral at 0.8 each = 10,592 + 3,176 N; LC5 pot-hole impact 5 g vertical + 1 g lateral = 22,068 + 4,414 N; LC6 fatigue spectrum at SAE wheel-load time history for 300,000 km vehicle life with steel-castable damage-equivalent stress. Pass/fail per SAE J1099 + automotive chassis practice: (R1) max von Mises static (LC1-4) <= yield / 1.5 = 173 MPa; (R2) max von Mises pot-hole (LC5) <= UTS = 310 MPa (shall not fracture at pot-hole); (R3) fatigue life under LC6 spectrum >= 300,000 km using AA6082-T6 S-N (fatigue limit ~95 MPa at 2e6 cycles); (R4) steering toe-in precision: wheel-carrier rotation under LC2 lateral <= 0.1 deg (handling precision); (R5) mass <= 3.5 kg (typical forged-alu knuckle mass for this class); (R6) ball-joint taper pull-out force >= 60 kN (ISO 25921 or SAE J491 equivalent); (R7) caliper mounting interface max deflection under brake torque LC3 <= 0.1 mm (to avoid brake pad taper wear). Deliverables: STEP AP242 forging neutral body (pre-machining) + finish-machined body; FEA static + fatigue; ball-joint pull-out check; mass statement.",
+  "short_prompt": "Design a forged aluminum front suspension steering knuckle for a mid-size passenger vehicle (sprung mass ~1,800 kg) per a canonical automotive-suspension-knuckle patent concept (US20180257713A1-style): carry wheel vertical + lateral + longitudinal loads; support the lower ball joint, upper strut, tie rod, brake caliper, and wheel hub bearing.\n\nEnvelope: 300 x 200 x 150 mm. Interfaces: wheel-hub bearing bore 85 mm H7 with four M12 on 90 mm PCD; lower ball-joint taper bore Morse #6 (18 mm small dia); strut-mount two-bolt clevis for M14 class 10.9 bolts 50 mm apart; tie-rod tapered hole 16 mm small dia; brake caliper two-bolt pattern M12 x 1.5 on 90 mm (ISO/TS 16949).\n\nMaterial: forged AA6082-T6.\n\nLoad cases derived from SAE Fatigue Design Handbook for a 1,800 kg sedan (450 kg per front wheel static).\n- LC1 vertical 3 g: 13,240 N at wheel center.\n- LC2 lateral 0.9 g: 3,970 N (cornering/g-out).\n- LC3 longitudinal 1.0 g: 4,414 N (brake locked-wheel).\n- LC4 combined vertical + lateral at 0.8 each: 10,592 + 3,176 N.\n- LC5 pot-hole impact 5 g vertical + 1 g lateral: 22,068 + 4,414 N.\n- LC6 SAE wheel-load spectrum for 300,000 km life.\n\nGates include steering-toe wheel-carrier rotation under LC2 <= 0.1 deg; mass <= 3.5 kg; ball-joint taper pull-out >= 60 kN (ISO 25921 or SAE J491); caliper-interface deflection under LC3 <= 0.1 mm.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "fatigue_damage_calculator",
+        "reason": "Rainflow + Miner's rule for 300,000 km life spectrum.",
+        "examples": [
+          "nCode DesignLife",
+          "FE-SAFE",
+          "rainflow script"
+        ]
+      },
+      {
+        "tool": "ball_joint_pullout_tester",
+        "reason": "Taper interference pull-out is a physical-test metric.",
+        "examples": [
+          "SAE J491 test rig"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Forged aluminum front suspension knuckle, 1,800 kg sedan (automotive-suspension-knuckle patent US20180257713A1 style)",
+    "brief": "Design a 300x200x150 mm AA6082-T6 front knuckle surviving 3 g vertical + 0.9 g lateral + pot-hole 5 g; 300,000 km fatigue life; mass <=3.5 kg.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 300,
+        "y": 200,
+        "z": 150
+      },
+      "hub_bearing_bore_mm": 85,
+      "hub_bolts": {
+        "count": 4,
+        "thread": "M12",
+        "PCD_mm": 90
+      },
+      "lower_ball_joint_taper": "Morse #6",
+      "strut_clevis_bolts": {
+        "count": 2,
+        "thread": "M14",
+        "grade": "10.9",
+        "spacing_mm": 50
+      },
+      "tie_rod_taper_small_dia_mm": 16,
+      "caliper_bolts": {
+        "count": 2,
+        "thread": "M12 x 1.5",
+        "center_mm": 90
+      }
+    },
+    "material": {
+      "name": "AA6082-T6 forging",
+      "yield_MPa": 260,
+      "ultimate_MPa": 310,
+      "youngs_modulus_GPa": 70,
+      "density_kg_m3": 2700
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical_3g",
+        "force_N": 13240
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_0.9g",
+        "force_N": 3970
+      },
+      {
+        "id": "LC3",
+        "name": "longitudinal_1g",
+        "force_N": 4414
+      },
+      {
+        "id": "LC4",
+        "name": "combined_0.8",
+        "vertical_N": 10592,
+        "lateral_N": 3176
+      },
+      {
+        "id": "LC5",
+        "name": "pothole_5g",
+        "vertical_N": 22068,
+        "lateral_N": 4414
+      },
+      {
+        "id": "LC6",
+        "name": "fatigue_300k_km_spectrum",
+        "note": "SAE time history"
+      }
+    ],
+    "boundary_conditions": {
+      "hub_bearing": "wheel load introduced through bearing bore",
+      "strut_upper": "pinned to strut top mount",
+      "lower_ball_joint": "ball joint reaction"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "max_von_mises_static_MPa",
+        "max_von_mises_pothole_MPa",
+        "fatigue_life_km",
+        "toe_rotation_deg",
+        "mass_kg",
+        "ball_joint_pullout_kN",
+        "caliper_if_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_static",
+        "limit_MPa": 173,
+        "derivation": "yield / 1.5 = 260 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_pothole",
+        "limit_MPa": 310,
+        "derivation": "UTS (no fracture)",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "fatigue_life",
+        "limit_km": 300000,
+        "derivation": "AA6082-T6 fatigue limit 95 MPa at 2e6 cycles + SAE spectrum",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "wheel_carrier_toe_rotation",
+        "limit_deg": 0.1,
+        "derivation": "handling precision",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 3.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "ball_joint_pullout_force",
+        "limit_kN": 60,
+        "derivation": "SAE J491 interference retention",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "caliper_interface_deflection",
+        "limit_mm": 0.1,
+        "derivation": "avoid brake pad taper wear",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "SAE J1099 + SAE J491 + FMVSS 135 (brake) + NHTSA chassis durability guidance + ISO 25921",
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus Standard",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static x5 + fatigue spectrum post-proc"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static + fatigue governs chassis knuckle.",
+      "thermal_analysis": "Brake thermal loading is a secondary concern, out of scope here.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "patent_fetch": "US20180257713A1 specific load claims need verification. Magnitudes are derived from 1,800 kg sedan class.",
+    "numeric_source": "SAE J1099 fatigue design; AA6082-T6 allowables; typical mid-size sedan wheel loads."
+  },
+  "eval_coverage": [
+    "multi-interface chassis part",
+    "static + pothole + fatigue spectrum",
+    "handling precision stiffness target",
+    "ball joint taper retention force"
+  ]
+}

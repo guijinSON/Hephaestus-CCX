@@ -1,0 +1,188 @@
+{
+  "id": "242_a2_irec_copv_nitrogen_tank",
+  "source": {
+    "catalog_ref": "A2",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_pressure_vessel",
+  "part_class": "composite_overwrapped_pressure_vessel",
+  "full_prompt": "Design a Composite Overwrapped Pressure Vessel (COPV) for use as the high-pressure nitrogen pressurant tank in a student-developed bipropellant rocket targeting the 30,000 ft apogee category. The COPV consists of a seamless 6061-T6 aluminum liner (monolithic spin-formed, no welds) overwrapped with a T700-carbon-fiber / epoxy matrix filament winding. Liner internal diameter 150 mm, internal cylindrical length 300 mm, hemispherical domes, single 1/4-inch NPT port on the forward dome. Service fluid gaseous nitrogen at MEOP 300 bar (30 MPa) at 25 C. Composite wrap: [90 / +-15 / 90 / +-15 / 90] layup with T700S carbon/epoxy, ply thickness 0.25 mm, E1 = 135 GPa, E2 = 10 GPa, G12 = 5 GPa, nu12 = 0.30, longitudinal tensile strength 2550 MPa, transverse tensile strength 50 MPa. Liner material 6061-T6 (E = 68.9 GPa, yield 276 MPa, ultimate 310 MPa). Qualification rules: (R1) burst pressure >= 3.0 x MEOP = 900 bar, first-ply-failure criterion (Tsai-Wu) must not exceed 1.0 below 900 bar; (R2) proof pressure of 1.5 x MEOP = 450 bar shall be held for >= 4 minutes (>= 2x nominal hold duration of 120 s), with liner max von Mises <= yield / 1.1 = 251 MPa; (R3) autofrettage cycle at 1.25 x MEOP to pre-compress the liner is permitted; final liner residual stress after autofrettage-and-bleed must be compressive in the hoop direction; (R4) dry mass of fully wrapped COPV <= 3.0 kg; (R5) axial hard-mount fundamental frequency >= 200 Hz. Primary verification is structural FEA with shell-based composite (layered shell or solid-shell) for the wrap and solid elements for the liner; hydrostatic proof and burst simulated as internal pressure with autofrettage as a load-step sequence. Vibration analysis (modal) is secondary for R5. Thermal, fluid, and radiation analyses explicitly NOT required. Deliverables: STEP AP242 assembly (liner + wrap), laminate layup specification, and a report listing dry mass in kg, Tsai-Wu max index at burst, liner max von Mises at proof in MPa, first modal frequency in Hz.",
+  "short_prompt": "Design a Composite Overwrapped Pressure Vessel (COPV) for the high-pressure nitrogen pressurant tank of a student bipropellant rocket (30,000 ft apogee class). The COPV is a seamless spin-formed 6061-T6 aluminum liner overwrapped with a T700-carbon/epoxy filament-wound laminate; a single 1/4\" NPT port sits on the forward dome. Service fluid is gaseous nitrogen at 25 C.\n\nEnvelope: liner internal diameter 150 mm, cylindrical internal length 300 mm, hemispherical domes.\n\nLoad cases.\n- LC1 burst: internal pressure 3.0 x MEOP = 900 bar, first-ply-failure (Tsai-Wu) check on the composite wrap.\n- LC2 proof: 1.5 x MEOP = 450 bar, held >= 4 minutes (>= 2 x nominal 120 s hold), liner stress check.\n- LC3 autofrettage: 1.25 x MEOP cycle, then bleed; liner residual hoop stress must remain compressive.\n- LC4 modal: axial hard-mount, first mode floor.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student-developed COPV (30k ft category nitrogen pressurant)",
+    "brief": "Design a filament-wound COPV with 6061-T6 liner, MEOP 300 bar, burst 3x MEOP (900 bar), proof 1.5x MEOP held >= 4 min.",
+    "geometric_constraints": {
+      "liner_internal_diameter_mm": 150,
+      "liner_internal_cylindrical_length_mm": 300,
+      "liner_domes": "hemispherical, spin-formed integral to liner",
+      "port": "1/4 inch NPT, forward dome, single",
+      "layup": "[90 / +-15 / 90 / +-15 / 90]",
+      "ply_thickness_mm": 0.25
+    },
+    "material": {
+      "liner": {
+        "name": "6061-T6 aluminum",
+        "properties": {
+          "youngs_modulus_GPa": 68.9,
+          "yield_strength_MPa": 276,
+          "ultimate_tensile_strength_MPa": 310,
+          "density_kg_m3": 2700
+        }
+      },
+      "wrap": {
+        "name": "T700S carbon/epoxy",
+        "properties": {
+          "E1_GPa": 135,
+          "E2_GPa": 10,
+          "G12_GPa": 5,
+          "nu12": 0.3,
+          "longitudinal_tensile_strength_MPa": 2550,
+          "transverse_tensile_strength_MPa": 50,
+          "density_kg_m3": 1600
+        }
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof",
+        "internal_pressure_bar": 450,
+        "hold_time_s": 240,
+        "description": "1.5 x MEOP, held >= 2x nominal"
+      },
+      {
+        "id": "LC2",
+        "name": "burst",
+        "internal_pressure_bar": 900,
+        "description": "3.0 x MEOP COPV burst"
+      },
+      {
+        "id": "LC3",
+        "name": "autofrettage",
+        "internal_pressure_bar": 375,
+        "description": "1.25 x MEOP autofrettage pre-stress cycle"
+      },
+      {
+        "id": "LC4",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "fixed at aft boss, internal pressure on liner inner wall",
+      "composite_bond": "perfectly bonded layered shell at liner interface"
+    },
+    "objective": {
+      "minimize": "dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 2,
+      "report_fields": [
+        "dry_mass_kg",
+        "tsai_wu_max_index_at_burst",
+        "liner_max_von_mises_proof_MPa",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_max_index_at_burst",
+        "limit": 1.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "liner_max_von_mises_proof",
+        "limit_MPa": 251,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "liner_residual_hoop_stress_after_autofrettage",
+        "limit_MPa": 0,
+        "sign": "compressive",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_kg": 3.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 200,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell (composite wrap) + second-order solid (liner)",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical (ACP)",
+        "Abaqus Standard (*COMPOSITE LAYUP)"
+      ],
+      "analysis_types": [
+        "linear static (proof)",
+        "nonlinear static (autofrettage)",
+        "progressive failure (burst)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Isothermal 25 C; pressurant temperature transients out of scope.",
+      "fluid_analysis": "Tank-side static pressure only.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Internal pressure only; no external crush case in mission profile."
+    }
+  },
+  "eval_coverage": [
+    "composite progressive failure (Tsai-Wu)",
+    "autofrettage pre-stress sign check",
+    "dual material (metal liner + CFRP wrap)",
+    "modal floor"
+  ]
+}

@@ -1,0 +1,180 @@
+{
+  "id": "183_sp7_autodesk_fusion",
+  "source": {
+    "catalog_ref": "SP7",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "consumer_product",
+  "part_class": "desktop_phone_stand",
+  "full_prompt": "Design a generatively designed desktop 3D-printable multi-function phone stand and cable tidy as an open-source consumer-FDM generative-design benchmark. The part is a single monolithic desktop object with a bounding box no larger than 150 mm x 100 mm x 120 mm, printable in PLA or PETG on a consumer FDM printer with a 220 x 220 x 250 mm build plate. The part must support a modern smartphone with a mass of 350 g (max dimensions 170 x 80 x 10 mm) in either portrait or landscape orientation at a tilt angle between 50 and 75 degrees, integrate a cable pass-through slot 8 mm wide for a USB-C charging cable, and include a small tray at the base for keys/earbuds. Material is PLA (yield 50 MPa, E 3.5 GPa, density 1240 kg/m^3). Pass/fail criteria: (R1) max von Mises stress in the PLA under the 350 g phone gravity load plus a 5 N accidental push-force at the top of the stand must not exceed 33 MPa (PLA yield 50 / SF 1.5), (R2) phone-cradle top deflection under the 350 g plus 5 N must not exceed 1.5 mm to keep the phone angle stable, (R3) total part mass must not exceed 120 g to meet a classroom-print filament-cost target, (R4) part must print without support (self-supporting at 45 degrees from build plate) and print time estimated by Cura-equivalent slicer at 0.2 mm layer height must be under 4 hours, and (R5) a linear buckling analysis under 5x accidental push (25 N) must yield a first-mode load factor of at least 2.0. Vibration, thermal, fluid, and radiation analyses are not required. Deliver an STL ready for any consumer FDM slicer plus STEP AP242 and a verification report with max von Mises, top deflection, part mass, print time estimate, and first buckling load factor.",
+  "short_prompt": "Generatively design a monolithic 3D-printable desktop phone stand and cable-tidy for consumer FDM (PLA), within a 150 x 100 x 120 mm bounding box on a 220 x 220 x 250 mm build plate. The stand holds a 350 g smartphone (up to 170 x 80 x 10 mm) in portrait or landscape at a 50-75 deg tilt, includes an 8 mm cable pass-through for USB-C, and a small base tray. Base rests on the desk; cradle supports the phone bottom and back.\n\nLoad cases.\n- LC1 phone plus push: 350 g phone gravity + 5 N accidental push at the top of the stand.\n- LC2 buckling: 5x accidental push (25 N).\n\nPart mass target <=120 g; part must be self-supporting at 45 deg from the build plate and print in under 4 h at 0.2 mm layer height on a consumer slicer.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "generative_design",
+        "reason": "Generative design produces the organic topology inside the bounding box with print-orientation and self-support constraints, not FEA.",
+        "examples": [
+          "generative-design solver"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Generatively designed desktop phone stand",
+    "brief": "Generatively design a monolithic PLA phone stand (<=150 x 100 x 120 mm) holding a 350 g smartphone at 50-75 deg tilt with 8 mm USB-C slot, passing stress, deflection, <=120 g mass, <=4 h print, and 5x buckling margin.",
+    "geometric_constraints": {
+      "bounding_box_mm": [
+        150,
+        100,
+        120
+      ],
+      "phone_tilt_deg_band": [
+        50,
+        75
+      ],
+      "cable_slot_mm": 8,
+      "self_supporting_overhang_deg": 45
+    },
+    "material": {
+      "name": "Plain PLA",
+      "yield_MPa": 50,
+      "E_GPa": 3.5,
+      "density_kg_m3": 1240
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "phone_plus_push",
+        "phone_mass_g": 350,
+        "push_N": 5
+      },
+      {
+        "id": "LC2",
+        "name": "buckling_5x_push",
+        "push_N": 25
+      }
+    ],
+    "boundary_conditions": {
+      "base": "rests on desk, frictional contact",
+      "cradle": "supports phone bottom and back"
+    },
+    "objective": {
+      "primary": "pass all pass/fail",
+      "secondary": "minimize print time and mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STL",
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_MPa",
+        "top_deflection_mm",
+        "part_mass_g",
+        "print_time_hr",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 33,
+        "derivation": "PLA yield 50 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "top_deflection",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "part_mass",
+        "limit_g": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "print_time_estimate",
+        "limit_hr": 4,
+        "derivation": "classroom cost target at 0.2 mm layer",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "parametric-CAD simulation",
+        "generative-design solver"
+      ],
+      "analysis_types": [
+        "generative design",
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static desk use.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "No fluid.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "FDM raster anisotropy in PLA",
+      "Creep under sustained phone weight",
+      "Colorfastness of PLA to UV"
+    ]
+  },
+  "eval_coverage": [
+    "generative design + self-support constraint",
+    "print-time budget as pass/fail",
+    "classroom-print bounding box + mass",
+    "buckling margin for accidental push"
+  ]
+}

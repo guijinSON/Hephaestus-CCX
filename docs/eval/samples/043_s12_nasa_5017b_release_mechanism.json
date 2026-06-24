@@ -1,0 +1,223 @@
+{
+  "id": "043_s12_nasa_5017b_release_mechanism",
+  "source": {
+    "catalog_ref": "S12",
+    "year": 2022,
+    "tier": "A"
+  },
+  "domain": "aerospace_mechanism",
+  "part_class": "launch_release_hinge",
+  "full_prompt": "Design the release hinge mechanism for a single-panel 1.2 m x 0.8 m spacecraft solar array, governed by NASA-STD-5017B Design and Development Requirements for Mechanisms (2022-12-06). The hinge is a motorized (spring-driven with eddy-current damper) single-axis rotary mechanism that releases a launch-restraint pin after launch and deploys the panel from its stowed orientation to 90 degrees. NASA-STD-5017B Section 4.2.4 requires a torque margin of >= 100% over the sum of resisting torques (i.e. available torque >= 2 x resisting torque sum) at worst-case conditions, and Section 4.7 requires life-test factor >= 4x service life.\n\nGeometry. Two titanium hinge leaves bolted to the spacecraft bus and the array backside. Hinge pin: Ti-6Al-4V 8 mm diameter x 60 mm long. Bearing: two deep-groove ball bearings SKF-style, ID 8 mm, OD 22 mm, width 7 mm, dry lubricated with MoS2. Torsion spring: 302 stainless music wire, mean coil diameter 18 mm, wire diameter 2 mm, active coils 15, designed to deliver at least 0.4 N*m torque at 90 degrees deployed and 1.0 N*m at stowed (0 degrees). Eddy-current damper: inline rotary, damping coefficient 0.05 N*m*s/rad. Launch-restraint pin: separate single-shot pyro-actuated pin puller at the array edge, treated as a boolean state change (stowed vs deployed) for this analysis.\n\nPanel inertia. Array panel + substrate total mass 3.5 kg; moment of inertia about hinge axis J = (1/3) * m * L^2 = (1/3) * 3.5 * 1.2^2 = 1.68 kg*m^2.\n\nResisting torques at worst-case (cold, end-of-life, bearing contaminated). T_harness = 0.08 N*m (stiff harness bending across hinge). T_friction_bearing = 0.05 N*m (dry MoS2 bearing with end-of-life degradation factor 2x per 5017B). T_detent = 0.02 N*m at 0 deg, 0 N*m after opening. T_restraint = 0 after pin release. Sum of resisting torques at any angle: T_resist = 0.08 + 0.05 + 0.02 = 0.15 N*m (max at stowed) and 0.13 N*m after detent clears.\n\nDeployment time budget. Must reach 90 degrees within 120 seconds and velocity at 90 degrees (latch-in) must be between 3 and 15 deg/s to avoid latch damage.\n\nPass/fail criteria. (R1) Torque margin per NASA-STD-5017B Section 4.2.4: at every deployment angle, (T_available - T_resist) / T_resist >= 1.0 (= 100% margin). At stowed: T_spring = 1.0 N*m, T_resist = 0.15 N*m => (1.0 - 0.15) / 0.15 = 5.67 >> 1.0. At 90 deg: T_spring = 0.4 N*m, T_resist = 0.13 N*m => (0.4 - 0.13) / 0.13 = 2.08 > 1.0. (R2) Life-test factor: the mechanism must survive 4 x expected cycles. Expected service = 1 deployment + 0 retracts (one-shot), but Section 4.7 requires at least 20 ground ambient actuations + 4 thermal-vacuum qualification actuations for verification; analysis-wise the hinge must show bearing fatigue life >= 80 deployments with no increase in resisting torque beyond 0.15 N*m. (R3) Deployment time: integrate J * theta_ddot = T_spring(theta) - T_resist - c * theta_dot; must reach 90 deg in <= 120 s. (R4) Latch-in velocity at 90 deg: 3 deg/s <= theta_dot <= 15 deg/s. (R5) Hinge pin max von Mises at latch-in impact (kinetic energy 0.5 * J * omega^2 dissipated in 5 mm pin bending) must not exceed Fty_Ti / 1.25 = 688 MPa. (R6) Bearing DN value = d_m (mean bearing ID in mm) x rpm; for this slow deployment DN is near zero, but the bearing selected must have a rated static load capacity >= 5 x launch inertia load (per 5017B) = 5 x (3.5 kg * 30 g * 9.81) = 5150 N.\n\nSolver and analysis expectations. Primary analysis: (a) closed-form torque margin calculation at 0, 30, 60, 90 deg (R1); (b) ODE integration of the rotary equation of motion for R3 and R4; (c) linear-static FEM of hinge pin under latch-in impact for R5 (TET10 mesh 0.5 mm at shear plane); (d) bearing capacity lookup from SKF catalog for R6. Structural FEM required for R5; thermal, fluid, vibration, radiation, buckling NOT required.\n\nDeliverables. STEP AP242 of hinge assembly, torque margin table, deployment-angle time history plot data (theta vs t), latch-in velocity in deg/s, hinge pin max von Mises in MPa, and bearing static capacity margin.",
+  "short_prompt": "Design the launch-restraint release hinge for a single 1.2 m x 0.8 m spacecraft solar array panel (3.5 kg total, moment of inertia about hinge axis J = 1.68 kg*m^2). The mechanism is a single-axis rotary hinge driven by a torsion spring and damped by an eddy-current damper; a separate pyro pin puller releases the launch restraint. Design to NASA-STD-5017B (2022-12-06), which requires >= 100% torque margin over resisting torques at every angle and a 4x life-test factor.\n\nEnvelope: two Ti hinge leaves, Ti-6Al-4V hinge pin ~8 mm x 60 mm, two dry-MoS2 ball bearings, 302 SS torsion spring delivering 1.0 N*m stowed and 0.4 N*m at 90 deg, eddy-current damper 0.05 N*m*s/rad.\n\nLoad cases.\n- LC1 torque margin at each angle with cold / end-of-life resisting torques summing to ~0.15 N*m at stowed.\n- LC2 life demonstration: analytical hinge life >= 80 deployments (4x service + qual margin).\n- LC3 deployment time integration: reach 90 deg in <= 120 s with latch-in velocity in 3-15 deg/s.\n- LC4 latch-in impact on the hinge pin from the residual kinetic energy at 90 deg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ODE_integration_rotary_EOM",
+        "reason": "Deployment kinematics require ODE integration of torque balance.",
+        "examples": [
+          "MATLAB ode45",
+          "Python scipy.integrate",
+          "Adams"
+        ]
+      },
+      {
+        "tool": "closed_form_torque_margin",
+        "reason": "NASA-STD-5017B margin equation is closed-form.",
+        "examples": [
+          "hand calc",
+          "MathCAD"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Solar-array launch-restraint hinge per NASA-STD-5017B",
+    "brief": "Torsion-spring + eddy-damper single-axis hinge deploying 3.5 kg array in <=120 s with >=100% torque margin and bounded latch-in velocity.",
+    "geometric_constraints": {
+      "hinge_pin_mm": {
+        "diameter": 8,
+        "length": 60
+      },
+      "bearings": {
+        "count": 2,
+        "ID_mm": 8,
+        "OD_mm": 22,
+        "width_mm": 7,
+        "lube": "MoS2 dry"
+      },
+      "torsion_spring": {
+        "wire_diameter_mm": 2,
+        "mean_coil_diameter_mm": 18,
+        "active_coils": 15,
+        "material": "302 SS music wire"
+      },
+      "damper_coeff_Nm_s_rad": 0.05
+    },
+    "panel_inertia": {
+      "mass_kg": 3.5,
+      "length_m": 1.2,
+      "J_kgm2": 1.68
+    },
+    "resisting_torques_Nm": {
+      "harness": 0.08,
+      "bearing": 0.05,
+      "detent_stowed": 0.02,
+      "total_stowed": 0.15
+    },
+    "spring_torque_Nm": {
+      "stowed_0deg": 1.0,
+      "deployed_90deg": 0.4
+    },
+    "deployment_budget": {
+      "time_s_max": 120,
+      "latch_in_deg_s_min": 3,
+      "latch_in_deg_s_max": 15
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "torque_margin_at_each_angle"
+      },
+      {
+        "id": "LC2",
+        "name": "life_test_4x",
+        "cycles_min": 80
+      },
+      {
+        "id": "LC3",
+        "name": "deployment_time_integration"
+      },
+      {
+        "id": "LC4",
+        "name": "latch_in_impact_pin_stress"
+      }
+    ],
+    "boundary_conditions": {
+      "spacecraft_side_leaf": "fixed"
+    },
+    "objective": {
+      "satisfy": "torque_margin_and_deployment_window"
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "NASA-STD-5017B",
+      "revision": "2022-12-06"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "torque_margin_at_every_angle",
+        "limit": 1.0,
+        "derivation": "NASA-STD-5017B Section 4.2.4 requires (T_avail - T_resist)/T_resist >= 1.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "life_test_cycles",
+        "limit_cycles": 80,
+        "derivation": "NASA-STD-5017B Section 4.7 life factor 4x (20 ground + 4 TVAC => 80 analytical)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "deployment_time",
+        "limit_s": 120,
+        "derivation": "Project-level deployment window",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "latch_in_angular_velocity",
+        "limit_deg_s": {
+          "min": 3,
+          "max": 15
+        },
+        "derivation": "Latch-mechanism design envelope",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "hinge_pin_max_von_mises_at_latch_in",
+        "limit_MPa": 688,
+        "derivation": "Fty_Ti / 1.25 per NASA-STD-5001B",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "bearing_static_capacity_vs_launch_inertia",
+        "limit_N": 5150,
+        "derivation": "5x launch inertia per NASA-STD-5017B static-load factor",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 for pin",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "ODE integrator",
+        "hand calc"
+      ],
+      "analysis_types": [
+        "closed-form torque margin",
+        "ODE integration",
+        "linear static FEM"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Launch vibration enveloped by quasi-static 30 g bearing load.",
+      "thermal_analysis": "Cold-case friction increase rolled into degradation factor.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Pyro pin puller qualification per NASA-STD-5017B Section 4.8",
+      "Harness stiffness measurement at cold temperature",
+      "MoS2 lube-life test"
+    ]
+  },
+  "eval_coverage": [
+    "NASA-STD-5017B 100% torque margin at every angle",
+    "rotary EOM ODE integration",
+    "latch-in velocity bounds",
+    "bearing static capacity 5x launch inertia"
+  ]
+}

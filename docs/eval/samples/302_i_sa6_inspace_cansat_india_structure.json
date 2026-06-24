@@ -1,0 +1,212 @@
+{
+  "id": "302_i_sa6_inspace_cansat_india_structure",
+  "source": {
+    "catalog_ref": "I-SA6",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_smallsat_structural",
+  "part_class": "cansat_primary_structure_cylinder",
+  "full_prompt": "Design the primary structure cylinder for an national CanSat-class benchmark-26 entry. Guidelines pin mass at 1.000 kg +/- 0.050 kg, envelope a cylinder of 150 mm diameter x 400 mm length, launched to 1000 m apogee by a model rocket, descending under parachute at ~5 m/s. Onboard sensor suite comprises pressure/temperature/IMU; battery, radio, and OBC take the remaining volume. The primary structure is a single-piece machined cylinder that houses three internal bulkheads to support sensor PCBs and parachute bay. Geometry: OD 150.0 mm (+0/-0.2 mm fairing fit), ID 146.0 mm (wall 2 mm nominal), total length 400 mm, with three internal bulkhead rings at 100 mm, 200 mm, and 300 mm from the base; each bulkhead is 3 mm thick, features four M3 threaded bosses for PCB standoffs on an 80 mm square pattern, and a central 40 mm diameter cable pass-through hole. Upper end cap is a separate 8 mm thick aluminium disc with 12 M3 through-holes on a 135 mm bolt circle for parachute bridle attachment (3 bridle tabs) and 3 igniter access ports. Lower end cap is a 5 mm thick aluminium disc with 4 M3 mounting holes for the ejection pusher rod. Material: 6061-T6 aluminium (69 GPa, 0.33, 2700 kg/m^3, 276 MPa yield, 310 MPa UTS). Load cases: LC1 (Launch axial) — 20 g axial compression on full 1 kg payload = 196 N compressive load applied distributed along the cylinder from base to each bulkhead; LC2 (Launch lateral) — 5 g lateral = 49 N distributed; LC3 (Parachute opening shock) — 30 g vertical deceleration on the 1 kg system during chute deploy; apply 294 N upward at the top end cap bolt circle, with base fully fixed; LC4 (Landing impact) — 6 m/s vertical touchdown on grass (modeled as a rigid floor with a 0.05 s stop = ~12 g); apply 117 N axial at the base bulkhead; LC5 (Internal pressure) — a sealed cavity pressurized by ambient descent pressure difference of 0.015 MPa from sea level to 1000 m max; applied as internal pressure on the ID of the cylinder; LC6 (Thermal) — ground launch pad at 45 C surface heating to 60 C on one side, 25 C ambient on the shaded side, steady; linear thermal-structural. Pass/fail: (R1) max von Mises under LC1, LC2, LC3, LC4 < 184 MPa (yield/1.5); (R2) under LC5, max von Mises < 92 MPa (yield/3, pressure vessel margin); (R3) first-mode linear buckling under LC1 >= 3.0 (thin cylinder in axial compression); (R4) under LC3, max deflection of upper end cap < 3 mm (bridle anchor stability); (R5) under LC6 thermal, max combined stress < 92 MPa; (R6) total primary structure mass (cylinder + 3 bulkheads + 2 end caps) < 300 g so electronics/payload have 700 g budget; (R7) outer diameter under any LC must stay within 150.0 +0/-0.2 mm so the CanSat fits the standard fairing. Primary verification: linear static for LC1, LC2, LC3, LC4, LC5; linear buckling for LC1; thermal-structural for LC6. Vibration modal, fluid, and radiation analyses are not required. Output one STEP AP242 assembly (cylinder + 3 bulkheads + 2 end caps) plus a report listing total primary-structure mass, max stress per case, buckling factor under LC1, end-cap deflection under LC3, and OD change under any LC.",
+  "short_prompt": "Design the primary structure cylinder of an India CanSat-class benchmark-26 entry. Wet mass 1.000 kg +/- 0.050 kg; cylindrical 150 mm OD x 400 mm envelope; launched to 1000 m apogee, descending under parachute at ~5 m/s.\n\nEnvelope: OD 150.0 mm (+0/-0.2 mm), ID 146.0 mm (2 mm wall), three 3 mm internal bulkheads at 100, 200, 300 mm from the base with 4 x M3 PCB-standoff bosses on an 80 mm square pattern and 40 mm central cable hole; 8 mm top end cap with 12 x M3 on a 135 mm bolt circle (parachute bridle + igniter ports); 5 mm bottom end cap with 4 x M3 for the ejection pusher rod; 6061-T6 throughout.\n\nFactor regime: yield FoS 1.5 for launch/shock/landing; pressure-vessel FoS 3 for the sealed-cavity descent case; linear buckling eigenvalue >= 3.0 under axial launch; OD must stay within 150.0 +0/-0.2 mm.\n\nLoad cases.\n- Launch axial 20 g on 1 kg distributed along the cylinder.\n- Launch lateral 5 g (49 N distributed).\n- Parachute-opening shock: 30 g on 1 kg = 294 N upward at the top end-cap bolt circle, base fixed.\n- Landing impact 6 m/s on grass = ~12 g = 117 N axial at the base bulkhead.\n- Internal pressure: 0.015 MPa differential (sea level to 1000 m).\n- Thermal: pad at 45 C with 60 C sunlit side / 25 C shaded side (linear thermo-structural).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national CanSat-class benchmark primary structure",
+    "brief": "1 kg, 150 x 400 mm CanSat primary cylinder with 3 internal bulkheads and 2 end caps, surviving 20 g launch, 30 g chute-deploy shock, and thermal one-sided solar soak.",
+    "geometric_constraints": {
+      "OD_mm": 150.0,
+      "ID_mm": 146.0,
+      "length_mm": 400,
+      "bulkhead_positions_mm": [
+        100,
+        200,
+        300
+      ],
+      "bulkhead_thickness_mm": 3,
+      "bulkhead_PCB_bosses": 4,
+      "bulkhead_PCB_pattern_mm": 80,
+      "bulkhead_pass_through_mm": 40,
+      "upper_cap_thickness_mm": 8,
+      "upper_cap_bolts": 12,
+      "upper_cap_bolt_circle_mm": 135,
+      "lower_cap_thickness_mm": 5,
+      "lower_cap_bolts": 4,
+      "mass_target_kg": 1.0,
+      "mass_tolerance_kg": 0.05
+    },
+    "material": {
+      "name": "6061-T6",
+      "youngs_modulus_GPa": 69,
+      "yield_MPa": 276,
+      "UTS_MPa": 310,
+      "density_kg_m3": 2700
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_axial",
+        "accel_g": 20
+      },
+      {
+        "id": "LC2",
+        "name": "launch_lateral",
+        "accel_g": 5
+      },
+      {
+        "id": "LC3",
+        "name": "chute_shock",
+        "accel_g": 30
+      },
+      {
+        "id": "LC4",
+        "name": "landing_impact",
+        "accel_g": 12,
+        "velocity_m_s": 6
+      },
+      {
+        "id": "LC5",
+        "name": "descent_pressure_delta",
+        "delta_p_MPa": 0.015
+      },
+      {
+        "id": "LC6",
+        "name": "thermal_soak",
+        "hot_side_C": 60,
+        "cold_side_C": 25
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 6,
+      "report_fields": [
+        "structure_mass_g",
+        "max_von_mises_per_case_MPa",
+        "buckling_factor_LC1",
+        "upper_cap_deflection_LC3_mm",
+        "OD_change_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 92,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "upper_cap_deflection",
+        "limit_mm": 3,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "combined_stress",
+        "limit_MPa": 92,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "structure_mass",
+        "limit_g": 300,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "OD_under_load",
+        "upper_limit_mm": 150.0,
+        "lower_limit_mm": 149.8,
+        "applies_to": [
+          "any"
+        ],
+        "operator": "range"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "linear buckling (LC1)",
+        "thermal-structural (LC6)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Short flight, no sustained vibe qualification required.",
+      "fluid_analysis": "Descent aero captured by parachute spec, not body CFD.",
+      "radiation_analysis": "Not applicable at sub-km flight."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "RF shielding mesh",
+      "Battery off-gassing safety"
+    ]
+  },
+  "eval_coverage": [
+    "multi-load CanSat structural",
+    "envelope/mass tolerance under load",
+    "one-sided solar thermal soak"
+  ]
+}

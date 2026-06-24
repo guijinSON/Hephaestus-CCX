@@ -1,0 +1,174 @@
+{
+  "id": "219_df3_aiaa_space_lunar_base",
+  "source": {
+    "catalog_ref": "DF5",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "space_habitat_structural",
+  "part_class": "lunar_base_pressure_module",
+  "full_prompt": "Design the primary pressure-shell module of a 4-crew Lunar Base Camp for a team space-design benchmark. Single cylindrical module with hemispherical endcaps; internal volume 50 m^3, outer diameter 4.0 m, cylindrical length 4.0 m, total length 8.0 m. Launch-mass cap per RFP baseline: 12,000 kg wet including shell + ECLSS + structure. Radiation areal density target (GCR+SPE): 15 g/cm^2 equivalent polyethylene or regolith sandbag layer atop Al shell. Shell material: Aluminum 2219-T87 (Young's modulus 73 GPa, Poisson 0.33, yield 352 MPa, ultimate 455 MPa, density 2840 kg/m^3), nominal wall 5 mm. Internal pressure MEOP = 70 kPa (hypobaric baseline), lunar external 0 kPa. Design factors per ECSS-E-ST-32-02C Rev.2 + ANSI/AIAA S-080A metallic crewed: yield FoS 1.25, ultimate FoS 1.4, proof = 1.5 x MEOP, burst = 2.0 x MEOP. Thermal cycle: -180 C (2-week lunar night) to +120 C (lunar day sun). Load cases: (LC1) MEOP 70 kPa internal; (LC2) proof 105 kPa; (LC3) burst 140 kPa must not produce ultimate failure; (LC4) launch quasi-static 9 g axial + 2 g lateral per SLS Block 1B; (LC5) thermal: external surface -180 C to +120 C, interior held at 22 C, with anisotropic radiation cladding on top surface; (LC6) lunar seismic 0.1 g horizontal. Pass/fail: (R1) under LC1, max von Mises <= 281 MPa (yield 352 / 1.25), (R2) under LC1, max stress <= 325 MPa (ultimate 455 / 1.4), (R3) under LC3 burst no ultimate failure; (R4) under LC4 launch loads, max stress <= 325 MPa; (R5) radiation areal density over crew bunk area >= 15 g/cm^2 (computed from regolith sandbag + shell); (R6) shell + structure mass + cladding <= 8000 kg (reserving 4000 kg for ECLSS); (R7) first cylindrical mode >= 20 Hz. Deliverables: STEP AP242, FEA per pressure case, launch FEA, thermal gradient FEA, radiation shielding verification table, modal first 5 modes, and mass budget.",
+  "short_prompt": "Design the primary pressure-shell module of a 4-crew Lunar Base Camp as a single cylindrical module with hemispherical endcaps, internal volume 50 m^3. Material class: Aluminum 2219-T87 shell, with an overlying radiation cladding (regolith sandbag or polyethylene) sized for >= 15 g/cm^2 GCR+SPE areal density over crew bunks. Qualify per ECSS-E-ST-32-02C Rev.2 + ANSI/AIAA S-080A metallic-crewed, with yield FoS 1.25, ultimate FoS 1.4, proof 1.5 x MEOP, burst 2.0 x MEOP.\n\nEnvelope: 4.0 m OD, 8.0 m total length; launch-mass cap 12,000 kg wet including shell + ECLSS.\n\nLoad cases.\n- LC1 MEOP: 70 kPa internal (hypobaric baseline), 0 kPa external.\n- LC2 proof: 105 kPa.\n- LC3 burst: 140 kPa (no ultimate failure).\n- LC4 launch quasi-static: 9 g axial + 2 g lateral per SLS Block 1B.\n- LC5 thermal: outer skin -180 C (lunar night) to +120 C (day), interior 22 C, cladding on top surface.\n- LC6 lunar seismic: 0.1 g horizontal.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "radiation_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Lunar Base Camp pressure module",
+    "brief": "4-crew Al-2219 cylindrical pressure module with regolith radiation shielding.",
+    "geometric_constraints": {
+      "OD_m": 4.0,
+      "total_length_m": 8.0,
+      "internal_volume_m3": 50,
+      "wall_mm": 5,
+      "crew": 4,
+      "launch_mass_kg_max": 12000
+    },
+    "material": {
+      "name": "Aluminum 2219-T87",
+      "youngs_modulus_GPa": 73,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2840,
+      "yield_strength_MPa": 352,
+      "ultimate_tensile_strength_MPa": 455
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "MEOP",
+        "pressure_kPa": 70
+      },
+      {
+        "id": "LC2",
+        "name": "proof",
+        "pressure_kPa": 105
+      },
+      {
+        "id": "LC3",
+        "name": "burst",
+        "pressure_kPa": 140
+      },
+      {
+        "id": "LC4",
+        "name": "launch_quasistatic",
+        "g_axial": 9,
+        "g_lateral": 2
+      },
+      {
+        "id": "LC5",
+        "name": "thermal",
+        "outer_C": [
+          -180,
+          120
+        ],
+        "inner_C": 22
+      },
+      {
+        "id": "LC6",
+        "name": "moonquake",
+        "g_lateral": 0.1
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "mass_kg",
+        "max_von_mises_per_case_MPa",
+        "burst_margin_MPa",
+        "areal_density_g_per_cm2",
+        "first_5_modes_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_MEOP",
+        "limit_MPa": 281,
+        "derivation": "yield 352 / 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_MEOP",
+        "limit_MPa": 325,
+        "derivation": "ultimate 455 / 1.4",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "burst_no_ultimate_failure",
+        "limit_MPa": 455,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "launch_max_stress",
+        "limit_MPa": 325,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "radiation_analysis",
+        "metric": "areal_density_over_crew_bunk",
+        "limit_g_per_cm2": 15,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "shell_plus_cladding_mass",
+        "limit_kg": 8000,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "vibration_analysis",
+        "metric": "first_cylindrical_mode",
+        "limit_Hz": 20,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

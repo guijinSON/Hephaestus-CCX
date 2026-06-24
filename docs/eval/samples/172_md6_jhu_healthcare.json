@@ -1,0 +1,202 @@
+{
+  "id": "172_md6_jhu_healthcare",
+  "source": {
+    "catalog_ref": "MD6",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "medical_device",
+  "part_class": "surgical_tray_insert",
+  "full_prompt": "Design a single surgical instrument tray insert aimed at organizing an orthopedic total knee arthroplasty (TKA) instrument set. The insert is an injection-molded or machined PEEK unfilled grade (Victrex PEEK 450G: yield 98 MPa, E 3.6 GPa, density 1320 kg/m^3, Tg 143 C, cont. service 250 C) 500 mm long x 250 mm wide x 40 mm tall fitting inside a standard steam-sterilization-compatible instrument case 540 x 280 x 60 mm. The insert must organize 24 TKA instruments with a combined mass of 6.5 kg and must survive repeated steam sterilization cycles per ISO 17665 (steam at 134 C for 18 minutes, up to 500 cycles). Pass/fail criteria: (R1) maximum von Mises stress in the PEEK insert under a 3x overload static test of 19.5 kg (4x normal) gravity-loaded instruments on the insert ribs must not exceed 65 MPa (PEEK 450G yield 98 / SF 1.5), (R2) insert dimensional deformation after 500 steam sterilization cycles at 134 C must not exceed 0.2 mm anywhere on the part (dimensional stability), (R3) drop test of the filled tray 1 m onto a hard floor (equivalent 400 N impulse) must keep insert max von Mises below 65 MPa (PEEK 450G yield 98 / SF 1.5), (R4) per-instrument seat retention retaining force at 0.5 g lateral handling acceleration must be at least 3.2 N per instrument (0.5 g x mean instrument mass of 0.65 kg x safety factor), and (R5) a thermal analysis at 134 C steam sterilization steady state must show no HDT exceedance or softening of any feature (PEEK HDT at 1.8 MPa is 152 C, margin 18 C). Thermal analysis is required for R5. Vibration, fluid, and radiation analyses are not required. Deliver a STEP AP242 solid body of the insert plus a verification report listing max von Mises under overload, steam-cycle dimensional deviation, drop max von Mises, seat retention force, and steady-state sterilization temperature margin.",
+  "short_prompt": "Design a PEEK surgical-tray insert that organizes 24 instruments (total ~6.5 kg) of an orthopedic TKA set. The insert is a single PEEK 450G part on the order of 500 x 250 x 40 mm, fitting inside a standard steam-sterilizable instrument case (~540 x 280 x 60 mm).\n\nDesign to ISO 17665 (steam sterilization of health-care products) for 134 C / 18 min cycles, up to 500 cycles. Insert base sits in the rigid outer case; instrument seats make friction contact with mass loads.\n\nLoad cases.\n- LC1 3x overload static: 19.5 kg total gravity load on the instrument seats.\n- LC2 500 x sterilization cycles at 134 C (dimensional stability).\n- LC3 1 m drop: 400 N equivalent impulse on the filled tray.\n- LC4 lateral handling: 0.5 g acceleration on each seated instrument (retention).\n- LC5 thermal steady state at 134 C: confirm HDT margin against softening.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "thermomechanical_creep_hygrothermal",
+        "reason": "Long-term 500-cycle sterilization dimensional stability uses published PEEK aging data, not FEA.",
+        "examples": [
+          "Victrex 450G aging curves",
+          "creep-hydrothermal spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "PEEK TKA surgical instrument tray insert",
+    "brief": "Design a 500 x 250 x 40 mm PEEK 450G TKA tray insert organizing 24 instruments (6.5 kg), surviving 500 x ISO 17665 steam cycles at 134 C, with structural, drop, retention, and thermal pass/fail.",
+    "geometric_constraints": {
+      "insert_mm": [
+        500,
+        250,
+        40
+      ],
+      "outer_case_mm": [
+        540,
+        280,
+        60
+      ],
+      "instrument_count": 24,
+      "instrument_mass_total_kg": 6.5
+    },
+    "material": {
+      "name": "PEEK 450G unfilled",
+      "yield_MPa": 98,
+      "E_GPa": 3.6,
+      "Tg_C": 143,
+      "HDT_at_1p8_MPa_C": 152
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "overload_3x",
+        "equivalent_mass_kg": 19.5,
+        "application": "gravity on instrument seats"
+      },
+      {
+        "id": "LC2",
+        "name": "sterilization_500_cycles",
+        "cycle_temp_C": 134,
+        "cycle_duration_min": 18,
+        "cycle_count": 500
+      },
+      {
+        "id": "LC3",
+        "name": "drop_1m",
+        "impulse_N": 400
+      },
+      {
+        "id": "LC4",
+        "name": "lateral_handling",
+        "acceleration_g": 0.5
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_steady_134C",
+        "temperature_C": 134
+      }
+    ],
+    "boundary_conditions": {
+      "insert_base": "seated in rigid outer case",
+      "instrument_seats": "friction contact with mass loads"
+    },
+    "objective": {
+      "primary": "pass structural + thermal + dimensional stability",
+      "secondary": "minimize material mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_overload_MPa",
+        "max_dim_deviation_after_500_cycles_mm",
+        "drop_max_von_mises_MPa",
+        "instrument_seat_retention_force_N",
+        "steady_state_temperature_margin_C"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_overload",
+        "limit_MPa": 65,
+        "derivation": "PEEK 450G yield 98 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "dim_deviation_after_500_cycles",
+        "limit_mm": 0.2,
+        "derivation": "dimensional stability per 450G aging data",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "drop_max_von_mises",
+        "limit_MPa": 65,
+        "derivation": "PEEK 450G yield 98 / 1.5 under 1 m drop quasi-static",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "instrument_seat_retention_force",
+        "limit_N": 3.2,
+        "derivation": "0.5 g x 0.65 kg mean instrument mass x SF",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "HDT_margin_at_134C",
+        "limit_C": 18,
+        "derivation": "HDT 152 - sterilization 134",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid-shell for insert",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static",
+        "steady-state thermal",
+        "explicit drop"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static handling only.",
+      "fluid_analysis": "No fluid domain; steam treated as boundary temperature.",
+      "radiation_analysis": "Steam, not gamma, sterilization.",
+      "buckling_analysis": "Tray insert is not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "ISO 10993 for PEEK contact materials",
+      "Labelling per ISO 15223-1",
+      "Reprocessing instructions per ISO 17664"
+    ]
+  },
+  "eval_coverage": [
+    "PEEK sterilization thermal HDT margin",
+    "500-cycle dimensional stability pass/fail",
+    "3x overload static structural check",
+    "drop + retention coupled structural checks"
+  ]
+}

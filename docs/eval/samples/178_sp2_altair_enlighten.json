@@ -1,0 +1,200 @@
+{
+  "id": "178_sp2_altair_enlighten",
+  "source": {
+    "catalog_ref": "SP2",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "lower_control_arm",
+  "full_prompt": "Design a topology-optimized lower control arm for an open-source passenger-vehicle lightweighting benchmark. The arm replaces a baseline forged steel lower control arm of 4.5 kg on a mid-size B-segment passenger car with a 1450 kg curb mass at the front axle, redesigned in aluminum alloy 7075-T6 (yield 503 MPa, ultimate 572 MPa, E 71.7 GPa, density 2810 kg/m^3). The arm has three mounting interfaces: a ball joint to the steering knuckle (25 mm ID), and two bushings to the subframe (40 mm ID each, spaced 300 mm apart), with an overall envelope of 420 mm x 220 mm x 120 mm. The arm must simultaneously survive four independent industry-standard durability load cases: (LC1) longitudinal pothole 3x vertical wheel load = 9.0 kN at the ball joint horizontal, (LC2) lateral cornering 2.5x vertical wheel load = 7.5 kN at the ball joint laterally, (LC3) vertical bump 3.5x static wheel load = 10.5 kN vertical at the ball joint, (LC4) braking 2.0x wheel load = 6.0 kN longitudinal plus vertical. Pass/fail criteria: (R1) max von Mises stress under any of LC1-LC4 must not exceed 335 MPa (7075-T6 yield 503 / SF 1.5), (R2) max ball-joint displacement under any load case must not exceed 2.0 mm, (R3) arm mass must be at least 35% lighter than the 4.5 kg baseline forged steel arm, so <= 2.93 kg, (R4) a linear buckling analysis under LC4 braking must yield a first-mode load factor of at least 2.0, and (R5) a modal analysis must show the first bending mode above 200 Hz to avoid chassis-frequency coupling. Vibration (modal) analysis is required for R5. Thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 solid body plus a report with max von Mises per load case, ball-joint displacement per load case, arm mass, first buckling load factor, first natural frequency, and mass-reduction percent vs baseline.",
+  "short_prompt": "Topology-optimize a front-axle lower control arm for a mid-size B-segment passenger car (1450 kg curb mass) in 7075-T6 aluminum, replacing a 4.5 kg forged-steel baseline. Design envelope is 420 x 220 x 120 mm; the arm has three mounting interfaces: a 25 mm ball joint to the steering knuckle and two 40 mm subframe bushings spaced 300 mm apart. Bushings are fixed cylindrical constraints; the ball joint is the load-application point.\n\nLoad cases (wheel-load factors).\n- LC1 pothole longitudinal: 9.0 kN at the ball joint.\n- LC2 lateral cornering: 7.5 kN at the ball joint.\n- LC3 vertical bump: 10.5 kN at the ball joint.\n- LC4 braking: 6.0 kN combined longitudinal + vertical.\n- LC5 modal: first bending mode must stay above the chassis-frequency band.\n\nArm mass target is at least 35% lighter than the 4.5 kg baseline. Buckling margin is checked under LC4.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "35% mass reduction target on a monolithic arm is the domain of topology optimization calling structural FEA inside.",
+        "examples": [
+          "Altair OptiStruct",
+          "HyperMesh + OptiStruct"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Aluminum 7075-T6 lower control arm (lightweighting benchmark)",
+    "brief": "Topology-optimize a 7075-T6 aluminum lower control arm for a 1450 kg B-segment car with 25 mm ball joint + 2x40 mm bushings, replacing a 4.5 kg forged steel baseline, passing 4 load cases, modal, and buckling with 35% mass reduction.",
+    "geometric_constraints": {
+      "envelope_mm": [
+        420,
+        220,
+        120
+      ],
+      "ball_joint_ID_mm": 25,
+      "bushing_ID_mm": 40,
+      "bushing_spacing_mm": 300,
+      "interfaces": 3
+    },
+    "material": {
+      "name": "Aluminum 7075-T6",
+      "yield_MPa": 503,
+      "ultimate_MPa": 572,
+      "E_GPa": 71.7,
+      "density_kg_m3": 2810
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pothole_longitudinal",
+        "magnitude_N": 9000
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_cornering",
+        "magnitude_N": 7500
+      },
+      {
+        "id": "LC3",
+        "name": "vertical_bump",
+        "magnitude_N": 10500
+      },
+      {
+        "id": "LC4",
+        "name": "braking",
+        "magnitude_N_combined": 6000
+      },
+      {
+        "id": "LC5",
+        "name": "modal",
+        "target_first_mode_Hz_min": 200
+      }
+    ],
+    "boundary_conditions": {
+      "bushings": "fixed cylindrical constraint",
+      "ball_joint": "load application point"
+    },
+    "objective": {
+      "primary": "minimize mass while passing all load cases",
+      "secondary": "at least 35% reduction vs 4.5 kg steel baseline"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "ball_joint_displacement_per_case_mm",
+        "arm_mass_kg",
+        "first_buckling_load_factor",
+        "first_natural_frequency_Hz",
+        "mass_reduction_pct_vs_baseline"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 335,
+        "derivation": "7075-T6 yield 503 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "ball_joint_displacement",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "arm_mass",
+        "limit_kg": 2.93,
+        "derivation": "35% lower than 4.5 kg baseline",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 200,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "Altair OptiStruct",
+        "Ansys Mechanical"
+      ],
+      "analysis_types": [
+        "topology optimization",
+        "linear static",
+        "linear buckling",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient chassis environment.",
+      "fluid_analysis": "No fluid domain.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Multi-axial fatigue (SAE AR8X, RLDA road load durability)",
+      "Casting/forging manufacturability vs AM",
+      "Corrosion allowance for 7075-T6"
+    ]
+  },
+  "eval_coverage": [
+    "multi-load topology optimization",
+    "modal separation from chassis frequency",
+    "mass-reduction ratio vs OEM baseline",
+    "automotive suspension bracket envelope"
+  ]
+}

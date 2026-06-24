@@ -1,0 +1,187 @@
+{
+  "id": "247_a7_aurc_airframe_fin",
+  "source": {
+    "catalog_ref": "A7",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "rocket_fin_can",
+  "full_prompt": "Design a single-part monolithic fin-can (three-fin integrated to a cylindrical body section) for a university sounding rocket with 15,000 ft apogee, thrust-to-weight ratio > 5 at ignition, delivering a >= 2 kg payload. The fin-can shall be a single machined / 3D-printed monolithic part with three clipped-delta fins distributed at 120 deg around a cylindrical aft body section (outer diameter 155 mm, wall thickness to be sized). Fin planform: root chord 200 mm, tip chord 80 mm, span (root to tip) 110 mm, sweep angle (LE) 35 deg, airfoil NACA 0006. Material: 6061-T6 aluminum, E = 68.9 GPa, yield = 276 MPa, density = 2700 kg/m^3. Expected maximum dynamic pressure q_max = 90,000 Pa at Mach 1.4 during ascent. Load cases: (R1) aerodynamic fin bending moment from a peak angle-of-attack of 5 deg at q_max yielding a normal force of 800 N per fin applied at 40% chord, producing a root bending moment of 35 N*m; max von Mises in fin root fillet <= yield / 1.5 = 184 MPa. (R2) thrust transfer: motor thrust of 4,000 N peak is transferred into the fin-can via the aft motor mount retainer ring (8x M5 bolts on 140 mm PCD); local bearing stress around bolt holes <= yield / 1.5 = 184 MPa. (R3) aeroelastic flutter margin: fin first torsional divergence speed (computed by modal + aerodynamic coupling, or Theodorsen approximation) shall be >= 1.2 x Mach 1.4 at sea-level equivalent airspeed; modal analysis shall return fin first-torsion frequency >= 200 Hz when the fin-can body is hard-mounted. (R4) recovery deceleration shock: during main-parachute opening (main_mass = 12 kg, opening shock 8 g) an axial tensile load of 12 kg * 8 g = 941 N is transmitted through the forward coupler interface; max von Mises <= 184 MPa. (R5) mass of fin-can <= 1.2 kg. Primary verification structural FEA (linear static for R1/R2/R4) + modal analysis (R3). Thermal, fluid, and radiation analyses explicitly NOT required for this gate (aerothermal heating on Mach 1.4 aluminum fins is below 80 C and treated as out of scope). Deliverables: STEP AP242, a report with fin root fillet stress (MPa), first torsional modal frequency (Hz), mass (kg).",
+  "short_prompt": "Design a single-part monolithic three-fin aluminum fin-can for a 15,000 ft-apogee university sounding rocket (T/W > 5 at ignition, >= 2 kg payload). The fin-can is a cylindrical aft body section with three clipped-delta fins at 120 deg; root chord 200 mm, tip chord 80 mm, span 110 mm, leading-edge sweep 35 deg, NACA 0006 profile. An 8x M5 aft motor-mount retainer ring sits on a 140 mm PCD.\n\nEnvelope: body section OD 155 mm. Expected flight peak q_max = 90 kPa at Mach 1.4.\n\nLoad cases.\n- LC1 aerodynamic fin bending: 800 N per fin at 40% chord (peak 5 deg AoA at q_max), 35 N*m fin-root moment.\n- LC2 thrust transfer: 4,000 N peak motor thrust reacted through the 8-bolt motor-mount ring, local bearing check.\n- LC3 flutter / modal: fin first torsional divergence speed >= 1.2 x Mach 1.4 (sea-level equivalent airspeed); hard-mounted fin first-torsion modal floor.\n- LC4 recovery shock: 941 N axial tension through the forward coupler (main parachute, 12 kg, 8 g opening).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "aeroelastic_flutter",
+        "reason": "R3 is formally a flutter/divergence analysis (Theodorsen or panel-method coupled to modal). FEA modal frequency is the conservative proxy.",
+        "examples": [
+          "ZAERO",
+          "NASTRAN Aeroelasticity SOL 145"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Three-fin monolithic sounding rocket fin-can (15,000 ft)",
+    "brief": "6061-T6 monolithic fin-can for 15 kft university sounding rocket. Sized for q_max 90 kPa at Mach 1.4 and 4 kN thrust through 8-bolt retainer.",
+    "geometric_constraints": {
+      "body_outer_diameter_mm": 155,
+      "fin_count": 3,
+      "fin_root_chord_mm": 200,
+      "fin_tip_chord_mm": 80,
+      "fin_span_mm": 110,
+      "fin_sweep_deg": 35,
+      "airfoil": "NACA 0006",
+      "motor_retainer_interface": {
+        "bolt_count": 8,
+        "bolt_size": "M5",
+        "PCD_mm": 140
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "6061-T6 aluminum",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "fin_bending_at_qmax",
+        "force_per_fin_N": 800,
+        "application": "40% chord pressure point",
+        "root_moment_Nm": 35
+      },
+      {
+        "id": "LC2",
+        "name": "motor_thrust_transfer",
+        "thrust_N": 4000,
+        "interface": "8 x M5 retainer ring"
+      },
+      {
+        "id": "LC3",
+        "name": "modal",
+        "description": "hard-mounted body; extract fin torsion mode"
+      },
+      {
+        "id": "LC4",
+        "name": "parachute_shock",
+        "force_N": 941,
+        "direction": "axial at forward coupler"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "forward coupler interface fixed for structural, full body fixed for modal",
+      "fin_loads": "distributed pressure statically equivalent to 800 N normal force"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "fin_root_fillet_stress_MPa",
+        "thrust_interface_bearing_MPa",
+        "parachute_shock_stress_MPa",
+        "fin_first_torsion_Hz",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "fin_root_fillet_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "bearing_stress_around_bolt_holes",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "fin_first_torsion_frequency",
+        "limit_Hz": 200,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet or hex",
+      "mesh_size_mm_in_critical_regions": 2.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static (x3 cases)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Aerothermal <80 C on Mach 1.4 aluminum, out of scope here.",
+      "fluid_analysis": "Aero reduced to equivalent static pressure from trajectory analysis.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Fin is bending dominated, not a buckling driver."
+    }
+  },
+  "eval_coverage": [
+    "aerodynamic bending + thrust interface + shock combined",
+    "modal frequency as flutter proxy",
+    "monolithic multi-fin integration"
+  ]
+}

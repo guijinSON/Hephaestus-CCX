@@ -1,0 +1,200 @@
+{
+  "id": "186_sa3_kibocube",
+  "source": {
+    "catalog_ref": "SA3",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "satellite_structural",
+  "part_class": "1u_cubesat_primary_structure",
+  "full_prompt": "Design a 1U CubeSat primary structure benchmark for an ISS-airlock deployment via the Japanese Experiment Module Small Satellite Orbital Deployer (JSSOD). The structure is a monolithic 6061-T6 aluminum skeletonized chassis with external envelope 100.0 +/- 0.1 mm x 100.0 +/- 0.1 mm x 113.5 +/- 0.1 mm (the 1U feet dimension used by CDS Rev 14), four deployer rails on the long corners (8.5 x 8.5 mm rails in contact with JSSOD rails along at least 75% of each 113.5 mm length), and a total mass at or below 1.33 kg per CDS Rev 14. The structure must support an internal PC/104 stack of up to 4 boards (90 x 96 mm). Qualification loads per JX-ESPC-100134 for JSSOD-deployed CubeSats, which is more benign than a primary-launch insertion since the host module runs inside the pressurized ISS and then deploys from an airlock: (LC1) quasi-static 9 g along any axis, (LC2) sine vibration 2.0 g at 5-100 Hz, (LC3) random vibration GRMS 7.7 at 20-2000 Hz per JX-ESPC-100134 Annex A, (LC4) thermal vacuum -20 to +50 C in 6 cycles per JX-ESPC-100134 Annex B. Material 6061-T6 (yield 276 MPa, E 69 GPa, density 2700 kg/m^3). Pass/fail: (R1) quasi-static 9 g max von Mises stress must not exceed 138 MPa (yield 276 / SF 2.0), (R2) first natural frequency must be at least 135 Hz per JX-ESPC-100134 (higher than generic 100 Hz because the JSSOD rail is stiffer), (R3) total structure mass at or below 1.33 kg, (R4) thermal cycle combined stress must not exceed 138 MPa across -20 to +50 C, and (R5) a linear buckling analysis under LC1 must yield a first-mode load factor of at least 2.0. Vibration (modal) is required for R2. Thermal analysis is required for R4. Fluid and radiation analyses are not required. Deliver a STEP AP242 solid body plus a structural + thermal report listing max von Mises, first natural frequency, total mass, thermal-cycle combined stress, and first buckling load factor.",
+  "short_prompt": "Design a monolithic 1U CubeSat primary structure for deployment from the ISS JSSOD airlock deployer, to Cal Poly CDS Rev 14 (1U). Envelope 100 x 100 x 113.5 mm (+/-0.1 mm), four 8.5 x 8.5 mm deployer rails on the long corners with >=75% rail-JSSOD contact along 113.5 mm, mass at or below 1.33 kg. Structure is 6061-T6 aluminum with an internal PC/104 stack (up to 4 boards). Rails are constrained in the JSSOD deployer; the PC/104 stack is bolted to internal rails.\n\nQualification per JX-ESPC-100134 (more benign than a direct primary-launch insertion because the host module is inside the pressurized ISS).\n\nLoad cases.\n- LC1 quasi-static: 9 g along any axis.\n- LC2 sine vibration: 2.0 g, 5-100 Hz.\n- LC3 random vibration: 7.7 GRMS, 20-2000 Hz.\n- LC4 thermal vacuum: -20 to +50 C, 6 cycles.\n\nFirst natural frequency must be >=135 Hz per JX-ESPC-100134 (higher than the generic CubeSat 100 Hz floor because the JSSOD rail is stiffer).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "JSSOD_rail_compliance_check",
+        "reason": "JSSOD rail tolerance, corner radii, and feet-dimension compliance are geometric rule checks, not FEA.",
+        "examples": [
+          "JX-ESPC-100134 checklist"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ISS-airlock 1U CubeSat primary structure benchmark",
+    "brief": "Design an Al 6061-T6 monolithic 1U CubeSat structure (100 x 100 x 113.5 mm, <=1.33 kg) for JSSOD airlock deployment, passing JX-ESPC-100134 quasi-static 9 g, modal >=135 Hz, thermal -20/+50 C, and 2x buckling margin.",
+    "geometric_constraints": {
+      "envelope_mm": [
+        100,
+        100,
+        113.5
+      ],
+      "envelope_tolerance_mm": 0.1,
+      "rail_cross_section_mm": [
+        8.5,
+        8.5
+      ],
+      "rail_contact_pct_min": 75,
+      "mass_max_kg": 1.33
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "yield_MPa": 276,
+      "E_GPa": 69,
+      "density_kg_m3": 2700
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static",
+        "g_any_dir": 9
+      },
+      {
+        "id": "LC2",
+        "name": "sine_vib",
+        "g": 2.0,
+        "freq_Hz": [
+          5,
+          100
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "random_vib",
+        "GRMS": 7.7,
+        "freq_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_cycle",
+        "T_min_C": -20,
+        "T_max_C": 50,
+        "cycles": 6
+      }
+    ],
+    "boundary_conditions": {
+      "rails": "constrained in JSSOD deployer rails",
+      "pc104_stack": "bolted to structure internal rails"
+    },
+    "objective": {
+      "primary": "pass JX-ESPC-100134 and CDS Rev 14 compliance",
+      "secondary": "minimize mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_MPa",
+        "first_natural_frequency_Hz",
+        "total_mass_kg",
+        "thermal_cycle_combined_stress_MPa",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 138,
+        "derivation": "yield 276 / SF 2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 135,
+        "derivation": "JX-ESPC-100134",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 1.33,
+        "derivation": "Cal Poly CDS Rev 14 1U cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "thermal_cycle_combined_stress",
+        "limit_MPa": 138,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "random vibration",
+        "thermal-stress",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Vacuum environment.",
+      "radiation_analysis": "Structure-only brief; radiation covered by board-level shielding."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Outgassing per ASTM E595 / NASA-STD-6016",
+      "EMI/EMC per MIL-STD-461",
+      "ISS safety review per NASA SSP 51700"
+    ]
+  },
+  "eval_coverage": [
+    "JSSOD / JX-ESPC-100134 compliance",
+    "1U CubeSat envelope + mass",
+    "thermal-stress combined with mechanical",
+    "modal floor 135 Hz"
+  ]
+}

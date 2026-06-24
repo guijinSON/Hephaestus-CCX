@@ -1,0 +1,191 @@
+{
+  "id": "011_pt11_misumi_aluminum_frame_bracket",
+  "source": {
+    "catalog_ref": "PT11",
+    "year": 2024,
+    "tier": "A+"
+  },
+  "domain": "industrial_machinery",
+  "part_class": "aluminum_extrusion_90deg_joint",
+  "full_prompt": "Design an aluminum extrusion 90-degree corner joint using 40 x 40 series aluminum extrusions (HFS8-4040-equivalent, 8-mm slot) connected by one large reinforcing corner bracket (HBLFSNB8-class), and validate against the industrial extrusion catalog's published allowable load and deflection per bracket. The representative catalog 2024 values for the large reinforcing corner bracket (HBLFSNB8-class) with two M8 pre-assembly T-nuts in each leg are: static allowable load per bracket 1,470 N (150 kgf), dynamic allowable 490 N (50 kgf), allowable bending moment 29.4 N*m per bracket. The assembly: vertical extrusion 40x40x600 mm, horizontal extrusion 40x40x400 mm cantilever, joined at one end by two large reinforcing brackets (one on each of the two accessible faces of the 40x40). The extrusions are aluminum 6063-T5 (yield 170 MPa, Young's modulus 68.9 GPa, density 2700 kg/m^3, cross-section moment of inertia Ix = Iy = 90,000 mm^4 for an HFS8-4040-equivalent extrusion per catalog). A service payload is applied at the free tip of the horizontal extrusion: vertical 300 N downward, plus a horizontal force of 150 N perpendicular to both extrusions. Service-life: fatigue life >= 1e6 cycles at the dynamic load. Pass/fail: (R1) static load per bracket (considering that two brackets share the moment couple) must be <= 1,470 N; for this geometry, the corner bending moment at the joint is M = 300 N x 400 mm = 120 N*m (vertical) + 150 N x 400 mm = 60 N*m (horizontal); with two brackets at 40 mm effective moment arm, per-bracket force is M / (2 x 0.040 m) = 1,500 N for the vertical component alone, which is slightly above catalog static, so the agent must select a stiffer/larger bracket or add a second pair; (R2) dynamic load per bracket <= 490 N for fatigue; (R3) bracket bending moment per bracket <= 29.4 N*m (the entire vertical moment on one bracket pair is 120 N*m / 2 = 60 N*m, over catalog -> must add brackets or gusset); (R4) extrusion max deflection at the 400 mm cantilever tip <= L/300 = 400/300 = 1.33 mm at static service load (industrial extrusion catalog recommended stiffness class); (R5) extrusion max bending stress <= 170 / 2.0 = 85 MPa (industrial extrusion catalog recommended SF 2.0 on 6063-T5 yield for frame service); (R6) T-nut pull-out check: each M8 T-nut in the 8 mm slot is rated at 2,400 N (catalog short-thread) so per-nut load must stay <= 2,400 / 2.0 = 1,200 N. The agent is expected to flag that the single large reinforcing bracket per side is undersized for the stated payload and either (a) upgrade to a larger reinforcing bracket with auxiliary gusset, (b) switch to a diagonal brace bracket, or (c) reduce cantilever length. Deliverables: STEP AP242 assembly with two extrusions, brackets (1 or more per side), M8 T-nuts, and bolts; report with per-bracket reaction force and moment, extrusion tip deflection, max extrusion stress, and selection justification.",
+  "short_prompt": "Design an aluminum-extrusion 90-degree corner joint using 40 x 40 series extrusions (HFS8-4040-equivalent, 8 mm slot) connected by one large reinforcing corner bracket (HBLFSNB8-class) per leg face, validated against the industrial extrusion catalog's published allowable load and deflection.\n\nCatalog values (HBLFSNB8-class bracket with two M8 T-nuts per leg): static allowable per bracket 1,470 N (150 kgf), dynamic allowable 490 N (50 kgf), allowable bending moment 29.4 N*m per bracket. Each M8 T-nut rated 2,400 N (catalog short-thread).\n\nAssembly: vertical extrusion 40x40x600 mm, horizontal extrusion 40x40x400 mm cantilever, joined at one end by two large reinforcing brackets (one per accessible face). Material 6063-T5 (Ix = Iy = 90,000 mm^4 per catalog).\n\nService payload at the free tip of the horizontal extrusion.\n- Vertical 300 N downward.\n- Horizontal 150 N perpendicular to both extrusions.\n\nFatigue target: >= 1e6 cycles at the dynamic load.\n\nPass criteria include per-bracket static load <= 1,470 N, dynamic <= 490 N, bracket moment <= 29.4 N*m, cantilever-tip deflection <= L/300 = 1.33 mm, extrusion max bending stress <= 85 MPa (SF 2.0 on 6063-T5 yield), and per-nut load <= 1,200 N. The agent is expected to flag undersized brackets and propose an upgrade, diagonal brace, or shortened cantilever.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "frame_stiffness_calculator",
+        "reason": "Aluminum extrusion tip deflection is a closed-form cantilever formula using catalog Ix.",
+        "examples": [
+          "Excel worksheet",
+          "Python beam module"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "40x40 aluminum-extrusion 90-deg joint with large reinforcing corner bracket (HBLFSNB8-class)",
+    "brief": "Design a right-angle cantilever corner using HFS8-4040-equivalent extrusion + large reinforcing corner brackets (HBLFSNB8-class), carrying a 300 N vertical + 150 N horizontal tip payload at 400 mm cantilever, and meet catalog per-bracket load limits.",
+    "geometric_constraints": {
+      "vertical_extrusion": {
+        "section": "HFS8-4040",
+        "length_mm": 600
+      },
+      "horizontal_extrusion": {
+        "section": "HFS8-4040",
+        "length_mm": 400
+      },
+      "bracket": {
+        "family": "Large reinforcing corner bracket (HBLFSNB8-class)",
+        "count": "design variable (>=2)"
+      },
+      "fasteners": {
+        "thread": "M8",
+        "t_nut": "8-mm-slot pre-assembly T-nut (HNTT8-8-equivalent)"
+      }
+    },
+    "material": {
+      "extrusion": {
+        "name": "6063-T5",
+        "yield_MPa": 170,
+        "youngs_modulus_GPa": 68.9,
+        "Ix_mm4": 90000
+      }
+    },
+    "catalog_limits": {
+      "bracket_static_N": 1470,
+      "bracket_dynamic_N": 490,
+      "bracket_allowable_moment_Nm": 29.4,
+      "tnut_pullout_N": 2400
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "service",
+        "tip_vertical_N": 300,
+        "tip_horizontal_N": 150
+      }
+    ],
+    "boundary_conditions": {
+      "vertical_extrusion_base": "fully fixed",
+      "payload": "applied at horizontal extrusion tip"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "per_bracket_force_N",
+        "per_bracket_moment_Nm",
+        "tip_deflection_mm",
+        "max_extrusion_stress_MPa",
+        "selection_justification"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "per_bracket_force_static",
+        "limit_N": 1470,
+        "derivation": "Large reinforcing bracket catalog static allowable (HBLFSNB8-class)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "per_bracket_force_dynamic",
+        "limit_N": 490,
+        "derivation": "Large reinforcing bracket catalog dynamic allowable (HBLFSNB8-class)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "per_bracket_bending_moment",
+        "limit_Nm": 29.4,
+        "derivation": "Large reinforcing bracket allowable bending moment (HBLFSNB8-class)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "horizontal_extrusion_tip_deflection",
+        "limit_mm": 1.33,
+        "derivation": "L/300 with L = 400 mm, industrial extrusion catalog recommended stiffness class",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_extrusion_bending_stress",
+        "limit_MPa": 85,
+        "derivation": "yield / 2.0 = 170 / 2.0 (industrial extrusion catalog frame SF)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "per_tnut_pullout_load",
+        "limit_N": 1200,
+        "derivation": "2400 / 2.0 (8-mm-slot T-nut catalog / SF 2.0)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "Industrial aluminum extrusion technical reference (2024)",
+    "recommended_fea_setup": {
+      "element_type": "beam for extrusions + solid for brackets",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "FreeCAD FEM"
+      ],
+      "analysis_types": [
+        "linear static + catalog-limit check"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static catalog qualification only.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "Industrial aluminum extrusion technical reference (2024) for a large reinforcing corner bracket (HBLFSNB8-class) and a 40x40 extrusion (HFS8-4040-equivalent)."
+  },
+  "eval_coverage": [
+    "catalog extrusion framework design",
+    "component selection against published limits",
+    "stiffness + stress dual constraint",
+    "agent must flag undersized selection and iterate"
+  ]
+}

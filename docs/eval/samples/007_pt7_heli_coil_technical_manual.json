@@ -1,0 +1,206 @@
+{
+  "id": "007_pt7_heli_coil_technical_manual",
+  "source": {
+    "catalog_ref": "PT7",
+    "year": 2024,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "tapped_insert_joint",
+  "full_prompt": "Design a structural aluminum housing block with a single M10 x 1.5 tapped hole retrofitted with a canonical wire-thread insert (M10 x 1.5 x 1.5D length, 18-8 stainless), sized to carry a rated service tensile load equal to the minimum tensile strength of the grade-8.8 mating bolt without stripping the insert or the aluminum parent material. The parent block is machined from 7075-T6 aluminum (yield 503 MPa, UTS 572 MPa, Young's modulus 71.7 GPa, density 2810 kg/m^3) with overall block size 60 mm x 60 mm x 40 mm thick. The tapped hole is centered on the 60 x 60 face, drilled to the standard STI tap drill size 10.3 mm diameter to an effective depth of 19 mm, then tapped STI M10 x 1.5 and a 1.5D (15 mm) insert installed. A grade 8.8 M10 hex-head bolt mates into the insert, nominal proof load 47.3 kN, nominal UTS-based tensile capacity 58.0 kN (catalog grade 8.8 M10). Load cases: LC1 pure axial tension 47.3 kN (bolt proof load, which is the wire-thread-insert rated service condition for 1.5D length in parent UTS >= 400 MPa per wire-thread-insert design manual (1.5D rated length in parent UTS >= 400 MPa)); LC2 axial tension 58.0 kN (bolt UTS) as the ultimate check; LC3 combined axial 30 kN + transverse shear 10 kN. Pass/fail derived from the wire-thread-insert design manual and general bolted-joint codes: (R1) at LC1 proof load, the thread-engagement shear in the aluminum parent at the insert OD must stay below the aluminum shear-yield Ss = 0.577 * 503 = 290 MPa with SF 1.2, i.e. parent thread shear stress <= 242 MPa; (R2) at LC2 ultimate load, parent thread shear must remain below parent shear-UTS 0.577 * 572 = 330 MPa (no stripping before bolt fractures); (R3) the insert's own thread engagement length 1.5D provides an 18-8 stainless shear capacity per catalog >= bolt UTS load, i.e. insert cannot be the weak link; (R4) block max von Mises under LC3 <= 503 / 1.5 = 335 MPa (SF 1.5 on yield for general structural aluminum); (R5) bolt bearing stress under the head on the aluminum surface <= 0.9 * yield = 453 MPa (bearing check per VDI 2230); (R6) edge distance from insert OD to any free edge of the block >= 2 x insert major diameter = 2 x 10.5 mm = 21 mm (wire-thread-insert edge-distance chart for adjacent-hole / edge-distance in 7075). Manufacturing: CNC mill block; drill and STI-tap per standard wire-thread-insert installation instruction; install insert with prewinder. Deliverables: STEP AP242 of the block with tapped-hole feature (modeled as a through-hole with associated manufacturing callout); report with parent thread shear stress at LC1 and LC2, block max von Mises at LC3, head bearing stress, and compliance with wire-thread-insert minimum edge distance.",
+  "short_prompt": "Design a 7075-T6 aluminum structural housing block with a single M10 x 1.5 tapped hole fitted with a wire-thread insert (M10 x 1.5 x 1.5D length, 18-8 stainless), sized to carry the tensile load of the grade 8.8 mating bolt without stripping the insert or the parent material.\n\nEnvelope: block 60 mm x 60 mm x 40 mm thick, tapped hole centered on the 60 x 60 face, STI tap-drill 10.3 mm to a 19 mm effective depth, then STI M10 x 1.5 tapped and a 1.5D (15 mm) insert installed. Grade 8.8 M10 bolt: proof load 47.3 kN, UTS-based tensile capacity 58.0 kN.\n\nLoad cases.\n- LC1 pure axial tension 47.3 kN (bolt proof, the wire-thread-insert rated service condition for 1.5D length in parent UTS >= 400 MPa).\n- LC2 axial tension 58.0 kN (bolt UTS) as the ultimate check.\n- LC3 combined axial 30 kN + transverse shear 10 kN.\n\nDesign safety factors: SF 1.2 on parent shear-yield at LC1; SF 1.5 on yield for general aluminum; bolt-head bearing <= 0.9 * yield per VDI 2230; edge distance from insert OD to any free edge >= 21 mm (2 x insert major diameter).\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "bolted_joint_calculator",
+        "reason": "VDI 2230 preload, thread shear area, and engagement length formulas are closed-form.",
+        "examples": [
+          "VDI 2230 spreadsheet",
+          "wire-thread-insert design manual worksheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "7075-T6 block with M10 x 1.5 wire-thread insert rated for grade 8.8 bolt",
+    "brief": "Design a 7075-T6 block with a single M10 wire-thread 1.5D insert; joint must withstand grade-8.8 M10 bolt proof load 47.3 kN and ultimate load 58.0 kN without parent or insert stripping.",
+    "geometric_constraints": {
+      "block": {
+        "x_mm": 60,
+        "y_mm": 60,
+        "z_mm": 40
+      },
+      "tapped_hole": {
+        "location": "centered on 60x60 face",
+        "STI_tap_drill_mm": 10.3,
+        "depth_mm": 19
+      },
+      "insert": {
+        "part_family": "Wire-thread insert (MS122XX-equivalent)",
+        "thread": "M10 x 1.5",
+        "length_xD": 1.5,
+        "length_mm": 15
+      },
+      "min_edge_distance_mm": 21
+    },
+    "material": {
+      "parent": {
+        "name": "7075-T6",
+        "yield_MPa": 503,
+        "ultimate_MPa": 572,
+        "youngs_modulus_GPa": 71.7,
+        "density_kg_m3": 2810
+      },
+      "insert": {
+        "name": "18-8 stainless wire-thread insert (MS122XX-equivalent)",
+        "ultimate_MPa_min": 860
+      },
+      "bolt": {
+        "grade": "8.8",
+        "thread": "M10 x 1.5",
+        "proof_load_kN": 47.3,
+        "uts_load_kN": 58.0
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof_tension",
+        "axial_kN": 47.3
+      },
+      {
+        "id": "LC2",
+        "name": "ultimate_tension",
+        "axial_kN": 58.0
+      },
+      {
+        "id": "LC3",
+        "name": "combined_service",
+        "axial_kN": 30,
+        "shear_kN": 10
+      }
+    ],
+    "boundary_conditions": {
+      "block_base": "fully fixed at the face opposite the tapped hole",
+      "bolt_interface": "bolt modeled with head bearing + thread engagement pressure"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "parent_thread_shear_stress_LC1_MPa",
+        "parent_thread_shear_stress_LC2_MPa",
+        "block_max_von_mises_LC3_MPa",
+        "bolt_head_bearing_MPa",
+        "edge_distance_check_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "parent_thread_shear_stress_at_insert_OD",
+        "limit_MPa": 242,
+        "derivation": "0.577 * yield / 1.2 = 0.577 * 503 / 1.2 (SF 1.2 on shear yield)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "parent_thread_shear_stress_at_insert_OD",
+        "limit_MPa": 330,
+        "derivation": "0.577 * UTS = 0.577 * 572 (no strip before bolt ultimate)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "insert_internal_thread_shear_capacity",
+        "limit_kN": 58.0,
+        "derivation": "Wire-thread-insert design manual: 1.5D length in 18-8 stainless >= mating bolt UTS",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "block_max_von_mises",
+        "limit_MPa": 335,
+        "derivation": "yield / 1.5 = 503 / 1.5",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "bolt_head_bearing_stress",
+        "limit_MPa": 453,
+        "derivation": "0.9 * yield = 0.9 * 503 per VDI 2230 bearing",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "insert_OD_to_free_edge",
+        "limit_mm": 21,
+        "derivation": "2 x insert major dia 10.5 per wire-thread-insert edge-distance chart",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "Wire-thread-insert design manual + VDI 2230 Part 1 + MIL-I-8846 (for 1.5D length in aluminum)",
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static with bolt-preload + thread pressure"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static joint qualification; fatigue variant is a separate brief.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "Wire-thread-insert design manual (2024) thread shear area tables + engagement length chart for 1.5D inserts in aluminum parent, combined with ISO 898-1 grade 8.8 M10 proof and ultimate loads."
+  },
+  "eval_coverage": [
+    "catalog insert bolted-joint design",
+    "thread shear vs parent shear check",
+    "edge-distance rule compliance",
+    "mixed FEA + VDI 2230 closed-form analysis"
+  ]
+}

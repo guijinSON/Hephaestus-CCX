@@ -1,0 +1,226 @@
+{
+  "id": "047_s16_smc_s_016_payload_adapter",
+  "source": {
+    "catalog_ref": "S16",
+    "year": 2014,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "payload_adapter_ring",
+  "full_prompt": "Design an aluminum payload adapter ring that mechanically interfaces a 500 kg satellite to a Delta-IV-class upper stage, governed by SMC-S-016 (5 September 2014). SMC-S-016 Section 6.1 specifies qualification random vibration 3 dB above the Maximum Expected Environment (MEE) for 2 minutes per axis, Section 6.2 prescribes thermal qualification at MEP (Maximum Expected Pressure/Temperature) + 10 C, and Section 6.6 prescribes static test factors 1.25 (yield) / 1.4 (ultimate) on limit loads for qualification hardware, consistent with NASA-STD-5001B.\n\nGeometry. Adapter ring outer diameter 1575 mm (62 inches, standard payload interface), inner diameter 1475 mm, height 200 mm. Top interface: clamp-band-compatible V-band groove per 937 mm (or designer-equivalent bolted ring); this brief uses a 24-bolt pattern with 24 M10 fasteners on a 1500 mm bolt circle. Bottom interface: 48 M10 fasteners on a 1525 mm bolt circle attaching to the upper stage. Ring wall thickness design variable 4-10 mm. Integral stiffening flanges at top and bottom (25 mm tall x wall thickness). Material to be Al 7075-T73 forging per MMPDS.\n\nMaterial. Al 7075-T7351 per MMPDS S-basis: E = 71.7 GPa, nu = 0.33, rho = 2810 kg/m^3, Fty = 414 MPa, Ftu = 476 MPa.\n\nMEE (Maximum Expected Environment). Axial limit load from CLA (coupled loads analysis): 7.5 g x 500 kg = 36,787 N distributed over 24 top bolts (nominal tension per bolt = 1533 N at limit). Lateral limit load: 3 g x 500 kg = 14,715 N at payload CG (located 1.5 m above adapter top). Combined axial + lateral produces moment at adapter top = 14,715 * 1.5 = 22,073 N*m. Random-vibration MEE PSD plateau 0.04 g^2/Hz from 50 Hz to 1500 Hz, 3 dB qualification uplift => qualification plateau 0.08 g^2/Hz. Sine qualification 3 g from 5 Hz to 50 Hz. Thermal: MEP temperatures -60 C to +85 C, qualification adds +10 C => -60 C to +95 C.\n\nLoad cases. LC1 (static qualification limit): axial 7.5 g + lateral 3 g applied simultaneously at payload CG. Ultimate = 1.4 x limit. LC2 (random vib qualification, 3 dB above MEE): PSD plateau 0.08 g^2/Hz from 50-1500 Hz applied at upper-stage interface, each axis, 2 min/axis. LC3 (thermal qualification): bulk DeltaT scan between -60 C and +95 C applied to the fully constrained ring; compute thermal-stress state at the two extremes. LC4 (buckling - axial compression): pure axial 1.4 x 7.5 g x 500 kg = 51,502 N compression; linear buckling eigenvalue analysis.\n\nPass/fail criteria. (R1) LC1 at 1.25 x limit max von Mises must not exceed Fty = 414 MPa, i.e. stress at limit <= Fty / 1.25 = 331.2 MPa per SMC-S-016 qualification yield factor (consistent with NASA-STD-5001B). (R2) LC1 at 1.4 x limit max von Mises must not exceed Ftu = 476 MPa, i.e. stress at limit <= Ftu / 1.4 = 340.0 MPa. (R3) LC2 qualification random 3-sigma response stress must not exceed Ftu / 1.4 = 340.0 MPa. (R4) LC3 max thermal-induced von Mises must not exceed Fty = 414 MPa (unfactored thermal check). (R5) LC4 linear buckling eigenvalue must be >= 1.4 (ultimate FoS on stability). (R6) First natural frequency of the adapter with 500 kg payload lumped at 1.5 m above top must be >= 25 Hz (launch-vehicle decoupling; common launch-provider gate). (R7) Adapter mass <= 35 kg.\n\nSolver and analysis expectations. Primary analyses: (a) linear static for LC1 (R1, R2); (b) PSD random response via modal superposition for LC2 (R3); (c) linear thermal-stress (bulk DeltaT) for LC3 (R4); (d) linear buckling eigenvalue for LC4 (R5); (e) constrained modal for R6. Axisymmetric or 3D shell+solid model acceptable; 5 mm mesh at bolt-hole ligaments. Fluid, radiation analyses NOT required.\n\nDeliverables. STEP AP242 of adapter, mass in kg, max von Mises per LC, random 3-sigma stress, thermal-stress at extremes, buckling eigenvalue, and first 10 modes.",
+  "short_prompt": "Design a 500 kg satellite-to-Delta-IV-class payload adapter ring (Al 7075-T7351 forging) per SMC-S-016 (2014-09-05). SMC-S-016 specifies qualification at 1.25 yield / 1.4 ultimate factors on limit loads (consistent with NASA-STD-5001B), random vibration 3 dB above the MEE for 2 min/axis, and thermal qualification at MEP + 10 C.\n\nEnvelope: OD 1575 mm, ID 1475 mm, height 200 mm. 24 M10 fasteners on a 1500 mm top bolt circle, 48 M10 on a 1525 mm bottom bolt circle, wall thickness design variable 4-10 mm with integral top/bottom stiffening flanges.\n\nLoad cases. The 500 kg payload CG is 1.5 m above the adapter top.\n- LC1 static qualification limit: 7.5 g axial + 3 g lateral applied simultaneously.\n- LC2 random vibration qualification: PSD plateau 0.08 g^2/Hz from 50-1500 Hz (3 dB above MEE 0.04), 2 min/axis.\n- LC3 thermal qualification: bulk DeltaT between -60 C and +95 C (MEP +/- 10 C).\n- LC4 axial buckling: pure 1.4 x 7.5 g x 500 kg = 51,502 N compression (linear eigenvalue).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "1575 mm payload adapter ring per SMC-S-016 qualification",
+    "brief": "Al 7075-T7351 adapter ring, 500 kg payload, SMC-S-016 qualification factors 1.25/1.4 + 3 dB random + MEP+10 C thermal + buckling 1.4; fn >= 25 Hz.",
+    "geometric_constraints": {
+      "OD_mm": 1575,
+      "ID_mm": 1475,
+      "height_mm": 200,
+      "top_bolts": {
+        "count": 24,
+        "size": "M10",
+        "bolt_circle_mm": 1500
+      },
+      "bottom_bolts": {
+        "count": 48,
+        "size": "M10",
+        "bolt_circle_mm": 1525
+      },
+      "wall_thickness_mm": {
+        "min": 4,
+        "max": 10
+      },
+      "stiffening_flange_height_mm": 25
+    },
+    "material": {
+      "name": "Al 7075-T7351",
+      "basis": "MMPDS S-basis",
+      "E_GPa": 71.7,
+      "nu": 0.33,
+      "density_kg_m3": 2810,
+      "Fty_MPa": 414,
+      "Ftu_MPa": 476
+    },
+    "MEE": {
+      "axial_g": 7.5,
+      "lateral_g": 3,
+      "payload_mass_kg": 500,
+      "payload_CG_above_top_m": 1.5,
+      "random_plateau_g2_Hz": 0.04,
+      "qual_plateau_g2_Hz": 0.08,
+      "random_band_Hz": [
+        50,
+        1500
+      ],
+      "sine_qual_g": 3,
+      "sine_band_Hz": [
+        5,
+        50
+      ],
+      "temp_range_qual_C": {
+        "min": -60,
+        "max": 95
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "qs_static_qual_7.5g_ax_3g_lat"
+      },
+      {
+        "id": "LC2",
+        "name": "random_vib_3dB_over_MEE",
+        "duration_min_per_axis": 2
+      },
+      {
+        "id": "LC3",
+        "name": "thermal_qual_MEP+10",
+        "dT_hot_C": 95,
+        "dT_cold_C": -60
+      },
+      {
+        "id": "LC4",
+        "name": "axial_buckling_1.4_ultimate"
+      }
+    ],
+    "boundary_conditions": {
+      "bottom_bolt_circle": "fixed to upper stage",
+      "top_bolt_circle": "payload interface with 500 kg lumped at 1.5 m"
+    },
+    "objective": {
+      "minimize": "adapter_mass",
+      "target_kg_max": 35
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "SMC-S-016 (2014)",
+      "revision": "2014-09-05"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit_LC1_yield",
+        "limit_MPa": 331.2,
+        "derivation": "Fty / 1.25 (SMC-S-016 qualification yield factor)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit_LC1_ultimate",
+        "limit_MPa": 340.0,
+        "derivation": "Ftu / 1.4",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_stress_LC2",
+        "limit_MPa": 340.0,
+        "derivation": "Ftu / 1.4 applied to 3-sigma random response",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "thermal_induced_max_von_mises",
+        "limit_MPa": 414,
+        "derivation": "Fty unfactored thermal check",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor_axial",
+        "limit": 1.4,
+        "derivation": "Ultimate FoS on stability",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency_with_payload",
+        "limit_Hz": 25,
+        "derivation": "Launch-vehicle decoupling gate",
+        "applies_to": [
+          "constrained_modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "adapter_mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid at bolt-hole ligaments",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "Nastran",
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static",
+        "PSD random",
+        "thermal-stress",
+        "linear buckling",
+        "constrained modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis_not_excluded": "Note: buckling IS required (LC4); only fluid/radiation excluded."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Separation-shock qualification (SMC-S-016 Section 6.3)",
+      "Payload-stack CLA coupled-loads iteration",
+      "Pyro shock at clamp-band release"
+    ]
+  },
+  "eval_coverage": [
+    "SMC-S-016 qualification 1.25/1.4 + 3 dB random",
+    "thermal + random + static + buckling in one brief",
+    "launch-vehicle fn decoupling gate"
+  ]
+}

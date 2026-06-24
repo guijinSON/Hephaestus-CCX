@@ -1,0 +1,193 @@
+{
+  "id": "261_a21_fsg_tsac_enclosure",
+  "source": {
+    "catalog_ref": "A21",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "student_ev_battery_enclosure",
+  "full_prompt": "Design the Tractive System Accumulator Container (TSAC) enclosure for a student-built electric open-wheel race vehicle. Accumulator total mass (cells + BMS + hardware inside the container) = 80 kg; tractive system DC voltage nominal 400 V (must be <= 600 V DC per governing structural-demonstration rules). Container is a single monolithic TIG-welded aluminum alloy 5083-H116 box (E = 72 GPa, yield = 215 MPa, ultimate = 305 MPa, density = 2660 kg/m^3). Overall outer bounding box 650 mm (X, forward) x 450 mm (Y) x 400 mm (Z); wall thickness to be sized (typical 3 mm for side walls, 4 mm for base). Mounted to chassis at 8 locations using M10 Grade 8.8 bolts on a pattern that distributes load paths. Requirements: (R1) Forward inertial loading: 40 g forward applied to the full 80 kg battery mass = 40 x 80 x 9.81 = 31,400 N distributed through the cell module mounting points into the container structure; max von Mises in container walls and welds <= yield / 1.1 = 195 MPa (weld-zone factor). (R2) Lateral (side) inertial loading: 20 g x 80 kg x 9.81 = 15,700 N; max von Mises <= 195 MPa. (R3) Vertical (up and down) inertial loading: 20 g x 80 kg x 9.81 = 15,700 N; max von Mises <= 195 MPa. (R4) No single container fastener, anchor, or weld may fail under the ultimate load of the worst-case case (1.0 x its case load, since the 40 g / 20 g numbers are already ultimate); fastener shear + tension check via VDI 2230 proxy; utilization < 1.0. (R5) Container mass (excluding cells) <= 15 kg. (R6) The container must electrically isolate the tractive system; no structural bolt penetrates the insulating liner. (R7) First modal frequency hard-mounted at the 8 bolt holes >= 40 Hz (avoid 2x chassis mode ~25 Hz). Primary verification: linear static FEA for R1-R3, bolt check for R4, modal for R7. Vibration, thermal, fluid, radiation NOT required (thermal runaway is a separate safety gate). Deliverables: STEP AP242 welded container (treated as a single FEA body), weld map, and a report listing container mass in kg, max von Mises per load case in MPa, bolt utilization, first modal frequency in Hz.",
+  "short_prompt": "Design the Tractive System Accumulator Container (TSAC) for a student-built electric open-wheel race vehicle. The enclosure is a monolithic TIG-welded aluminum 5083-H116 box that holds 80 kg of accumulator contents (cells + BMS + hardware), mounted to the chassis at eight M10 Grade 8.8 bolts in a load-distributing pattern. Tractive-system DC is nominal 400 V (governing rule cap <= 600 V). The container must electrically isolate the tractive system; no structural bolt may penetrate the insulating liner.\n\nEnvelope: outer bounding 650 x 450 x 400 mm (X forward x Y x Z), typical 3 mm side walls, 4 mm base.\n\nLoad cases (inertial loads applied to the full 80 kg pack through the cell-module mounts).\n- LC1 forward 40 g: 31,400 N; weld-zone factor applies.\n- LC2 side 20 g: 15,700 N.\n- LC3 vertical 20 g (both up and down): 15,700 N.\n- LC4 fastener / weld utilization: no single bolt, anchor, or weld may exceed utilization 1.0 under the worst case (VDI 2230-style proxy).\n- LC5 modal: hard-mounted at eight bolt holes, first frequency clear of 2 x chassis mode ~25 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "VDI_2230_bolt_check",
+        "reason": "Fastener utilization under combined shear + tension is a VDI 2230 calculation done outside FEA.",
+        "examples": [
+          "VDI 2230 spreadsheets",
+          "Femap BOLT CHECK"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student EV tractive-system battery enclosure",
+    "brief": "5083-H116 welded battery box for 80 kg tractive system; survives 40 g forward / 20 g side / 20 g vertical inertial loads.",
+    "geometric_constraints": {
+      "outer_bounding_box_mm": "650 x 450 x 400",
+      "mount_bolts": {
+        "count": 8,
+        "size": "M10 Grade 8.8"
+      },
+      "battery_mass_kg": 80,
+      "tractive_system_voltage_max_V": 600
+    },
+    "material": {
+      "name": "Al 5083-H116 welded",
+      "properties": {
+        "youngs_modulus_GPa": 72,
+        "yield_strength_MPa": 215,
+        "ultimate_tensile_strength_MPa": 305,
+        "density_kg_m3": 2660
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "forward_40g",
+        "force_N": 31400,
+        "direction": "+X (forward) on battery mass"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_20g",
+        "force_N": 15700,
+        "direction": "+Y (side)"
+      },
+      {
+        "id": "LC3",
+        "name": "vertical_20g",
+        "force_N": 15700,
+        "direction": "+/-Z"
+      },
+      {
+        "id": "LC4",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "8 bolt hole bosses fixed",
+      "internal_mass": "80 kg lumped and coupled to cell-mount interior surfaces"
+    },
+    "objective": {
+      "minimize": "container_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "container_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "bolt_utilization_max",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 195,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 195,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 195,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bolt_utilization",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "container_mass",
+        "limit_kg": 15,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 40,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell or solid-shell",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Thermal runaway and venting are covered under a separate safety gate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Box walls in bending; buckling not driving mode."
+    }
+  },
+  "eval_coverage": [
+    "40 g / 20 g / 20 g triaxial quasi-static",
+    "fastener utilization outside FEA",
+    "modal floor for chassis decoupling"
+  ]
+}

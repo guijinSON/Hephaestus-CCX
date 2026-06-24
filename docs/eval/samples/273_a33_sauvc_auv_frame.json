@@ -1,0 +1,153 @@
+{
+  "id": "273_a33_sauvc_auv_frame",
+  "source": {
+    "catalog_ref": "A33",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "marine_structural",
+  "part_class": "auv_open_frame",
+  "full_prompt": "Design the open-frame chassis for a SAUVC (Singapore AUV Challenge) AUV compliant with SAUVC Rulebook v6. Vehicle bounding box 1500 mm x 800 mm x 500 mm. Pool-depth rated 5 m (SAUVC pool). Vehicle dry mass 35 kg. The frame is a bolted assembly of extruded aluminum 6063-T6 bars (25 mm x 25 mm square cross-section, 3 mm wall) forming a 3D open cage; the frame itself is the subject of design but shall be idealized and submitted as a single STEP assembly treated as one part. Material: 6063-T6 aluminum, E = 68.3 GPa, yield = 214 MPa, ultimate = 241 MPa, density = 2700 kg/m^3. The frame carries: 6 thrusters (mounted at 6 faces of the frame; each applies nominal 50 N static thrust, peak 80 N); 1 pressure hull (8 kg dry); 1 battery pod (4 kg dry); acoustic array (2 kg). Total applied-in-frame mass 35 kg. Load cases: (R1) Handling: the full 35 kg vehicle lifted by a single top handle at mid-length => 35 x 9.81 = 343 N concentrated vertical load with 2x dynamic amplification = 687 N; max von Mises in any frame member <= yield / 2.0 = 107 MPa. (R2) Thruster combined: 6 thrusters at peak 80 N each applied in the worst-combined direction (e.g., 2 surge + 2 sway + 2 heave); max von Mises <= 107 MPa. (R3) Impact: 500 N concentrated load applied to any corner (pool wall strike); max von Mises <= yield / 1.5 = 143 MPa. (R4) Hydrostatic buoyancy: frame shall maintain its geometry within +-0.5 mm over its long axis at 5 m depth (50 kPa external); this is effectively a stiffness check - deflection under hydrostatic differential acting on any enclosed bladder-like members <= 0.5 mm (no closed-volume members in this design, so geometric by inspection). (R5) Frame structural mass <= 4 kg. (R6) Kill-switch accessibility: kill switch mount shall be reachable from any accessible face within 500 mm (geometric). Primary verification: structural FEA (linear static x3). Vibration, thermal, fluid, radiation, buckling NOT required. Deliverables: STEP AP242 frame assembly as single structural idealization, bolt schedule, and a report listing frame mass, max von Mises per case in MPa.",
+  "short_prompt": "Design the open-frame chassis for a SAUVC (Singapore AUV Challenge) AUV, compliant with SAUVC Rulebook v6. The frame is a bolted assembly of 25 x 25 mm square 6063-T6 extruded aluminum bars (3 mm wall) forming a 3D open cage; submit as a single STEP assembly idealized as one part. Vehicle dry mass 35 kg; pool depth 5 m. Frame carries 6 thrusters (one per face, 50 N static / 80 N peak each), a pressure hull (8 kg), a battery pod (4 kg), and an acoustic array (2 kg).\n\nEnvelope: bounding 1500 x 800 x 500 mm.\n\nLoad cases.\n- LC1 handling: 35 kg lifted by a single top handle at mid-length with 2 x dynamic amplification = 687 N vertical.\n- LC2 thruster combined: 6 x 80 N peak thrust in the worst combined direction (2 surge + 2 sway + 2 heave).\n- LC3 impact: 500 N concentrated at any corner (pool-wall strike).\n- LC4 hydrostatic geometry: frame long-axis deflection under 5 m depth (50 kPa) <= 0.5 mm (geometric; no closed-volume members).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "SAUVC AUV open-frame chassis",
+    "brief": "6063-T6 25 mm extrusion open cage, 35 kg vehicle, 5 m pool depth, handle-lift + thruster + corner-impact load cases.",
+    "geometric_constraints": {
+      "bounding_box_mm": "1500 x 800 x 500",
+      "extrusion_cross_section_mm": "25 x 25 x 3 wall",
+      "vehicle_dry_mass_kg": 35,
+      "thruster_count": 6,
+      "pool_depth_m": 5
+    },
+    "material": {
+      "name": "Al 6063-T6 extrusion",
+      "properties": {
+        "youngs_modulus_GPa": 68.3,
+        "yield_strength_MPa": 214,
+        "ultimate_tensile_strength_MPa": 241,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "handling_lift",
+        "force_N": 687,
+        "direction": "vertical at top handle"
+      },
+      {
+        "id": "LC2",
+        "name": "thruster_combined",
+        "force_per_thruster_N": 80,
+        "thruster_count": 6
+      },
+      {
+        "id": "LC3",
+        "name": "corner_impact",
+        "force_N": 500,
+        "direction": "at corner"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "handle fixed (for R1), lumped mass coupled at pressure-hull mount (for R2), free with thruster loads",
+      "loads": "concentrated per case"
+    },
+    "objective": {
+      "minimize": "frame_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "frame_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 107,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 107,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 143,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "frame_mass",
+        "limit_kg": 4,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B31) or shell",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x3 cases)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Slow AUV.",
+      "thermal_analysis": "Pool ambient.",
+      "fluid_analysis": "Not applicable (no closed pressure volumes in frame).",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Extrusion sections sized well above slender ratios."
+    }
+  },
+  "eval_coverage": [
+    "handling lift factor",
+    "multi-thruster combined loads",
+    "corner impact FoS variation"
+  ]
+}

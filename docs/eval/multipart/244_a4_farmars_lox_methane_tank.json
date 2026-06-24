@@ -1,0 +1,401 @@
+{
+  "id": "244_a4_farmars_lox_methane_tank",
+  "source": {
+    "catalog_ref": "A4",
+    "year": 2025,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/244_a4_farmars_lox_methane_tank.json",
+    "multipart_basis": "Decomposition inferred from the physical architecture of a welded spin-formed cryogenic LOX tank: cylindrical barrel + forward hemispherical dome + aft hemispherical dome + two welded-boss fittings (fill/vent on forward dome, feed on aft dome) + internal anti-slosh baffles + external mounting saddles for the mid-body stringer-lug BC mentioned in the original prompt + pressure-transducer bosses for instrumented skin-T monitoring. The original prompt permits full-penetration welds, which motivates a realistic weldment decomposition. All part-level counts and dimensions beyond those explicitly anchored to the original sample are marked speculation:true."
+  },
+  "domain": "aerospace_cryogenic_tank",
+  "part_class": "cryogenic_propellant_tank_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a monolithic cryogenic LOX (liquid oxygen) propellant tank for a student-developed LOX/LCH4 bipropellant rocket with total-impulse budget under 200,000 lb-sec. The tank is a seamless 316L stainless steel pressure vessel, spin-formed hemispherical domes, internal diameter 200 mm, cylindrical barrel length 600 mm, one forward fill/vent AN-8 port on the forward dome and one aft feed AN-12 port on the aft dome, both welded bosses integral to domes (welds permitted for cryogenic tanks but must be X-ray inspected). Propellant: LOX at 90 K (boiling). Maximum Operating Pressure (MOP) = 30 bar (3 MPa). Material 316L stainless steel at 90 K (cryogenic derating): Young's modulus 210 GPa, yield strength 450 MPa at 90 K (austenitic steel strengthens at cryogenic temperature), ultimate tensile strength 720 MPa at 90 K, density 8000 kg/m^3. Requirements: (R1) proof pressure 1.5 x MOP = 45 bar held for 5 minutes; max von Mises at proof <= yield / 1.1 = 409 MPa; (R2) burst pressure 2.5 x MOP = 75 bar; max von Mises at burst <= ultimate / 1.25 = 576 MPa; (R3) all welds shall be full-penetration and inspected to ASME BPVC Sec IX; fatigue life for the mission (10 pressurization cycles) shall satisfy stress range margin >= 2.0 (stress range <= fatigue endurance / 2.0); (R4) dry mass <= 6.5 kg; (R5) during LOX loading the external tank skin shall not exceed 100 C nor drop below -200 C on instrumented points; (R6) thermal contraction from 293 K to 90 K shall not produce max von Mises exceeding 250 MPa at mounting lugs. Primary verification: structural FEA at proof (45 bar at 90 K), burst (75 bar at 90 K), plus a coupled thermal-structural step cooling from 293 K to 90 K; vibration analysis NOT required at this gate (first mission gate is pressure qualification); fluid and radiation NOT required. Deliverables: STEP AP242, weld map, and a report listing wall thickness, dry mass, max von Mises at proof and burst, thermal-contraction lug stress, and mass in kg.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe deliverable is reconfigured as a welded tank assembly. Parts: spin-formed cylindrical barrel shell, forward hemispherical dome, aft hemispherical dome, forward fill/vent AN-8 welded boss fitting, aft feed AN-12 welded boss fitting, two internal anti-slosh baffles, two external mid-body mounting saddles (providing the stringer-lug BC), and two pressure-transducer bosses for instrumented skin-T / skin-stress sensors required by R5. All pressure-boundary welds are full-penetration and X-ray inspected per ASME BPVC Sec IX (R3 preserved). FEM verification runs on the ASSEMBLED tank only; per-part stress is reported but does not gate pass/fail. Weld-zone DCR and flange/saddle bolt/weld DCR must be <= 1.0 under the governing load cases (LC1 proof, LC2 burst, LC3 cryogenic contraction). All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim.",
+  "short_prompt": "Design a monolithic cryogenic LOX (liquid oxygen) propellant tank for a student-developed LOX/LCH4 bipropellant rocket with total-impulse budget under 200,000 lb-sec.\n\nThe tank is a seamless 316L stainless steel pressure vessel, spin-formed hemispherical domes, internal diameter 200 mm, cylindrical barrel length 600 mm, one forward fill/vent AN-8 port on the forward dome and one aft feed AN-12 port on the aft dome, both welded bosses integral to domes.\n\nPropellant: LOX at 90 K (boiling). MOP = 30 bar (3 MPa). Material 316L stainless steel at 90 K: Young's modulus 210 GPa, yield strength 450 MPa at 90 K, ultimate tensile strength 720 MPa at 90 K, density 8000 kg/m^3.\n\nLoad cases: LC1 proof pressure 1.5 x MOP = 45 bar held for 5 minutes at 90 K; LC2 burst pressure 2.5 x MOP = 75 bar at 90 K; LC3 cryogenic contraction from 293 K to 90 K; LC4 external skin within [-200, 100] C.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "LOX cryogenic propellant tank assembly (student bipropellant rocket) (multi-part)",
+    "brief": "316L stainless LOX tank delivered as a welded assembly: barrel + 2 domes + 2 AN-port bosses + 2 anti-slosh baffles + 2 mounting saddles + 2 instrumentation bosses. MOP 30 bar, 90 K service. Proof 1.5x, burst 2.5x, coupled cryogenic thermal-structural contraction. FEM verification at assembled level only; weld-zone and bolt-zone DCR <= 1.0.",
+    "geometric_constraints": {
+      "internal_diameter_mm": 200,
+      "cylindrical_barrel_length_mm": 600,
+      "end_caps": "hemispherical, spin-formed",
+      "ports": [
+        {
+          "location": "forward dome",
+          "type": "AN-8",
+          "purpose": "fill/vent"
+        },
+        {
+          "location": "aft dome",
+          "type": "AN-12",
+          "purpose": "engine feed"
+        }
+      ],
+      "welds": "full-penetration, X-ray inspected per ASME BPVC Sec IX (allowed for cryogenic tanks)"
+    },
+    "material": {
+      "name": "316L stainless steel (cryogenic)",
+      "properties_at_90K": {
+        "youngs_modulus_GPa": 210,
+        "yield_strength_MPa": 450,
+        "ultimate_tensile_strength_MPa": 720,
+        "density_kg_m3": 8000
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof",
+        "internal_pressure_bar": 45,
+        "T_K": 90,
+        "hold_time_s": 300
+      },
+      {
+        "id": "LC2",
+        "name": "burst",
+        "internal_pressure_bar": 75,
+        "T_K": 90
+      },
+      {
+        "id": "LC3",
+        "name": "cryogenic_contraction",
+        "T_start_K": 293,
+        "T_end_K": 90
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_skin_limits",
+        "description": "loading transient; external skin within [-200, 100] C"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "rear feed boss + mid-body stringer lugs fixed (the two external saddles)",
+      "internal_pressure": "on inner wall of barrel, both domes, and both welded bosses",
+      "thermal": "inner wall held at 90 K; outer wall free convection with insulation layer"
+    },
+    "objective": {
+      "minimize": "dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "wall_thickness_mm",
+        "dry_mass_kg",
+        "max_von_mises_proof_MPa",
+        "max_von_mises_burst_MPa",
+        "lug_stress_cryo_contraction_MPa",
+        "external_skin_T_range_C",
+        "weld_zone_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index",
+        "weld_map_reference"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "cylindrical_barrel_shell",
+        "role": "primary cylindrical pressure-containing mid-section between the two domes; hosts the mid-body mounting saddles and pressure-transducer bosses",
+        "count_min": 1,
+        "geometric_constraints": {
+          "internal_diameter_mm": 200,
+          "length_mm": 600,
+          "wall_thickness_mm": "sized by hoop stress at LC2 (burst 75 bar)",
+          "surface_finish": "X-ray inspectable circumferential weld lands at both ends"
+        },
+        "material_hint": "316L stainless steel, cryogenic grade",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "forward_hemispherical_dome",
+        "role": "spin-formed hemispherical forward closure; hosts the AN-8 fill/vent boss; fully pressurized on inner surface",
+        "count_min": 1,
+        "geometric_constraints": {
+          "internal_diameter_mm": 200,
+          "geometry": "hemispherical, spin-formed",
+          "weld_land_thickness_mm": "matches barrel"
+        },
+        "material_hint": "316L stainless steel, spin-formed",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "aft_hemispherical_dome",
+        "role": "spin-formed hemispherical aft closure; hosts the AN-12 feed boss; fully pressurized on inner surface",
+        "count_min": 1,
+        "geometric_constraints": {
+          "internal_diameter_mm": 200,
+          "geometry": "hemispherical, spin-formed",
+          "weld_land_thickness_mm": "matches barrel"
+        },
+        "material_hint": "316L stainless steel, spin-formed",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "AN_port_welded_boss",
+        "role": "welded boss fitting threaded/flanged to AN-8 (forward, fill/vent) or AN-12 (aft, feed); integral boss geometry welded into the dome; original prompt lists these as welded bosses integral to domes",
+        "count_min": 2,
+        "count_note": "Exactly 2: one AN-8 on the forward dome, one AN-12 on the aft dome.",
+        "geometric_constraints": {
+          "boss_outer_diameter_mm": 25,
+          "port_specs": [
+            "AN-8 (forward, fill/vent)",
+            "AN-12 (aft, engine feed)"
+          ],
+          "weld": "full-penetration circumferential to dome"
+        },
+        "material_hint": "316L stainless steel, machined from bar",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "internal_anti_slosh_baffle",
+        "role": "internal ring baffle tack-welded to barrel ID to attenuate axial LOX sloshing during launch; does not carry pressure load but does carry inertial fluid load and drives a fatigue cycle every pressurization",
+        "count_min": 2,
+        "geometric_constraints": {
+          "outer_diameter_mm": 198,
+          "ring_width_mm": 15,
+          "thickness_mm": 1.5,
+          "axial_spacing_mm": 200
+        },
+        "material_hint": "316L stainless steel",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "external_mounting_saddle",
+        "role": "external mid-body stringer-lug saddle pair that carries the tank into the rocket airframe; provides the 'mid-body stringer lugs fixed' boundary condition in the original prompt and is the primary location for thermal-contraction lug stress checked in R6",
+        "count_min": 2,
+        "count_note": "Exactly 2 (one on each side of the barrel centerline) per typical rocket-tank mounting; teams may specify more.",
+        "geometric_constraints": {
+          "wrap_angle_deg": 90,
+          "bolt_count_per_saddle": 4,
+          "bolt_size": "M8",
+          "saddle_width_mm": 40,
+          "location": "mid-barrel, 180 deg apart"
+        },
+        "material_hint": "316L stainless steel or Ti-6Al-4V for thermal-CTE matching",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "pressure_transducer_boss",
+        "role": "welded threaded boss on the barrel that accepts a pressure transducer and skin-thermocouple harness; required for instrumented verification of R5 external-skin-T limits",
+        "count_min": 2,
+        "geometric_constraints": {
+          "thread": "1/4-18 NPT or M14x1.5",
+          "boss_outer_diameter_mm": 18,
+          "location": "barrel, staggered axially; one per instrumented skin point"
+        },
+        "material_hint": "316L stainless steel",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_length_mm": 700,
+      "outer_diameter_mm": 210,
+      "coordinate_system": "Z-axis along tank centerline, +Z = aft (feed-port direction)"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 409,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 576,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "fatigue_stress_range_margin",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_kg": 6.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5a",
+        "type": "thermal_analysis",
+        "metric": "external_skin_T_max",
+        "limit_C": 100,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5b",
+        "type": "thermal_analysis",
+        "metric": "external_skin_T_min",
+        "limit_C": -200,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "lug_stress_cryo_contraction",
+        "limit_MPa": 250,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Weld-zone DCR at all four pressure-boundary welds (barrel-forward-dome, barrel-aft-dome, forward-AN8-boss, aft-AN12-boss) shall be <= 1.0 under LC1 proof and LC2 burst.",
+        "metric": "max_weld_DCR across IF1, IF2, IF3, IF4",
+        "threshold": 1.0,
+        "operator": "<=",
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Mounting-saddle bolt DCR (16 x M8 total) shall be <= 1.0 under LC3 cryogenic contraction combined with self-weight.",
+        "metric": "max_bolt_DCR across saddle fasteners",
+        "threshold": 1.0,
+        "operator": "<=",
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order shell / solid-shell for pressure wall, solid for welded bosses and saddles",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Abaqus Standard (COUPLED TEMP-DISPLACEMENT)",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static (proof, burst) on assembled model",
+        "coupled thermal-structural (contraction) on assembled model"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A_cylindrical_barrel_shell",
+        "B_forward_hemispherical_dome"
+      ],
+      "mediated_by": "full-penetration circumferential weld, X-ray inspected per ASME BPVC Sec IX",
+      "load_path": "hoop + axial pressure load continuity between barrel and forward dome"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A_cylindrical_barrel_shell",
+        "C_aft_hemispherical_dome"
+      ],
+      "mediated_by": "full-penetration circumferential weld, X-ray inspected per ASME BPVC Sec IX",
+      "load_path": "hoop + axial pressure load continuity between barrel and aft dome"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B_forward_hemispherical_dome",
+        "D_AN_port_welded_boss (AN-8)"
+      ],
+      "mediated_by": "full-penetration set-on weld on the forward dome apex",
+      "load_path": "local pressure reaction at the AN-8 boss, transmitted into the forward dome"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "C_aft_hemispherical_dome",
+        "D_AN_port_welded_boss (AN-12)"
+      ],
+      "mediated_by": "full-penetration set-on weld on the aft dome apex",
+      "load_path": "local pressure reaction + engine-feed line thrust at the AN-12 boss"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A_cylindrical_barrel_shell",
+        "E_internal_anti_slosh_baffle"
+      ],
+      "mediated_by": "internal circumferential tack weld (non-pressure-boundary)",
+      "load_path": "inertial slosh load into barrel ID; fatigue cycle per pressurization"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A_cylindrical_barrel_shell",
+        "F_external_mounting_saddle"
+      ],
+      "mediated_by": "4x M8 bolts per saddle clamping around barrel OD (non-weld, non-pressure-boundary)",
+      "load_path": "tank self-weight + thermal-contraction relative displacement transmitted to airframe lugs"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "A_cylindrical_barrel_shell",
+        "G_pressure_transducer_boss"
+      ],
+      "mediated_by": "full-penetration set-on weld",
+      "load_path": "local pressure reaction at each instrumented point"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "A welded tank's pass/fail condition couples the barrel, both domes, and every welded boss simultaneously; per-part stress is reported but the governing check is the assembled pressure response. Weld-zone DCR is captured by R_asm1.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The original prompt explicitly permits welds for cryogenic tanks and calls out welded bosses integral to the domes. The tank is therefore naturally a welded assembly of a barrel, two spin-formed domes, two AN-port bosses, internal baffles, external saddles, and instrumentation bosses.",
+    "speculation_caveats": "Baffle count/spacing, saddle bolt pattern, and instrumentation-boss count are speculative; all other dimensions trace to the original sample.",
+    "original_sample_preserved_at": "docs/eval/samples/244_a4_farmars_lox_methane_tank.json"
+  }
+}

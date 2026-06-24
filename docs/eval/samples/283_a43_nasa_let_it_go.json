@@ -1,0 +1,214 @@
+{
+  "id": "283_a43_nasa_let_it_go",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A43",
+    "year": 2023,
+    "tier": "A"
+  },
+  "domain": "space_structural",
+  "part_class": "deployable_hex_antenna_hinge_arm",
+  "full_prompt": "Design a single-part monolithic hinge-arm (a.k.a. 'petal root') for a deployable hex-panel antenna per the NASA 'Let It Go (After Latching)' open-CAD challenge. The full antenna consists of 6 identical hexagonal panels arranged around a central hub; each panel hinges from stowed (folded flat against hub) to deployed (co-planar hexagonal aperture). This prompt is for the hinge-arm that connects one panel to the central hub. Geometric constraints: stowed envelope height 250 mm, stowed diameter 600 mm; deployed aperture 1500 mm flat-to-flat (hex); hinge arm spans 300 mm hub-to-panel with a 2-pin knuckle joint (two M5 pins); panel interface is a 60 mm x 60 mm flange with 4x M4 tapped holes. Arm bounding 300 mm x 50 mm x 25 mm. Material: 6061-T6 aluminum alloy, hard-anodized (E = 68.9 GPa, yield = 276 MPa, ultimate = 310 MPa, density = 2700 kg/m^3). Load cases: (R1) Launch lock-down quasi-static 25 g triaxial on the panel mass (panel mass 1.2 kg) = 294 N triaxial at panel flange; max von Mises in hinge arm <= yield / 1.5 = 184 MPa; deflection at panel flange <= 2 mm. (R2) Deploy-latch shock: 50 g half-sine 5 ms at the moment of deploy-latch, lumped as 588 N axial impulse at panel flange; max von Mises <= ultimate / 1.5 = 207 MPa. (R3) On-orbit solar-pressure + thermal bending of the 1.5 m deployed aperture contributing 2 N*m edge moment at panel flange; max von Mises <= 184 MPa; arm tip rotation <= 0.5 mrad (pointing budget). (R4) Thermal cycle -150 C to +120 C (LEO sun-shadow), CTE-induced stress on the pinned joint kept elastic (static residual stress <= 184 MPa). (R5) Mass of arm <= 120 g. (R6) First modal frequency hard-mounted at hub side, panel mass lumped at flange >= 40 Hz (to survive launch random-vibration spectrum). Primary verification: structural FEA (linear static x3 + thermal x1) + modal. Vibration secondary via R6. Fluid, radiation, buckling NOT required. Deliverables: STEP AP242 + Parasolid hinge arm, hinge-pin knuckle drawing, and a report listing arm mass in g, max von Mises per case in MPa, panel flange deflection in mm, arm tip rotation in mrad, first modal frequency in Hz.",
+  "short_prompt": "Design a single-part monolithic hinge-arm ('petal root') connecting one hexagonal panel to the central hub of a 6-panel deployable antenna per the NASA 'Let It Go (After Latching)' open-CAD challenge. Stowed 250 mm tall x 600 mm diameter; deployed 1500 mm flat-to-flat aperture; panel mass 1.2 kg.\n\nEnvelope: arm 300 mm x 50 mm x 25 mm with a 2-pin knuckle joint (M5 pins) on the hub side and a 60 x 60 mm 4xM4 panel flange on the other.\n\nFactor regime: yield FoS 1.5 for quasi-static launch, ultimate FoS 1.5 for deploy-latch shock; launch-survivable first-mode frequency target set to decouple from random-vib.\n\nLoad cases.\n- Launch lockdown quasi-static 25 g triaxial on 1.2 kg panel = 294 N triaxial at the panel flange.\n- Deploy-latch shock: 50 g half-sine 5 ms = 588 N axial impulse at the panel flange.\n- On-orbit solar-pressure + thermal edge moment 2 N-m at panel flange; arm-tip rotation target <= 0.5 mrad (pointing budget).\n- Thermal cycle -150 C to +120 C (LEO sun-shadow), CTE-induced residual on the pinned joint.\n- Hub-fixed, panel-lumped first modal frequency >= 40 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "NASA Let It Go hinge arm",
+    "brief": "6061-T6 monolithic hinge arm for 6-panel deployable hex antenna, launch 25 g + deploy 50 g shock + thermal cycle.",
+    "geometric_constraints": {
+      "arm_bounding_mm": "300 x 50 x 25",
+      "stowed_envelope_mm": "600 OD x 250 H",
+      "deployed_aperture_flat_to_flat_mm": 1500,
+      "panel_flange_mm": "60 x 60, 4x M4",
+      "hub_knuckle_pins": "2x M5",
+      "mass_g_max": 120,
+      "monolithic": true
+    },
+    "material": {
+      "name": "6061-T6 hard anodized",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "density_kg_m3": 2700,
+        "cte_per_K": 2.36e-05
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_25g_triaxial",
+        "force_N_per_axis": 294,
+        "panel_mass_kg": 1.2
+      },
+      {
+        "id": "LC2",
+        "name": "deploy_latch_shock_50g",
+        "impulse_N": 588,
+        "pulse": "5 ms half-sine"
+      },
+      {
+        "id": "LC3",
+        "name": "on_orbit_edge_moment",
+        "moment_Nm": 2.0
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_cycle_LEO",
+        "range_C": [
+          -150,
+          120
+        ]
+      },
+      {
+        "id": "LC5",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "hub side of arm fully fixed",
+      "loads": "at panel flange"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "arm_mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "thermal_residual_stress_MPa",
+        "panel_flange_deflection_mm",
+        "arm_tip_rotation_mrad",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "deflection_at_load",
+        "limit_mm": 2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 207,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3b",
+        "type": "structural_analysis",
+        "metric": "arm_tip_rotation",
+        "limit_mrad": 0.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "thermal_residual_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 40,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "thermal-structural",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Vacuum.",
+      "radiation_analysis": "Handled in material-selection gate.",
+      "buckling_analysis": "Arm is short, not driving."
+    }
+  },
+  "eval_coverage": [
+    "deployable-hinge integration with prior latch CAD",
+    "launch + deploy-latch shock",
+    "on-orbit pointing budget"
+  ]
+}

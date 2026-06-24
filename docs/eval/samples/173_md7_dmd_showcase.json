@@ -1,0 +1,189 @@
+{
+  "id": "173_md7_dmd_showcase",
+  "source": {
+    "catalog_ref": "MD7",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "medical_wearable",
+  "part_class": "knee_exoskeleton_cuff",
+  "full_prompt": "Design a wearable single-joint knee exoskeleton assist cuff targeting stair-climbing assistance in community-dwelling older adults. The device consists of a thigh cuff, a shank cuff, and a single actuated hinge joint crossing the knee with a custom brushless DC actuator + 20:1 harmonic drive delivering a peak assistive moment of 30 N-m and a continuous moment of 15 N-m at the knee; shaft RPM peaks at 120 rpm (2 Hz). The cuffs are carbon-fiber-reinforced polymer shells (CFRP quasi-isotropic, E 45 GPa, tensile strength 500 MPa) with foam liners, sized for a 50th percentile adult with thigh circumference 480 mm and shank circumference 380 mm; total device mass must not exceed 1.8 kg including a 48 Wh LiFePO4 battery. The device must simultaneously satisfy: (R1) max von Mises stress in the CFRP cuff shells under the 30 N-m peak assistive moment plus 1.5 g user lateral maneuver must not exceed 250 MPa (tensile 500 / SF 2.0), (R2) contact pressure between the CFRP shell and skin through the foam liner must not exceed 16 kPa average under normal donning to avoid pressure ulcers per ISO 10536-2, (R3) peak linear acceleration on the CFRP shell at the 2 Hz actuator peak must not cause a first-mode resonance; the first natural frequency of the assembled cuff with actuator must be at least 10 Hz (5x operating frequency), (R4) battery endurance at continuous 15 N-m, 60 rpm duty must be at least 2 hours on the 48 Wh battery (electrical + mechanical efficiency must exceed 0.70), and (R5) total device mass including actuator + battery must not exceed 1.8 kg. Vibration analysis is required for R3. Thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly with thigh cuff, shank cuff, hinge, actuator housing, and battery compartment as sub-bodies plus a verification report listing max von Mises, shell-skin pressure, first natural frequency, battery endurance, and total mass.",
+  "short_prompt": "Design a wearable single-joint knee exoskeleton assist cuff for stair-climbing assistance in community-dwelling older adults. The device has a thigh cuff and a shank cuff (CFRP shells with foam liner, sized for 50th-percentile adult with 480 mm thigh and 380 mm shank circumference) joined by a single actuated knee hinge driven by a BLDC + 20:1 harmonic drive delivering 30 N-m peak / 15 N-m continuous at up to 120 rpm (2 Hz), powered by a 48 Wh LiFePO4 battery.\n\nDesign to ISO 10536-2-style pressure-ulcer prevention guidance for the skin-contact limit. Cuffs are clamped around the limb by tensioned straps; the hinge is a single-DOF revolute joint.\n\nLoad cases.\n- LC1 peak moment + lateral: 30 N-m actuator peak at the knee plus 1.5 g user lateral maneuver.\n- LC2 donning contact: distributed pressure at the shell-skin interface.\n- LC3 modal: first natural frequency of the assembled cuff with actuator, relative to 2 Hz forcing.\n- LC4 endurance: continuous 15 N-m at 60 rpm on 48 Wh battery.\n\nTotal device mass (with actuator and battery) is a wearable-comfort constraint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "biomechanics_gait_model",
+        "reason": "Assistive knee moment curve during stair ascent is read from published biomechanics (Riener, Perry), not FEA.",
+        "examples": [
+          "OpenSim stair ascent model",
+          "Perry gait analysis tables"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Single-joint knee exoskeleton assist cuff",
+    "brief": "Design a 1.8 kg CFRP knee exoskeleton with 30 N-m peak / 15 N-m continuous assist, 2 Hz actuator, 48 Wh battery for 2 h endurance on stair ascent, passing shell stress, skin pressure, resonance, and mass limits.",
+    "geometric_constraints": {
+      "thigh_circumference_mm": 480,
+      "shank_circumference_mm": 380,
+      "actuator_peak_Nm": 30,
+      "actuator_continuous_Nm": 15,
+      "gear_ratio": 20,
+      "max_rpm": 120
+    },
+    "material": {
+      "cuff_shell": "CFRP quasi-isotropic, E 45 GPa, tensile 500 MPa",
+      "liner": "open-cell PU foam",
+      "battery": "48 Wh LiFePO4"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "peak_moment_plus_lateral",
+        "moment_Nm": 30,
+        "lateral_g": 1.5
+      },
+      {
+        "id": "LC2",
+        "name": "donning_contact",
+        "target_pressure_kPa_limit": 16
+      },
+      {
+        "id": "LC3",
+        "name": "modal",
+        "target_min_frequency_Hz": 10
+      },
+      {
+        "id": "LC4",
+        "name": "endurance_continuous",
+        "moment_Nm": 15,
+        "rpm": 60,
+        "battery_Wh": 48,
+        "target_endurance_h": 2
+      }
+    ],
+    "boundary_conditions": {
+      "cuffs": "clamped around limb via tensioned strap",
+      "hinge": "single DOF revolute joint at knee"
+    },
+    "objective": {
+      "primary": "pass structural + contact + resonance + endurance",
+      "secondary": "minimize device mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "shell_skin_pressure_kPa",
+        "first_natural_frequency_Hz",
+        "battery_endurance_h",
+        "total_mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 250,
+        "derivation": "CFRP tensile 500 / SF 2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "shell_skin_contact_pressure",
+        "limit_kPa": 16,
+        "derivation": "ISO 10536-2 ulcer-prevention guideline",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 10,
+        "derivation": "5x 2 Hz actuator peak",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "battery_endurance",
+        "limit_h": 2,
+        "derivation": "48 Wh / 15 N-m * 60 rpm * 2pi/60 * 1/efficiency >= 2 h",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_device_mass",
+        "limit_kg": 1.8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for cuffs with composite layup",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "contact pressure"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Actuator thermal management is outside structural scope.",
+      "fluid_analysis": "No fluid domain.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Cuff shells are stiffness-limited not buckling-limited."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "IEC 60601-1 electrical safety qualification",
+      "Full human factors (IEC 62366-1) with older adults",
+      "Donning/doffing time study"
+    ]
+  },
+  "eval_coverage": [
+    "CFRP structural + contact + resonance stack",
+    "gait biomechanics external model",
+    "battery endurance efficiency budget",
+    "wearable ulcer-prevention pressure limit"
+  ]
+}

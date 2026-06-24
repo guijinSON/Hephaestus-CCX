@@ -1,0 +1,229 @@
+{
+  "id": "294_i_ea9_cadc_2025_vtol_cargo_uav_landing_gear",
+  "source": {
+    "catalog_ref": "I-EA9",
+    "year": 2025,
+    "tier": "A",
+    "language_note": "Rulebook is Chinese; values restated in SI.",
+    "needs_rulebook_fetch": false
+  },
+  "domain": "aerospace_uav_structural",
+  "part_class": "vtol_uav_landing_gear_strut",
+  "full_prompt": "Design the primary landing-gear strut assembly for a CADC 2025 VTOL cargo UAV in the university class. The cargo-UAV task requires a 10 kg maximum takeoff weight (MTOW), 3 kg hover payload at 50 m altitude, and touchdown on an unprepared grass pad. The landing gear is a four-leg arrangement, and this spec covers one identical leg (the vehicle has four). Each leg is a single-part carbon-fiber sandwich strut, straight-tapered from 30 mm x 30 mm cross-section at the fuselage mount to 20 mm x 20 mm at the skid tip, overall length 400 mm, hollow with 3 mm wall thickness. The leg carries a horizontal skid tube of 400 mm length, 20 mm OD, 2 mm wall; the skid tube is bonded to the foot of the leg. The fuselage interface is four M5 bolts on a 60 mm square pattern. Leg material is CFRP quasi-isotropic laminate ([0/+45/90/-45]s) with Ex = Ey = 50 GPa, Gxy = 19 GPa, nu_xy = 0.31, density 1550 kg/m^3, in-plane tensile / compressive allowable 550 MPa, ILSS 55 MPa. Skid tube material is 7075-T6 aluminium (71.7 GPa, 0.33, 2810 kg/m^3, 503 MPa yield, 572 MPa UTS). Load cases: LC1 (Level landing) — vertical descent at 2 m/s touchdown; with MTOW 10 kg the landing load factor on 4 legs is ~4 g per leg = 98 N vertical plus horizontal drag ~25 N; apply at skid tube midpoint, fuselage interface fully fixed; LC2 (Hard landing) — vertical descent at 4 m/s; load factor ~10 g per leg = 245 N vertical, 50 N horizontal; LC3 (One-leg landing) — entire MTOW landing on one leg only, 400 N vertical, 100 N horizontal, representing asymmetric touchdown; LC4 (Drop test) — 0.5 m free fall drop test equivalent, modeled as explicit dynamic with 10 kg total mass at 3.1 m/s impact, all four legs simultaneously; LC5 (Trip-and-fall side load) — 15 g lateral at the skid tube tip, fuselage fixed. Pass/fail: (R1) under LC1, LC2, LC3 (linear static), CFRP max stress < 367 MPa (allowable / 1.5), skid tube max von Mises < 335 MPa (yield/1.5); (R2) max skid tube tip deflection under LC2 < 25 mm; (R3) under LC4 (explicit), peak dynamic stress < 450 MPa in CFRP and < 480 MPa in skid tube; (R4) first-mode linear buckling of leg in compression under LC3 >= 3.0; (R5) single leg assembly mass <= 200 g so four-leg total <= 800 g (within the 10 kg MTOW airframe mass budget of ~3.5 kg). Vibration modal, thermal, fluid, and radiation analyses are not required. Output one STEP AP242 assembly (leg + skid tube) plus a report listing per-leg mass, max stress per material per case, buckling load factor under LC3, and tip deflection under LC2.",
+  "short_prompt": "Design one of four identical landing-gear legs for a CADC 2025 university-class VTOL cargo UAV (MTOW 10 kg, 3 kg hover payload at 50 m altitude, unprepared grass pad).\n\nEnvelope: CFRP quasi-isotropic [0/+45/90/-45]s tapered strut, 30 x 30 mm at the fuselage mount tapering to 20 x 20 mm at the skid tip over 400 mm, 3 mm wall; horizontal 7075-T6 skid tube 400 mm long x 20 mm OD x 2 mm wall bonded to the foot; 4 x M5 fuselage bolts on a 60 mm square pattern.\n\nFactor regime: FoS 1.5 on composite tensile and skid yield for linear cases; peak dynamic <= 450 MPa CFRP / 480 MPa skid in explicit; linear buckling eigenvalue >= 3.0 under one-leg landing.\n\nLoad cases.\n- Level landing at 2 m/s: ~98 N vertical + 25 N horizontal at the skid midpoint per leg.\n- Hard landing at 4 m/s: ~245 N vertical + 50 N horizontal per leg.\n- One-leg landing: full MTOW on one leg = 400 N vertical + 100 N horizontal.\n- Drop test: 0.5 m free-fall equivalent (10 kg at 3.1 m/s, all four legs simultaneously).\n- Trip-and-fall side load: 15 g lateral at the skid-tube tip, fuselage fixed.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_solver",
+        "reason": "LC4 drop-test impact requires explicit dynamics.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CADC 2025 VTOL cargo UAV landing gear leg",
+    "brief": "Tapered CFRP landing-gear leg with aluminium skid tube for a 10 kg MTOW university VTOL cargo UAV carrying 3 kg payload.",
+    "geometric_constraints": {
+      "leg_length_mm": 400,
+      "leg_root_section_mm": {
+        "a": 30,
+        "b": 30
+      },
+      "leg_tip_section_mm": {
+        "a": 20,
+        "b": 20
+      },
+      "wall_thickness_mm": 3,
+      "skid_OD_mm": 20,
+      "skid_wall_mm": 2,
+      "skid_length_mm": 400,
+      "fuselage_bolt_pattern_mm": 60,
+      "bolt_count": 4,
+      "bolt_size": "M5"
+    },
+    "material": {
+      "leg": {
+        "name": "CFRP QI [0/+45/90/-45]s",
+        "Ex_GPa": 50,
+        "Gxy_GPa": 19,
+        "density_kg_m3": 1550,
+        "tension_MPa": 550,
+        "ILSS_MPa": 55
+      },
+      "skid": {
+        "name": "7075-T6",
+        "youngs_modulus_GPa": 71.7,
+        "yield_MPa": 503,
+        "UTS_MPa": 572,
+        "density_kg_m3": 2810
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "level_landing",
+        "vertical_N": 98,
+        "horizontal_N": 25
+      },
+      {
+        "id": "LC2",
+        "name": "hard_landing",
+        "vertical_N": 245,
+        "horizontal_N": 50
+      },
+      {
+        "id": "LC3",
+        "name": "one_leg_landing",
+        "vertical_N": 400,
+        "horizontal_N": 100
+      },
+      {
+        "id": "LC4",
+        "name": "drop_test",
+        "total_mass_kg": 10,
+        "impact_velocity_m_s": 3.1
+      },
+      {
+        "id": "LC5",
+        "name": "side_trip",
+        "lateral_g": 15
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 2,
+      "report_fields": [
+        "leg_mass_g",
+        "max_stress_per_material_per_case_MPa",
+        "buckling_factor_LC3",
+        "tip_deflection_LC2_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_stress_CFRP",
+        "limit_MPa": 367,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_skid",
+        "limit_MPa": 335,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tip_deflection",
+        "limit_mm": 25,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3a",
+        "type": "structural_analysis",
+        "metric": "peak_dynamic_stress_CFRP",
+        "limit_MPa": 450,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3b",
+        "type": "structural_analysis",
+        "metric": "peak_dynamic_stress_skid",
+        "limit_MPa": 480,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "leg_mass",
+        "limit_g": 200,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "composite shell + hex solid",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "LS-DYNA"
+      ],
+      "analysis_types": [
+        "linear static (x3)",
+        "linear buckling (LC3)",
+        "explicit dynamic (LC4)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not imposed.",
+      "thermal_analysis": "Outdoor ambient.",
+      "fluid_analysis": "Drag pre-computed.",
+      "radiation_analysis": "N/A."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Ground resonance modal in flight",
+      "Propeller downwash thermal on strut"
+    ]
+  },
+  "eval_coverage": [
+    "composite + metal mixed",
+    "linear + explicit impact",
+    "asymmetric / one-leg landing",
+    "mass budget per leg"
+  ]
+}

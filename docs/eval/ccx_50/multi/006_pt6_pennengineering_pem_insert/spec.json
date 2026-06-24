@@ -1,0 +1,537 @@
+{
+  "id": "006_pt6_pennengineering_pem_insert",
+  "source": {
+    "catalog_ref": "PT6",
+    "year": 2024,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/006_pt6_pennengineering_pem_insert.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "industrial_machinery",
+  "part_class": "sheet_metal_bracket_with_clinch_insert_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a bolted multi-body sheet-metal L-bracket assembly consisting of: (A) one cold-rolled steel L-bracket formed from 1.6 mm SPCC/DC01 blank (yield 210 MPa, UTS 350 MPa, 2.4 mm inside bend radius); (B) one self-clinching #6-32 UNC nut insert (steel/stainless) press-installed into a pre-punched 4.19 mm (+0.08/-0.00) hole in the host sheet; (C) one #6-32 grade 5 screw that threads into the insert during service; (D) the host-sheet plastically-flowed region around the insert (represented as a distinct cohesive/contact zone in the FEM that models the clinch engagement).\n\nThe host sheet is 1.6 mm cold-rolled steel (SPCC / DC01). The L-bracket has leg A 80 x 50 mm with two mounting slots (6 x 12 mm on 60 mm centerline spacing) and leg B 60 x 50 mm carrying the self-clinching insert at its centroid. The insert must maintain minimum edge distance >= 6.5 mm (per minimum edge-distance spec for #6-32 thread).\n\nRepresentative catalog 2024 values for the #6-32 UNC self-clinching insert installed in low-carbon steel host sheet (HRB 80 max per install spec): minimum installation force ~ 13.3 kN (3,000 lbf), minimum pull-out force 2.45 kN (550 lbf), minimum torque-out 2.7 N*m (24 in*lbf).\n\nService loads applied through the #6-32 grade 5 screw threaded into the insert: LC1 axial pull-out load 2.45 kN (full rated) normal to leg B; LC2 installation torque reaction 2.7 N*m on the insert-to-sheet interface; LC3 combined shear 500 N along leg B plus 1 kN normal to leg B.\n\nPass/fail on the assembled model: (R1) at LC1 rated pull-out, max principal stress in the host sheet around the insert <= UTS / 1.25 = 280 MPa (self-clinching-insert design-guide SF 1.25 against sheet tear-out at rated pull-out); (R2) at LC2 rated torque-out, host-sheet von Mises around the insert <= yield / 1.0 = 210 MPa on the first torque cycle (insert clinch friction governs, catalog practice); (R3) L-bracket max von Mises under LC3 <= yield / 1.5 = 140 MPa (general sheet-metal SF); (R4) L-bracket deflection at the insert location under LC3 <= 0.5 mm (to preserve screw preload integrity); (R5) host-sheet minimum edge-distance 6.5 mm to any free edge and 9.5 mm between adjacent self-clinching insert hole centerlines (catalog constraint); (R6) host hole diameter tolerance 4.19 +0.08/-0.00 mm (catalog install spec); (R_asm1) clinch engagement DCR (contact pressure at the knurl/undercut of the insert vs the plastically-flowed host sheet) <= 1.0 under LC1.\n\nThe bracket is manufactured by laser-cutting a flat blank, punching the 4.19 mm insert hole, V-die forming to the L shape, and pressing the insert on an arbor press. The final FEM check runs on the fully assembled model (L-bracket + insert + screw + clinch engagement contact zone), with nonlinear contact and friction at the insert knurl/undercut. Per-part stress is reported for each part family but assembly-level passing requires all interface DCRs and tear-out/torque-out limits to hold simultaneously.\n\nDeliverables: STEP AP242 of the formed L-bracket assembly with insert and screw as distinct bodies + flat-pattern DXF; report listing sheet max principal stress at LC1, von Mises at LC2, bracket max von Mises + deflection at LC3, clinch engagement DCR, per-part max stress, and a pass/fail line for edge-distance and hole-diameter compliance.",
+  "short_prompt": "Design a bolted multi-body sheet-metal L-bracket assembly with a self-clinching #6-32 UNC nut insert press-installed into a 1.6 mm SPCC/DC01 host sheet (yield 210 MPa, UTS 350 MPa, HRB 80 max), joined at service by a #6-32 grade 5 screw. The L-bracket has 2.4 mm inside bend radius, leg A 80 x 50 mm with two 6 x 12 mm slots on 60 mm centerlines, leg B 60 x 50 mm carrying the insert at its centroid. Host-sheet insert hole 4.19 +0.08/-0.00 mm; edge distance >= 6.5 mm.\n\nCatalog 2024 values: install force ~ 13.3 kN (3000 lbf); pull-out 2.45 kN (550 lbf); torque-out 2.7 N*m (24 in*lbf).\n\nLoad cases.\n- LC1 pull-out rated: 2.45 kN axial normal to leg B.\n- LC2 torque-out rated: 2.7 N*m on the insert-to-sheet interface.\n- LC3 combined service: 500 N shear along leg B + 1 kN normal.\n\nPass limits: host sheet max principal at LC1 <= UTS/1.25 = 280 MPa; host sheet von Mises at LC2 <= 210 MPa; bracket von Mises at LC3 <= 210/1.5 = 140 MPa; bracket deflection at insert under LC3 <= 0.5 mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "connection_integrity"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "sheet_metal_flat_pattern",
+        "reason": "Bend allowance and K-factor computation for the formed L is deterministic CAD/CAM, not FEA.",
+        "examples": [
+          "SolidWorks sheet metal",
+          "Onshape sheet metal"
+        ]
+      },
+      {
+        "tool": "insert_install_force_chart",
+        "reason": "Self-clinching insert install force curves are tabulated, not simulated.",
+        "examples": [
+          "self-clinching insert technical support packet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Sheet-metal L-bracket with self-clinching nut insert (multi-part assembly)",
+    "brief": "Multi-body clinch-insert joint: 1.6 mm SPCC/DC01 L-bracket + #6-32 self-clinching nut insert + #6-32 grade 5 screw + clinch engagement contact zone. Final FEM check runs on the assembled model only with nonlinear contact at the clinch knurl.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "sheet_metal_L_bracket",
+        "role": "primary L-formed host sheet that receives the self-clinching insert and carries service load to the mounting slots",
+        "count_min": 1,
+        "geometric_constraints": {
+          "thickness_mm": 1.6,
+          "bend_radius_mm": 2.4,
+          "leg_A_mm": {
+            "length": 80,
+            "width": 50
+          },
+          "leg_B_mm": {
+            "length": 60,
+            "width": 50
+          },
+          "leg_A_slots": {
+            "count": 2,
+            "size_mm": {
+              "x": 6,
+              "y": 12
+            },
+            "center_spacing_mm": 60
+          },
+          "insert_hole_dia_mm": 4.19
+        },
+        "material_hint": "SPCC / DC01",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "self_clinching_insert",
+        "role": "#6-32 UNC self-clinching nut insert press-installed in leg B",
+        "count_min": 1,
+        "geometric_constraints": {
+          "thread": "#6-32 UNC",
+          "host_sheet_min_thickness_mm": 1.6,
+          "min_edge_distance_mm": 6.5
+        },
+        "material_hint": "steel / stainless per catalog",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "machine_screw",
+        "role": "#6-32 grade 5 screw that threads into the insert during service and delivers pull-out / torque-out / combined load",
+        "count_min": 1,
+        "geometric_constraints": {
+          "thread": "#6-32 UNC",
+          "grade": "5"
+        },
+        "material_hint": "grade 5 steel",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "approximately 80 x 60 x 50 mm (formed L outer envelope)",
+      "coordinate_system": "Leg A in the XY plane; leg B rotated 90 deg about the bend line"
+    },
+    "material": {
+      "sheet": {
+        "name": "SPCC / DC01",
+        "yield_MPa": 210,
+        "ultimate_MPa": 350,
+        "hardness_max_HRB": 80
+      },
+      "insert": {
+        "part": "self-clinching #6-32 insert",
+        "thread": "#6-32 UNC",
+        "host_sheet_min_thickness_mm": 1.6
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pullout_rated",
+        "axial_N": 2450
+      },
+      {
+        "id": "LC2",
+        "name": "torqueout_rated",
+        "torque_Nm": 2.7
+      },
+      {
+        "id": "LC3",
+        "name": "combined_service",
+        "shear_N": 500,
+        "normal_N": 1000
+      }
+    ],
+    "boundary_conditions": {
+      "mounting_slots_leg_A": "fully constrained in service test",
+      "insert_interface": "clinch contact with radial interference, friction + form locking",
+      "inter_part_fastener_stiffness": "nonlinear contact between insert knurl/undercut and the plastically-flowed host sheet; friction coefficient per insert install guide"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "DXF_flat_pattern"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "sheet_max_principal_stress_LC1_MPa",
+        "sheet_von_mises_LC2_MPa",
+        "bracket_max_von_mises_LC3_MPa",
+        "bracket_deflection_LC3_mm",
+        "edge_distance_check",
+        "hole_tolerance_check",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "host_sheet_max_principal_stress_around_insert",
+        "limit_MPa": 280,
+        "derivation": "UTS / 1.25 = 350 / 1.25 (self-clinching-insert design-guide tear-out SF at rated pull-out)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "host_sheet_max_von_mises_around_insert",
+        "limit_MPa": 210,
+        "derivation": "yield / 1.0 first-cycle torque-out limit (catalog practice)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "bracket_max_von_mises",
+        "limit_MPa": 140,
+        "derivation": "yield / 1.5 = 210 / 1.5 (general sheet-metal SF)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bracket_deflection_at_insert",
+        "limit_mm": 0.5,
+        "derivation": "preserve screw preload integrity",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "insert_edge_distance",
+        "limit_mm": 6.5,
+        "derivation": "self-clinching #6-32 minimum edge-distance catalog value",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "host_hole_diameter_tolerance",
+        "limit_mm": 0.08,
+        "derivation": "self-clinching #6-32 insert install spec 4.19 +0.08/-0.00",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "type": "connection_integrity",
+        "metric": "clinch_engagement_DCR",
+        "limit": 1.0,
+        "derivation": "contact pressure at the insert knurl/undercut vs the plastically-flowed host sheet, normalized by catalog retention",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "governing_standard": "Self-clinching fasteners catalog 2024 (installation + performance data)",
+    "recommended_fea_setup": {
+      "element_type": "TET10 or HEX20 with elasto-plastic host sheet",
+      "mesh_size_mm_in_critical_regions": 0.3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "nonlinear static with contact + friction at clinch"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "insert knurl/undercut engages plastically-flowed host sheet; pull-out resisted by form lock + friction"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "screw thread engaged with insert internal thread; transmits service tension/shear"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A clinch-insert joint is fundamentally a three-body interaction (host sheet + insert + screw) where host-sheet tear-out governs pull-out; a single-body model cannot represent the plastic clinch engagement.",
+    "speculation_caveats": "The screw body (C) is speculated because the original prompt frames the loads as applied through a #6-32 grade 5 screw. Part-family counts are the minimum required to form the joint.",
+    "original_sample_preserved_at": "docs/eval/samples/006_pt6_pennengineering_pem_insert.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "R_asm1"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "host_sheet_max_principal_stress_around_insert",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC2",
+      "metric": "host_sheet_max_von_mises_around_insert",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "bracket_max_von_mises",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "bracket_deflection_at_insert",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "generated_static_step:design",
+      "metric": "insert_edge_distance",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_005",
+      "requirement_id": "R6",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "host_hole_diameter_tolerance",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_006",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "FEA_CONTACT",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": "*CONTACT PAIR",
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_contact_static_proxy",
+      "metric": "clinch_engagement_DCR",
+      "metric_source": "contact/gap displacement response",
+      "outputs": [
+        "analysis_template.inp: *CONTACT PAIR",
+        "model.dat: displacement/gap proxy"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_007",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

@@ -1,0 +1,204 @@
+{
+  "id": "151_cn1_asce_concrete_canoe",
+  "source": {
+    "catalog_ref": "CN1",
+    "year": 2026,
+    "tier": "A+"
+  },
+  "domain": "civil_marine_structural",
+  "part_class": "concrete_hull_section",
+  "full_prompt": "Design a single 6.0 m long concrete canoe hull section. The hull must float with at least 75 mm of freeboard when loaded with two seated paddlers modelled as two 80 kg patch loads distributed over 0.40 m by 0.30 m deck footprints centered 1.5 m from each end of the canoe, giving a total live load of 160 kg in addition to the self weight of the hull; total design displacement including hull self weight must not exceed 250 kg of fresh water. The hull cross section is a symmetric prismatic shape with beam 760 mm at the gunwale, maximum depth 320 mm from gunwale to keel, and a minimum wall thickness of 12 mm anywhere on the shell, with internal stiffening ribs permitted at 500 mm spacing if used. The concrete mix must have water to cementitious material ratio at or below 0.45, unit weight in the range 480 to 1920 kg per cubic meter, reinforcement limited to fibre mesh or equivalent, and achieve a 28 day compressive strength of at least 6.9 MPa and a tensile strength of at least 1.4 MPa. The hull must simultaneously survive three independent static load cases applied with the canoe fully supported by buoyancy in still fresh water at 20 C: Load Case 1 the two-paddler patch loads described above with the canoe freely floating, Load Case 2 a single mid-span concentrated live load of 160 kg applied over a 0.40 m by 0.30 m footprint at the longitudinal midpoint to simulate a swamped rescue lift with the hull supported only at its two end points, and Load Case 3 a sidewall patch load of 400 N applied over a 0.10 m by 0.10 m area on the gunwale to represent a mooring or dock impact with the opposite gunwale fixed. Pass/fail criteria must all be satisfied: (R1) maximum tensile stress in the concrete shell must not exceed 1.4 MPa under any load case, (R2) maximum compressive stress must not exceed 6.9 MPa under any load case, (R3) mid-span vertical deflection under Load Case 2 must not exceed 8 mm which is span over 750, (R4) the hull must retain at least 75 mm freeboard everywhere under Load Case 1, (R5) a linear buckling analysis of the hull shell under Load Case 2 must yield a first-mode load factor of at least 2.5 to guard against panel snap-through of the thin shell. Vibration, thermal, fluid CFD, and radiation analyses are explicitly not required; buoyancy is applied as an equivalent hydrostatic pressure per Archimedes and the water surface is flat. Deliver the geometry as a single STEP AP242 solid body plus a materials notebook listing mix design, measured unit weight, and compressive and tensile strengths, and a structural report listing maximum principal tensile stress, maximum compressive stress, midspan deflection, freeboard at the lowest point, and the first buckling load factor.",
+  "short_prompt": "Design a single 6.0 m long concrete canoe hull section. The hull must float with at least 75 mm of freeboard when loaded with two seated paddlers modeled as 80 kg patch loads over 0.40 x 0.30 m deck footprints centered 1.5 m from each end, with total displacement (hull + 160 kg live load) not exceeding 250 kg of fresh water. Cross section is symmetric prismatic with a 760 mm gunwale beam and 320 mm max depth, minimum 12 mm wall, optional internal stiffening ribs at 500 mm spacing. The mix must satisfy the ASCE concrete-canoe mix envelope (w/cm <= 0.45, unit weight 480-1920 kg/m^3, fibre-mesh reinforcement, 28-day f'c >= 6.9 MPa, f'_t >= 1.4 MPa).\n\nLoad cases (applied with the hull floating in still 20 C fresh water).\n- LC1 two-paddler floating: two 80 kg patch loads at 1.5 m from each end with buoyancy applied as hydrostatic pressure.\n- LC2 swamped mid-span lift: single 160 kg patch at the longitudinal midpoint supported only at the two end points.\n- LC3 sidewall dock impact: 400 N over a 0.10 x 0.10 m patch on one gunwale, opposite gunwale fixed.\nAlso require a linear-buckling factor >= 2.5 under LC2 against thin-shell snap-through.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "hydrostatic_buoyancy_solver",
+        "reason": "Freeboard and waterline are determined by static Archimedes equilibrium of the hull against fresh water density 1000 kg/m^3, evaluated outside the linear-elastic FEA.",
+        "examples": [
+          "Rhino/Orca3D hydrostatics",
+          "MATLAB buoyancy script"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "6 m concrete canoe hull section",
+    "brief": "Design a 6 m prismatic concrete canoe hull with two seated-paddler patch loads, swamped mid-span lift case, and sidewall impact case.",
+    "geometric_constraints": {
+      "hull_length_m": 6.0,
+      "beam_at_gunwale_mm": 760,
+      "max_depth_mm": 320,
+      "min_wall_thickness_mm": 12,
+      "allowable_rib_spacing_mm": 500,
+      "min_freeboard_mm": 75
+    },
+    "material": {
+      "concrete_mix": "w/cm <= 0.45, unit weight 480-1920 kg/m3",
+      "reinforcement": "fibre mesh or equivalent",
+      "compressive_strength_MPa_min": 6.9,
+      "tensile_strength_MPa_min": 1.4,
+      "test_age_days": 28
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "two_paddler_floating",
+        "total_live_load_kg": 160,
+        "patch_footprint_m": [
+          0.4,
+          0.3
+        ],
+        "patch_locations": "1.5 m from each end",
+        "application": "patch pressure on deck + hydrostatic buoyancy"
+      },
+      {
+        "id": "LC2",
+        "name": "swamped_midspan_lift",
+        "live_load_kg": 160,
+        "patch_footprint_m": [
+          0.4,
+          0.3
+        ],
+        "application": "patch at mid-length, supports at two ends only"
+      },
+      {
+        "id": "LC3",
+        "name": "sidewall_dock_impact",
+        "magnitude_N": 400,
+        "patch_footprint_m": [
+          0.1,
+          0.1
+        ],
+        "application": "gunwale patch, opposite gunwale fixed"
+      }
+    ],
+    "boundary_conditions": {
+      "LC1": "freely floating, buoyancy as hydrostatic pressure",
+      "LC2": "supports at two end-point nodes only",
+      "LC3": "opposite gunwale edge fully fixed"
+    },
+    "objective": {
+      "primary": "pass all pass/fail criteria",
+      "secondary": "minimize hull mass subject to minimum wall thickness"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_principal_tensile_stress_MPa",
+        "max_compressive_stress_MPa",
+        "midspan_deflection_mm",
+        "min_freeboard_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_principal_tensile_stress",
+        "limit_MPa": 1.4,
+        "derivation": "minimum tensile strength target",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_compressive_stress",
+        "limit_MPa": 6.9,
+        "derivation": "minimum 28-day compressive strength target",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "midspan_vertical_deflection",
+        "limit_mm": 8.0,
+        "derivation": "span/750 deflection limit for 6 m hull",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "min_freeboard",
+        "limit_mm": 75,
+        "derivation": "freeboard floor for loaded canoe",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "derivation": "panel snap-through guard for thin cementitious shell under mid-span lift",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order shell (S8R) or solid-shell with through-thickness integration",
+      "mesh_size_mm_in_critical_regions": 15,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x3 cases)",
+        "linear buckling eigenvalue (LC2)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Dynamic paddling response is out of scope; pass/fail is static.",
+      "thermal_analysis": "Fresh water at 20 C assumed; no thermal gradient imposed.",
+      "fluid_analysis": "Water loads are applied as hydrostatic pressure, not resolved by CFD.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Sprint and endurance dynamic loads",
+      "Freeze-thaw durability of cementitious mix",
+      "Swamp test and total flotation after swamping"
+    ]
+  },
+  "eval_coverage": [
+    "concrete hull FEM with tensile + compressive + deflection + freeboard + buckling stack",
+    "coupled hydrostatic solver outside of linear-elastic FEA",
+    "patch-load boundary conditions at discrete paddler stations",
+    "thin-shell buckling under swamped mid-span lift"
+  ]
+}

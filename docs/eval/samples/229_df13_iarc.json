@@ -1,0 +1,166 @@
+{
+  "id": "229_df13_iarc",
+  "source": {
+    "catalog_ref": "DF18",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "autonomous_aerial_structural",
+  "part_class": "iarc_aerial_robot_airframe",
+  "full_prompt": "Design the primary airframe of an autonomous aerial robotics benchmark, inheriting a prior-mission payload and duration envelope. The vehicle must autonomously transport a 2 kg payload module to a ship mast 3 km offshore, deposit it with precision, and return home within a 9-minute flight window, all without GPS assistance once over water. Target configuration: coaxial octocopter, MTOW 12 kg, empty weight 8 kg, 4 kg battery (6S2P Li-ion 22000 mAh), 2 kg payload. Rotor diameter 0.66 m (26 inch) x 8 rotors; hover thrust per rotor 15 N, peak thrust 30 N. Airframe is carbon-fiber tube + printed PA12 joints: main tubes 25 mm OD x 22 mm ID CFRP pultruded (E = 140 GPa, Poisson 0.30, tensile 1500 MPa, compressive 900 MPa, density 1600 kg/m^3) length 500 mm cantilever from central hub, hub plate 2 mm CFRP laminate. Load cases: (LC1) hover at MTOW: 12 kg x 9.81 m/s^2 / 8 rotors = 14.7 N each; (LC2) peak evasive maneuver: 2 g lateral + 1.5 g vertical on full 12 kg; (LC3) 3 km out-and-back endurance: 9 minutes at 15 m/s cruise = 540 s of aerodynamic drag 10 N at body center; (LC4) wind gust: 15 m/s cross-gust encounter produces +/- 30% rotor thrust differential at one rotor = 9 N alternating; (LC5) payload release: sudden 2 kg mass release during precision drop = 19.6 N step-change at payload attachment point; (LC6) saltwater landing contingency (out-of-spec): 2 g on one arm during emergency water impact. Pass/fail: (R1) max ply strain in arms under LC1-LC4 <= 0.4%; (R2) hub plate strain under LC2 <= 0.3%; (R3) arm tip deflection under LC2 <= 15 mm; (R4) first arm bending mode above 40 Hz; (R5) total airframe mass (tubes + hub + motor mounts) <= 2.0 kg; (R6) linear buckling eigenvalue under LC2 compression phase >= 2.5. Deliverables: STEP, FEA per case, modal, buckling, mass report.",
+  "short_prompt": "Design the primary airframe of an autonomous aerial robotics platform: a coaxial octocopter, MTOW 12 kg, that transports a 2 kg payload 3 km offshore to a ship mast, drops it with precision, and returns within a 9-minute window without GPS once over water. Arm material class: pultruded CFRP tubing; hub plate CFRP laminate. No external standard is named in the source; design to a 0.4% ply-strain allowable on the arms and 0.3% on the hub plate.\n\nEnvelope: 8 rotors of 0.66 m (26 in) diameter; arms 25 mm OD x 22 mm ID x 500 mm cantilever from the hub; hover thrust 15 N per rotor, peak 30 N; total airframe mass (tubes + hub + mounts) <= 2.0 kg. Battery 6S2P 22,000 mAh Li-ion.\n\nLoad cases.\n- LC1 hover at MTOW: 14.7 N per arm (12 kg / 8).\n- LC2 evasive: 2 g lateral + 1.5 g vertical on 12 kg.\n- LC3 endurance drag: 10 N at body center for 540 s at 15 m/s cruise.\n- LC4 gust: +/- 9 N alternating at one rotor (15 m/s cross-gust, 30% thrust differential).\n- LC5 payload release: 19.6 N step-change at the payload attachment during drop.\n- LC6 emergency water landing: 2 g on one arm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Autonomous aerial robot airframe",
+    "brief": "Coaxial octocopter, 12 kg MTOW, 3 km out-and-back autonomous GPS-denied flight.",
+    "geometric_constraints": {
+      "rotor_count": 8,
+      "rotor_diameter_m": 0.66,
+      "arm_length_mm": 500,
+      "arm_OD_mm": 25,
+      "arm_ID_mm": 22,
+      "MTOW_kg": 12,
+      "payload_kg": 2,
+      "range_km_one_way": 3,
+      "endurance_min": 9
+    },
+    "material": {
+      "name": "CFRP pultruded tube",
+      "E_GPa": 140,
+      "poissons_ratio": 0.3,
+      "density_kg_m3": 1600,
+      "tensile_MPa": 1500,
+      "compressive_MPa": 900
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hover_MTOW",
+        "F_N_per_arm": 14.7
+      },
+      {
+        "id": "LC2",
+        "name": "evasive",
+        "g_lateral": 2,
+        "g_vertical": 1.5
+      },
+      {
+        "id": "LC3",
+        "name": "endurance_drag",
+        "F_N": 10,
+        "duration_s": 540
+      },
+      {
+        "id": "LC4",
+        "name": "gust",
+        "F_N_alt_per_rotor": 9
+      },
+      {
+        "id": "LC5",
+        "name": "payload_release",
+        "F_N_step": 19.6
+      },
+      {
+        "id": "LC6",
+        "name": "emergency_water_impact",
+        "g": 2
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "airframe_mass_kg",
+        "max_ply_strain_pct",
+        "hub_plate_strain_pct",
+        "arm_tip_deflection_mm",
+        "first_arm_mode_Hz",
+        "buckling_eigenvalue"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_arm_ply_strain",
+        "limit_pct": 0.4,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "hub_plate_strain",
+        "limit_pct": 0.3,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "arm_tip_deflection",
+        "limit_mm": 15,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_arm_bending_mode",
+        "limit_Hz": 40,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "airframe_mass",
+        "limit_kg": 2.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "arm_compression_eigenvalue",
+        "limit": 2.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

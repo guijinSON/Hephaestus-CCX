@@ -1,0 +1,139 @@
+{
+  "id": "203_oc3_australian_fsae_chassis",
+  "source": {
+    "catalog_ref": "OC3",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "motorsport_chassis",
+  "part_class": "spaceframe_mainhoop",
+  "full_prompt": "Design the main hoop, front hoop, and adjoining Primary Structure of a student-formula combustion-class vehicle benchmark, using tube-frame construction built from 4130 chromoly steel. The main hoop minimum wall tubing is 1.0 inch (25.4 mm) outer diameter x 0.095 inch (2.4 mm) wall; the front hoop, main hoop bracing, and side impact structures minimum is 1.0 inch x 0.065 inch (1.65 mm) wall or an equivalent Structural Equivalency Spreadsheet (SES) proof. Material: 4130 steel with Young's modulus 205 GPa, Poisson ratio 0.29, yield strength 435 MPa, ultimate tensile strength 670 MPa, density 7850 kg/m^3. Geometry: main hoop must extend from the lowest frame member on one side, up and over, back down to the lowest frame member on the opposite side, with radius of bend not less than 3x tube OD; top of main hoop must exceed the helmet line by a clearance of at least 50 mm measured along a straight edge from the top of the helmet to the top of the harness attachment. Wheelbase 1525 mm minimum, minimum driver percentile 95th-percentile male template. Load cases (SES-equivalent linear static): (LC1) main hoop front-back: apply 6 kN Fx + 5 kN Fy + 9 kN Fz simultaneously at top of main hoop with base fully fixed, representing roll-over; (LC2) main hoop bracing: 6 kN axial; (LC3) front hoop: 6 kN Fx + 5 kN Fy + 9 kN Fz at top; (LC4) side impact: 7 kN normal to the side-impact structure at mid-height; (LC5) front bulkhead: 150 kN compression equivalent via bulkhead support load case. Pass/fail: under each load case no tube element may exceed yield (435 MPa von Mises), displacement at the loaded node must remain below 25 mm, and global chassis torsional stiffness measured between front and rear suspension pickup planes must exceed 1000 Nm/deg. Deliverables: STEP AP242 chassis, FEA stress contours per load case, SES-style equivalency report, torsional-stiffness analysis, and mass summary.",
+  "short_prompt": "Design the main hoop, front hoop, and adjoining Primary Structure of a student-formula combustion-class car, tube-frame construction. Material class: 4130 chromoly steel. Design per an SES-equivalent linear-static gate (Structural Equivalency Spreadsheet style), with allowables taken at 4130 yield.\n\nEnvelope: wheelbase >= 1525 mm; main hoop must clear a 95th-percentile male helmet line by >= 50 mm; primary hoop bend radius >= 3 x tube OD.\n\nLoad cases (all SES-style simultaneous combined loads at the indicated node).\n- LC1 main hoop roll-over at top of hoop: 6 kN Fx + 5 kN Fy + 9 kN Fz, base fixed.\n- LC2 main hoop bracing: 6 kN axial.\n- LC3 front hoop at top: 6 kN Fx + 5 kN Fy + 9 kN Fz.\n- LC4 side impact: 7 kN normal to the side-impact structure at mid-height.\n- LC5 front bulkhead: 150 kN compression equivalent via the bulkhead support load case.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student-formula combustion-car main hoop + primary structure",
+    "brief": "Tube-frame main hoop, front hoop, side-impact structure, and bulkhead for a student-formula combustion car.",
+    "geometric_constraints": {
+      "main_hoop_tube_od_in": 1.0,
+      "main_hoop_tube_wall_in": 0.095,
+      "front_hoop_tube_wall_in": 0.065,
+      "main_hoop_bend_radius_min_times_od": 3,
+      "helmet_clearance_mm_min": 50,
+      "wheelbase_mm_min": 1525,
+      "driver_template": "95th percentile male"
+    },
+    "material": {
+      "name": "4130 chromoly steel",
+      "youngs_modulus_GPa": 205,
+      "poissons_ratio": 0.29,
+      "density_kg_m3": 7850,
+      "yield_strength_MPa": 435,
+      "ultimate_tensile_strength_MPa": 670
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "main_hoop_rollover",
+        "Fx_kN": 6,
+        "Fy_kN": 5,
+        "Fz_kN": 9,
+        "application": "top of main hoop"
+      },
+      {
+        "id": "LC2",
+        "name": "main_hoop_bracing",
+        "F_axial_kN": 6,
+        "application": "bracing tube"
+      },
+      {
+        "id": "LC3",
+        "name": "front_hoop",
+        "Fx_kN": 6,
+        "Fy_kN": 5,
+        "Fz_kN": 9,
+        "application": "top of front hoop"
+      },
+      {
+        "id": "LC4",
+        "name": "side_impact",
+        "F_N": 7000,
+        "application": "normal to SIS at mid-height"
+      },
+      {
+        "id": "LC5",
+        "name": "bulkhead_compression",
+        "F_kN": 150,
+        "application": "front bulkhead support"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "mass_kg",
+        "max_von_mises_per_case_MPa",
+        "max_displacement_per_case_mm",
+        "torsional_stiffness_Nm_per_deg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 435,
+        "derivation": "4130 yield",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_displacement_at_load_node",
+        "limit_mm": 25,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "chassis_torsional_stiffness",
+        "limit_Nm_per_deg": 1000,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

@@ -1,0 +1,229 @@
+{
+  "id": "298_i_sa2_supra_saeindia_2026_impact_attenuator",
+  "source": {
+    "catalog_ref": "I-SA2",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_crashworthiness_structural",
+  "part_class": "impact_attenuator_foam",
+  "full_prompt": "Design a single-piece foam-core bolt-on Impact Attenuator for a collegiate formula-class racecar benchmark 2026 car. SUPRA 2026 Rulebook v1.1 (derived from collegiate formula-class racecar benchmark) requires the IA to have minimum dimensions 200 mm (length) x 100 mm (height) x 200 mm (width), and when mounted in front of the Anti-Intrusion Plate (AIP) on a 300 kg test mass impacted at 7.0 m/s, it must decelerate the mass with an average of no more than 20 g and a peak of no more than 40 g over any 3 ms window; energy absorbed must therefore exceed 7350 J. SUPRA 2026 in India uses a sled-test setup calibrated on a 1018 steel surface with coefficient of friction 0.12 (pre-measured) at ambient 28 C. This spec targets the foam-filled option: the attenuator is 200 mm (L) x 100 mm (H) x 200 mm (W) rectangular block of IMPAXX 700 closed-cell extruded polystyrene (or equivalent), density 29 kg/m^3, compressive plateau stress 0.31 MPa at 10 to 70 % strain, ultimate crush 70 % strain. The foam is wrapped in a 1.2 mm 6061-T6 aluminium skin that folds on two opposing faces; the skin provides bond interface to the AIP via a ring of 3M DP420 adhesive of 15 mm width around the perimeter. AIP is 1.5 mm 6061-T6 aluminium, 200 mm x 350 mm, bolted to the front bulkhead with 4 x M8 bolts on a 180 mm x 150 mm pattern. Load cases: LC1 (Regulatory frontal impact) — 300 kg mass at 7 m/s against rigid barrier; LC2 (Oblique 10 deg) — 300 kg at 7 m/s 10 deg off-axis; LC3 (Sled test correlation) — 300 kg at 6.5 m/s against a sled surface with 0.12 friction (India test rig geometry); LC4 (Bolt pull) — 4 kN steady tension per AIP bolt. Pass/fail: (R1) under LC1, average deceleration <= 20 g; (R2) under LC1, peak 3 ms deceleration <= 40 g; (R3) under LC1, energy absorbed >= 7350 J; (R4) under LC1, crush stroke <= 170 mm (keep 30 mm margin vs. full 200 mm); (R5) under LC2, peak deceleration <= 50 g, energy absorbed >= 6000 J; (R6) under LC3, average deceleration <= 22 g (India local sled margin); (R7) under LC4, AIP + bolt region max von Mises <= 184 MPa. Primary verification: explicit dynamic FEA for LC1, LC2, LC3 with crushable-foam material card (LS-DYNA MAT_083 / *MAT_FU_CHANG_FOAM or ABAQUS CRUSHABLE_FOAM); linear static for LC4. Vibration, thermal, fluid, and radiation analyses are not required. Output one STEP AP242 assembly (foam core + skin + AIP) plus a report listing IA total mass, peak and average deceleration per case, crush stroke per case, absorbed energy per case, and AIP bolt-region von Mises under LC4.",
+  "short_prompt": "Design a foam-filled single-piece bolt-on Impact Attenuator for a collegiate formula-class racecar benchmark 2026 car per SUPRA 2026 v1.1: 300 kg at 7.0 m/s into the AIP, average <= 20 g, peak <= 40 g over any 3 ms window, energy absorbed >= 7350 J. India sled rig uses a 1018 steel surface at 0.12 friction (pre-measured), 28 C ambient.\n\nEnvelope: 200 x 100 x 200 mm IMPAXX 700 EPS core (29 kg/m^3, plateau 0.31 MPa to 70% strain, ultimate 70%), 1.2 mm 6061-T6 skin, bonded to AIP with a 15 mm ring of 3M DP420; AIP 1.5 mm 6061-T6 200 x 350 mm, bolted with 4 x M8 on a 180 x 150 mm pattern.\n\nFactor regime: explicit-dynamics pass/fail on crush; local AIP + bolt yield FoS 1.5 for the static bolt-pull case; crush-stroke <= 170 mm (30 mm margin).\n\nLoad cases.\n- Regulatory frontal: 300 kg at 7.0 m/s vs rigid barrier.\n- Oblique 10 deg: 300 kg at 7.0 m/s.\n- India sled-test correlation: 300 kg at 6.5 m/s against a 0.12 friction sled surface (local margin avg <= 22 g).\n- Bolt pull: 4 kN steady tension per AIP bolt.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_solver",
+        "reason": "Foam crush at 7 m/s is explicit dynamic.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Altair Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-class racecar benchmark 2026 foam IA",
+    "brief": "IMPAXX-700 foam IA meeting SUPRA 2026 v1.1 IA rule (200x100x200 mm, 20 g avg / 40 g peak, 7350 J) with India sled-test correlation at 0.12 friction.",
+    "geometric_constraints": {
+      "IA_mm": {
+        "L": 200,
+        "H": 100,
+        "W": 200
+      },
+      "skin_material": "6061-T6 1.2 mm",
+      "AIP_mm": {
+        "W": 200,
+        "H": 350,
+        "t": 1.5
+      },
+      "bolt_count": 4,
+      "bolt_pattern_mm": {
+        "x": 180,
+        "y": 150
+      },
+      "bolt_size": "M8",
+      "adhesive_bead_width_mm": 15
+    },
+    "material": {
+      "foam": {
+        "name": "IMPAXX 700 XPS",
+        "density_kg_m3": 29,
+        "plateau_stress_MPa": 0.31,
+        "densification_strain": 0.7
+      },
+      "skin_AIP": {
+        "name": "6061-T6",
+        "youngs_modulus_GPa": 69,
+        "yield_MPa": 276,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "frontal_7mps",
+        "mass_kg": 300,
+        "velocity_m_s": 7.0,
+        "angle_deg": 0
+      },
+      {
+        "id": "LC2",
+        "name": "oblique_10deg",
+        "mass_kg": 300,
+        "velocity_m_s": 7.0,
+        "angle_deg": 10
+      },
+      {
+        "id": "LC3",
+        "name": "india_sled_test",
+        "mass_kg": 300,
+        "velocity_m_s": 6.5,
+        "mu": 0.12
+      },
+      {
+        "id": "LC4",
+        "name": "bolt_pull",
+        "per_bolt_N": 4000
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 3,
+      "report_fields": [
+        "IA_mass_g",
+        "avg_decel_per_case_g",
+        "peak_decel_per_case_g",
+        "crush_stroke_per_case_mm",
+        "energy_per_case_J",
+        "AIP_max_VM_LC4_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "average_deceleration",
+        "limit_g": 20,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_deceleration_3ms",
+        "limit_g": 40,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "energy_absorbed",
+        "limit_J": 7350,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "crush_stroke",
+        "limit_mm": 170,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5a",
+        "type": "structural_analysis",
+        "metric": "peak_deceleration_3ms",
+        "limit_g": 50,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5b",
+        "type": "structural_analysis",
+        "metric": "energy_absorbed",
+        "limit_J": 6000,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "average_deceleration",
+        "limit_g": 22,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_AIP",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "hex solid + shell",
+      "mesh_size_mm_in_critical_regions": 4,
+      "solver_hints": [
+        "LS-DYNA",
+        "Abaqus Explicit"
+      ],
+      "analysis_types": [
+        "explicit dynamic (LC1, LC2, LC3)",
+        "linear static (LC4)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Single-use crush.",
+      "thermal_analysis": "India 28 C ambient is within foam spec window.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Foam crush not eigenvalue-buckling."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Foam dynamic rate-dependence at 7 m/s",
+      "Adhesive peel failure"
+    ]
+  },
+  "eval_coverage": [
+    "IA standard criteria",
+    "India-local sled calibration",
+    "foam material card use"
+  ]
+}

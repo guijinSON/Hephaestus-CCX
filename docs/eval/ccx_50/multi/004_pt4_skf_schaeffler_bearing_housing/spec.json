@@ -1,0 +1,603 @@
+{
+  "id": "004_pt4_skf_schaeffler_bearing_housing",
+  "source": {
+    "catalog_ref": "PT4",
+    "year": 2024,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/004_pt4_skf_schaeffler_bearing_housing.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "industrial_machinery",
+  "part_class": "split_plummer_block_housing_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a split cast-iron plummer block bearing housing assembly that interfaces with a canonical size-220 spherical roller bearing and accepts a standard plummer-block seal interface. The deliverable is a bolted multi-body assembly consisting of: (A) one cast-iron cap half (upper shell), (B) one cast-iron base half (lower shell, also the foot/flange), (C) two labyrinth grease seal rings (one per axial side) for IP65-equivalent sealing, (D) four M20 grade 8.8 foot bolts + washers holding the base half to its foundation, and (E) two or more M20 grade 8.8 cap bolts + washers clamping the cap half to the base half across the horizontal split line through the bearing centerline.\n\nThe representative 2024 bearing catalog values for the size-220 spherical roller bearing are: bore d = 100 mm, outside diameter D = 180 mm, width B = 46 mm, dynamic load rating C = 475 kN, static load rating C0 = 600 kN, fatigue load limit Pu = 62 kN. The paired plummer-block housing has overall length 470 mm, base width 160 mm, total height 280 mm, base-to-shaft-center height 110 mm, foot bolt pattern with four M20 bolts on a 370 x 130 mm rectangular footprint, and a split line along the bearing centerline plane. The housing must accept adapter sleeve-mounted shafting up to 90 mm nominal and tolerate +/- 0.5 degree of static angular misalignment (spherical roller inherent capability).\n\nDesign load cases: LC1 radial load on the bearing Fr = 150 kN (about C/3, consistent with P/C0 ~= 0.25 sizing practice); LC2 combined radial+axial Fr = 120 kN + Fa = 40 kN (ratio Fa/Fr = 0.33, within spherical roller Y1/Y2 envelope); LC3 bolt preload only (4 x M20 grade 8.8 tightened to 410 N*m per standard industrial housing bolt torque table, generating approximately 158 kN clamping force per bolt).\n\nPass/fail on the assembled model: (R1) housing cap half and base half cast-iron (EN-GJS-500-7, yield ~= 320 MPa, ultimate ~= 500 MPa) max von Mises stress <= 200 MPa (SF = 2.5 on yield, industrial machinery standard per industrial bearing housing design guide); (R2) bolt shank max tensile stress <= 0.7 * 640 = 448 MPa (preload limit for grade 8.8 per VDI 2230); (R3) bearing-seat out-of-roundness after load application <= 0.02 mm (industrial bearing catalog misalignment/clearance tolerance); (R4) vertical deflection at shaft centerline under LC1 <= 0.05 mm (stiffness to preserve bearing internal clearance C3); (R5) interface contact pressure at split line under LC1 must remain compressive everywhere (no gap opening); (R_asm1) assembly-scope connection DCR on every bolt interface <= 1.0 under all load cases; (R_asm2) seal ring-to-housing contact pressure must remain above a small positive margin so the IP65 labyrinth seal is not unloaded under LC1 or LC2.\n\nThe housing is grey cast iron or ductile iron poured to EN-GJS-500-7, machined bore to ISO H7 at 180 mm, base-to-bore perpendicularity IT7, and sealed against IP65-equivalent labyrinth grease seals. The final FEM check runs on the fully assembled model with explicit contact at the split line, pretensioned cap bolts, foot bolt preloads, and the seal rings modeled as distinct bodies pressed against their housing pockets. Per-part metrics are reported but pass/fail gates are evaluated at the assembly level.\n\nDeliverables: STEP AP242 assembly with cap half, base half, two seal rings, four foot bolt envelopes, and the cap bolt envelopes (each as a distinct body tagged with part_family and instance_index); geometry must parametrically accept the size-220 spherical roller bearing envelope without interference; report with max housing stress, bolt stress, bore distortion, shaft-center deflection, split-line contact margin, per-part max stress, and assembly-level connection DCR.",
+  "short_prompt": "Design a split cast-iron plummer block bearing housing delivered as a bolted multi-body assembly that interfaces with a size-220 spherical roller bearing and a plummer-block seal interface. The bearing has bore d = 100 mm, OD D = 180 mm, width B = 46 mm, C = 475 kN, C0 = 600 kN, Pu = 62 kN. Housing envelope: length 470 mm, base width 160 mm, height 280 mm, shaft-center height 110 mm, foot-bolt pattern of four M20 grade 8.8 bolts on a 370 x 130 mm footprint; split along the bearing centerline plane. Adapter-sleeve shafting up to 90 mm, +/- 0.5 deg static misalignment.\n\nLoad cases.\n- LC1 radial-only: Fr = 150 kN.\n- LC2 combined: Fr = 120 kN + Fa = 40 kN.\n- LC3 preload-only: 4 x M20 grade 8.8 tightened to 410 N*m (~158 kN clamping per bolt).\n\nHousing is EN-GJS-500-7 (yield ~= 320 MPa, ultimate ~= 500 MPa); max housing von Mises <= 200 MPa (SF 2.5 on yield). Bolt shank tensile <= 0.7 * 640 = 448 MPa per VDI 2230. Bearing-seat out-of-roundness <= 0.02 mm; shaft-centerline deflection under LC1 <= 0.05 mm; split-line contact remains compressive.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "connection_integrity"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "bearing_life_calculator",
+        "reason": "L10 rating life L10 = (C/P)^(10/3) for roller bearings is a closed-form catalog formula, not FEA.",
+        "examples": [
+          "bearing life calculator",
+          "bearing life calculator (basic mode)"
+        ]
+      },
+      {
+        "tool": "bolt_preload_calculator",
+        "reason": "VDI 2230 preload + embedding + settling is a closed-form spreadsheet, not FEA.",
+        "examples": [
+          "VDI 2230 spreadsheet",
+          "MDESIGN bolt module"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Split plummer-block housing for size-220 spherical roller bearing (multi-part assembly)",
+    "brief": "Bolted cast-iron split housing assembly: cap half + base half + 2 labyrinth seal rings + 4 M20 foot bolts + 2+ M20 cap bolts, carrying a size-220 spherical roller bearing under combined radial + axial load with VDI 2230 preload. Final FEM check runs on the assembled model only.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "cast_iron_cap_half",
+        "role": "upper shell that clamps over the bearing outer race with the base half",
+        "count_min": 1,
+        "geometric_constraints": {
+          "split_line": "horizontal through bearing centerline",
+          "overall_length_mm": 470,
+          "width_mm": 160,
+          "height_above_split_mm": 170
+        },
+        "material_hint": "EN-GJS-500-7",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "cast_iron_base_half",
+        "role": "lower shell that bolts to the foundation and supports the bearing seat from below",
+        "count_min": 1,
+        "geometric_constraints": {
+          "split_line": "horizontal through bearing centerline",
+          "foot_bolt_pattern_mm": {
+            "x": 370,
+            "y": 130
+          },
+          "shaft_center_height_mm": 110
+        },
+        "material_hint": "EN-GJS-500-7",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "labyrinth_seal_ring",
+        "role": "IP65-equivalent labyrinth grease seal pressed into each axial face of the assembled housing",
+        "count_min": 2,
+        "geometric_constraints": {
+          "seal_type": "labyrinth grease seal, IP65-equivalent"
+        },
+        "material_hint": "",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "foot_bolt_and_washer",
+        "role": "M20 grade 8.8 foot bolt + washer attaching base half to the foundation",
+        "count_min": 4,
+        "geometric_constraints": {
+          "thread": "M20",
+          "grade": "8.8",
+          "pattern_mm": {
+            "x": 370,
+            "y": 130
+          }
+        },
+        "material_hint": "grade 8.8 steel",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "cap_bolt_and_washer",
+        "role": "M20 grade 8.8 cap bolt + washer clamping cap half to base half across the split line",
+        "count_min": 2,
+        "geometric_constraints": {
+          "thread": "M20",
+          "grade": "8.8"
+        },
+        "material_hint": "grade 8.8 steel",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "470 x 160 x 280 mm (housing outer envelope)",
+      "coordinate_system": "Z up, shaft axis along X at height 110 mm; split line in the XY plane through bearing centerline"
+    },
+    "material": {
+      "housing": {
+        "name": "EN-GJS-500-7",
+        "yield_strength_MPa": 320,
+        "ultimate_tensile_strength_MPa": 500
+      },
+      "bolt": {
+        "grade": "8.8",
+        "yield_MPa": 640
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "radial_only",
+        "Fr_kN": 150
+      },
+      {
+        "id": "LC2",
+        "name": "combined",
+        "Fr_kN": 120,
+        "Fa_kN": 40
+      },
+      {
+        "id": "LC3",
+        "name": "preload_only",
+        "bolt_torque_Nm": 410,
+        "bolt_preload_kN_per_bolt": 158
+      }
+    ],
+    "boundary_conditions": {
+      "foot_bolts": "pretensioned, fixed to base",
+      "bearing_outer_race_contact": "bearing load distributed over bearing seat per bearing contact patch",
+      "inter_part_fastener_stiffness": "cap bolts pretensioned with contact at split line between cap half and base half; foot bolts pretensioned with contact between base half and foundation"
+    },
+    "objective": {
+      "minimize": "housing mass subject to passing all stress/stiffness/connection checks"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "max_von_mises_housing_MPa",
+        "max_bolt_tensile_MPa",
+        "bore_out_of_roundness_mm",
+        "shaft_center_deflection_mm",
+        "split_line_contact_margin_MPa",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_housing",
+        "limit_MPa": 200,
+        "derivation": "yield / 1.6 (SF 2.5 effective on yield for cast iron industrial housing per industrial bearing housing design guide)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "bolt_shank_max_tensile",
+        "limit_MPa": 448,
+        "derivation": "0.7 * 640 per VDI 2230 preload limit grade 8.8",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "bearing_seat_out_of_roundness",
+        "limit_mm": 0.02,
+        "derivation": "standard mounting tolerance for preserving bearing clearance class C3",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "shaft_center_vertical_deflection",
+        "limit_mm": 0.05,
+        "derivation": "stiffness to preserve spherical roller C3 internal clearance",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "split_line_min_contact_pressure",
+        "limit_MPa": 0,
+        "derivation": "no gap opening under service load (compressive everywhere)",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "type": "connection_integrity",
+        "metric": "connection_DCR",
+        "limit": 1.0,
+        "derivation": "assembly-scope DCR on every cap and foot bolt interface",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm2",
+        "type": "connection_integrity",
+        "metric": "seal_ring_contact_margin",
+        "limit_MPa": 0,
+        "derivation": "labyrinth seal must remain seated (positive contact) under service load",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "governing_standard": "industrial bearing catalog 2024 + standard industrial housing bolt torque table + VDI 2230 Part 1",
+    "recommended_fea_setup": {
+      "element_type": "TET10 solid",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "Simcenter 3D"
+      ],
+      "analysis_types": [
+        "linear static with bolt preload + contact at split line"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "cap bolts clamp the split line; radial load reacts in bolted compression + contact"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "foot bolts transfer base-half reaction into foundation"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "seal ring seated in cap-half pocket against bearing side face"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "seal ring seated in base-half pocket against bearing side face"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "cap bolt head bears on cap half, shank tension across split line"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A split plummer block is by definition two clamping halves plus seal rings plus bolts; a monolithic model cannot represent the split-line contact or bolt preload that governs bearing-seat distortion and seal retention.",
+    "speculation_caveats": "cap bolt count (>=2) and seal ring count (2) are inferred from a typical plummer-block layout; foot bolt count = 4 is fixed by the original prompt.",
+    "original_sample_preserved_at": "docs/eval/samples/004_pt4_skf_schaeffler_bearing_housing.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R_asm1",
+      "R_asm2"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "max_von_mises_housing",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "bolt_shank_max_tensile",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2",
+      "metric": "bearing_seat_out_of_roundness",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "shaft_center_vertical_deflection",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_CONTACT",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": "*CONTACT PAIR",
+      "load_cases": [
+        "LC1",
+        "LC2"
+      ],
+      "deck_step": "generated_contact_static_proxy",
+      "metric": "split_line_min_contact_pressure",
+      "metric_source": "contact/gap displacement response",
+      "outputs": [
+        "analysis_template.inp: *CONTACT PAIR",
+        "model.dat: displacement/gap proxy"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_005",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "connection_DCR",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm2_006",
+      "requirement_id": "R_asm2",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2",
+      "metric": "seal_ring_contact_margin",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_007",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

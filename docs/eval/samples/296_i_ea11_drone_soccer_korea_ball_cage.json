@@ -1,0 +1,226 @@
+{
+  "id": "296_i_ea11_drone_soccer_korea_ball_cage",
+  "source": {
+    "catalog_ref": "I-EA11 (cross-ref KR16)",
+    "year": 2025,
+    "tier": "A+",
+    "language_note": "Rulebook is Korean; numerics reproduced in SI."
+  },
+  "domain": "robotics_sports_structural",
+  "part_class": "drone_ball_spherical_cage",
+  "full_prompt": "Design the spherical protective cage ('ball') that surrounds a Korea Drone Soccer Association 2025 drone. The cage is the defining structural element that lets the drone collide with opponents, walls, and goal rings without damaging the inner quadrotor. Per the 2025 Korean rulebook, the cage outer diameter must be 400 mm +/- 20 mm (i.e., 380 to 420 mm). Inside the cage a standard 150 mm quadrotor is mounted via a single central hub. The cage must pass cleanly through a goal inner diameter of 600 mm mounted at 3.0 to 3.5 m height. Geometry: the cage is a geodesic icosahedral framework with 30 struts (edges of an icosahedron) connecting 12 vertex nodes; the struts are 3 mm outer diameter carbon-fibre pultruded tubes with 0.5 mm wall (2 mm inner diameter); the nodes are 3D-printed nylon 6-carbon-fibre (nylon-CF) spherical junctions, 10 mm outer diameter. A central hub 80 mm diameter, 20 mm thick, made of 3D-printed nylon-CF, is suspended by three equally-spaced 60 mm long 2 mm OD, 1.5 mm ID carbon tube spokes to three cage nodes on one great-circle. Total drone + cage mass must remain below 1000 g (standard class). Material for struts: pultruded CFRP (Ex = 130 GPa, Ey = 9 GPa, density 1500 kg/m^3, tensile allowable 1500 MPa, compressive 900 MPa). Material for nodes and hub: nylon 6-CF (E = 8.5 GPa, yield ~85 MPa, density 1150 kg/m^3). Load cases: LC1 (Wall collision) — 8 m/s impact against a rigid wall; explicit dynamic with 900 g total mass; impact distributed over a 30 mm-diameter contact patch at one cage vertex; LC2 (Opponent collision) — 8 m/s closing velocity against another identical ball of 900 g; rigid-to-rigid contact; LC3 (Goal transit) — steady horizontal aero drag of 1 N at the cage's forward face (nominal forward flight at 6 m/s); LC4 (Hub thrust reaction) — each spoke carries 1/3 of the quadrotor thrust (total thrust = 2x weight = 17.6 N) in tension or compression depending on orientation; LC5 (Ground drop) — 1.5 m free fall onto rigid floor, explicit dynamic, with quadrotor mass lumped at the hub (700 g) and cage (200 g). Pass/fail: (R1) under LC1 and LC2 (explicit), max strut stress < 600 MPa (compressive allowable / 1.5) and max node stress < 55 MPa (nylon-CF yield / 1.5); (R2) under LC1, no strut buckling collapse (linear buckling factor >= 2.0 at peak load); (R3) under LC4 (linear static), spoke stress < 600 MPa; (R4) under LC5 (explicit), cage may deform but must return to within a 420 mm bounding sphere after event (permanent diameter change < 5 mm) — this is a residual-strain criterion; (R5) total cage + hub + spokes mass < 250 g so drone fits 1000 g budget; (R6) cage outer envelope after any LC must stay below 420 mm diameter so it still passes a 600 mm goal ring. Primary verification: explicit dynamic FEA for LC1, LC2, LC5; linear static FEA for LC3, LC4; linear buckling for LC1 peak. Vibration modal, thermal, fluid, and radiation analyses are not required. Output one STEP AP242 assembly of the cage + spokes + hub and a report listing total cage assembly mass, max stress per material per case, buckling factor under LC1, and residual cage diameter after LC5.",
+  "short_prompt": "Design the spherical protective cage ('ball') enclosing a Korea Drone Soccer Association 2025 drone. Rulebook cage OD 400 mm +/- 20 mm; cage must still pass a 600 mm goal ring after use; combined drone + cage mass < 1000 g (standard class).\n\nEnvelope: geodesic icosahedral framework of 30 pultruded CFRP struts (3 mm OD x 0.5 mm wall) joined at 12 nylon-CF spherical nodes (10 mm OD); central 80 mm x 20 mm nylon-CF hub suspended by three 60 mm CFRP spokes (2 mm OD, 1.5 mm ID) on one great circle; 150 mm quadrotor inside.\n\nFactor regime: FoS 1.5 on CFRP compressive and nylon-CF yield under impact; linear buckling >= 2.0 at peak impact; post-impact permanent diameter change < 5 mm; residual OD envelope <= 420 mm.\n\nLoad cases.\n- Wall collision at 8 m/s (900 g), 30 mm contact patch on one vertex.\n- Opponent collision at 8 m/s closing on a second identical 900 g ball.\n- Goal transit: steady 1 N aero drag on the forward face at 6 m/s cruise.\n- Hub thrust reaction: each spoke carries 1/3 of total thrust (2 x vehicle weight = 17.6 N).\n- 1.5 m drop onto rigid floor (700 g quad lumped at hub, 200 g cage).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_solver",
+        "reason": "LC1/LC2/LC5 collisions require explicit solution.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Korean Drone Soccer spherical cage",
+    "brief": "Icosahedral geodesic carbon-fibre cage of 400 +/- 20 mm diameter that survives 8 m/s wall/opponent collisions and a 1.5 m drop, and still fits through a 600 mm goal ring.",
+    "geometric_constraints": {
+      "cage_OD_mm": 400,
+      "cage_OD_tolerance_mm": 20,
+      "strut_OD_mm": 3,
+      "strut_wall_mm": 0.5,
+      "strut_count": 30,
+      "node_count": 12,
+      "node_OD_mm": 10,
+      "hub_OD_mm": 80,
+      "hub_thickness_mm": 20,
+      "spoke_count": 3,
+      "spoke_length_mm": 60,
+      "spoke_OD_mm": 2,
+      "spoke_wall_mm": 0.25,
+      "goal_ring_ID_mm": 600,
+      "goal_height_m": [
+        3.0,
+        3.5
+      ]
+    },
+    "material": {
+      "strut": {
+        "name": "pultruded CFRP",
+        "Ex_GPa": 130,
+        "density_kg_m3": 1500,
+        "tension_MPa": 1500,
+        "compression_MPa": 900
+      },
+      "node_hub": {
+        "name": "nylon 6-CF",
+        "E_GPa": 8.5,
+        "yield_MPa": 85,
+        "density_kg_m3": 1150
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "wall_collision",
+        "velocity_m_s": 8,
+        "target": "rigid wall"
+      },
+      {
+        "id": "LC2",
+        "name": "opponent_collision",
+        "closing_m_s": 8,
+        "target": "identical 900 g ball"
+      },
+      {
+        "id": "LC3",
+        "name": "forward_flight_drag",
+        "force_N": 1
+      },
+      {
+        "id": "LC4",
+        "name": "thrust_reaction",
+        "per_spoke_N": 5.87
+      },
+      {
+        "id": "LC5",
+        "name": "ground_drop",
+        "height_m": 1.5
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 44,
+      "report_fields": [
+        "cage_assy_mass_g",
+        "max_stress_per_material_per_case_MPa",
+        "buckling_factor_LC1",
+        "residual_cage_diameter_LC5_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_strut_stress",
+        "limit_MPa": 600,
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_node_stress",
+        "limit_MPa": 55,
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_spoke_stress",
+        "limit_MPa": 600,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "residual_diameter_change",
+        "limit_mm": 5,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "assembly_mass",
+        "limit_g": 250,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "outer_envelope_under_load",
+        "limit_mm": 420,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + solid mixed",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "LS-DYNA",
+        "Abaqus",
+        "ANSYS"
+      ],
+      "analysis_types": [
+        "explicit dynamic (LC1, LC2, LC5)",
+        "linear static (LC3, LC4)",
+        "linear buckling (LC1 peak)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not imposed.",
+      "thermal_analysis": "Indoor arena at 15 to 30 C.",
+      "fluid_analysis": "Forward-flight drag pre-computed.",
+      "radiation_analysis": "N/A."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fatigue of nylon-CF nodes over a season",
+      "Adhesive bond at strut-node joint"
+    ]
+  },
+  "eval_coverage": [
+    "geodesic truss layout",
+    "multi-case collision + drop",
+    "residual-strain pass gate",
+    "envelope-preservation after impact"
+  ]
+}

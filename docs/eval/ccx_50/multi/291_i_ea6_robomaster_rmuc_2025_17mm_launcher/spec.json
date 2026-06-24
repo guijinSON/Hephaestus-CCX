@@ -1,0 +1,694 @@
+{
+  "id": "291_i_ea6_robomaster_rmuc_2025_17mm_launcher",
+  "source": {
+    "catalog_ref": "I-EA6",
+    "year": 2025,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/291_i_ea6_robomaster_rmuc_2025_17mm_launcher.json",
+    "multipart_basis": "Decomposition inferred from a RoboMaster RMUC 2025 Standard Robot 17 mm flywheel launcher architecture (barrel + feeder + 2 drive motor mounts + gimbal yaw/pitch plates + breech + hopper + turret mounting plate). No rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "robotics_weapon_module_structural",
+  "part_class": "flywheel_launcher_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a 17 mm projectile launcher assembly for a RoboMaster RMUC 2025 Standard Robot as a multi-part bolted assembly rather than a single-body machined housing. The launcher uses two counter-rotating flywheels to fire 17 mm polycarbonate BBs (nominal projectile diameter 16.8 +/- 0.2 mm, nominal mass 3.2 g) at a muzzle velocity limited by RMUC 2025 Rules v1.1.0 to 30 m/s for the Standard class with a heat cap. The launcher is one sub-assembly within the robot's 17 mm turret; total chassis mass budget for the Standard class is 20 kg maximum. The launcher assembly envelope must fit within 150 mm (length, along bore axis) x 80 mm (width) x 80 mm (height). The assembly consists of: a 17.5 mm ID x 80 mm smooth-bore barrel tube; a feeder magazine housing presenting BBs single-file to the flywheels; two drive motor mounts for the 3508 brushless motors at 32 mm center spacing; a gimbal yaw plate and pitch plate carrying the launcher on the 2-axis gimbal; a breech block at the rear of the barrel feeding the BB into the flywheel gap; an ammo hopper above the feeder; and the 4-bolt (M4, 40 mm square) turret mounting plate. Housing parts are 6061-T6 aluminium (E 69 GPa, nu 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa). Flywheels are 2024-T3 aluminium (73.1 GPa, 0.33, 2780 kg/m^3, yield 345 MPa, UTS 483 MPa). Load cases: LC1 (Shot reaction) impulsive 1 kN bore-axis reaction over 5 ms at barrel root with turret interface fully fixed; LC2 (Flywheel spin) 10,000 rpm steady rotation of each 60 mm flywheel (~2.8 kN rim centrifugal); LC3 (Barrel heat soak) uniform 40 K rise across the barrel with housing bolts fixed; LC4 (Turret crash) 20 g lateral shock with turret bolts fixed. Pass/fail: (R1) housing max von Mises LC1 <= 184 MPa; (R2) flywheel LC2 <= 230 MPa; (R3) flywheel radial growth LC2 <= 0.15 mm; (R4) combined LC1+LC3 housing peak <= 200 MPa; (R5) housing LC4 <= 184 MPa; (R6) total assembly mass <= 600 g; (R7) barrel ID under LC3 in [17.0, 18.0] mm. Primary verification: linear static FEA for LC1, LC2, LC4; thermal-structural coupled for LC3 and combined LC1+LC3; centrifugal for LC2. Modal, CFD, radiation not required. Deliverables: STEP AP242 assembly + report (mass, von Mises per case, barrel ID change, radial growth).\n\n--- ASSEMBLY RECONFIGURATION ---\nThe launcher is decomposed into: (A) barrel tube 17.5 mm ID x 80 mm length (6061-T6 with bore finish); (B) feeder magazine housing presenting BBs single-file ahead of the flywheel gap; (C) two drive motor mounts bolted to the gimbal pitch plate at 32 mm center spacing carrying the 3508 motors; (D) gimbal yaw plate (turret yaw rotation interface); (E) gimbal pitch plate (launcher pitch interface); (F) breech block at the rear of the barrel feeding the BB from the feeder into the flywheel gap; (G) ammo hopper above the feeder (gravity-fed BB reservoir); (H) turret mounting plate with 4x M4 on 40 mm square pattern; (I) M3/M4 fastener set. Flywheels and motors are external and modelled as mass/inertia only. Interfaces: IF1 barrel threaded into breech block; IF2 feeder bolted to breech block; IF3 motor mounts bolted to pitch plate; IF4 pitch plate pinned to yaw plate (axis bearings); IF5 yaw plate bolted to turret mounting plate; IF6 hopper bolted to feeder. FEM verification runs on the ASSEMBLED multi-body model only \u2014 per-part stress is reported but does not gate pass/fail. Inter-part connection DCR must be <= 1.0 under the governing load case (LC1 combined with LC3). All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a 17 mm projectile launcher assembly for a RoboMaster RMUC 2025 Standard Robot as a multi-part bolted assembly. Two counter-rotating flywheels fire 17 mm polycarbonate BBs (diameter 16.8 +/- 0.2 mm, mass 3.2 g) at muzzle velocity limited by RMUC 2025 Rules v1.1.0 to 30 m/s Standard class with heat cap. Chassis mass budget 20 kg max.\n\nEnvelope: 150 mm (along bore) x 80 mm x 80 mm. Barrel 17.5 mm ID x 80 mm; 3508 motors at 32 mm center spacing; turret mount 4x M4 on 40 mm square. Housings: 6061-T6 (yield 276 MPa, UTS 310 MPa). Flywheels: 2024-T3 (yield 345 MPa, UTS 483 MPa).\n\nLoad cases: LC1 shot reaction 1 kN over 5 ms at barrel root; LC2 flywheel spin 10,000 rpm on 60 mm flywheels (approximately 2.8 kN rim centrifugal); LC3 barrel heat soak 40 K uniform rise; LC4 turret crash 20 g lateral.\n\nPass/fail: (R1) housing LC1 <= 184 MPa; (R2) flywheel LC2 <= 230 MPa; (R3) flywheel radial growth LC2 <= 0.15 mm; (R4) LC1+LC3 housing peak <= 200 MPa; (R5) housing LC4 <= 184 MPa; (R6) mass <= 600 g; (R7) barrel ID under LC3 in [17.0, 18.0] mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "RoboMaster RMUC 2025 17 mm flywheel launcher (multi-part bolted assembly)",
+    "brief": "17 mm flywheel launcher: 6061-T6 barrel tube + feeder magazine + 2 drive-motor mounts + gimbal yaw plate + pitch plate + breech block + ammo hopper + turret mounting plate, within 150 x 80 x 80 mm envelope. FEM verification at assembled level only; connection DCR <= 1.0 under governing LC1+LC3 combined case.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 150,
+        "W": 80,
+        "H": 80
+      },
+      "barrel_ID_mm": 17.5,
+      "barrel_length_mm": 80,
+      "flywheel_OD_mm": 60,
+      "flywheel_width_mm": 15,
+      "flywheel_center_spacing_mm": 32,
+      "turret_bolt_pattern": {
+        "count": 4,
+        "size": "M4",
+        "pattern_mm": 40
+      }
+    },
+    "material": {
+      "housing": {
+        "name": "6061-T6",
+        "youngs_modulus_GPa": 69,
+        "yield_MPa": 276,
+        "UTS_MPa": 310,
+        "density_kg_m3": 2700
+      },
+      "flywheel": {
+        "name": "2024-T3",
+        "youngs_modulus_GPa": 73.1,
+        "yield_MPa": 345,
+        "UTS_MPa": 483,
+        "density_kg_m3": 2780
+      }
+    },
+    "projectile": {
+      "diameter_mm": 16.8,
+      "mass_g": 3.2,
+      "muzzle_velocity_max_m_s": 30
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "shot_reaction",
+        "impulse_N": 1000,
+        "duration_ms": 5
+      },
+      {
+        "id": "LC2",
+        "name": "flywheel_spin",
+        "rpm": 10000
+      },
+      {
+        "id": "LC3",
+        "name": "barrel_heat_soak",
+        "delta_T_K": 40
+      },
+      {
+        "id": "LC4",
+        "name": "turret_crash",
+        "shock_g": 20
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "turret mounting plate fully fixed for LC1, LC3, LC4; flywheel axis pinned for LC2",
+      "loads": "bore-axis impulse, centrifugal on flywheel, uniform dT on barrel, or lateral shock"
+    },
+    "objective": {
+      "minimize": "assembly_mass_g"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "barrel_ID_change_LC3_mm",
+        "flywheel_radial_growth_LC2_mm",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "barrel_tube",
+        "role": "17.5 mm ID smooth-bore barrel tube guiding the BB out the muzzle",
+        "count_min": 1,
+        "geometric_constraints": {
+          "ID_mm": 17.5,
+          "length_mm": 80,
+          "wall_mm": 2
+        },
+        "material_hint": "6061-T6 tube, honed bore",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "feeder_magazine_housing",
+        "role": "presents BBs single-file from hopper to the flywheel gap",
+        "count_min": 1,
+        "geometric_constraints": {
+          "channel_ID_mm": 17.2,
+          "length_mm": 40
+        },
+        "material_hint": "6061-T6 machined",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "drive_motor_mount",
+        "role": "bolts M3508 brushless motor to pitch plate with bearing alignment (2x, 32 mm center spacing)",
+        "count_min": 2,
+        "geometric_constraints": {
+          "motor": "M3508",
+          "bolt_pattern": "4 x M3 PCD 25 mm",
+          "spacing_mm": 32
+        },
+        "material_hint": "6061-T6 machined",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "gimbal_yaw_plate",
+        "role": "yaw-axis gimbal plate carrying the pitch yoke",
+        "count_min": 1,
+        "geometric_constraints": {
+          "footprint_mm": "80 x 60 x 4"
+        },
+        "material_hint": "6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "gimbal_pitch_plate",
+        "role": "pitch-axis gimbal plate carrying the motor mounts, barrel, feeder, and breech",
+        "count_min": 1,
+        "geometric_constraints": {
+          "footprint_mm": "120 x 70 x 5"
+        },
+        "material_hint": "6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "breech_block",
+        "role": "rear of the barrel feeding the BB from the feeder into the flywheel gap, carries LC1 impulsive reaction",
+        "count_min": 1,
+        "geometric_constraints": {
+          "block_mm": "40 x 40 x 30"
+        },
+        "material_hint": "6061-T6 machined",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "ammo_hopper",
+        "role": "gravity-fed BB reservoir feeding the feeder (holds ~50 BB)",
+        "count_min": 1,
+        "geometric_constraints": {
+          "internal_vol_cc": 25
+        },
+        "material_hint": "ABS printed or thin 6061 sheet",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "turret_mounting_plate",
+        "role": "4x M4 mounting plate to turret yoke (40 mm square pattern)",
+        "count_min": 1,
+        "geometric_constraints": {
+          "footprint_mm": "50 x 50 x 4",
+          "bolt_pattern": "4 x M4 at 40 mm square"
+        },
+        "material_hint": "6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "I",
+        "name": "fastener_set",
+        "role": "M3/M4 bolts tying barrel-breech, feeder, motor mounts, pitch/yaw plates, and hopper",
+        "count_min": 24,
+        "geometric_constraints": {
+          "threads": [
+            "M3",
+            "M4"
+          ],
+          "grade": "A2-70"
+        },
+        "material_hint": "A2-70 stainless",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "150 x 80 x 80 mm along bore axis / width / height",
+      "coordinate_system": "+X bore axis (muzzle forward), +Z up (pitch), +Y right (yaw)"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_housing",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_flywheel",
+        "limit_MPa": 230,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "flywheel_radial_growth",
+        "limit_mm": 0.15,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "combined_max_von_mises",
+        "limit_MPa": 200,
+        "applies_to": [
+          "LC1+LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_housing",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 600,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "thermal_analysis",
+        "metric": "barrel_ID",
+        "lower_limit_mm": 17.0,
+        "upper_limit_mm": 18.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "range"
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces <= 1.0 under the governing load case (LC1 shot reaction combined with LC3 thermal soak).",
+        "metric": "max DCR across IF1..IF6",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[5].geometric_constraints",
+          "prompt.parts[6].count_min",
+          "prompt.parts[6].geometric_constraints",
+          "prompt.parts[7].count_min",
+          "prompt.parts[7].geometric_constraints",
+          "prompt.parts[8].count_min",
+          "prompt.parts[8].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 + axisymmetric for flywheel",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x3)",
+        "thermal-structural (LC3, LC1+LC3)",
+        "rotordynamic centrifugal (LC2)"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "threaded (M20 x 1.5 barrel thread into breech)",
+      "load_path": "LC1 bore-axis impulsive reaction from barrel into breech block"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "F"
+      ],
+      "mediated_by": "bolted (4x M3)",
+      "load_path": "BB-feed drag and feeder reaction into breech block"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C",
+        "E"
+      ],
+      "mediated_by": "bolted (4x M3 per mount)",
+      "load_path": "flywheel torque and centrifugal bearing reaction into pitch plate"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "D",
+        "E"
+      ],
+      "mediated_by": "pinned (pitch-axis bearings)",
+      "load_path": "pitch moments from launcher mass into yaw plate"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "D",
+        "H"
+      ],
+      "mediated_by": "bolted (4x M4 at 40 mm square)",
+      "load_path": "launcher inertial / LC4 crash load into turret yoke"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "B",
+        "G"
+      ],
+      "mediated_by": "bolted (2x M3)",
+      "load_path": "hopper mass into feeder housing"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. The LC1 impulsive bore-axis reaction crosses barrel-to-breech thread, feeder-to-breech bolts, and the gimbal pitch/yaw chain back to the turret mount; assembly-level DCR is required, per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A RoboMaster flywheel launcher of this class is built from a bolted assembly of barrel + breech + feeder + motor mounts + gimbal yaw/pitch plates + hopper rather than a single monolithic housing; the LC1 shot reaction and LC4 crash shock propagate through multiple bolted joints.",
+    "speculation_caveats": "Count of 2 motor mounts, inclusion of yaw/pitch plates and ammo hopper, and fastener sizing are programmatic speculation consistent with RMUC Standard-class launcher topology; projectile specs, loads, materials, and pass/fail thresholds inherit the original brief verbatim.",
+    "original_sample_preserved_at": "docs/eval/samples/291_i_ea6_robomaster_rmuc_2025_17mm_launcher.json"
+  },
+  "rulebook_citations": [],
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "R7",
+      "R_asm1"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[5].geometric_constraints",
+      "prompt.parts[6].count_min",
+      "prompt.parts[6].geometric_constraints",
+      "prompt.parts[7].count_min",
+      "prompt.parts[7].geometric_constraints",
+      "prompt.parts[8].count_min",
+      "prompt.parts[8].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "max_von_mises_housing",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC2",
+      "metric": "max_von_mises_flywheel",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC2",
+      "metric": "flywheel_radial_growth",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_THERMAL",
+      "solver": "calculix",
+      "analysis_card": "*HEAT TRANSFER",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC3"
+      ],
+      "deck_step": "generated_thermal_step",
+      "metric": "combined_max_von_mises",
+      "metric_source": "thermal temperature block",
+      "outputs": [
+        "model.dat: temperatures"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC4",
+      "metric": "max_von_mises_housing",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_005",
+      "requirement_id": "R6",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "mass",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R7_006",
+      "requirement_id": "R7",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "FEA_THERMAL",
+      "solver": "calculix",
+      "analysis_card": "*HEAT TRANSFER",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_thermal_step",
+      "metric": "barrel_ID",
+      "metric_source": "thermal temperature block",
+      "outputs": [
+        "model.dat: temperatures"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_007",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "FEA_THERMAL",
+      "solver": "calculix",
+      "analysis_card": "*HEAT TRANSFER",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_thermal_step",
+      "metric": "max DCR across IF1..IF6",
+      "metric_source": "thermal temperature block",
+      "outputs": [
+        "model.dat: temperatures"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_008",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[8]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

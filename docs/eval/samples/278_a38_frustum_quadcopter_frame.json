@@ -1,0 +1,187 @@
+{
+  "id": "278_a38_frustum_quadcopter_frame",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A38",
+    "year": 2017,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "quadcopter_frame",
+  "full_prompt": "Design a single-part monolithic quadcopter frame per the topology-optimization study 'Generate Quadcopter' open-CAD challenge (2017). Frame targets: total frame mass <= 90 g; support 4 BLDC motors symmetrically arranged on a 250 mm motor-to-motor diagonal; hold a 1000 mAh 3S Li-Po battery at a central location (battery mass 80 g, dimensions 73 x 34 x 16 mm); four ESCs mounted adjacent to motors; full-vehicle mass (frame + electronics + battery + propellers) 450 g; thrust-to-weight ratio T/W >= 2:1 so total thrust >= 9 N (approx 2.25 N per motor). Material: carbon-fiber-reinforced PA12 (nylon 12 with 40% short carbon fiber), 3D printed (MJF or SLS), E = 5 GPa, yield = 110 MPa, ultimate = 130 MPa, density = 1200 kg/m^3. Geometric constraints: motor mount pads 16 mm circle with 19 mm bolt-hole pattern (4x M3); central battery pocket 75 x 36 x 17 mm; overall frame bounding 280 mm x 280 mm x 25 mm. Load cases: (R1) Normal flight 1 g hover (forces balance, low stress): not binding but verified. (R2) 2 g pull-up: full 450 g x 2 g x 9.81 = 8.8 N distributed to four motor mounts = 2.2 N per mount upward; max von Mises in frame arm root <= yield / 2.0 = 55 MPa. (R3) Hard landing 10 g: 450 g x 10 g x 9.81 = 44 N at battery mount pushing down; max von Mises <= yield / 1.5 = 73 MPa. (R4) Crash impact: 50 N at one motor boom tip horizontally (prop strike); max von Mises <= ultimate / 1.5 = 87 MPa. (R5) Frame mass <= 90 g. (R6) First modal frequency cantilevered at battery mount / central hub >= 80 Hz (to avoid coupling with motor 1P frequency at approximately 40 Hz at 2400 RPM). Primary verification: structural FEA (linear static x3 cases) + modal. Vibration secondary via R6. Thermal, fluid, radiation, buckling NOT required. Deliverables: STEP AP242 + Parasolid, build orientation, and a report listing frame mass in g, max von Mises per case in MPa, first modal frequency in Hz.",
+  "short_prompt": "Design a single-part monolithic quadcopter frame per the topology-optimization study 'Generate Quadcopter' open-CAD challenge (2017). Frame is carbon-fiber-reinforced PA12 (40% short CF nylon 12), 3D printed (MJF or SLS). Supports 4 BLDC motors symmetrically on a 250 mm motor-to-motor diagonal; holds a 1000 mAh 3S Li-Po battery (80 g, 73 x 34 x 16 mm) in a central pocket; four ESCs sit next to the motors. Full-vehicle mass (frame + electronics + battery + propellers) 450 g. Thrust-to-weight >= 2:1 so total thrust >= 9 N (~2.25 N per motor).\n\nEnvelope: bounding 280 x 280 x 25 mm. Motor mount pads 16 mm circles with 19 mm 4 x M3 bolt pattern; battery pocket 75 x 36 x 17 mm.\n\nLoad cases.\n- LC1 1 g hover (balance check, not binding).\n- LC2 2 g pull-up: 8.8 N distributed across the 4 motor mounts (2.2 N per mount upward).\n- LC3 hard landing 10 g: 44 N at the battery mount pushing down.\n- LC4 crash impact: 50 N horizontal at one motor-boom tip (prop strike, ultimate case).\n- LC5 modal: cantilevered at the central hub / battery mount, first frequency >= 80 Hz (clear of ~40 Hz motor 1P at 2400 RPM).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "90 g mass cap is aggressive; Frustum challenge explicitly scored on generative design.",
+        "examples": [
+          "Frustum Generate",
+          "nTopology",
+          "Altair Inspire"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Frustum Generative Quadcopter frame",
+    "brief": "CF-PA12 monolithic frame <= 90 g, 250 mm diagonal, 450 g vehicle, T/W >= 2:1.",
+    "geometric_constraints": {
+      "motor_diagonal_mm": 250,
+      "motor_mount_bolt_count": 4,
+      "motor_mount_bolt_size": "M3",
+      "motor_mount_bolt_PCD_mm": 19,
+      "battery_pocket_mm": "75 x 36 x 17",
+      "frame_bounding_mm": "280 x 280 x 25",
+      "mass_g_max": 90,
+      "monolithic": true
+    },
+    "material": {
+      "name": "PA12 + 40% carbon fiber (MJF/SLS)",
+      "properties": {
+        "youngs_modulus_GPa": 5,
+        "yield_strength_MPa": 110,
+        "ultimate_tensile_strength_MPa": 130,
+        "density_kg_m3": 1200
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hover_1g",
+        "per_motor_force_N": 1.1
+      },
+      {
+        "id": "LC2",
+        "name": "pullup_2g",
+        "per_motor_force_N": 2.2
+      },
+      {
+        "id": "LC3",
+        "name": "hard_landing_10g",
+        "battery_force_N": 44
+      },
+      {
+        "id": "LC4",
+        "name": "prop_strike_tip",
+        "force_N": 50,
+        "direction": "horizontal at one motor"
+      },
+      {
+        "id": "LC5",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "central battery mount constrained for modal; motor-mount pads fixed for structural",
+      "loads": "per-motor or central battery"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 55,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 73,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 87,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 90,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 80,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Frustum Generate"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Frame is bending-dominated with short arms."
+    }
+  },
+  "eval_coverage": [
+    "generative design on a 90 g mass cap",
+    "motor 1P modal decoupling",
+    "prop-strike ultimate case"
+  ]
+}

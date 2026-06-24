@@ -1,0 +1,201 @@
+{
+  "id": "174_md8_asme_ishow",
+  "source": {
+    "catalog_ref": "MD8",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "medical_public_health",
+  "part_class": "milk_chilling_tank",
+  "full_prompt": "Design a smallholder electric milk-chilling tank for a medtech/public-health deployment, targeting a 100 L batch of freshly milked cow milk at 35 C that must be cooled to 4 C within 3 hours and held at 4 C +/- 1 C for up to 24 hours at a site ambient of 30 C. The tank is a cylindrical 304 stainless steel double-wall vessel with 100 L internal volume, internal dimensions diameter 450 mm x height 620 mm, 1.5 mm inner wall thickness, 50 mm polyurethane foam insulation between walls (thermal conductivity 0.024 W/m-K), a 1.0 mm outer skin, and a hermetic compressor-condenser unit of 500 W cooling capacity at 30 C ambient. The tank carries 100 kg of milk (density 1030 kg/m^3) plus self-weight and must also withstand a 50 kg operator-lean load on the lid. Pass/fail criteria per Grade A / WHO milk-chilling guideline: (R1) max von Mises stress in the 304 SS inner tank under full 100 L milk load plus 500 N lid load must not exceed 137 MPa (yield 205 / SF 1.5), (R2) transient thermal analysis must demonstrate cooling from 35 C to 4 C in at most 180 minutes at the center of the milk volume against 30 C ambient with the 500 W compressor (this is the governing process requirement), (R3) steady-state standby heat leak with compressor off must not exceed 20 W through the insulation so that the tank rises less than 1 C per hour when disconnected, (R4) compressor duty cycle to hold 4 C +/- 1 C over 24 h must not exceed 50% to ensure electrical budget at ~250 W average and 6 kWh/day, and (R5) the drip tray + lid hinge must survive a 1000-cycle fatigue test at 50 kg opening force with stress below 100 MPa. Thermal analysis is required for R2, R3, R4 (transient cooling, standby leak, and duty cycle). Vibration, fluid CFD, and radiation analyses are not required. Deliver a STEP AP242 assembly of the tank with inner + outer walls, insulation, lid, and compressor bay as sub-bodies plus a verification report listing structural stress, 35 C to 4 C cooling time, standby heat leak, compressor duty cycle, and hinge fatigue stress.",
+  "short_prompt": "Design a smallholder electric milk-chilling tank that cools a 100 L batch of fresh milk from 35 C to 4 C within 3 h and holds 4 C +/- 1 C for up to 24 h at 30 C site ambient. The tank is a cylindrical 304 stainless steel double-wall vessel (internal ~450 mm dia x 620 mm, 1.5 mm inner wall, 50 mm polyurethane foam insulation (k ~0.024 W/m-K), 1 mm outer skin), with a hermetic 500 W vapor-compression condenser unit.\n\nDesign to Grade A dairy / WHO milk-chilling guideline. External faces see natural convection at 30 C ambient; the evaporator extracts heat from inside the inner wall.\n\nLoad cases.\n- LC1 full milk + operator: 100 kg milk (density 1030 kg/m^3) plus a 500 N operator lean on the lid.\n- LC2 cooling transient: 35 C to 4 C against 30 C ambient with 500 W cooling.\n- LC3 standby leak: compressor off, 26 C delta across insulation.\n- LC4 24 h duty cycle: hold 4 C +/- 1 C within electrical budget.\n- LC5 hinge fatigue: 490 N per cycle, 1000 cycles on the drip-tray / lid hinge.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "vapor_compression_refrig_cycle",
+        "reason": "Compressor cooling capacity at 30 C ambient is read from manufacturer performance curves, not FEA.",
+        "examples": [
+          "Embraco/Danfoss performance curves",
+          "Coolpack cycle simulator"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Smallholder 100 L electric milk-chilling tank",
+    "brief": "Design a 100 L 304 SS double-wall milk chiller with 50 mm PU foam insulation and 500 W compressor that cools 35 C milk to 4 C in <= 180 min at 30 C ambient, with <= 20 W standby leak and <= 50% compressor duty cycle.",
+    "geometric_constraints": {
+      "internal_volume_L": 100,
+      "internal_dia_mm": 450,
+      "internal_height_mm": 620,
+      "inner_wall_thickness_mm": 1.5,
+      "insulation_thickness_mm": 50,
+      "outer_wall_thickness_mm": 1.0
+    },
+    "material": {
+      "inner_wall": "304 SS, yield 205 MPa, E 193 GPa",
+      "insulation": "PU foam, k 0.024 W/m-K",
+      "outer_wall": "304 SS or powder-coated steel"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "full_milk_plus_operator",
+        "milk_kg": 100,
+        "operator_lean_N": 500
+      },
+      {
+        "id": "LC2",
+        "name": "cooling_transient",
+        "initial_C": 35,
+        "target_C": 4,
+        "ambient_C": 30,
+        "target_time_min_max": 180,
+        "compressor_W": 500
+      },
+      {
+        "id": "LC3",
+        "name": "standby_leak",
+        "delta_T_C": 26,
+        "target_leak_W_max": 20
+      },
+      {
+        "id": "LC4",
+        "name": "duty_cycle_24h",
+        "setpoint_C": 4,
+        "tolerance_C": 1,
+        "target_duty_max_pct": 50
+      },
+      {
+        "id": "LC5",
+        "name": "hinge_fatigue",
+        "cycles": 1000,
+        "force_per_cycle_N": 490
+      }
+    ],
+    "boundary_conditions": {
+      "tank_exterior": "natural convection at 30 C ambient",
+      "compressor_evaporator": "inside inner wall, boundary heat extraction"
+    },
+    "objective": {
+      "primary": "pass cooling + hold + structural + hinge",
+      "secondary": "minimize electrical energy per 100 L batch"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "inner_tank_max_von_mises_MPa",
+        "cooling_time_35_to_4C_min",
+        "standby_heat_leak_W",
+        "compressor_duty_cycle_pct",
+        "hinge_fatigue_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "inner_tank_max_von_mises",
+        "limit_MPa": 137,
+        "derivation": "304 yield 205 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "thermal_analysis",
+        "metric": "cooling_time_35_to_4C",
+        "limit_min": 180,
+        "derivation": "Grade A dairy chilling requirement",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "standby_heat_leak",
+        "limit_W": 20,
+        "derivation": "<1 C/hour rise with compressor off",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "compressor_duty_cycle",
+        "limit_pct": 50,
+        "derivation": "electrical budget 6 kWh/day",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "hinge_fatigue_stress",
+        "limit_MPa": 100,
+        "derivation": "1000-cycle endurance for 304 SS weldment",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for tank walls, solid for hinge",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "SolidWorks Flow Simulation"
+      ],
+      "analysis_types": [
+        "linear static",
+        "transient thermal",
+        "steady-state thermal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Compressor vibration isolated by factory rubber mounts.",
+      "fluid_analysis": "Internal milk convection treated as effective thermal conductivity.",
+      "radiation_analysis": "Radiation fraction negligible at 30 C surface temp.",
+      "buckling_analysis": "Pressure-less open-vessel."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Cleaning-in-place (CIP) cycle validation",
+      "Refrigerant charge leak test per EN 378",
+      "Grade A dairy surface finish Ra <= 0.8 um"
+    ]
+  },
+  "eval_coverage": [
+    "transient cooling thermal pass/fail",
+    "standby heat leak steady-state thermal",
+    "compressor duty-cycle electrical budget",
+    "smallholder public-health deployability"
+  ]
+}

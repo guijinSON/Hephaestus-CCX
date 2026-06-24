@@ -1,0 +1,196 @@
+{
+  "id": "019_pt19_nspa_spare_mech_rfp",
+  "source": {
+    "catalog_ref": "PT19",
+    "year": 2024,
+    "tier": "B"
+  },
+  "domain": "defense_logistics",
+  "part_class": "cargo_tiedown_bracket",
+  "full_prompt": "Design a NATO 463L pallet-compatible cargo tie-down bracket per a representative NATO spare-mechanical-parts RFP, using AISI 4130 normalized steel, meeting MIL-HDBK-1791 air transportability and MIL-A-8625 ground-handling requirements, rated for 10,000 lbf (44.5 kN) working load with 3:1 SF on ultimate breaking load per NATO STANAG 4062 cargo restraint. Envelope: 100 x 70 x 35 mm. Interfaces: two through-holes on pallet side for 3/8-16 UNC grade 8 bolts on 60 mm spacing; a 20 mm oblong tie-off slot for standard MB-2 tie-down strap hook on accessory side. Material: AISI 4130 normalized (yield 460 MPa, UTS 670 MPa, E 205 GPa, density 7850 kg/m^3); plating: zinc-nickel per ASTM B841 (10 um minimum) or cadmium per AMS-QQ-P-416 Type II Class 2. Load cases per MIL-HDBK-1791 + STANAG 4062: LC1 working load 44,500 N along tie-down strap axis (pulled upward at 30 degrees from horizontal representing typical cargo net angle); LC2 ultimate test load 133,500 N (3x working, per STANAG 4062 breaking test); LC3 angled pull 30-45 degrees off nominal strap axis at 44,500 N; LC4 10 g crash load (MIL-STD-1791 restraint design) applied as 10 x cargo lumped mass. Pass/fail: (R1) max von Mises at working load LC1 <= 460 / 1.5 = 307 MPa (SF 1.5 on yield at working load per ground-handling practice); (R2) max von Mises at ultimate test LC2 <= UTS = 670 MPa (no fracture at 3x working, per STANAG 4062); (R3) bracket must not permanently deform (von Mises < yield) at any point under 1.5x working load 66,750 N (service-limit overload test); (R4) pallet-side bolt bearing stress <= 0.9 * yield = 414 MPa at LC1; (R5) edge distance from strap slot edge to tie-off face >= 2 * strap width / thickness ratio (design-guide edge rule, practically 15 mm minimum); (R6) mass <= 300 g. Deliverables: STEP AP242, NATO-compatible DI-CMAN-80008B drawing pack, material certification to ASTM A29/A29M, plating certification per ASTM B841 or AMS-QQ-P-416; FEA + hand-calculation report showing working-load, overload, and ultimate test case results.",
+  "short_prompt": "Design a NATO 463L pallet-compatible cargo tie-down bracket per a representative NATO spare-mechanical-parts RFP, using AISI 4130 normalized steel, meeting MIL-HDBK-1791 air transportability and MIL-A-8625 ground-handling requirements, rated for 10,000 lbf (44.5 kN) working load with 3:1 SF on ultimate breaking load per NATO STANAG 4062.\n\nEnvelope: 100 x 70 x 35 mm. Interfaces: two through-holes on pallet side for 3/8-16 UNC grade 8 bolts on 60 mm spacing; a 20 mm oblong tie-off slot for standard MB-2 tie-down strap hook.\n\nMaterial: AISI 4130 normalized; plating zinc-nickel per ASTM B841 (>= 10 um) or cadmium per AMS-QQ-P-416 Type II Class 2.\n\nLoad cases per MIL-HDBK-1791 + STANAG 4062.\n- LC1 working load 44,500 N along the tie-down strap axis (30 degrees from horizontal).\n- LC2 ultimate test 133,500 N (3x working, STANAG 4062 breaking test).\n- LC3 angled pull 30-45 degrees off nominal at 44,500 N.\n- LC4 10 g crash load (MIL-STD-1791 restraint design) on cargo lumped mass.\n\nPass criteria include no permanent deformation under 1.5x working load 66,750 N; bolt bearing <= 0.9 * yield at LC1; strap-slot edge distance >= 15 mm; mass <= 300 g.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "proof_load_test_procedure",
+        "reason": "STANAG 4062 breaking test is a physical test, not FEA.",
+        "examples": [
+          "tensile test rig per ASTM E8"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "NATO 463L-compatible 10,000 lbf cargo tie-down bracket (NATO spare-mechanical-parts RFP template)",
+    "brief": "Design a 100x70x35 mm 4130 tie-down bracket, 10,000 lbf working load with 3:1 SF per STANAG 4062.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 100,
+        "y": 70,
+        "z": 35
+      },
+      "pallet_bolts": {
+        "count": 2,
+        "thread": "3/8-16 UNC",
+        "grade": "8",
+        "spacing_mm": 60
+      },
+      "tie_slot_mm": 20,
+      "plating": "zinc-nickel ASTM B841 or cadmium AMS-QQ-P-416 Type II Class 2"
+    },
+    "material": {
+      "name": "AISI 4130 normalized",
+      "yield_MPa": 460,
+      "ultimate_MPa": 670,
+      "density_kg_m3": 7850
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "working_load",
+        "force_N": 44500,
+        "angle_deg": 30
+      },
+      {
+        "id": "LC2",
+        "name": "ultimate_test",
+        "force_N": 133500
+      },
+      {
+        "id": "LC3",
+        "name": "angled_45",
+        "force_N": 44500,
+        "angle_deg": 45
+      },
+      {
+        "id": "LC4",
+        "name": "crash_10g",
+        "accel_g": 10
+      }
+    ],
+    "boundary_conditions": {
+      "pallet_bolts": "fully fixed at 2 bolts",
+      "tie_slot": "strap load applied across slot"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "PDF_drawing_DI_CMAN_80008B"
+      ],
+      "report_fields": [
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "bolt_bearing_stress_MPa",
+        "mass_g",
+        "plating_spec"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_working",
+        "limit_MPa": 307,
+        "derivation": "yield / 1.5 = 460 / 1.5 (working-load SF)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_ultimate_test",
+        "limit_MPa": 670,
+        "derivation": "UTS (no fracture at 3x working per STANAG 4062)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_1.5x_working",
+        "limit_MPa": 460,
+        "derivation": "yield (no permanent deformation at 1.5x working)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<=",
+        "note": "LC1 magnitude multiplied by 1.5 in this check only."
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bolt_bearing_stress",
+        "limit_MPa": 414,
+        "derivation": "0.9 * yield = 0.9 * 460",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "slot_edge_distance",
+        "limit_mm": 15,
+        "derivation": "tie-down strap edge-distance rule",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 300,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "STANAG 4062 + MIL-HDBK-1791 + MIL-A-8625 + ASTM A29/A29M + ASTM B841 or AMS-QQ-P-416",
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static x4 cases"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static restraint test.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "STANAG 4062 cargo restraint 3:1 SF; representative 10,000 lbf working-load NATO 463L tie-down rating (typical)."
+  },
+  "eval_coverage": [
+    "NATO logistics tie-down design",
+    "dual working + ultimate load case",
+    "proof-load physical-test requirement",
+    "plating specification"
+  ]
+}

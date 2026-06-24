@@ -1,0 +1,188 @@
+{
+  "id": "080_kr5_kds_steel_connection",
+  "source": {
+    "catalog_ref": "KR5",
+    "year": 2024,
+    "tier": "A+"
+  },
+  "domain": "civil_structural",
+  "part_class": "steel_framed_building",
+  "full_prompt": "Design a small two-story bolted steel-framed building per KDS 41 and KDS 14 30 25. The building footprint is 6 m x 8 m with story height 3.5 m per floor (total 7.0 m). The frame consists of 4 columns and orthogonal beams at each floor. Column sections are H-200x200x8/12 (representative wide-flange per KS D 3503), beam sections H-400x200x8/13. The beam-to-column connections are bolted moment connections using M20 high-strength bolts, grade F10T (equivalent to ASTM A490, min tensile 1040 MPa, min yield 900 MPa), with bolts in double-nut configuration per KDS 14 30 25 requirements for slip-critical joints. Loads: dead load 5.0 kPa on floor slab, live load 2.5 kPa (residential per KDS 41), wind load 1.2 kPa (seismic zone 1 reference), snow load 0.5 kPa (urban reference, KDS 41 wind/snow map). Seismic load: design spectral acceleration SDS = 0.5 g, SD1 = 0.2 g (urban equivalent). Load combinations per KDS 41 chapter 5 (LRFD): 1.4D; 1.2D + 1.6L; 1.2D + 1.0L + 1.3W; 1.2D + 1.0L + 1.0E; the governing combo is 1.2D + 1.0L + 1.0E for lateral. Steel is SM355 (equivalent to ASTM A572 Gr 50, yield 355 MPa, ultimate 490 MPa). Pass/fail criteria per KDS 14 30 25: (1) no member stress may exceed the LRFD factored resistance (phi * Fy for tension, phi * nominal shear for connections, phi = 0.9 for tension, 0.75 for shear rupture at connections), (2) maximum inter-story drift under lateral seismic must not exceed H/200 = 17.5 mm, (3) bolt shear utilization at worst-case connection must not exceed 1.0 (demand/capacity per KDS 14 30 25 eqns), (4) floor deflection under 1.0D + 1.0L must not exceed L/360 = 22.2 mm at an 8 m beam. Primary verification is linear static structural FEA (beam elements for frame, full-solid or shell for the connection detail) plus an LRFD code check using KDS 14 30 25 formulas (non-FEA code calculation). Seismic response can be approximated by equivalent-lateral-force per KDS 41 chapter 6; full response-history analysis is optional. Vibration, thermal, fluid, and radiation analyses are explicitly NOT required at this design gate. Deliverables: STEP AP242 of the bare frame + one representative connection detail, a code-check spreadsheet, and a report listing max column stress utilization, max beam deflection in mm, max inter-story drift in mm, and bolt utilization at worst connection.",
+  "short_prompt": "Design a two-story bolted steel-framed building per KDS 41 and KDS 14 30 25. Footprint 6 x 8 m with 3.5 m story height (2 stories, total 7.0 m). Four columns in H-200x200x8/12 and orthogonal beams in H-400x200x8/13 (KS D 3503 wide-flange). Steel is SM355 (Fy = 355 MPa, Fu = 490 MPa). Beam-to-column connections are bolted moment connections using M20 F10T high-strength bolts (slip-critical, double-nut). Column bases fixed. LRFD checks per KDS 14 30 25 (phi = 0.9 tension, 0.75 shear rupture).\n\nCharacteristic loads: D = 5.0 kPa, L = 2.5 kPa (residential), W = 1.2 kPa, S = 0.5 kPa, seismic SDS = 0.5 g / SD1 = 0.2 g.\n\nLoad cases (KDS 41 LRFD combinations).\n- 1.4 D.\n- 1.2 D + 1.6 L.\n- 1.2 D + 1.0 L + 1.3 W.\n- 1.2 D + 1.0 L + 1.0 E (governing lateral).\nServiceability: L/360 beam deflection (22.2 mm at 8 m), H/200 inter-story drift (17.5 mm at 3.5 m story).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "lrfd_code_check",
+        "reason": "KDS 14 30 25 capacity formulas (phi*Fy etc.) are analytical closed-form checks next to the FEA output.",
+        "examples": [
+          "KDS spreadsheet",
+          "RAM Connection",
+          "IDEA StatiCa"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "KDS 41 + KDS 14 30 25 small steel framed building",
+    "brief": "Design a 6 x 8 m, 2-story bolted steel frame per KDS 41 + KDS 14 30 25 with representative SM355 sections and F10T bolts.",
+    "geometric_constraints": {
+      "footprint_m": {
+        "L": 8,
+        "W": 6
+      },
+      "story_height_m": 3.5,
+      "stories": 2,
+      "column_section": "H-200x200x8/12",
+      "beam_section": "H-400x200x8/13"
+    },
+    "material": {
+      "steel": "SM355 (KS D)",
+      "SM355_properties": {
+        "yield_MPa": 355,
+        "ultimate_MPa": 490,
+        "E_GPa": 205
+      },
+      "bolts": "F10T (HS), equivalent A490",
+      "F10T_properties": {
+        "yield_MPa": 900,
+        "ultimate_MPa": 1040
+      }
+    },
+    "load_cases": [
+      {
+        "id": "D",
+        "name": "dead_load_floor",
+        "magnitude_kPa": 5.0
+      },
+      {
+        "id": "L",
+        "name": "live_load_floor",
+        "magnitude_kPa": 2.5
+      },
+      {
+        "id": "W",
+        "name": "wind",
+        "magnitude_kPa": 1.2
+      },
+      {
+        "id": "S",
+        "name": "snow_roof",
+        "magnitude_kPa": 0.5
+      },
+      {
+        "id": "E",
+        "name": "seismic",
+        "SDS_g": 0.5,
+        "SD1_g": 0.2
+      }
+    ],
+    "boundary_conditions": {
+      "foundation": "column base fixed",
+      "load_combinations_LRFD": [
+        "1.4D",
+        "1.2D + 1.6L",
+        "1.2D + 1.0L + 1.3W",
+        "1.2D + 1.0L + 1.0E"
+      ]
+    },
+    "objective": {
+      "primary": "KDS_compliance"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "max_column_utilization",
+        "max_beam_deflection_mm",
+        "max_inter_story_drift_mm",
+        "bolt_utilization_worst_connection"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "column_LRFD_utilization",
+        "limit": 1.0,
+        "derivation": "KDS 14 30 25 tension/compression + bending interaction",
+        "applies_to": [
+          "1.2D+1.6L",
+          "1.2D+1.0L+1.0E"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "beam_deflection_mm",
+        "limit_mm": 22.2,
+        "derivation": "L/360 at L=8000",
+        "applies_to": [
+          "1.0D+1.0L"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "inter_story_drift_mm",
+        "limit_mm": 17.5,
+        "derivation": "H/200 at H=3500",
+        "applies_to": [
+          "1.2D+1.0L+1.0E"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bolt_shear_utilization",
+        "limit": 1.0,
+        "derivation": "KDS 14 30 25 bolt shear capacity with phi=0.75",
+        "applies_to": [
+          "1.2D+1.6L",
+          "1.2D+1.0L+1.0E"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (frame) + shell/solid (connection)",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "MIDAS Gen",
+        "SAP2000"
+      ],
+      "analysis_types": [
+        "linear static (gravity + lateral)",
+        "equivalent lateral force"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "ELF seismic substitutes full dynamic.",
+      "thermal_analysis": "Not in gate.",
+      "fluid_analysis": "Wind load reduced to pressure.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "KDS LRFD member check",
+    "drift ratio H/200",
+    "beam deflection L/360",
+    "bolted connection capacity"
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "id": "207_oc7_anu_cubesat",
+  "source": {
+    "catalog_ref": "OC7",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/207_oc7_anu_cubesat.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "cubesat_structural",
+  "part_class": "3u_cubesat_primary_structure_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary structure of a 3U CubeSat for a student flight-grade program as a multi-part bolted assembly, launching via a standard P-POD / ISIPOD-compliant deployer. The assembly consists of four long deployer rail frames (hard-anodized on exposed surface), six solar panel side plates (four body panels + a top optical plate + a bottom deployer-interface plate), internal bolted ribs / stack mounting ribs that carry payload stack shear, and the fastener / hardware set. Envelope must comply with Cal Poly CDS Rev 14.1: 100 mm x 100 mm x 340.5 mm maximum, with four deployer rails of 8.5 mm width on each corner, rail surface area minimum 75% hard-anodized aluminum, center of mass within +/- 2 cm of geometric center on each axis. Total wet mass must not exceed 4.0 kg. Material: primary chassis bus machined from Aluminum 7075-T6 (Young's modulus 71.7 GPa, Poisson 0.33, yield 503 MPa, ultimate 572 MPa, density 2810 kg/m^3). Load cases (flight-qualification): (LC1) quasi-static launch: 14 g simultaneous along each of the three body axes applied as inertia on wet mass; (LC2) random vibration: Cal Poly CDS 14.1 Grms qualification profile (frequency range 20-2000 Hz, ASD table from CDS), response must show first mode >= 100 Hz and stress margins at the rails; (LC3) sine vibration: 10-100 Hz, 2 g base sweep; (LC4) thermal gradient: -40 C to +85 C uniform swing representing orbit eclipse/insolation cycle, with a 30 C radial gradient from sun-side to shade-side panel. Pass/fail per NASA-STD-5001B metallic protoflight: yield FoS >= 1.25 and ultimate FoS >= 1.4 on the LC1 quasi-static load, i.e., max von Mises <= 503 / 1.25 = 402 MPa on yield gate and <= 572 / 1.4 = 409 MPa on ultimate. First natural frequency >= 100 Hz. Random-vib 3-sigma response stress <= 402 MPa. Thermal deformation of optical payload mounting plane <= 50 microns flatness across the full temperature range. Verification is performed on the assembled bolted model with representative fastener stiffness at every panel/rail interface; per-part stress is reported but does not gate pass/fail. Deliverables: STEP with all bodies, modal analysis (first 10 modes), quasi-static FEA, random-vib analysis with PSD response, thermal analysis with displacement contour, and structural mass + CM report.",
+  "short_prompt": "Design the primary structure of a 3U CubeSat for a student flight-grade program as a multi-part bolted assembly launching via a P-POD / ISIPOD-compliant deployer.\n\nEnvelope complies with Cal Poly CDS Rev 14.1: 100 mm x 100 mm x 340.5 mm maximum, four deployer rails of 8.5 mm width on each corner, >= 75% hard-anodized rail surface, CM within +/- 2 cm of geometric center. Total wet mass <= 4.0 kg. Chassis material Aluminum 7075-T6 (E 71.7 GPa, Poisson 0.33, yield 503 MPa, ultimate 572 MPa, density 2810 kg/m^3). Qualification per NASA-STD-5001B protoflight (yield FoS 1.25, ultimate FoS 1.4).\n\nLoad cases.\n- LC1 quasi-static launch: 14 g simultaneous along each of the three body axes on wet mass.\n- LC2 random vibration per CDS 14.1 Grms qualification profile, 20-2000 Hz ASD.\n- LC3 sine vibration: 10-100 Hz, 2 g base sweep.\n- LC4 thermal: -40 C to +85 C uniform swing with a 30 C radial gradient sun- to shade-side.\n\nFirst mode >= 100 Hz; optical mounting flatness <= 50 microns across range.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student 3U CubeSat primary structure (multi-part assembly)",
+    "brief": "3U CubeSat bus built as a bolted assembly of four corner rails, six panels (four sides + top optical + bottom deployer), internal payload-stack ribs, and fasteners; compliant with CDS Rev 14.1 and NASA-STD-5001B.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "corner_rail",
+        "role": "one of four deployer rails at the bus corners; carries P-POD rail contact load and guides ejection",
+        "count_min": 4,
+        "geometric_constraints": {
+          "rail_width_mm_min": 8.5,
+          "rail_length_mm": 340.5,
+          "anodized_pct_min": 75
+        },
+        "material_hint": "Aluminum 7075-T6 machined, hard anodized",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side_panel",
+        "role": "one of four body panels forming the ±X and ±Y bus faces, carrying solar cells and payload mount bosses",
+        "count_min": 4,
+        "geometric_constraints": {
+          "panel_bbox_mm": {
+            "x": 100,
+            "y": 340.5
+          }
+        },
+        "material_hint": "Aluminum 7075-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "top_optical_plate",
+        "role": "top-facing panel carrying the optical payload aperture and mounting interface",
+        "count_min": 1,
+        "geometric_constraints": {},
+        "material_hint": "Aluminum 7075-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "bottom_deployer_plate",
+        "role": "bottom-facing plate forming the deployer interface with pusher contact zone",
+        "count_min": 1,
+        "geometric_constraints": {},
+        "material_hint": "Aluminum 7075-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "internal_stack_rib",
+        "role": "internal bolted rib carrying payload PCB stack shear and tying side panels together",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "Aluminum 7075-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "fastener_set",
+        "role": "M3 stainless bolts + torque pads tying rails, panels, ribs into a rigid bolted box",
+        "count_min": 24,
+        "geometric_constraints": {},
+        "material_hint": "A2-70 or equivalent stainless",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "100 mm x 100 mm x 340.5 mm",
+      "coordinate_system": "+Z along long axis = deployer rail axis; origin at geometric center"
+    },
+    "material": {
+      "name": "Aluminum 7075-T6",
+      "youngs_modulus_GPa": 71.7,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2810,
+      "yield_strength_MPa": 503,
+      "ultimate_tensile_strength_MPa": 572
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static_14g",
+        "application": "simultaneous on all three body axes"
+      },
+      {
+        "id": "LC2",
+        "name": "random_vib_14_1Grms",
+        "profile": "Cal Poly CDS 14.1 Grms, 20-2000 Hz"
+      },
+      {
+        "id": "LC3",
+        "name": "sine_sweep",
+        "range_Hz": [
+          10,
+          100
+        ],
+        "amplitude_g": 2
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_cycle",
+        "temp_range_C": [
+          -40,
+          85
+        ],
+        "radial_gradient_C": 30
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "panels bolted to rails along full length at M3 pitch; internal ribs bolted to panels; fastener stiffness representative of M3 torque-controlled joint",
+      "support": "deployer rails constrained in P-POD idealization (frictional along rail, free in push direction)"
+    },
+    "objective": "minimize wet mass while meeting all pass/fail criteria",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "mass_kg",
+        "cm_offset_mm",
+        "max_von_mises_per_case_MPa",
+        "first_10_modes_Hz",
+        "psd_response_g2_per_Hz",
+        "thermal_flatness_microns",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 402,
+        "derivation": "7075-T6 yield 503 / 1.25 per NASA-STD-5001B protoflight",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 409,
+        "derivation": "7075-T6 ultimate 572 / 1.4",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 100,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "random_vib_3sigma_stress",
+        "limit_MPa": 402,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "optical_bench_flatness_over_full_cycle",
+        "limit_microns": 50,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "wet_mass",
+        "limit_kg": 4.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "panel shear into rail along full length"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "top optical plate into rail ends"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "bottom deployer plate into rail ends"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "panel tie into internal payload-stack rib"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "fastener clamp force establishing bus rigidity"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "CDS Rev 14.1 CubeSat buses are bolted boxes of corner rails, side panels, top + bottom end plates, and internal ribs; flight hardware is never fabricated as a single monolithic piece.",
+    "speculation_caveats": "Rail/panel/rib counts, fastener types, and interface stiffness are speculative; materials and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "docs/eval/samples/207_oc7_anu_cubesat.json"
+  }
+}

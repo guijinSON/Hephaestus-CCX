@@ -1,0 +1,162 @@
+{
+  "id": "216_af4_sserd_cubesat_africa",
+  "source": {
+    "catalog_ref": "AF4",
+    "year": 2026,
+    "tier": "C"
+  },
+  "domain": "cubesat_structural",
+  "part_class": "1u_cubesat_primary_structure",
+  "full_prompt": "Design the 1U CubeSat primary structural bus for an African-regional student CubeSat benchmark, launching via a standard P-POD-compliant dispenser. Envelope must comply with CDS Rev 14.1: 100.0 mm +/- 0.1 mm x 100.0 mm +/- 0.1 mm x 113.5 mm +/- 0.1 mm maximum, with four deployer rails of 8.5 mm minimum width at each corner, a minimum 75% anodized rail surface, and center of mass within +/- 2 cm of geometric center on each axis. Total wet mass must not exceed 2.0 kg. Material: Aluminum 6061-T6 (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3). Payload slot must expose a top aperture of at least 60 x 60 mm for a camera sensor and supply four M3 mounting bosses on an 80 x 80 mm bolt pattern. Load cases: (LC1) quasi-static launch: 14 g applied simultaneously on each of the three body axes on the wet 2.0 kg mass; (LC2) random vibration per CDS 14.1 Grms qualification profile (20-2000 Hz ASD table), response captured over 2 minutes per axis; (LC3) sine sweep: 10-100 Hz at 2 g base sweep, one octave per minute; (LC4) thermal cycling: -40 C to +85 C, 10 cycles, as a uniform swing with a 15 C internal electronics delta. Pass/fail per NASA-STD-5001B protoflight: max von Mises <= 276 / 1.25 = 220 MPa on yield and 310 / 1.4 = 221 MPa on ultimate under LC1; first natural frequency >= 100 Hz; random-vib 3-sigma response stress <= 220 MPa; thermal-deformation-induced CM shift <= 2 mm on any axis. Deliverables: STEP, modal (first 10 modes), FEA per case, random-vib PSD response report, thermal displacement contour, and mass/CM report.",
+  "short_prompt": "Design the 1U CubeSat primary structural bus for an African-regional student flight, launching in a standard P-POD. Material class: 6061-T6 aluminum. Qualify per Cal Poly CubeSat Design Specification (CDS) Rev 14.1 and NASA-STD-5001B metallic protoflight, with yield FoS 1.25 and ultimate FoS 1.4.\n\nEnvelope: 100 +/- 0.1 mm x 100 +/- 0.1 mm x 113.5 +/- 0.1 mm per CDS 14.1, four 8.5 mm corner rails, wet mass <= 2.0 kg, CoM within +/- 2 cm on each axis, payload slot with >= 60 x 60 mm top aperture on an 80 x 80 mm M3 bolt pattern.\n\nLoad cases.\n- LC1 quasi-static launch: 14 g simultaneous on all three body axes, 2.0 kg wet mass.\n- LC2 random vibration: CDS 14.1 Grms qualification profile, 20-2000 Hz, 2 min per axis.\n- LC3 sine sweep: 10-100 Hz at 2 g base, one octave per minute.\n- LC4 thermal cycling: -40 C to +85 C uniform swing, 10 cycles, 15 C internal delta.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "African-regional 1U CubeSat primary structure",
+    "brief": "1U CubeSat bus compliant with CDS 14.1 and NASA-STD-5001B.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 100.0,
+        "y": 100.0,
+        "z": 113.5
+      },
+      "rail_width_mm_min": 8.5,
+      "anodized_rail_pct_min": 75,
+      "cm_offset_cm_max": 2.0,
+      "total_wet_mass_kg_max": 2.0,
+      "payload_aperture_mm_min": 60,
+      "bolt_pattern_mm": 80
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "youngs_modulus_GPa": 68.9,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2700,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static_14g",
+        "application": "simultaneous on all axes"
+      },
+      {
+        "id": "LC2",
+        "name": "random_vib_14_1Grms",
+        "profile": "CDS 14.1 Grms qualification"
+      },
+      {
+        "id": "LC3",
+        "name": "sine_sweep",
+        "range_Hz": [
+          10,
+          100
+        ],
+        "amplitude_g": 2
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_cycle",
+        "temp_range_C": [
+          -40,
+          85
+        ],
+        "cycles": 10
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "mass_kg",
+        "cm_offset_mm",
+        "max_von_mises_per_case_MPa",
+        "first_10_modes_Hz",
+        "thermal_cm_shift_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 220,
+        "derivation": "6061-T6 yield 276 / 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 221,
+        "derivation": "6061-T6 ultimate 310 / 1.4",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 100,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "random_vib_3sigma_stress",
+        "limit_MPa": 220,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "thermal_analysis",
+        "metric": "thermal_cm_shift",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "wet_mass",
+        "limit_kg": 2.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

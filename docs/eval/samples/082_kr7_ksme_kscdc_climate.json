@@ -1,0 +1,162 @@
+{
+  "id": "082_kr7_ksme_kscdc_climate",
+  "source": {
+    "catalog_ref": "KR7",
+    "year": 2025,
+    "tier": "B"
+  },
+  "domain": "renewable_structural",
+  "part_class": "vertical_axis_wind_turbine_rotor",
+  "full_prompt": "Design a small vertical-axis wind turbine (VAWT) rotor for a 2025 climate-change-themed student mechanical-design benchmark. The rotor has a rated power of 500 W at a design wind speed of 10 m/s. Rotor height is 2.0 m; rotor diameter is 1.2 m; three Darrieus-type curved blades (or three Savonius-Darrieus hybrid buckets) are connected to a central shaft through top and bottom spider arms. The structure must survive a survival wind speed of 45 m/s (representing a typhoon-equivalent extreme load per the governing wind maps for coastal regions). At rated 10 m/s: tip-speed ratio TSR = 3, so rotor omega = 2 * TSR * V / D = 50 rad/s = 477 rpm. Centrifugal load at blade mid-span (r = 0.6 m) at this omega is 1500 g, resulting in approximately 150 N/m span radial body force on a 5 kg blade. At survival 45 m/s with rotor parked (brake engaged), the blade experiences a distributed aerodynamic pressure of approximately 1.2 kPa (drag-dominated) over the blade chord. Primary structural pass/fail: (1) maximum blade root stress under combined centrifugal + aerodynamic loading at rated condition must not exceed 0.5 x blade material yield (SF 2 due to repeated operation + fatigue), (2) maximum blade deflection at tip at rated condition must not exceed chord/50, (3) tower/shaft stress at the 45 m/s survival case must remain below 0.67 x yield (SF 1.5), (4) first rotor modal frequency must be well separated from 1P (blade passage) and 3P excitation; 3P at rated is 3 * 477/60 = 23.85 Hz, so the first tower/shaft mode must either be <= 18 Hz or >= 30 Hz (soft-stiff mount). Material: CFRP skin on foam core blades, Al 6061-T6 spider arms, A36 steel shaft. Primary verification is structural FEA (linear static for rated + survival) plus modal analysis for frequency-separation check. Vibration modal is a primary gate. Thermal, fluid (sectional aero already reduced to pressure loads), and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the rotor + shaft, a mass budget, and a report listing rotor mass in kg, max blade root stress in MPa, tip deflection in mm, survival shaft stress in MPa, and first modal frequency in Hz.",
+  "short_prompt": "Design a 500 W three-blade Darrieus vertical-axis wind turbine rotor (CFRP blades on foam core, Al 6061 spider arms, A36 steel shaft) for a climate-themed collegiate mechanical-design benchmark, feeding a grid-tied generator. Design for a rated wind of 10 m/s (TSR 3, 477 rpm, 1P = 7.95 Hz, 3P = 23.85 Hz) and a 45 m/s survival wind representing a typhoon event per the governing coastal wind map, with modal separation from 3P excitation.\n\nEnvelope: rotor 1.2 m diameter x 2.0 m height on a central shaft with top + bottom spider arms.\n\nLoad cases.\n- LC1 rated operation: centrifugal at 477 rpm (~150 N/m radial body force on a 5 kg blade at mid-span) combined with aero loads at 10 m/s.\n- LC2 survival parked: rotor braked, blade drag pressure of ~1.2 kPa at 45 m/s applied to the blade chord.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "aerodynamic_load_reduction",
+        "reason": "Blade Element Momentum (BEM) theory reduces aero to distributed pressure loads; not FEA.",
+        "examples": [
+          "QBlade",
+          "custom BEM"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "500 W vertical-axis wind turbine rotor (climate-theme student design)",
+    "brief": "Design a 500 W, 1.2 m diameter, 2 m height three-blade Darrieus VAWT that survives 45 m/s typhoon wind; first mode off 3P excitation 23.85 Hz.",
+    "geometric_constraints": {
+      "rotor_diameter_m": 1.2,
+      "rotor_height_m": 2.0,
+      "blade_count": 3,
+      "rated_wind_m_s": 10,
+      "survival_wind_m_s": 45,
+      "rated_rpm": 477,
+      "3P_Hz": 23.85
+    },
+    "material": {
+      "blade": "CFRP skin on foam core",
+      "spider_arm": "Al 6061-T6",
+      "shaft": "A36 steel",
+      "A36_properties": {
+        "yield_MPa": 250
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "rated_operation",
+        "description": "centrifugal + aero at 10 m/s, 477 rpm"
+      },
+      {
+        "id": "LC2",
+        "name": "survival_parked",
+        "description": "45 m/s drag on parked rotor"
+      }
+    ],
+    "boundary_conditions": {
+      "shaft_base": "fixed in bearings"
+    },
+    "objective": {
+      "minimize": "rotor_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "rotor_mass_kg",
+        "max_blade_root_stress_MPa",
+        "tip_deflection_mm",
+        "survival_shaft_stress_MPa",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_blade_root_stress_MPa",
+        "limit_fraction_of_yield": 0.5,
+        "derivation": "SF 2 for fatigue-prone blade root",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tip_deflection_mm",
+        "limit_ratio_of_chord": 0.02,
+        "derivation": "chord/50",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "survival_shaft_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 at survival",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency_Hz_exclusion_band",
+        "excluded_band_Hz": [
+          18,
+          30
+        ],
+        "limit_lower_Hz": 18,
+        "limit_upper_Hz": 30,
+        "derivation": "Separation from 3P=23.85 Hz",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "outside"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (blade) + beam (arm/shaft)",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static x2",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Not in gate.",
+      "fluid_analysis": "Aero reduced via BEM.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "rotor centrifugal + aero combined",
+    "survival 45 m/s extreme",
+    "3P frequency-separation band",
+    "fatigue-motivated SF 2"
+  ]
+}

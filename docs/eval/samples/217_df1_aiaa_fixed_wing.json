@@ -1,0 +1,153 @@
+{
+  "id": "217_df1_aiaa_fixed_wing",
+  "source": {
+    "catalog_ref": "DF1",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "military_aircraft_structural",
+  "part_class": "fighter_wing_spar_section",
+  "full_prompt": "Design a 1-meter span test section of the primary main wing spar of a next-generation carrier strike fighter airframe benchmark, sized to meet MIL-HDBK-516C Part V airframe structural criteria and FAR Part 25 where applicable. Mission profile: combat radius 550 nmi, internal payload 4000 lb (two 2000 lb class weapons), approach speed <= 140 knots at full-flap configuration for carrier landing, sustained maneuver 7.5 g at Mach 0.9 / 15000 ft, catapult launch end speed 160 knots (tow load applied at the nose gear), and arrested-hook tailhook deceleration equivalent to 3 g forward over 2 seconds. Basic aircraft MTOW 45000 lb, wing reference area 500 ft^2, aspect ratio 3.5, half-span 20 ft. Spar material: Ti-6Al-4V (Young's modulus 113.8 GPa, Poisson 0.342, yield 860 MPa, ultimate 950 MPa, density 4430 kg/m^3) machined channel with thickness-tapered flanges. The 1 m test section is taken from the 60% to 70% semi-span range where bending moment under the design maneuver is 620 kN-m and shear 95 kN. Load cases: (LC1) maneuver ultimate: design limit 7.5 g x ultimate FoS 1.5 = 11.25 g on the local section inertial + aero distributed load, applied as a bending moment of 930 kN-m and shear 143 kN at the inboard cut plane; (LC2) negative g maneuver: -3.0 g x 1.5 = -4.5 g; (LC3) arrested landing: 3 g forward over 2 s adds a torsional component equivalent to 45 kN-m at the spar; (LC4) catapult launch: 160 knot end-speed tow shock imposes 4 g longitudinal on the spar pickup bracket equivalent to 60 kN axial; (LC5) fatigue: 10,000 flight cycles at mission spectrum 0.5-1.0-0.5 g-load LEF. Pass/fail per FAR 25.303 + MIL-HDBK-516: (R1) ultimate strength: max von Mises across LC1-LC4 <= 633 MPa (ultimate 950 / 1.5), (R2) yield: LC1-LC4 limit loads (LC/1.5) do not produce permanent set; yield load equivalents keep stress <= 748 MPa (yield 860 / 1.15), (R3) max deflection at spar tip of the 1 m test section under LC1 <= 15 mm, (R4) fatigue: alternating stress at bolt holes under LC5 below 160 MPa (Ti-6Al-4V Kt = 3 notched endurance at 10^4 cycles), (R5) local panel buckling linear eigenvalue under LC1 compression flange >= 1.5. Deliverables: STEP AP242, load envelope table, FEA per case, buckling eigenvalue, fatigue summary, and mass per meter.",
+  "short_prompt": "Design a 1 m span test section of the primary main wing spar of a next-generation carrier strike fighter airframe, taken from the 60-70% semi-span range of a wing with half-span 20 ft, wing area 500 ft^2, aspect ratio 3.5, MTOW 45,000 lb. Material class: Ti-6Al-4V machined channel with thickness-tapered flanges. Qualify to FAR Part 25 + MIL-HDBK-516C Part V airframe criteria, with ultimate FoS 1.5 on limit loads (FAR 25.303).\n\nLoad cases (spar section inboard cut plane values).\n- LC1 ultimate maneuver: bending moment 930 kN-m + shear 143 kN (7.5 g limit x 1.5 FoS).\n- LC2 negative maneuver: -4.5 g (-3.0 g x 1.5).\n- LC3 arrested landing: 45 kN-m torsion (3 g forward over 2 s).\n- LC4 catapult launch: 60 kN axial at the spar pickup bracket (4 g longitudinal, 160 kt tow shock).\n- LC5 fatigue: 10,000 flight cycles at mission LEF spectrum (0.5-1.0-0.5 g).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Carrier strike fighter wing spar section",
+    "brief": "1 m section of main wing spar for a carrier strike fighter airframe.",
+    "geometric_constraints": {
+      "section_length_m": 1.0,
+      "semi_span_ft": 20,
+      "section_at_semi_span_pct": [
+        60,
+        70
+      ],
+      "wing_area_ft2": 500,
+      "aspect_ratio": 3.5
+    },
+    "material": {
+      "name": "Ti-6Al-4V",
+      "youngs_modulus_GPa": 113.8,
+      "poissons_ratio": 0.342,
+      "density_kg_m3": 4430,
+      "yield_strength_MPa": 860,
+      "ultimate_tensile_strength_MPa": 950
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "ultimate_7_5g",
+        "moment_kNm": 930,
+        "shear_kN": 143
+      },
+      {
+        "id": "LC2",
+        "name": "negative_maneuver",
+        "factor_g": -4.5
+      },
+      {
+        "id": "LC3",
+        "name": "arrested_landing",
+        "torsion_kNm": 45
+      },
+      {
+        "id": "LC4",
+        "name": "catapult_launch",
+        "F_kN_axial": 60
+      },
+      {
+        "id": "LC5",
+        "name": "fatigue_1e4",
+        "spectrum": "mission LEF 0.5-1.0-0.5 g"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "mass_kg_per_m",
+        "max_von_mises_per_case_MPa",
+        "tip_deflection_mm",
+        "alt_stress_at_bolthole_MPa",
+        "buckling_eigenvalue"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 633,
+        "derivation": "ultimate 950 / 1.5 FAR 25.303",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit",
+        "limit_MPa": 748,
+        "derivation": "yield 860 / 1.15",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "spar_tip_deflection",
+        "limit_mm": 15,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "alt_stress_at_bolt_hole",
+        "limit_MPa": 160,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "compression_flange_buckling_eigenvalue",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

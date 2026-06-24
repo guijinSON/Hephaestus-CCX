@@ -1,0 +1,183 @@
+{
+  "id": "231_df15_afrl_university_challenge",
+  "source": {
+    "catalog_ref": "DF15",
+    "year": 2026,
+    "tier": "C"
+  },
+  "domain": "af_subsystem_structural",
+  "part_class": "uav_wing_payload_pylon",
+  "full_prompt": "Design a wing-mounted payload pylon for a Group 3 tactical UAS (MTOW 320 kg, cruise Mach 0.25 at 10,000 ft), sized to Air Force university-design-challenge-style requirements inherited from MIL-HDBK-516C Part V airframe structural criteria and MIL-STD-810H mechanical environmental tests. The pylon carries a 30 kg external payload (sensor pod) suspended 0.4 m below the wing lower skin, with mounting to the wing via three 3/8-inch Hi-Lok fasteners at a 120 mm x 80 mm pattern into a reinforced wing-rib lug. Pylon material: Aluminum 7075-T6 (Young's modulus 71.7 GPa, Poisson 0.33, yield 503 MPa, ultimate 572 MPa, density 2810 kg/m^3). Pylon envelope 300 mm length x 120 mm chord x 0.4 m depth. Load cases per MIL-HDBK-516C: (LC1) 1 g static + 7 g pull-up maneuver limit = 8 g = 240 N per kg = 7.2 kN per 30 kg payload vertical at pin; (LC2) ultimate: 1.5 x LC1 = 10.8 kN; (LC3) 4 g side maneuver lateral = 1.2 kN at CG 0.4 m below wing; (LC4) air-to-ground bomb separation kick: 500 N vertical release impulse for 100 ms; (LC5) vibration qualification per MIL-STD-810H Method 514.8 Category 4 (Propeller Aircraft) - overall 2.0 Grms, 5-2000 Hz, 1 hr per axis; (LC6) temperature: -40 C to +85 C operational, -55 C to +71 C storage; (LC7) fatigue: 10^5 cycles of 0-7.2 kN pin load representing 500 mission-hour service life. Pass/fail: (R1) max von Mises <= 335 MPa (503 / 1.5 yield) under LC1-LC4; (R2) ultimate LC2 <= 382 MPa (572 / 1.5 ultimate); (R3) random-vib 3-sigma stress under LC5 <= 335 MPa; (R4) fatigue alternating stress at fastener hole <= 150 MPa (7075-T6 notched Kt=3 endurance at 10^5); (R5) pylon mass <= 2.5 kg; (R6) first pylon + payload pitching mode above 20 Hz to avoid flutter coupling. Deliverables: STEP, FEA per case, random-vib and fatigue summaries, modal, and mass report.",
+  "short_prompt": "Design a wing-mounted payload pylon for a Group 3 tactical UAS (MTOW 320 kg, cruise Mach 0.25 at 10,000 ft), carrying a 30 kg sensor pod suspended 0.4 m below the wing lower skin via three 3/8-inch Hi-Lok fasteners into a reinforced wing-rib lug on a 120 x 80 mm pattern. Material class: 7075-T6 aluminum. Qualify per MIL-HDBK-516C Part V airframe criteria and MIL-STD-810H mechanical environmental tests (Method 514.8 Category 4 propeller aircraft vibration).\n\nEnvelope: pylon on the order of 300 mm length x 120 mm chord x 0.4 m depth; pylon mass <= 2.5 kg.\n\nLoad cases.\n- LC1 8 g limit pull-up (1 g + 7 g): 7.2 kN vertical at the pin.\n- LC2 ultimate 1.5 x LC1: 10.8 kN.\n- LC3 4 g side: 1.2 kN lateral at the CG 0.4 m below the wing.\n- LC4 separation kick: 500 N vertical for 100 ms on release.\n- LC5 random vibration: MIL-STD-810H M514.8 Cat 4 at 2.0 Grms, 5-2000 Hz, 1 hr per axis.\n- LC6 thermal: -40 to +85 C operational, -55 to +71 C storage.\n- LC7 fatigue: 1e5 cycles of 0-7.2 kN pin load (500 mission-hour life).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Group-3 tactical UAS payload pylon",
+    "brief": "7075-T6 Al pylon for 30 kg sensor pod under 8 g limit + MIL-STD-810H vibration qual.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 300,
+        "C": 120,
+        "D": 400
+      },
+      "fastener_pattern_mm": [
+        120,
+        80
+      ],
+      "fastener_count": 3,
+      "fastener_type": "3/8 Hi-Lok"
+    },
+    "material": {
+      "name": "Aluminum 7075-T6",
+      "youngs_modulus_GPa": 71.7,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2810,
+      "yield_strength_MPa": 503,
+      "ultimate_tensile_strength_MPa": 572
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pull_up_8g_limit",
+        "F_N": 7200
+      },
+      {
+        "id": "LC2",
+        "name": "ultimate_1_5x_LC1",
+        "F_N": 10800
+      },
+      {
+        "id": "LC3",
+        "name": "4g_side",
+        "F_N_lateral": 1200
+      },
+      {
+        "id": "LC4",
+        "name": "separation_kick",
+        "F_N": 500,
+        "duration_ms": 100
+      },
+      {
+        "id": "LC5",
+        "name": "random_vib_MIL_STD_810H_M514_8_Cat4",
+        "Grms": 2.0
+      },
+      {
+        "id": "LC6",
+        "name": "thermal",
+        "op_C": [
+          -40,
+          85
+        ],
+        "storage_C": [
+          -55,
+          71
+        ]
+      },
+      {
+        "id": "LC7",
+        "name": "fatigue_1e5",
+        "range_N": [
+          0,
+          7200
+        ]
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "pylon_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "rms_stress_MPa",
+        "hole_alt_stress_MPa",
+        "first_pitching_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit",
+        "limit_MPa": 335,
+        "derivation": "7075-T6 yield 503 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_ultimate",
+        "limit_MPa": 382,
+        "derivation": "7075-T6 ultimate 572 / 1.5",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "random_vib_3sigma_stress",
+        "limit_MPa": 335,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "hole_alt_stress",
+        "limit_MPa": 150,
+        "applies_to": [
+          "LC7"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "pylon_mass",
+        "limit_kg": 2.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_pitching_mode",
+        "limit_Hz": 20,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "Air Force university-design-challenge problem statement is not public; numerics grounded in MIL-HDBK-516C + MIL-STD-810H defaults."
+  }
+}

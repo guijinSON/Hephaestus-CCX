@@ -1,0 +1,228 @@
+{
+  "id": "350_i_eu13_igvc_2026_frame",
+  "source": {
+    "catalog_ref": "I-EU13 (IGVC 2026, Latin America + Canada + Nordic + ESA subsection)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "ground_vehicle_structural",
+  "part_class": "autonomous_ground_vehicle_frame",
+  "full_prompt": "Design the primary chassis frame of an IGVC 2026 autonomous ground vehicle per IGVC 2026 Rules. The vehicle must be between 3 and 7 ft long, 2 and 4 ft wide, 3 and 7 ft tall, with ground clearance at least 3 inches, mechanical top speed limited to 5 mph (2.24 m/s) governed, a 20 lb (9.07 kg) payload basket centered in the vehicle, a mandatory mechanical push-button E-stop on the rear between 2 and 4 ft above ground, and a wireless E-stop with minimum 100 ft range. The vehicle rolls on four wheels (differential-drive skid-steer with free castors OR 4-wheel drive) with unsprung wheel masses approximately 3 kg each and a drivetrain comprising two 24 V DC gearmotors (4 kg each) mounted to the frame. Total vehicle dry mass target 70 kg including sensors (2D LiDAR, RGB camera, GPS, IMU), compute (NVIDIA Jetson + automotive 12 V DC-DC), and a 24 V 30 Ah SLA battery pack (22 kg). Frame material: AISI 1018 CR square steel tube 25.4 mm x 25.4 mm x 2 mm wall (E 200 GPa, yield 370 MPa, ultimate 440 MPa, density 7850 kg/m^3), TIG-welded. Frame footprint 900 mm x 600 mm x 600 mm tall. Load cases: (LC1) static 1 g: full 70 kg + 9.07 kg payload reacted through 4 wheel axles (vertical); (LC2) 2 g curb drop: 2 g vertical peak on 70 kg + 9.07 kg payload (IGVC vehicles routinely hop curb edges during outdoor navigation); (LC3) 1 g lateral side-slope: 1 g vertical + 1 g lateral applied at CoM while traversing 15 degree grass slope (IGVC course has slope); (LC4) 0.5 g braking at 5 mph: 0.5 g longitudinal decel + 1 g vertical; (LC5) point-load payload abuse: 500 N vertical point load concentrated at center of payload-basket floor (scrutineer test); (LC6) E-stop impact: 100 N concentrated horizontal load applied at the rear mechanical E-stop button at 1 m above ground (inspector pushes hard); (LC7) tow-point pull: 1 kN applied horizontally at a designated tow point on the front of the frame (IGVC organizers may tow a stuck vehicle off the course). Pass/fail: (R1) max von Mises stress in the frame under LC1-LC5 must remain below 247 MPa (370 / 1.5 yield FoS, stated explicitly in IGVC 2026 Rules Section IX-D-4 deliverable); (R2) under LC6 and LC7, local stress must remain below yield 370 MPa, no permanent deformation; (R3) frame dry mass (tubing only, no wheels/motors/battery) must not exceed 18 kg; (R4) first frame natural frequency must exceed 30 Hz to decouple from drivetrain at 6000 RPM (100 Hz) and LiDAR scan rate (10 Hz); (R5) payload-basket floor deflection under LC5 must remain below 5 mm; (R6) ground clearance must remain at or above 76.2 mm (3 in) under LC2 2 g drop with tire deflection excluded. Thermal, fluid, radiation, buckling analyses not primary. Deliverables: STEP AP242 of frame (welded tube assembly, N tubes as separate bodies), 2D weld-map drawing, FEA per load case, modal, mass budget with component masses.",
+  "short_prompt": "Design the primary chassis frame of an IGVC 2026 autonomous ground vehicle per IGVC 2026 Rules. Vehicle 3-7 ft long, 2-4 ft wide, 3-7 ft tall, ground clearance >= 3 in, top speed governed to 5 mph (2.24 m/s), 20 lb (9.07 kg) centered payload basket, rear mechanical push-button E-stop 2-4 ft above ground, wireless E-stop >= 100 ft. 4 wheels (skid-steer with castors or 4WD), unsprung ~3 kg each, two 24 V DC gearmotors (4 kg each), dry mass target 70 kg (sensors + Jetson + 12 V DC-DC + 24 V 30 Ah SLA 22 kg).\n\nEnvelope: AISI 1018 CR square steel tube 25.4 x 25.4 x 2 mm, TIG-welded, 900 x 600 x 600 mm footprint.\n\nFactor regime: IGVC 2026 Sec IX-D-4 yield FoS 1.5 on LC1-LC5 (allowable 247 MPa); LC6-LC7 must stay below yield (370 MPa) with no permanent deformation; frame dry mass (tubing only) <= 18 kg; first frame natural frequency >= 30 Hz (decouple from 6000 rpm drivetrain 100 Hz and 10 Hz LiDAR); payload-basket deflection under LC5 < 5 mm; ground clearance >= 76.2 mm (3 in) under LC2.\n\nLoad cases.\n- Static 1 g: 70 kg + 9.07 kg payload reacted through 4 wheel axles vertically.\n- 2 g curb drop: 2 g vertical peak on 70 kg + 9.07 kg (IGVC routine curb hops).\n- 1 g lateral side-slope: 1 g vertical + 1 g lateral at CoM on a 15 deg grass slope.\n- 0.5 g braking at 5 mph: 0.5 g longitudinal decel + 1 g vertical.\n- Point-load payload abuse: 500 N vertical at the center of the payload-basket floor.\n- E-stop impact: 100 N horizontal at the rear mechanical E-stop button 1 m above ground.\n- Tow-point pull: 1 kN horizontal at the designated front tow point.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "IGVC 2026 Autonomous Ground Vehicle Frame",
+    "brief": "AISI 1018 CR welded frame for 70 kg AGV + 20 lb payload, 5 mph cap, IGVC 2026 FoS 1.5 deliverable.",
+    "geometric_constraints": {
+      "envelope_ft": {
+        "l_min": 3,
+        "l_max": 7,
+        "w_min": 2,
+        "w_max": 4,
+        "h_min": 3,
+        "h_max": 7
+      },
+      "frame_footprint_mm": {
+        "l": 900,
+        "w": 600,
+        "h": 600
+      },
+      "ground_clearance_min_in": 3,
+      "top_speed_mph": 5,
+      "payload_lb": 20,
+      "tube_mm": "25.4x25.4x2",
+      "estop_height_range_ft": [
+        2,
+        4
+      ]
+    },
+    "material": {
+      "name": "AISI 1018 CR steel",
+      "properties": {
+        "E_GPa": 200,
+        "yield_MPa": 370,
+        "ultimate_MPa": 440,
+        "density_kg_m3": 7850
+      }
+    },
+    "vehicle_mass_kg": {
+      "frame_target": 18,
+      "battery": 22,
+      "motors": 8,
+      "wheels": 12,
+      "sensors_compute": 8,
+      "structure_other": 2,
+      "total_dry": 70,
+      "payload": 9.07
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_1g",
+        "magnitude_g": 1
+      },
+      {
+        "id": "LC2",
+        "name": "curb_drop_2g",
+        "magnitude_g": 2
+      },
+      {
+        "id": "LC3",
+        "name": "side_slope_15deg",
+        "vert_g": 1,
+        "lat_g": 1
+      },
+      {
+        "id": "LC4",
+        "name": "braking_0p5g",
+        "longit_g": 0.5,
+        "vert_g": 1
+      },
+      {
+        "id": "LC5",
+        "name": "payload_point_load",
+        "magnitude_N": 500,
+        "application": "center of payload basket floor"
+      },
+      {
+        "id": "LC6",
+        "name": "estop_inspector_push",
+        "magnitude_N": 100,
+        "height_m": 1,
+        "application": "rear E-stop button"
+      },
+      {
+        "id": "LC7",
+        "name": "tow_point_pull",
+        "magnitude_N": 1000,
+        "application": "front tow point horizontal"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 8,
+      "report_fields": [
+        "frame_mass_kg",
+        "max_stress_LC1_LC5_MPa",
+        "max_stress_LC6_LC7_MPa",
+        "first_freq_Hz",
+        "payload_floor_deflection_LC5_mm",
+        "ground_clearance_LC2_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "frame_max_stress_nominal",
+        "limit_MPa": 247,
+        "derivation": "370 / 1.5 yield FoS per IGVC 2026 Rules IX-D-4",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "frame_max_stress_abuse",
+        "limit_MPa": 370,
+        "applies_to": [
+          "LC6",
+          "LC7"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "frame_dry_mass",
+        "limit_kg": 18,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_frame_freq",
+        "limit_Hz": 30,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "payload_floor_deflection",
+        "limit_mm": 5,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "ground_clearance_under_drop",
+        "limit_mm": 76.2,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (BEAM188) for tubing; shell for payload basket floor",
+      "mesh_size_mm": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SolidWorks Simulation",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x7)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "5 mph outdoor vehicle, no thermal gate at frame level.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Tubular square frame; stress gate bounds."
+    }
+  },
+  "eval_coverage": [
+    "welded steel tube AGV chassis FEA",
+    "IGVC 2026 Section IX-D-4 mandated FoS 1.5",
+    "payload + slope + brake multi-load",
+    "E-stop interaction loads",
+    "ground-clearance gate under drop"
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "id": "096_ng11_cawst_biosand_filter",
+  "source": {
+    "catalog_ref": "NG11",
+    "year": 2022,
+    "tier": "B"
+  },
+  "domain": "humanitarian_wash",
+  "part_class": "household_biosand_filter_concrete_body",
+  "full_prompt": "Design one representative household concrete biosand filter body compliant with the CAWST Biosand Filter Construction Manual (2022 revision). The filter body is a rectangular concrete box with outer dimensions 305 mm (L) x 305 mm (W) x 900 mm (H), inner cavity 205 mm x 205 mm x 900 mm giving 50 mm wall thickness on all four sides, cast from a 1:2:4 (by volume) ordinary-Portland-cement : sand : aggregate mix with w/c ratio approximately 0.45 and a nominal cube compressive strength of 20 MPa at 28 days. The inside cavity holds (bottom to top): a 50 mm layer of 6-12 mm gravel underdrain around the outlet elbow, a 50 mm layer of 1-6 mm separating gravel, a 500 mm deep layer of fine filter sand (d10 about 0.15-0.20 mm, uniformity coefficient <= 2.5), leaving a supernatant water-column standing-head zone of 50-150 mm (5-15 cm) above the sand surface. The outlet is a 12.7 mm (1/2 in) nominal copper or PVC elbow cast into the wall and rising to an outlet spout at elevation matching the top of the sand bed, so that the standing-head window is defined and the bed is kept saturated between dosings. Design filtration rate is 0.4 m/h (i.e. 0.4 m3 per m2 sand-surface area per hour = 27 mL/min at 205x205 mm area), derived from CAWST operating guidance. Filter must include a concrete lid and a diffuser plate (perforated metal or plastic) installed 50 mm above the top sand level. Deliverable is a CAD model of the concrete filter body including cast-in outlet path and the internal layer labels (not full granular simulation) suitable for (a) linear static structural FEA under hydrostatic + dead load to verify 50 mm wall thickness is adequate, (b) geometric volume check of filter-bed stack-up, (c) Darcy-equivalent hydraulic check of the 0.4 m/h filtration rate against the specified head window. Vibration, thermal, fluid CFD of the full filter (beyond Darcy lookup), radiation, buckling analyses are NOT required.",
+  "short_prompt": "Design a household concrete biosand filter body per the CAWST Biosand Filter Construction Manual (2022 revision). The body is a rectangular 1:2:4 cement:sand:aggregate precast box (nominal 50 mm wall, ~20 MPa cube strength) containing a layered underdrain / separating gravel / fine filter sand stack-up with a cast-in outlet elbow rising to set the supernatant standing-head window, plus a concrete lid and diffuser plate. Target filtration rate 0.4 m/h with a 5-15 cm supernatant head.\n\nEnvelope: outer 305 x 305 x 900 mm, inner cavity 205 x 205 mm, sand-bed depth 500 mm, diffuser 50 mm above the sand surface.\n\nLoad cases.\n- LC1 hydrostatic + media: saturated sand + gravel + supernatant, gravity on walls and base.\n- LC2 filtration steady: Darcy flow at 0.4 m/h target through the packed sand at a 5-15 cm head (non-FEA Darcy lookup).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "darcy_porous_flow_check",
+        "reason": "Filtration rate 0.4 m/h at 5-15 cm head is a Darcy-law lookup / hand calculation, not CFD.",
+        "examples": [
+          "Darcy equation hand calc",
+          "CAWST design spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CAWST concrete biosand filter body",
+    "brief": "Design a 305 x 305 x 900 mm concrete biosand filter with 50 mm walls, 1:2:4 mix, filtration 0.4 m/h, head window 5-15 cm.",
+    "geometric_constraints": {
+      "outer_LxWxH_mm": [
+        305,
+        305,
+        900
+      ],
+      "inner_LxWxH_mm": [
+        205,
+        205,
+        900
+      ],
+      "wall_thickness_mm": 50,
+      "sand_bed_depth_mm": 500,
+      "separating_gravel_mm": 50,
+      "underdrain_gravel_mm": 50,
+      "standing_head_mm_range": [
+        50,
+        150
+      ],
+      "diffuser_offset_above_sand_mm": 50,
+      "outlet_nominal_in": 0.5
+    },
+    "material": {
+      "concrete": {
+        "mix": "1:2:4 OPC:sand:aggregate",
+        "w_c": 0.45,
+        "min_fc_MPa": 20
+      },
+      "filter_sand": {
+        "d10_mm": 0.17,
+        "uniformity_coefficient_max": 2.5
+      },
+      "outlet_pipe": "PVC or copper 12.7 mm"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hydrostatic_plus_media",
+        "application": "saturated sand + gravel + supernatant, gravity load on walls and base"
+      },
+      {
+        "id": "LC2",
+        "name": "filtration_steady",
+        "target_rate_m_h": 0.4,
+        "head_range_mm": [
+          50,
+          150
+        ],
+        "application": "Darcy flow through packed sand"
+      }
+    ],
+    "boundary_conditions": {
+      "base": "founded on flat floor",
+      "walls": "free on exterior, hydrostatic inside"
+    },
+    "objective": {
+      "primary": "pass structural and flow criteria"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_wall_tensile_stress_MPa",
+        "max_base_bending_moment_kNm_per_m",
+        "filtration_rate_m_h",
+        "effective_volume_L"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "wall_thickness_mm",
+        "limit_mm": 50,
+        "derivation": "CAWST biosand filter minimum",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "concrete_mix_ratio",
+        "limit": "1:2:4",
+        "derivation": "CAWST specified mix",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "concrete_min_fc_MPa",
+        "limit_MPa": 20,
+        "derivation": "CAWST mix strength target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "filtration_rate_m_h",
+        "limit_m_h": 0.4,
+        "derivation": "CAWST design filtration rate",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "standing_head_window_mm",
+        "limit_min_mm": 50,
+        "limit_max_mm": 150,
+        "derivation": "CAWST operating head 5-15 cm",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "within"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (walls + base)",
+      "mesh_size_mm_in_critical_regions": 15,
+      "solver_hints": [
+        "SAP2000",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static hydrostatic"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static standing filter.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Full CFD not required; Darcy analytical lookup is sufficient and out of FEA scope.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Thick short concrete walls; no buckling."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Biological maturation schnmutzdecke model",
+      "Pathogen removal efficiency",
+      "Lid seal hygiene"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "combined structural + Darcy-equivalent flow pass/fail",
+    "CAWST 1:2:4 concrete mix as design constraint",
+    "geometric head window 5-15 cm",
+    "small-scale concrete casting design",
+    "humanitarian WASH scope"
+  ]
+}

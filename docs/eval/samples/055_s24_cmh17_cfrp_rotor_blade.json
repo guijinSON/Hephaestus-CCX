@@ -1,0 +1,250 @@
+{
+  "id": "055_s24_cmh17_cfrp_rotor_blade",
+  "source": {
+    "catalog_ref": "S24",
+    "year": 2002,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cfrp_rotor_blade",
+  "full_prompt": "Design a CFRP (IM7/8552) composite small-helicopter-style rotor blade using B-basis material allowables from MIL-HDBK-17 (CMH-17) Vol. 1 tabulations. The blade is a 2.0 m radius single-piece blade for a 200 kg-class tail-rotor demonstrator operating at 1200 rpm. MIL-HDBK-17 (CMH-17) provides Tensile and Compressive B-basis strength values for IM7/8552 UD tape and plain-weave composites, environmental knockdown factors for hot/wet operation (typically 0.80 for 82 C / wet relative to RTD), and damage-tolerance guidance (BVID 6 J impact, no reduction in ultimate strength after non-visible damage).\n\nGeometry. Blade radius 2.0 m, chord 120 mm constant, thickness/chord ratio 12% => section height 14.4 mm. Airfoil-like symmetric section. Root pitch bearing attach: two 12 mm diameter Ti bushings through the spar, 50 mm apart. Spar: unidirectional IM7/8552 tape caps in the top and bottom of the airfoil, each cap 80 mm wide x 3 mm thick nominal (design variable 2-5 mm). Shear web: 4-ply +/-45 plain-weave 8552/AS4. Skin: 2-ply +/-45 plain-weave 8552/AS4. Root fitting: Ti lugs machined from 6Al-4V, 40 mm x 25 mm x 15 mm each; but root-fitting design is OUT of scope; only the composite blade is evaluated. Leading-edge erosion strip (nickel) 0.3 mm x 20 mm ignored structurally.\n\nMaterial. IM7/8552 UD tape (CMH-17 B-basis, RTD): E_L = 165 GPa, E_T = 8.8 GPa, G_LT = 5.0 GPa, nu_LT = 0.3, rho = 1570 kg/m^3. Strength allowables B-basis RTD: Xt = 2280 MPa, Xc = 1440 MPa, Yt = 65 MPa, Yc = 170 MPa, S = 80 MPa. Hot/wet knockdown factor: 0.80 applied to all strengths for 82 C / wet service => Xt_HW = 1824 MPa, Xc_HW = 1152 MPa, Yt_HW = 52 MPa, Yc_HW = 136 MPa, S_HW = 64 MPa. 8552/AS4 plain weave B-basis RTD: tensile 700 MPa, compression 600 MPa, shear 100 MPa; hot/wet: 560 / 480 / 80.\n\nService envelope. Rotational speed 1200 rpm = 125.66 rad/s. Centrifugal force at blade tip (lumped 0.15 kg at r = 2.0 m): F_cf_tip = 0.15 * 125.66^2 * 2.0 = 4737 N; total distributed centrifugal for 0.8 kg blade lineal mass m/l = 0.4 kg/m gives axial tension at root = integral(m * omega^2 * r dr) from 0 to 2.0 = 0.4 * 125.66^2 * 2.0^2 / 2 = 12640 N at root. Flap bending moment at root under 1.5 g collective-pitch limit: M_flap = 1.5 * W_blade * 9.81 * r_cp with r_cp approx 1.3 m, giving M_flap_limit = 1.5 * 0.8 * 9.81 * 1.3 = 15.3 N*m per blade, but aerodynamic lift distribution amplifies this to approx 120 N*m limit root moment. Chord bending from lag: 30 N*m limit. Ultimate = 1.5 x limit.\n\nLoad cases. LC1 (steady flight, centrifugal + lift bending): axial 12,640 N root tension + 120 N*m flap bending, at RTD RTD allowables. LC2 (ultimate maneuver 1.5 x LC1): axial 18,960 N + 180 N*m. LC3 (hot/wet degraded allowables): LC1 state evaluated against hot/wet 0.80 knockdown allowables. LC4 (BVID damage tolerance): 6 J impact damage at the blade mid-span spar cap; ultimate strength must not drop below LC2 demand. Treat as a residual-strength check where the damaged allowable is 0.85 x Xt_B-basis RTD = 0.85 x 2280 = 1938 MPa. LC5 (fatigue): 10^7 cycles at combined centrifugal + 0.5 x bending reversal (typical rotor mission fatigue bound). S-N curve per CMH-17: 10^7 cycles at R = 0.1 for UD tape, allowable stress amplitude approx 0.4 x Xt_B-basis = 912 MPa at RTD.\n\nPass/fail criteria. (R1) Spar-cap fiber-direction tensile stress at LC2 ultimate must not exceed Xt_B-basis RTD = 2280 MPa (RTD case). (R2) Same as R1 but under hot/wet knockdown (LC3): stress at LC1 limit must not exceed Xt_HW / 1.5 = 1216 MPa (applying 1.5 ultimate equivalent after knockdown). (R3) Compression stress in spar cap at LC2 must not exceed Xc_B-basis = 1440 MPa RTD. (R4) Tsai-Wu or max-strain failure index in every ply at LC2 ultimate must be <= 1.0. (R5) BVID damage tolerance (LC4): stress at damaged section at ultimate <= 1938 MPa (= 0.85 x Xt_B-basis RTD). (R6) Fatigue at 10^7 cycles: stress amplitude at any spar-cap ply <= 912 MPa. (R7) Blade mass <= 0.9 kg per blade. (R8) Tip deflection at LC1 limit <= 5% of radius = 100 mm.\n\nSolver and analysis expectations. Primary: composite-shell or continuum-shell FEM with ply-by-ply Tsai-Wu / max-strain evaluation (ANSYS ACP, Abaqus Composites Modeler, Nastran composite). Mesh 10 mm shells along the blade, finer at root attach ligament. Centrifugal force via prescribed rotational velocity load. Fatigue S-N via CMH-17 tabulated curves, hand calc or spreadsheet acceptable. BVID residual-strength with reduced allowable at the damage location is a single additional check. Buckling, modal, thermal, fluid, radiation NOT required for this brief; modal forced-response (ground/air resonance) is a real-world concern but out of scope.\n\nDeliverables. STEP AP242 of blade structure, mass per blade in kg, spar-cap stress per LC, Tsai-Wu index maximum, BVID residual check, fatigue check at 10^7 cycles, and tip deflection.",
+  "short_prompt": "Design a 2.0 m radius IM7/8552 CFRP single-piece rotor blade for a 200 kg-class tail-rotor-style demonstrator at 1200 rpm. Use MIL-HDBK-17 / CMH-17 Vol. 1 B-basis allowables with a 0.80 hot/wet (82 C / wet) knockdown, 0.85 BVID residual-strength factor at the spar cap after a 6 J impact, and the CMH-17 S-N curve for UD tape. Ultimate = 1.5 x limit.\n\nEnvelope: 120 mm constant chord, 12% t/c symmetric section (14.4 mm section height); UD IM7/8552 spar caps 80 mm wide x 2-5 mm thick (nominal 3 mm); plain-weave 8552/AS4 web (4-ply +/-45) and skin (2-ply +/-45); two 12 mm Ti root bushings 50 mm apart. Root fitting is out of scope.\n\nLoad cases (root).\n- LC1 steady flight RTD: axial 12,640 N + flap bending 120 N*m + lag bending 30 N*m.\n- LC2 ultimate 1.5 x LC1 RTD: axial 18,960 N + flap 180 N*m.\n- LC3 hot/wet degraded LC1: 0.80 knockdown on strengths.\n- LC4 BVID residual strength after 6 J mid-span impact: reduced allowable 0.85 x Xt B-basis.\n- LC5 fatigue at 10^7 cycles: stress amplitude per CMH-17 S-N (~0.4 x Xt at R = 0.1).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "IM7/8552 CFRP rotor blade with CMH-17 B-basis allowables",
+    "brief": "2.0 m radius tail-rotor-style composite blade, 1200 rpm, CMH-17 B-basis Xt/Xc/Yt/Yc/S with 0.80 hot/wet knockdown, BVID residual 0.85, fatigue 10^7.",
+    "geometric_constraints": {
+      "radius_m": 2.0,
+      "chord_mm": 120,
+      "thickness_mm": 14.4,
+      "spar_cap_width_mm": 80,
+      "spar_cap_thickness_mm": {
+        "min": 2,
+        "max": 5,
+        "nominal": 3
+      },
+      "web_layup": "4-ply +/-45 plain weave 8552/AS4",
+      "skin_layup": "2-ply +/-45 plain weave 8552/AS4",
+      "root_bushings": {
+        "count": 2,
+        "diameter_mm": 12,
+        "spacing_mm": 50
+      }
+    },
+    "material": {
+      "UD_tape": {
+        "name": "IM7/8552 UD CMH-17 B-basis RTD",
+        "E_L_GPa": 165,
+        "E_T_GPa": 8.8,
+        "G_LT_GPa": 5.0,
+        "nu_LT": 0.3,
+        "density_kg_m3": 1570,
+        "Xt_MPa": 2280,
+        "Xc_MPa": 1440,
+        "Yt_MPa": 65,
+        "Yc_MPa": 170,
+        "S_MPa": 80
+      },
+      "UD_tape_hot_wet": {
+        "knockdown": 0.8,
+        "Xt_MPa": 1824,
+        "Xc_MPa": 1152,
+        "Yt_MPa": 52,
+        "Yc_MPa": 136,
+        "S_MPa": 64
+      },
+      "plain_weave": {
+        "name": "8552/AS4 plain weave",
+        "tensile_MPa": 700,
+        "compression_MPa": 600,
+        "shear_MPa": 100
+      }
+    },
+    "service_envelope": {
+      "rpm": 1200,
+      "omega_rad_s": 125.66,
+      "blade_mass_per_blade_kg": 0.8,
+      "tip_mass_kg": 0.15,
+      "ultimate_factor": 1.5
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "steady_flight_RTD",
+        "axial_N_root": 12640,
+        "M_flap_Nm_root": 120,
+        "M_lag_Nm_root": 30
+      },
+      {
+        "id": "LC2",
+        "name": "ultimate_1.5x_RTD",
+        "axial_N_root": 18960,
+        "M_flap_Nm_root": 180
+      },
+      {
+        "id": "LC3",
+        "name": "hot_wet_degraded_LC1",
+        "knockdown": 0.8
+      },
+      {
+        "id": "LC4",
+        "name": "BVID_6J_damage_residual",
+        "residual_factor": 0.85
+      },
+      {
+        "id": "LC5",
+        "name": "fatigue_10_7_cycles",
+        "sigma_amp_limit_MPa": 912
+      }
+    ],
+    "boundary_conditions": {
+      "root_bushings": "constrained to hub"
+    },
+    "objective": {
+      "minimize": "blade_mass",
+      "target_kg_max": 0.9
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "MIL-HDBK-17 (CMH-17) Vol. 1",
+      "revision": "Vol 1F 2002 (ADA426516)"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "spar_cap_fiber_tension_stress_LC2_RTD",
+        "limit_MPa": 2280,
+        "derivation": "Xt B-basis RTD per CMH-17 IM7/8552 UD",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "spar_cap_tension_stress_LC1_hot_wet_equiv_ultimate",
+        "limit_MPa": 1216,
+        "derivation": "Xt_HW / 1.5 = 1824/1.5 applied to limit stress",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "spar_cap_compression_stress_LC2",
+        "limit_MPa": 1440,
+        "derivation": "Xc B-basis RTD",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "Tsai_Wu_or_max_strain_index_LC2",
+        "limit": 1.0,
+        "derivation": "CMH-17 composite failure criterion",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "BVID_residual_stress_check",
+        "limit_MPa": 1938,
+        "derivation": "0.85 x Xt B-basis = damage-tolerance residual strength",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "fatigue_10_7_stress_amplitude",
+        "limit_MPa": 912,
+        "derivation": "CMH-17 S-N ~0.4 x Xt at 10^7 cycles for UD IM7/8552 at R=0.1",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "blade_mass_per_blade",
+        "limit_kg": 0.9,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R8",
+        "type": "structural_analysis",
+        "metric": "tip_deflection_at_LC1_limit",
+        "limit_mm": 100,
+        "derivation": "5% of radius rigidity proxy",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "composite shell / continuum shell",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Composites Modeler",
+        "Nastran composites"
+      ],
+      "analysis_types": [
+        "linear static with centrifugal",
+        "ply-by-ply Tsai-Wu",
+        "BVID residual check",
+        "S-N fatigue hand calc"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Rotor dynamics (flap/lag/pitch modes, ground resonance) out of scope.",
+      "thermal_analysis": "Hot/wet knockdown applied as scalar; no transient thermal.",
+      "fluid_analysis": "Aero loads reduced to bending/axial.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Rotor caps tension-dominated under centrifugal; not driving."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Flap-lag-pitch modal decoupling",
+      "Ground / air resonance",
+      "Lightning-strike protection mesh design"
+    ]
+  },
+  "eval_coverage": [
+    "CMH-17 B-basis allowables",
+    "hot/wet 0.80 knockdown",
+    "BVID 0.85 residual strength",
+    "CMH-17 S-N 10^7 cycles fatigue"
+  ]
+}

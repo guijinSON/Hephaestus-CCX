@@ -1,0 +1,225 @@
+{
+  "id": "140_hv16_formula_bharat_impact_attenuator",
+  "source": {
+    "catalog_ref": "HV16 (user-assigned collegiate formula-class racecar benchmark)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "fsae_crash_structure",
+  "part_class": "impact_attenuator_ia",
+  "full_prompt": "Design a monolithic 5052-H32 aluminum honeycomb-filled impact attenuator (IA) for a collegiate formula-class racecar benchmark 2026 Class 1 CV vehicle running FS Rules 2026 base, per FS T.3.20 / T.3.21 IA energy absorption requirement: the IA must decelerate a 300 kg mass moving at 7.0 m/s with mean deceleration <= 20g (196 m/s^2) and peak deceleration <= 40g (392 m/s^2), absorbing at least 7350 J of kinetic energy. The IA is a single monolithic aluminum shell containing an integrated aluminum honeycomb core (for this CAD prompt, treat as a single-body sandwich part; the honeycomb crush strength is modeled as a uniform plateau stress on the enclosed volume). Geometry: nose cap must extend forward of the chassis by at least 200 mm per FS T.3.20.2, minimum bounding dimensions are 200 mm forward x 200 mm wide x 100 mm tall per FS T.3.20.2; actual IA 300 mm forward x 250 mm wide x 200 mm tall (larger for mass-distribution), 4 mm aluminum outer shell, internal 5052 honeycomb core 3003-H19 equivalent at density 83 kg/m^3 cell 6.4 mm crush strength 2.35 MPa plateau. Anti-intrusion plate (AIP) at the rear: 8 mm thick 5052-H32 aluminum plate 300 x 200 mm with two rows of four M8 (9 mm clearance) holes on a 100 mm x 80 mm rectangular pattern for bolting to front bulkhead. Overall bounding envelope 300 x 250 x 200 mm (forward-projecting part) + 320 x 220 x 12 mm AIP. Material outer shell / AIP: 5052-H32 aluminum (E 70.3 GPa, nu 0.33, density 2680 kg/m^3, yield 193 MPa, UTS 228 MPa); honeycomb core: 3003 aluminum Al5052-H19 equivalent plateau stress 2.35 MPa at 83 kg/m^3 density, densification strain 70%. Design basis: target mean decel 18g (buffer below 20g), target peak decel 35g (buffer below 40g), target KE absorption >= 7500 J (buffer above 7350 J), target crush stroke 200 mm (full depth). Three load cases per FS T.3.20 / T.3.21. Load Case 1 (crash per FS T.3.21 IA energy test): 300 kg rigid mass impacting the forward face at 7.0 m/s head-on, crush stroke up to 200 mm, mean decel target 18g, peak 35g, energy 7500 J. Load Case 2 (oblique 10-deg): same 300 kg at 7.0 m/s but impact vector 10 degrees off the vehicle centerline per FS T.3.21.2 oblique test (required for teams claiming SAE honeycomb approval without full test). Load Case 3 (quasi-static pre-test): 40 kN compressive static load distributed uniformly on the forward face at quasi-static rate, to verify no premature shell collapse. Pass/fail: (R1) under LC1 FS T.3.21.1 test, mean deceleration over the impact event must be <= 20g (196 m/s^2) AND peak deceleration <= 40g (392 m/s^2) AND total absorbed energy >= 7350 J; (R2) under LC2 oblique, peak deceleration <= 40g with the same energy absorption; (R3) under LC3 quasi-static, peak von Mises in the 8 mm AIP plate must not exceed 129 MPa (AIP yield/1.5) and no shell wall buckling prior to 2 kN load; (R4) a linear buckling eigenvalue analysis of the IA outer shell under LC1 initial crush loading must yield a first-mode load factor of at least 0.8 (controlled progressive collapse: buckling IS the intended failure mode, but it must not occur before 80% of the crush-initiation load so that the honeycomb core controls the crush stroke); (R5) IA + AIP total mass must not exceed 4.0 kg typical FS competitive budget; (R6) the AIP per FS T.3.20.4 must be continuous and not protruding past the bulkhead envelope. Thermal, fluid, vibration, and radiation analyses are not required. Deliver STEP AP242 and Parasolid plus report.",
+  "short_prompt": "Design a monolithic 5052-H32 aluminum honeycomb-filled impact attenuator (IA) for a collegiate formula-class racecar (FS Rules 2026 T.3.20 / T.3.21 energy-absorption test). The IA is a single aluminum shell with an integrated aluminum-honeycomb core (treated as a single-body sandwich part; core crush modeled as a uniform plateau stress) and a rear anti-intrusion plate (AIP) with a 2x4 bolt pattern for the front bulkhead. Apply the FS rulebook targets: mean decel <= 20 g, peak decel <= 40 g, energy absorption >= 7350 J on a 300 kg mass at 7.0 m/s.\n\nEnvelope: IA 300 x 250 x 200 mm forward-projecting, AIP 320 x 220 x 12 mm.\n\nLoad cases.\n- LC1 head-on crash (T.3.21.1): 300 kg rigid mass at 7.0 m/s head-on, up to 200 mm crush stroke; target 18 g mean / 35 g peak / >=7500 J.\n- LC2 oblique 10-degree (T.3.21.2): same 300 kg / 7 m/s at 10 degrees off-center.\n- LC3 quasi-static pre-test: 40 kN uniform compression on the forward face, shell must not collapse prematurely.\nAlso require a linear-buckling factor >= 0.8 under LC1 initial crush (intentional progressive collapse after honeycomb engagement) and AIP continuity per T.3.20.4.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_crash",
+        "reason": "IA crash event is a transient large-deformation problem with honeycomb plateau crushing; requires explicit-dynamic solver with material failure, not linear static FEA.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus/Explicit",
+          "Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-class racecar benchmark IA per FS T.3.20 / T.3.21",
+    "brief": "Honeycomb-core 5052 IA + 8 mm AIP, 300 forward x 250 x 200 envelope; decel <= 20g mean / 40g peak; absorb >= 7350 J.",
+    "geometric_constraints": {
+      "ia_mm": {
+        "forward": 300,
+        "w": 250,
+        "h": 200
+      },
+      "outer_shell_thickness_mm": 4,
+      "honeycomb_density_kg_m3": 83,
+      "honeycomb_plateau_MPa": 2.35,
+      "aip_mm": {
+        "w": 300,
+        "h": 200,
+        "t": 8
+      },
+      "aip_bolt_pattern": {
+        "rows": 2,
+        "columns": 4,
+        "hole_mm": 9,
+        "pattern_mm": [
+          100,
+          80
+        ]
+      },
+      "bounding_envelope_mm_forward": {
+        "x": 300,
+        "y": 250,
+        "z": 200
+      },
+      "bounding_envelope_mm_aip": {
+        "x": 320,
+        "y": 220,
+        "z": 12
+      },
+      "monolithic": true
+    },
+    "material": {
+      "outer_shell_aip": {
+        "name": "5052-H32",
+        "youngs_modulus_GPa": 70.3,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2680,
+        "yield_MPa": 193,
+        "ultimate_tensile_strength_MPa": 228
+      },
+      "honeycomb_core": {
+        "name": "3003 aluminum honeycomb 83 kg/m^3",
+        "plateau_MPa": 2.35,
+        "densification_strain": 0.7
+      }
+    },
+    "rule_basis": {
+      "FS_T.3.20": "IA envelope + min dims + AIP",
+      "FS_T.3.21": "energy test 300 kg @ 7 m/s, 20g mean / 40g peak, 7350 J"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "head_on_crash",
+        "mass_kg": 300,
+        "velocity_m_s": 7.0,
+        "target_KE_J": 7500
+      },
+      {
+        "id": "LC2",
+        "name": "oblique_10deg",
+        "mass_kg": 300,
+        "velocity_m_s": 7.0,
+        "angle_deg": 10
+      },
+      {
+        "id": "LC3",
+        "name": "quasi_static_pretest",
+        "compressive_force_kN": 40
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mean_deceleration_g",
+        "peak_deceleration_g",
+        "energy_absorbed_J",
+        "max_von_mises_aip_MPa",
+        "first_buckling_load_factor",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "mean_deceleration_peak_deceleration_energy",
+        "limits": {
+          "mean_g": 20,
+          "peak_g": 40,
+          "energy_J_min": 7350
+        },
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<= for g, >= for energy"
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_deceleration_and_energy_oblique",
+        "limits": {
+          "peak_g": 40,
+          "energy_J_min": 7350
+        },
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<= and >="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_aip",
+        "limit_MPa": 129,
+        "derivation": "aip_yield/1.5",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 0.8,
+        "applies_to": [
+          "LC1_shell_progressive"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 4.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + honeycomb equivalent crushable foam",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "LS-DYNA",
+        "Abaqus/Explicit",
+        "Radioss"
+      ],
+      "analysis_types": [
+        "explicit dynamic crash (LC1, LC2)",
+        "linear static (LC3)",
+        "linear buckling on outer shell"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Crash event too short for thermal effects.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "vibration_analysis": "IA is a one-shot energy absorber."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "SAE honeycomb approved-geometry test-lab cross-reference",
+      "AIP bolt tear-out",
+      "Adhesive bond between outer shell and core"
+    ]
+  },
+  "eval_coverage": [
+    "FS T.3.21 crash energy + decel limits",
+    "progressive-collapse controlled buckling load factor",
+    "oblique impact secondary case",
+    "explicit-dynamics outer loop around FEA"
+  ]
+}

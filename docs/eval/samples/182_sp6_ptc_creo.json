@@ -1,0 +1,173 @@
+{
+  "id": "182_sp6_ptc_creo",
+  "source": {
+    "catalog_ref": "SP6",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "consumer_product",
+  "part_class": "ratcheting_screwdriver_body",
+  "full_prompt": "Design a redesigned injection-molded ratcheting screwdriver body as an open-source consumer-product DFM benchmark, targeting a consumer hardware-store DIY segment. The screwdriver body consists of a handle (150 mm long x 35 mm max diameter), a ratcheting mechanism housing, and a 6.35 mm (1/4 inch) hex bit holder at the distal end. The handle is co-molded with a hard ABS (yield 45 MPa, E 2.3 GPa, density 1050 kg/m^3) core and a TPE grip over-mold (Shore A 65). Internal ratcheting mechanism is a metal pawl + gear assembly and is treated as rigid in this competition (designer-specified off-the-shelf). The tool must deliver up to 5 N-m of torque to the driver bit with a maximum user grip force of 100 N applied around the TPE grip. Pass/fail criteria: (R1) max von Mises stress in the ABS core when 5 N-m torque is applied at the bit with the user gripping at 100 N axial + 20 N-m grip moment must not exceed 30 MPa (ABS yield 45 / SF 1.5), (R2) handle twist (angular deflection between grip and bit) under 5 N-m torque must not exceed 2 degrees to preserve driving feel, (R3) drop test from 1 m onto a hard surface (equivalent 250 N quasi-static impulse) must not crack the ABS core, (R4) handle part must demold with a single line of draw with a minimum draft angle of 1 degree on all vertical faces per DFM best practice, and (R5) total handle assembly mass (ABS core + TPE overmold, excluding metal mechanism) must not exceed 80 g. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly with ABS core, TPE grip, and bit holder as sub-bodies plus a verification report listing max von Mises, handle twist angle, drop result, DFM draft check, and total mass.",
+  "short_prompt": "Redesign an injection-molded ratcheting screwdriver handle for a consumer DIY segment: a co-molded ABS core with a TPE Shore A 65 grip overmold, roughly 150 mm long x 35 mm max diameter, with a 1/4-inch hex bit holder at the distal end. Internal ratcheting mechanism (metal pawl + gear) is designer-specified off-the-shelf and treated as rigid. Grip is distributed on the TPE; reaction torque is at the driver bit.\n\nLoad cases.\n- LC1 max torque: 5 N-m to the bit with user at 100 N grip and 20 N-m grip moment.\n- LC2 1 m drop: 250 N equivalent impulse.\n\nAlso apply an injection-molding DFM rule set (minimum 1 degree draft on vertical faces, single line of draw). Total handle-assembly mass (ABS core + TPE overmold, excluding metal mechanism) is a commercial-feel constraint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "injection_molding_DFM_check",
+        "reason": "Draft angles, wall thickness uniformity, and parting-line checks are a DFM rule-set, not FEA.",
+        "examples": [
+          "Plastic Advisor",
+          "Moldflow rule check"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Ratcheting screwdriver handle (DFM benchmark)",
+    "brief": "Design a co-molded ABS + TPE ratcheting screwdriver handle (150 mm x 35 mm) driving 5 N-m torque to a 1/4-inch bit, passing ABS stress, twist, drop, 1-degree DFM draft, and 80 g mass.",
+    "geometric_constraints": {
+      "handle_length_mm": 150,
+      "handle_max_dia_mm": 35,
+      "bit_interface": "1/4-inch hex",
+      "draft_angle_min_deg": 1.0
+    },
+    "material": {
+      "core": "ABS, yield 45 MPa, E 2.3 GPa",
+      "grip": "TPE Shore A 65"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "max_torque",
+        "torque_Nm": 5,
+        "grip_force_N": 100,
+        "grip_moment_Nm": 20
+      },
+      {
+        "id": "LC2",
+        "name": "drop_1m",
+        "impulse_N": 250
+      }
+    ],
+    "boundary_conditions": {
+      "bit_end": "reaction torque at driver bit",
+      "grip": "distributed grip force on TPE"
+    },
+    "objective": {
+      "primary": "pass stress + twist + drop + DFM",
+      "secondary": "minimize handle mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "core_max_von_mises_MPa",
+        "handle_twist_deg",
+        "drop_result",
+        "min_draft_angle_deg",
+        "total_handle_mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "core_max_von_mises",
+        "limit_MPa": 30,
+        "derivation": "ABS yield 45 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "handle_twist_angle",
+        "limit_deg": 2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "drop_peak_stress",
+        "limit_MPa": 45,
+        "derivation": "ABS yield 45 MPa (no crack proxy)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "min_draft_angle",
+        "limit_deg": 1,
+        "derivation": "Plastic Advisor DFM",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_handle_mass",
+        "limit_g": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "generic parametric-CAD simulation",
+        "Ansys Discovery"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear static drop",
+        "DFM rule check"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static torque only.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "No fluid.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Cosmetic surface A-class",
+      "Over-molding adhesion durability",
+      "Regulatory drop/crash hardness (no standard)"
+    ]
+  },
+  "eval_coverage": [
+    "consumer product handle stress + twist",
+    "injection-molding DFM draft-angle check",
+    "drop integrity as quasi-static FEA",
+    "2-material co-molded assembly"
+  ]
+}

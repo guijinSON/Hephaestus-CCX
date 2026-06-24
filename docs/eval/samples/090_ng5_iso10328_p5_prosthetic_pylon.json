@@ -1,0 +1,221 @@
+{
+  "id": "090_ng5_iso10328_p5_prosthetic_pylon",
+  "source": {
+    "catalog_ref": "NG5",
+    "year": 2016,
+    "tier": "A+"
+  },
+  "domain": "medical_devices",
+  "part_class": "below_knee_prosthetic_pylon",
+  "full_prompt": "Design one representative below-knee (transtibial) prosthetic pylon + pyramid adapter assembly, 30 mm diameter tubular pylon of nominal 250 mm clamped length between socket adapter and foot adapter, intended to be qualified to ISO 10328:2016 test level P5 (high activity / high body mass, up to 100 kg user with high-activity gait). The pylon connects a proximal male pyramid adapter (30 mm pyramid, standard prosthetic taper) to a distal female pyramid clamp adapter that interfaces to a foot. The part must pass two independent principal static ultimate strength tests per ISO 10328: Test Condition I (toe loading, heel-off phase) with an ultimate static load of 3360 N applied along the prescribed test-line offset, and Test Condition II (heel loading, heel-strike phase) with an ultimate static load of 4000 N applied along the prescribed test-line offset. Both tests use the ISO 10328 offset loading lines (Annex A) relative to the alignment reference, producing a combined axial + bending moment on the pylon cross-section. The pylon must additionally survive the P5 cyclic fatigue test: 3,000,000 cycles at the prescribed principal cyclic test forces (maximum cyclic force 1330 N for Test Condition I and 1265 N for Test Condition II per ISO 10328 P5, sinusoidal, with the specified minimum-to-maximum ratio) without initiation of a through-wall crack or loss of functional integrity. Target material is 6061-T6 aluminum alloy (yield 276 MPa, UTS 310 MPa, E = 68.9 GPa) or equivalent; titanium Grade 5 is allowed. Geometry envelope: outer diameter 28-34 mm, wall thickness 1.5-3.0 mm for aluminum, total pylon length 200-400 mm adjustable by cut-to-length. Mass of the pylon-plus-adapters assembly must not exceed 400 g. Deliverable is a single CAD assembly (pyramid adapter + pylon tube + clamp adapter) suitable for (a) linear-elastic structural FEA under the two principal ultimate static loads, (b) fatigue life evaluation to 3e6 cycles using S-N data for the selected alloy. Vibration (modal), thermal, fluid, radiation analyses are NOT required. A fatigue (non-FEA static) solver is required to assess 3e6 cycle life.",
+  "short_prompt": "Design a below-knee (transtibial) prosthetic pylon assembly comprising a 30 mm tubular pylon between a proximal male pyramid adapter and a distal female pyramid clamp adapter, qualified to ISO 10328:2016 test level P5 (high-activity adult user up to 100 kg). Preferred material 6061-T6 aluminum; Ti-6Al-4V Grade 5 is allowed. Assembly mass <= 400 g.\n\nEnvelope: pylon OD 28-34 mm with 1.5-3.0 mm wall (aluminum), 200-400 mm cut-to-length, standard 30 mm prosthetic pyramid taper.\n\nLoad cases (ISO 10328 Annex A offset test lines, producing combined axial + bending).\n- LC1 P5 static toe (Test Condition I): 3360 N ultimate static.\n- LC2 P5 static heel (Test Condition II): 4000 N ultimate static.\n- LC3 P5 cyclic toe: 1330 N peak, 3.0e6 cycles sinusoidal.\n- LC4 P5 cyclic heel: 1265 N peak, 3.0e6 cycles sinusoidal.\n\nFatigue life is evaluated with an S-N fatigue solver; the static cases are linear-elastic FEA.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "fatigue_life_solver",
+        "reason": "ISO 10328 P5 mandates 3e6 cycle fatigue with no failure; requires S-N (or strain-life) fatigue evaluation beyond linear static FEA.",
+        "examples": [
+          "ANSYS nCode DesignLife",
+          "fe-safe",
+          "MSC Fatigue"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Transtibial pylon qualified to ISO 10328 P5",
+    "brief": "Design a 30 mm tubular pylon + pyramid adapters passing ISO 10328 P5 static (toe 3360 N, heel 4000 N) and 3e6 cycle fatigue.",
+    "geometric_constraints": {
+      "pylon_outer_diameter_mm_range": [
+        28,
+        34
+      ],
+      "pylon_wall_thickness_mm_range_aluminum": [
+        1.5,
+        3.0
+      ],
+      "pylon_length_mm_range": [
+        200,
+        400
+      ],
+      "pyramid_adapter": "30 mm male prosthetic pyramid, standard taper",
+      "clamp_adapter": "30 mm female pyramid clamp"
+    },
+    "material": {
+      "preferred": {
+        "name": "Aluminum 6061-T6",
+        "E_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "density_kg_m3": 2700
+      },
+      "alternative": "Ti-6Al-4V Grade 5"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "P5_static_toe_TestConditionI",
+        "magnitude_N": 3360,
+        "direction": "along ISO 10328 Annex A toe test line",
+        "application": "ultimate static load"
+      },
+      {
+        "id": "LC2",
+        "name": "P5_static_heel_TestConditionII",
+        "magnitude_N": 4000,
+        "direction": "along ISO 10328 Annex A heel test line",
+        "application": "ultimate static load"
+      },
+      {
+        "id": "LC3",
+        "name": "P5_cyclic_toe",
+        "magnitude_N_max": 1330,
+        "cycles": 3000000,
+        "waveform": "sinusoidal, ISO 10328 R-ratio",
+        "application": "fatigue along toe test line"
+      },
+      {
+        "id": "LC4",
+        "name": "P5_cyclic_heel",
+        "magnitude_N_max": 1265,
+        "cycles": 3000000,
+        "waveform": "sinusoidal, ISO 10328 R-ratio",
+        "application": "fatigue along heel test line"
+      }
+    ],
+    "boundary_conditions": {
+      "proximal_pyramid": "fixed in ISO 10328 alignment jig",
+      "distal_load_point": "load applied at offset per Annex A"
+    },
+    "objective": {
+      "primary": "pass static + fatigue criteria",
+      "secondary": "minimize assembly mass, target <= 400 g"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly (>=3 parts)",
+      "report_fields": [
+        "assembly_mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "fatigue_life_cycles_LC3",
+        "fatigue_life_cycles_LC4"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 276,
+        "derivation": "yield strength of 6061-T6 under P5 ultimate static",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<=",
+        "note": "Per ISO 10328, ultimate static test must be survived without failure; no plastic collapse at 3360/4000 N."
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "principal_static_test_force_toe_N",
+        "limit_N": 3360,
+        "derivation": "ISO 10328 P5 Test Condition I",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "principal_static_test_force_heel_N",
+        "limit_N": 4000,
+        "derivation": "ISO 10328 P5 Test Condition II",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "fatigue_life_cycles_no_failure",
+        "limit": 3000000,
+        "derivation": "ISO 10328 P5 cyclic test duration",
+        "applies_to": [
+          "LC3",
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "assembly_mass_g",
+        "limit_g": 400,
+        "derivation": "clinical lightweight target for transtibial users",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) or hexahedral, refined at pyramid-tube interface",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "fe-safe"
+      ],
+      "analysis_types": [
+        "linear static (LC1+LC2)",
+        "S-N fatigue (LC3+LC4)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "ISO 10328 does not require modal.",
+      "thermal_analysis": "Room temperature test.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Slender-column buckling pre-screened by section selection; not a prescribed ISO test."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "P6 test level (heavier users)",
+      "Torsional test (ISO 10328 Annex)",
+      "Biocompatibility / skin-contact on socket side"
+    ],
+    "uncertainty_flags": [
+      {
+        "field": "P5_cyclic_force_TC_I_N",
+        "value": 1330,
+        "note": "Exact numeric value taken from secondary summaries; confirm against ISO 10328:2016 Table 4 before use."
+      }
+    ]
+  },
+  "eval_coverage": [
+    "two-condition ultimate static FEA (toe + heel)",
+    "3e6-cycle fatigue non-FEA solver",
+    "medical-device structural qualification scope",
+    "mass target as secondary objective",
+    "assembly of 3 parts under single standard"
+  ]
+}

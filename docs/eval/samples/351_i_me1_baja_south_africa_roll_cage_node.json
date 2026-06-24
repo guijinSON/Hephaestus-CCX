@@ -1,0 +1,199 @@
+{
+  "id": "351_i_me1_baja_south_africa_roll_cage_node",
+  "source": {
+    "catalog_ref": "I-ME1 (collegiate off-road benchmark South Africa, Middle East + national aerospace student benchmark + Africa subsection)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "baja_roll_cage_front_node",
+  "full_prompt": "Design the forward roll-cage node (the welded junction where the Front Bracing Member (FBM), Lateral Cross Member (LC), Lateral Diagonal Bracing (LDB), and Forward Lateral Cross Member (FLC) meet the two Rear Hoop Overhead Members) of a collegiate off-road benchmark South Africa 2026 entry, per collegiate off-road benchmark Rules 2026 Section B as extended by collegiate off-road benchmark South Africa local addenda. Primary tubing is AISI 1018 DOM seamless 1.00 in OD x 0.120 in wall (25.4 mm OD x 3.05 mm wall; E 200 GPa, yield 370 MPa, ultimate 440 MPa, density 7850 kg/m^3). The node is formed by coping and TIG-welding 5 primary tubes meeting at a single volume approximately 80 mm across. Vehicle curb 250 kg + driver 90 kg = 340 kg total. collegiate off-road benchmark scrutineering requires the roll-cage to withstand specific impact-envelope loads per Rule B.8 (Rollover Protection), typically expressed as a 7 g front impact + 4 g side + 3 g rear applied at the driver CoM and reacted through the cage structure. Load cases: (LC1) nominal static 1 g: 340 kg weight reacted through cage; no gate but useful baseline; (LC2) 3 g vertical bump: 3 g on 340 kg = 10,006 N spread per cage-to-suspension mount geometry; (LC3) Baja B.8 frontal impact: 7 g horizontal on 340 kg mass at CoM 500 mm above ground = 23,346 N forward load path ending at the forward node (sizing case for node); (LC4) Baja B.8 side impact: 4 g lateral on 340 kg at CoM = 13,341 N applied laterally to LC and LDB through the forward node; (LC5) Baja B.8 rollover: 3 g vertical downward on 340 kg at the top of the cage + simultaneous 2 g lateral (driver+cage flips onto its top), stress at the forward node; (LC6) tow-strap recovery: 5 kN horizontal at a tow eye welded 100 mm forward of the node on the FBM. Pass/fail: (R1) max von Mises stress at the forward node under LC3 frontal impact must remain below 247 MPa (370 / 1.5 yield FoS per collegiate off-road benchmark B.8); (R2) max von Mises stress under LC4 and LC5 must remain below 247 MPa; (R3) node-region deflection under LC3 must remain below 10 mm at the tube intersection to preserve driver ergonomic space per Baja B.9 clearance envelope; (R4) weld-bead throat shear at the node joints must remain below 0.5 x ultimate = 220 MPa per AWS D1.1 applied to 4140 weld metal (approx AISI 1018 equivalent weld); (R5) no permanent yielding allowed under LC3 (i.e., peak stress below 370 MPa absolute); (R6) node assembly dry mass (5 tubes, 150 mm stub each, plus gussets if used) must not exceed 2.2 kg to keep overall cage weight target achievable. Thermal, fluid, radiation, vibration, buckling analyses not primary at this compact-node scale. Deliverables: STEP AP242 of the 5-tube node as a weldment with weld beads modeled as 3 mm fillet, coping geometry on each tube end, FEA per load case with refined mesh at weld toes, weld-toe stress extraction for AWS comparison, mass report.",
+  "short_prompt": "Design the forward roll-cage node (welded junction of FBM, LC, LDB, FLC with the two Rear Hoop Overhead Members) of a collegiate off-road benchmark South Africa 2026 entry per Baja Rules 2026 Section B + SA addenda. Curb 250 kg + 90 kg driver = 340 kg. Primary tubes AISI 1018 DOM 25.4 mm OD x 3.05 mm wall (1 in x 0.120 in). Node formed by coping and TIG-welding 5 primary tubes meeting at an ~80 mm volume. Per B.8 the roll-cage must withstand 7 g front + 4 g side + 3 g rear applied at driver CoM.\n\nFactor regime: Baja B.8 yield FoS 1.5 (allowable 247 MPa) on LC3-LC5; no permanent yield at LC3 (peak < 370 MPa); node-region deflection under LC3 < 10 mm (B.9 driver-clearance envelope); AWS D1.1 weld-bead throat shear < 0.5 x ultimate = 220 MPa; node assembly dry mass (5 tubes at 150 mm stub each, plus gussets) <= 2.2 kg.\n\nLoad cases.\n- Static 1 g baseline: 340 kg through the cage (no gate).\n- 3 g vertical bump: 10,006 N distributed per suspension-mount geometry.\n- B.8 frontal: 7 g on 340 kg at 500 mm CoM = 23,346 N ending at the forward node.\n- B.8 side: 4 g on 340 kg at CoM = 13,341 N laterally into LC and LDB through the node.\n- B.8 rollover: 3 g vertical + 2 g lateral down onto the cage top.\n- Tow-strap recovery: 5 kN horizontal at a tow eye 100 mm forward of the node on the FBM.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate off-road benchmark South Africa 2026 Front Roll-Cage Node",
+    "brief": "AISI 1018 DOM 1.00 in x 0.120 in wall 5-tube welded node, collegiate off-road benchmark B.8 impact envelope FoS 1.5.",
+    "geometric_constraints": {
+      "tube_OD_mm": 25.4,
+      "tube_wall_mm": 3.05,
+      "node_envelope_mm": 80,
+      "tube_count": 5,
+      "stub_length_mm": 150,
+      "weld_throat_mm": 3
+    },
+    "material": {
+      "name": "AISI 1018 DOM steel",
+      "properties": {
+        "E_GPa": 200,
+        "yield_MPa": 370,
+        "ultimate_MPa": 440,
+        "density_kg_m3": 7850
+      }
+    },
+    "vehicle_mass_kg": {
+      "curb": 250,
+      "driver": 90,
+      "total": 340
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_1g",
+        "magnitude_g": 1
+      },
+      {
+        "id": "LC2",
+        "name": "bump_3g",
+        "magnitude_g": 3
+      },
+      {
+        "id": "LC3",
+        "name": "baja_B8_frontal_7g",
+        "magnitude_g": 7,
+        "application": "forward on 340 kg at 500 mm CoM"
+      },
+      {
+        "id": "LC4",
+        "name": "baja_B8_side_4g",
+        "magnitude_g": 4,
+        "application": "lateral"
+      },
+      {
+        "id": "LC5",
+        "name": "baja_B8_rollover",
+        "vert_g": 3,
+        "lat_g": 2
+      },
+      {
+        "id": "LC6",
+        "name": "tow_strap_5kN",
+        "magnitude_N": 5000,
+        "application": "horizontal at tow eye"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 5,
+      "report_fields": [
+        "node_mass_kg",
+        "max_stress_LC3_MPa",
+        "max_stress_LC4_LC5_MPa",
+        "node_deflection_LC3_mm",
+        "weld_toe_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "node_max_stress_frontal",
+        "limit_MPa": 247,
+        "derivation": "370 / 1.5 yield FoS per collegiate off-road benchmark B.8",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "node_max_stress_side_rollover",
+        "limit_MPa": 247,
+        "applies_to": [
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "node_deflection_frontal",
+        "limit_mm": 10,
+        "derivation": "Baja B.9 driver clearance envelope",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "weld_toe_shear",
+        "limit_MPa": 220,
+        "derivation": "0.5 * ultimate per AWS D1.1",
+        "applies_to": [
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "absolute_stress_no_yield",
+        "limit_MPa": 370,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "node_dry_mass",
+        "limit_kg": 2.2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10 at weld region; beam (BEAM188) on tube extensions; refined 1 mm mesh at weld toes",
+      "mesh_size_mm": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SolidWorks Simulation",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x6)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "vibration_analysis": "Scrutineering uses static impact envelope.",
+      "thermal_analysis": "N/A.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Compact welded node; stress-gate and weld-toe stress bound design."
+    }
+  },
+  "eval_coverage": [
+    "collegiate off-road benchmark B.8 impact envelope",
+    "welded primary-tubing node weld-toe stress",
+    "AWS D1.1 weld shear gate",
+    "Baja B.9 driver clearance deflection",
+    "5-tube STEP weldment"
+  ]
+}

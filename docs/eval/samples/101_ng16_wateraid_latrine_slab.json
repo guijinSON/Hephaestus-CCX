@@ -1,0 +1,187 @@
+{
+  "id": "101_ng16_wateraid_latrine_slab",
+  "source": {
+    "catalog_ref": "NG16",
+    "year": 2023,
+    "tier": "B+"
+  },
+  "domain": "humanitarian_wash",
+  "part_class": "household_pit_latrine_rc_slab",
+  "full_prompt": "Design one representative household pit-latrine reinforced-concrete squat slab per the WaterAid Technical Brief on latrine slabs and superstructures (2023). The slab plan is 900 mm x 900 mm, 70 mm thick, cast from a single-piece precast RC mix with fc >= 20 MPa, reinforced with 6 mm rebar at 150 mm spacing each way in the bottom face plus diagonal corner bars around the squat opening. The slab covers a typical 700 mm x 700 mm household pit with a 100 mm bearing on all four sides onto the pit lining (locally stabilized soil, unfired brick ring, or mass concrete ring). The slab has a central keyhole squat opening 350 mm long x 150 mm wide with rounded ends and footrests molded in relief at the top surface. Design live load is a single concentrated user load of 2.0 kN applied at the slab center, factored by a safety factor of 2.0 per WaterAid brief, giving a verification load of 4.0 kN. Dead load is slab self-weight. Target materials: concrete fc >= 20 MPa, rebar Gr 60 (fy = 420 MPa). Deliverable is a CAD model of the slab (with squat opening, footrests, rebar representation, edge chamfer, and molded handles for lifting) suitable for linear static structural FEA under (a) 2 kN nominal live + self-weight, (b) 4 kN factored live + self-weight, verifying no bending or shear failure. Vibration, thermal, fluid, radiation, buckling analyses are NOT required.",
+  "short_prompt": "Design a single-piece precast reinforced-concrete household pit-latrine squat slab per the WaterAid Technical Brief on latrine slabs (2023). Concrete fc >= 20 MPa with 6 mm Gr 60 rebar at 150 mm each way bottom face plus diagonal corner bars around the squat opening; molded footrests, edge chamfer, molded lifting handles. Bears 100 mm each side on the pit lining. Safety factor 2.0 on user concentrated load per the brief. Slab mass <= 60 kg for a 2-person lift.\n\nEnvelope: 900 x 900 x 70 mm slab over a 700 x 700 mm pit, with a 350 x 150 mm rounded keyhole squat opening.\n\nLoad cases.\n- LC1 user nominal: 2.0 kN point load at slab center.\n- LC2 user factored (SF 2): 4.0 kN point load at slab center.\n- LC3 dead: self-weight.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "WaterAid 900 x 900 mm household pit-latrine RC slab",
+    "brief": "Design a 900 x 900 x 70 mm precast RC squat slab for a 700 x 700 mm pit with SF 2 on a 2 kN user point load.",
+    "geometric_constraints": {
+      "slab_plan_mm": [
+        900,
+        900
+      ],
+      "slab_thickness_mm": 70,
+      "pit_plan_mm": [
+        700,
+        700
+      ],
+      "edge_bearing_mm": 100,
+      "squat_opening_mm": [
+        350,
+        150
+      ]
+    },
+    "material": {
+      "concrete": {
+        "min_fc_MPa": 20
+      },
+      "rebar": {
+        "grade": "Gr 60",
+        "fy_MPa": 420,
+        "diameter_mm": 6,
+        "spacing_mm": 150
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "user_nominal",
+        "magnitude_N": 2000,
+        "application": "central point load"
+      },
+      {
+        "id": "LC2",
+        "name": "user_factored_SF2",
+        "magnitude_N": 4000,
+        "application": "SF 2 central point load"
+      },
+      {
+        "id": "LC3",
+        "name": "dead",
+        "application": "self-weight"
+      }
+    ],
+    "boundary_conditions": {
+      "edges": "simple support on 4 sides on pit lining"
+    },
+    "objective": {
+      "primary": "pass structural criteria",
+      "secondary": "slab mass <= 60 kg for 2-person lift"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "single body",
+      "report_fields": [
+        "max_bending_stress_MPa",
+        "max_deflection_mm",
+        "slab_mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "user_live_load_safety_factor",
+        "limit": 2.0,
+        "derivation": "WaterAid brief SF",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_bending_stress_concrete_MPa",
+        "limit_MPa": 13.4,
+        "derivation": "0.67 * fc = 0.67 * 20 MPa envelope",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "rebar_tensile_stress_MPa",
+        "limit_MPa": 420,
+        "derivation": "rebar yield",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "slab_plan_dimension_mm",
+        "limit_mm": 900,
+        "derivation": "WaterAid standard slab plan",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "slab_mass_kg",
+        "limit_kg": 60,
+        "derivation": "2-person lift handling",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (slab) + embedded rebar",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "SAP2000",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static concentrated load"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not applicable.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Stocky slab."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Pit-lining design for collapsing soils",
+      "Superstructure to slab anchorage",
+      "Fly-screen vent for VIP variant"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "humanitarian latrine slab design",
+    "SF 2 concentrated-load verification",
+    "precast handling mass constraint",
+    "RC plate with cast keyhole opening",
+    "WaterAid explicit numerics"
+  ]
+}

@@ -1,0 +1,174 @@
+{
+  "id": "060_jp5_honda_eco_mileage",
+  "source": {
+    "catalog_ref": "JP5",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "automotive_structural",
+  "part_class": "monocoque_eco_vehicle_chassis",
+  "full_prompt": "Design the chassis and body of an ultra-low fuel-consumption single-seat prototype vehicle for a fuel-economy race benchmark. The vehicle must use a supplied single-cylinder 4-stroke 50 cc engine (reference production 50 cc unit as permitted by the rulebook). The minimum turning radius of the finished vehicle must be no greater than 6 m, verified on a flat test pad. The overall body dimensions must comply with the rulebook envelope: vehicle length approximately 2.0-3.5 m, width approximately 0.5-1.3 m, height sufficient to safely house a seated driver (driver height reference 170 cm). The vehicle must have three or more wheels and positive stability (it must not tip over on a 25-degree static tilt test in any direction with the driver seated). The driver must be secured by a 4-point harness and be able to exit the vehicle unaided within 10 seconds. The primary structural chassis (whether tubular space frame, CFRP monocoque, or hybrid) must carry a quasi-static 80 kg driver mass applied to the seat pan with a 2.5 g vertical gust factor (equivalent 196 kg vertical load at the seat pan) and a 1.5 g lateral cornering load at the seat with no permanent yield. A front impact equivalent quasi-static deceleration of 5 g applied to a 180 kg (vehicle + driver) system must not produce yielding in the chassis primary structure or intrude into the driver cell. Primary verification is linear static structural FEA for the chassis under (a) seated driver + 2.5 g vertical, (b) 1.5 g lateral cornering, (c) 5 g front impact equivalent. A tilt analysis computes the maximum stable tilt angle from CG and track geometry — this is kinematic, not FEA. Vibration, thermal, fluid (CFD aerodynamic drag is highly relevant to mpg but is not in the rule-compliance gate), and radiation analyses are explicitly NOT required for the structural pass/fail gate. Deliverables: STEP AP242 of the chassis + body, a mass budget, and a report listing turning radius in m, vehicle dry mass in kg, max von Mises stress under each load case in MPa, and tilt-to-tip angle in deg.",
+  "short_prompt": "Design the chassis and body of a single-seat prototype fuel-economy race vehicle around a supplied 50 cc 4-stroke engine. Overall envelope: length 2.0-3.5 m, width 0.5-1.3 m; driver reference 170 cm seated. Must have at least three wheels, be stable on a 25-degree static tilt in any direction with the driver seated, provide a 4-point harness, and permit unassisted egress within 10 s. Minimum turning radius 6 m on a flat test pad.\n\nLoad cases on the chassis (quasi-static equivalent).\n- LC1 seated driver + 2.5 g vertical: 80 kg x 2.5 g at seat pan (~1,961 N).\n- LC2 cornering 1.5 g lateral: 80 kg x 1.5 g at seat (~1,177 N).\n- LC3 front-impact 5 g equivalent: 180 kg system x 5 g forward (~8,829 N) with no driver-cell intrusion.\n- LC4 tilt test: 25 degrees static in any direction, no tip-over.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "kinematic_tilt_analysis",
+        "reason": "Tilt stability computed from CG height and track, not FEA.",
+        "examples": [
+          "CAD mass-properties + analytical tilt"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Single-seat fuel-economy prototype chassis",
+    "brief": "Design a 3-wheel ultra-low-drag fuel-economy vehicle around a 50 cc 4-stroke engine, min turning radius 6 m, 25 deg tilt stable.",
+    "geometric_constraints": {
+      "engine": "50 cc 4-stroke, single cylinder",
+      "turning_radius_m_max": 6,
+      "length_m_range": [
+        2.0,
+        3.5
+      ],
+      "width_m_range": [
+        0.5,
+        1.3
+      ],
+      "wheels_min": 3
+    },
+    "material": {
+      "typical": "CFRP monocoque or 4130 steel tubular frame",
+      "CFRP_properties_ref": {
+        "E_GPa": 70,
+        "tensile_strength_MPa": 600
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "driver_vertical_2p5g",
+        "magnitude_N": 1961,
+        "description": "80 kg driver x 2.5 g on seat pan"
+      },
+      {
+        "id": "LC2",
+        "name": "cornering_lateral_1p5g",
+        "magnitude_N": 1177,
+        "description": "80 kg driver x 1.5 g lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "front_impact_5g",
+        "magnitude_N": 8829,
+        "description": "180 kg system x 5 g forward"
+      },
+      {
+        "id": "LC4",
+        "name": "tilt_test",
+        "angle_deg": 25
+      }
+    ],
+    "boundary_conditions": {
+      "wheel_contact_patches": "fixed vertical reactions",
+      "seat_pan": "load application"
+    },
+    "objective": {
+      "maximize": "fuel_economy_km_per_L"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "turning_radius_m",
+        "dry_mass_kg",
+        "max_vm_stress_LC1_MPa",
+        "max_vm_stress_LC2_MPa",
+        "max_vm_stress_LC3_MPa",
+        "tilt_to_tip_deg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "turning_radius_m",
+        "limit_m": 6,
+        "derivation": "Rulebook min turning radius",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tilt_to_tip_deg",
+        "limit_deg": 25,
+        "derivation": "Rulebook static tilt",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "Safety factor 1.5 against yield in primary chassis",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_fraction_of_yield": 1.0,
+        "derivation": "Ultimate SF 1.0 for 5 g crash equivalent, no driver cell intrusion",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (monocoque) or beam (tube frame) + solid at joints",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static x3"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in rule-compliance gate.",
+      "thermal_analysis": "Engine thermal is managed by OEM unit.",
+      "fluid_analysis": "CFD improves mpg but is not a pass/fail gate.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "turning radius geometric constraint",
+    "driver vertical + lateral chassis load",
+    "front-impact equivalent",
+    "tilt stability"
+  ]
+}

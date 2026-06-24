@@ -1,0 +1,499 @@
+{
+  "id": "156_cn6_aci_frp_composites",
+  "source": {
+    "catalog_ref": "CN6",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/156_cn6_aci_frp_composites.json",
+    "multipart_basis": "The original sample already specifies body_count=assembly with 'concrete and each FRP bar as distinct bodies'. Multipart decomposition formalizes that split into concrete section, GFRP longitudinal bars, GFRP/steel stirrups, and load-point bearing pads."
+  },
+  "domain": "civil_composite_structural",
+  "part_class": "frp_reinforced_concrete_beam_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the ACI CN6 GFRP-reinforced concrete beam as a multi-part assembly, explicitly modeling the 1220 mm long 150 x 200 mm beam as the physical collection of the concrete section, GFRP longitudinal reinforcement bars, transverse stirrups, and load-point bearing pads. The original prompt already calls out 'deliver STEP AP242 assembly with concrete and each FRP bar as distinct bodies'; this multipart sidecar formalizes that decomposition.\n\nThe assembly consists of four part families: (A) the concrete beam body, a rectangular 1220 mm long x 150 mm wide x 200 mm deep section of normal-weight concrete with fc' 27.6 MPa; (B) GFRP longitudinal reinforcement bars placed near the tension face (bottom) and optionally compression face (top) of the beam on the team-selected bar schedule (typical 2-4 #4 or #5 GFRP bars per layer); (C) GFRP or steel stirrups spaced along the beam to provide shear capacity within the four-point bending geometry (typical #3 stirrups at 50-100 mm spacing over the shear span); (D) two load-point bearing pads on the top surface at 305 mm separation that distribute the 8.9 kN total four-point load into the beam without local crushing.\n\nGeometry inherits the original sample verbatim: total length 1220 mm (48 in), clear span 1016 mm (40 in), cross-section 150 mm wide x 200 mm deep, four-point load separation 305 mm.\n\nMaterial inherits verbatim: concrete fc' 27.6 MPa, GFRP bars with ffu 690 MPa and Ef 44.8 GPa. Stirrups may be GFRP or steel per team selection; bearing pads are typically 50 mm x 150 mm steel plates.\n\nLoads inherit verbatim: LC1 four-point bending with 8.9 kN total applied load distributed as two 4.45 kN point loads at 305 mm separation on the top surface.\n\nPass/fail criteria inherit verbatim from the original and apply at the assembly level: (R1) nominal flexural capacity per ACI CODE-440.11-22 Chapter 22 >= 8.9 kN total load (0.68 kN-m at critical section); (R2) failure mode must be compression-controlled (rho_f > rho_fb per ACI 440.11-22 Section 22.2.2); (R3) midspan deflection under 8.9 kN <= 5.6 mm (span/180); (R4) phi factor >= 0.55 per ACI 440.11-22 Table 21.2.2; (R5) total material cost <= $25 per beam. Added assembly-level targets under fem_check_policy.assembled_only: FRP-concrete bond DCR and load-pad bearing DCR must be reported; per-part stresses are reported for diagnostic purposes but do not gate pass/fail.\n\nVibration, thermal, fluid, and radiation analyses are not required. An ACI 440.11-22 Chapter 22 moment-capacity spreadsheet is required outside the FEA for the closed-form sectional check. Deliver STEP AP242 of the assembly with each body (concrete section, each GFRP bar, each stirrup, each load-point bearing pad) as a distinct solid tagged with part_family (A..D) and instance_index, plus a structural report listing nominal moment capacity, total failure load, failure mode, midspan deflection at 8.9 kN, phi factor, total cost, and FRP-concrete bond + bearing-pad DCR.",
+  "short_prompt": "Design an ACI CN6 GFRP-reinforced concrete beam as a multi-part assembly (concrete section, GFRP longitudinal bars, stirrups, two steel load-point bearing pads) per ACI CODE-440.11-22 Chapter 22.\n\nTotal length 1220 mm (clear span 1016 mm), cross-section 150 mm wide x 200 mm deep, four-point load separation 305 mm. Concrete fc' 27.6 MPa; GFRP bars ffu 690 MPa, Ef 44.8 GPa.\n\nLoad case: LC1 four-point bending 8900 N total (two 4450 N point loads at 305 mm apart).\n\nPass/fail: nominal capacity >= 8900 N (0.68 kN-m at critical section); rho_f > rho_fb (compression-controlled); midspan deflection at design load <= 5.6 mm (span/180); phi factor >= 0.55 per Table 21.2.2; total cost <= $25; FEM at assembled level; bond + bearing-pad DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ACI_440_11_22_moment_capacity",
+        "reason": "ACI CODE-440.11-22 Chapter 22 flexural capacity uses a closed-form equivalent rectangular stress block with rho_f/rho_fb branch logic, not FEA.",
+        "examples": [
+          "ACI 440 spreadsheet",
+          "RESPONSE-2000 for sectional analysis"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "GFRP-reinforced concrete beam per ACI 440.11-22 (multi-part assembly)",
+    "brief": "Multi-part 150x200x1220 mm GFRP-RC beam: concrete section (A) + longitudinal GFRP bars (B) + stirrups (C) + 2 load-point bearing pads (D). 1016 mm clear span, 8.9 kN four-point bending target, ACI 440.11-22 Chapter 22 compression-controlled failure, span/180 deflection, $25 cost cap.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "concrete_beam_body",
+        "role": "1220 mm long x 150 mm wide x 200 mm deep rectangular concrete beam section of normal-weight fc' 27.6 MPa concrete; provides the compressive stress block and encases the GFRP reinforcement",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 1220,
+          "width_mm": 150,
+          "depth_mm": 200
+        },
+        "material_hint": "normal-weight concrete fc' 27.6 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "gfrp_longitudinal_bar",
+        "role": "GFRP longitudinal bar placed on the tension face (and optionally compression face) of the beam; provides the tension reinforcement to resist the 0.68 kN-m design moment",
+        "count_min": 2,
+        "count_note": "2-4 bars per layer per team selection; rho_f must exceed rho_fb for compression-controlled failure per R2",
+        "geometric_constraints": {
+          "f_fu_MPa": 690,
+          "E_f_GPa": 44.8,
+          "length_mm": 1220
+        },
+        "material_hint": "GFRP bar per ACI 440.11-22 material schedule",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "stirrup",
+        "role": "transverse shear reinforcement stirrup spaced along the beam at team-selected pitch (typical 50-100 mm within the shear span); carries beam shear outside the pure-moment region",
+        "count_min": 6,
+        "geometric_constraints": {
+          "bar_size": "#3 or smaller",
+          "pitch_mm": "50-100 team-selected"
+        },
+        "material_hint": "GFRP or ASTM A615 Grade 60 steel",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "load_point_bearing_pad",
+        "role": "steel bearing pad at each of the two load points on the top surface (305 mm apart); distributes the 4.45 kN per load point into the concrete beam without local crushing",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plan_mm": [
+            50,
+            150
+          ],
+          "thickness_mm": 10
+        },
+        "material_hint": "structural steel plate",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "1220 x 150 x 200 mm",
+      "coordinate_system": "beam coordinates: +x along length, +y along width, +z up (compression face)"
+    },
+    "material": {
+      "concrete": {
+        "fc_prime_MPa": 27.6
+      },
+      "GFRP_bars": {
+        "f_fu_MPa": 690,
+        "E_f_GPa": 44.8
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "four_point_bending",
+        "total_applied_load_N": 8900,
+        "load_points": 2,
+        "point_separation_mm": 305,
+        "application": "concentrated loads on top surface via bearing pads"
+      }
+    ],
+    "boundary_conditions": {
+      "supports": "simply supported at 1016 mm clear span",
+      "bar_to_concrete_interface": "bonded/embedded tie (IF1)",
+      "stirrup_to_longitudinal_interface": "tied (IF2)",
+      "load_pad_to_concrete_interface": "bonded bearing contact (IF3)"
+    },
+    "objective": {
+      "primary": "pass all ACI 440.11-22 criteria under assembled_only FEM check",
+      "secondary": "minimize cost per beam"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "nominal_moment_capacity_kNm",
+        "ultimate_total_load_kN",
+        "failure_mode",
+        "midspan_deflection_at_8p9kN_mm",
+        "phi_factor",
+        "total_cost_USD",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "nominal_total_load_capacity",
+        "limit_N": 8900,
+        "derivation": "ACI 440.11-22 Chapter 22 equivalent to 0.68 kN-m at critical section",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "rho_f_over_rho_fb_ratio",
+        "limit": 1.0,
+        "derivation": "compression-controlled requires rho_f > rho_fb per ACI 440.11-22 Section 22.2.2",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">"
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection_at_design_load",
+        "limit_mm": 5.6,
+        "derivation": "span/180",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "phi_strength_reduction_factor",
+        "limit": 0.55,
+        "derivation": "ACI 440.11-22 Table 21.2.2 compression-controlled",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_cost",
+        "limit_USD": 25,
+        "derivation": "reference unit prices",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6-assembly",
+        "type": "assembly_analysis",
+        "metric": "connection_DCR_bond_and_bearing",
+        "limit": 1.0,
+        "derivation": "FRP-concrete bond (ACI 440.11-22 development length) and load-pad bearing capacity (ACI 318-19 Section 22.8)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid concrete with embedded reinforcement or plane-stress with truss",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "Abaqus with concrete damage plasticity",
+        "ATENA",
+        "RESPONSE-2000 for sectional"
+      ],
+      "analysis_types": [
+        "nonlinear static with concrete damage plasticity (optional)",
+        "ACI 440 closed-form sectional"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "GFRP longitudinal bar to concrete bond (rib + surface adhesion); transfers tensile axial force into the concrete compression block"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "stirrup tied to longitudinal bar; confines concrete and carries beam shear across the shear span"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "load-pad bearing contact on the concrete top surface; distributes the 4.45 kN load point into the beam"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The original sample already calls out body_count=assembly with concrete and each FRP bar as distinct bodies; the multipart sidecar formalizes that into concrete section, GFRP longitudinal bars, stirrups, and load-point bearing pads.",
+    "speculation_caveats": "Bar count and stirrup count are team-selected within ACI 440.11-22 requirements for compression-controlled failure.",
+    "original_sample_preserved_at": "docs/eval/samples/156_cn6_aci_frp_composites.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6-assembly"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "nominal_total_load_capacity",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "rho_f_over_rho_fb_ratio",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "midspan_deflection_at_design_load",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "generated_static_step:design",
+      "metric": "phi_strength_reduction_factor",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "generated_static_step:design",
+      "metric": "total_cost",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_assembly_005",
+      "requirement_id": "R6-assembly",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "connection_DCR_bond_and_bearing",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_006",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

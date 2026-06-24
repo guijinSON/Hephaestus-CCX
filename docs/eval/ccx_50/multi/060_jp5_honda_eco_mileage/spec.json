@@ -1,0 +1,454 @@
+{
+  "id": "060_jp5_honda_eco_mileage",
+  "source": {
+    "catalog_ref": "JP5",
+    "year": 2025,
+    "tier": "A+",
+    "original_sample": "docs/eval/samples/060_jp5_honda_eco_mileage.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "automotive_structural",
+  "part_class": "monocoque_eco_vehicle_chassis",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the chassis and body of an ultra-low fuel-consumption single-seat prototype vehicle for a fuel-economy race benchmark, delivered as a multi-part assembly because an eco-mileage vehicle chassis is by construction a built-up structure composed of a primary monocoque tub (or tubular space frame), bulkhead/firewall partitions, a seat pan, suspension mounts, and an outer aerodynamic body shell. Seat-vertical / cornering-lateral / front-impact pass/fail, tilt stability, and turning radius all reference the assembled vehicle geometry.\n\nThe vehicle must use a supplied single-cylinder 4-stroke 50 cc engine (reference production 50 cc unit as permitted by the rulebook). The minimum turning radius of the finished vehicle must be no greater than 6 m, verified on a flat test pad. The overall body dimensions must comply with the rulebook envelope: vehicle length approximately 2.0-3.5 m, width approximately 0.5-1.3 m, height sufficient to safely house a seated driver (driver height reference 170 cm). The vehicle must have three or more wheels and positive stability (it must not tip over on a 25-degree static tilt test in any direction with the driver seated). The driver must be secured by a 4-point harness and be able to exit the vehicle unaided within 10 seconds.\n\nAssembly layout. (A) Monocoque tub / primary chassis: CFRP monocoque or 4130 steel tubular space frame forming the central driver cell and taking seat, harness, and impact loads. (B) Firewall/bulkhead: forward and aft partitions separating driver cell from engine bay and nose-impact volume. (C) Seat pan: bonded/bolted seat structure carrying the 80 kg driver through the harness mounts. (D) Suspension/wheel mounts: front and rear mounts (>= 3 total for a 3-wheel layout) interfacing the chassis to the wheel/axle uprights. (E) Outer body shell: non-structural aerodynamic skin bonded to the tub/frame; contributes dry mass but not primary load path.\n\nThe primary structural chassis (whether tubular space frame, CFRP monocoque, or hybrid) must carry a quasi-static 80 kg driver mass applied to the seat pan with a 2.5 g vertical gust factor (equivalent 196 kg vertical load at the seat pan) and a 1.5 g lateral cornering load at the seat with no permanent yield. A front impact equivalent quasi-static deceleration of 5 g applied to a 180 kg (vehicle + driver) system must not produce yielding in the chassis primary structure or intrude into the driver cell.\n\nAssembly policy. Turning radius (R1) and tilt-to-tip (R2) are whole-vehicle kinematic/geometric checks on the assembled chassis + body + wheel mounts. Seat-vertical and cornering-lateral yield (R3) depend on seat-pan-to-tub load path and bulkhead restraint. Front-impact yield / driver-cell intrusion (R4) is an assembled-tub + bulkhead + suspension-mount property. No part evaluated alone has meaningful pass/fail.\n\nSolver and analysis expectations. Primary: linear static structural FEA for the chassis under (a) seated driver + 2.5 g vertical, (b) 1.5 g lateral cornering, (c) 5 g front impact equivalent. A tilt analysis computes the maximum stable tilt angle from CG and track geometry - this is kinematic, not FEA. Vibration, thermal, fluid (CFD aerodynamic drag is highly relevant to mpg but is not in the rule-compliance gate), and radiation analyses are explicitly NOT required for the structural pass/fail gate.\n\nDeliverables: STEP AP242 of the chassis + body, a mass budget, and a report listing turning radius in m, vehicle dry mass in kg, max von Mises stress under each load case in MPa, and tilt-to-tip angle in deg.",
+  "short_prompt": "Design the chassis and body of an ultra-low-fuel-consumption single-seat prototype vehicle for a fuel-economy race benchmark, delivered as a built-up multi-part assembly: CFRP monocoque or 4130 steel tubular space frame primary chassis + forward/aft firewall/bulkhead + seat pan + front and rear suspension/wheel mounts (>= 3 total for 3-wheel) + outer non-structural aerodynamic body shell. Supplied single-cylinder 4-stroke 50 cc engine per rulebook. Vehicle length 2.0-3.5 m, width 0.5-1.3 m, >= 3 wheels, 4-point harness, driver height reference 170 cm, unaided egress within 10 seconds. Turning radius <= 6 m on flat test pad.\n\nLoad cases.\n- LC1 seat-vertical: 80 kg driver with 2.5 g vertical gust (equivalent 196 kg at the seat pan).\n- LC2 cornering-lateral: 1.5 g lateral at the seat.\n- LC3 front impact: quasi-static 5 g on a 180 kg (vehicle + driver) system, no yielding in primary structure, no driver-cell intrusion.\n- LC4 tilt stability: static 25 deg with driver seated, no tipping in any direction.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "kinematic_tilt_analysis",
+        "reason": "Tilt stability computed from CG height and track, not FEA.",
+        "examples": [
+          "CAD mass-properties + analytical tilt"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Single-seat fuel-economy prototype chassis as multi-part assembly",
+    "brief": "Design a 3-wheel ultra-low-drag fuel-economy vehicle around a 50 cc 4-stroke engine: monocoque tub + bulkheads + seat pan + suspension mounts + outer body shell; min turning radius 6 m, 25 deg tilt stable.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "monocoque_tub",
+        "role": "CFRP monocoque or 4130 steel tubular frame forming the central driver cell",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "CFRP monocoque or 4130 steel tubular frame"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "bulkhead",
+        "role": "forward / aft partitions separating driver cell from engine bay and nose-impact volume",
+        "count_min": 2,
+        "geometric_constraints": {
+          "material": "CFRP or steel sheet"
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "seat_pan",
+        "role": "seat structure carrying the 80 kg driver through harness mounts",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "CFRP or composite sandwich"
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "suspension_mount",
+        "role": "wheel/axle mounts interfacing chassis to uprights (>= 3 for 3-wheel layout)",
+        "count_min": 3,
+        "geometric_constraints": {
+          "material": "machined aluminum or welded steel"
+        }
+      },
+      {
+        "part_id": "E",
+        "name": "body_shell",
+        "role": "non-structural outer aerodynamic skin bonded to chassis",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "CFRP or GFRP skin"
+        }
+      }
+    ],
+    "geometric_constraints": {
+      "engine": "50 cc 4-stroke, single cylinder",
+      "turning_radius_m_max": 6,
+      "length_m_range": [
+        2.0,
+        3.5
+      ],
+      "width_m_range": [
+        0.5,
+        1.3
+      ],
+      "wheels_min": 3
+    },
+    "material": {
+      "typical": "CFRP monocoque or 4130 steel tubular frame",
+      "CFRP_properties_ref": {
+        "E_GPa": 70,
+        "tensile_strength_MPa": 600
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "driver_vertical_2p5g",
+        "magnitude_N": 1961,
+        "description": "80 kg driver x 2.5 g on seat pan"
+      },
+      {
+        "id": "LC2",
+        "name": "cornering_lateral_1p5g",
+        "magnitude_N": 1177,
+        "description": "80 kg driver x 1.5 g lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "front_impact_5g",
+        "magnitude_N": 8829,
+        "description": "180 kg system x 5 g forward"
+      },
+      {
+        "id": "LC4",
+        "name": "tilt_test",
+        "angle_deg": 25
+      }
+    ],
+    "boundary_conditions": {
+      "wheel_contact_patches": "fixed vertical reactions",
+      "seat_pan": "load application"
+    },
+    "objective": {
+      "maximize": "fuel_economy_km_per_L"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (tub + bulkheads + seat pan + suspension mounts + body shell)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E)"
+      ],
+      "report_fields": [
+        "turning_radius_m",
+        "dry_mass_kg",
+        "max_vm_stress_LC1_MPa",
+        "max_vm_stress_LC2_MPa",
+        "max_vm_stress_LC3_MPa",
+        "tilt_to_tip_deg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "turning_radius_m",
+        "limit_m": 6,
+        "derivation": "Rulebook min turning radius",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tilt_to_tip_deg",
+        "limit_deg": 25,
+        "derivation": "Rulebook static tilt",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "Safety factor 1.5 against yield in primary chassis",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_fraction_of_yield": 1.0,
+        "derivation": "Ultimate SF 1.0 for 5 g crash equivalent, no driver cell intrusion",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (monocoque) or beam (tube frame) + solid at joints",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static x3"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A monocoque_tub",
+        "B bulkhead"
+      ],
+      "mediated_by": "bonded/bolted joint",
+      "load_path": "bulkhead reacts front-impact load into tub; drives driver-cell intrusion under LC3"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A monocoque_tub",
+        "C seat_pan"
+      ],
+      "mediated_by": "bonded/bolted harness-point joint",
+      "load_path": "driver vertical + lateral inertia (LC1, LC2) reacted into tub"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A monocoque_tub",
+        "D suspension_mount"
+      ],
+      "mediated_by": "bolted/bonded mount plate",
+      "load_path": "wheel contact reactions carried into chassis; conditions tilt geometry"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A monocoque_tub / B bulkhead",
+        "E body_shell"
+      ],
+      "mediated_by": "bonded fairing",
+      "load_path": "non-structural; contributes dry mass and CG location"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Turning radius and tilt-to-tip are whole-vehicle kinematic/geometric properties. Seat-vertical, cornering, and front-impact yield checks depend on seat-pan-to-tub load path, bulkhead restraint, and suspension-mount reactions - all assembly-scope quantities."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "Eco-mileage prototype chassis is built up from primary tub, bulkheads, seat pan, suspension mounts, and outer body shell; rulebook pass/fail gates (tilt, turning radius, impact) reference assembled geometry.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not in rule-compliance gate.",
+      "thermal_analysis": "Engine thermal is managed by OEM unit.",
+      "fluid_analysis": "CFD improves mpg but is not a pass/fail gate.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "turning radius geometric constraint on assembly",
+    "driver vertical + lateral chassis load with seat-pan interface",
+    "front-impact equivalent on tub + bulkhead",
+    "tilt stability from assembled CG + track"
+  ],
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "turning_radius_m",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC4",
+      "metric": "tilt_to_tip_deg",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2",
+      "metric": "max_von_mises_stress",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "max_von_mises_stress",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_004",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

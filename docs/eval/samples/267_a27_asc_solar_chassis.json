@@ -1,0 +1,193 @@
+{
+  "id": "267_a27_asc_solar_chassis",
+  "source": {
+    "catalog_ref": "A27",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "solar_vehicle_roll_cage",
+  "full_prompt": "Design the roll cage for a 2026 American Solar Challenge Single Occupant Class (SOC) vehicle, compliant with ASC 2026 Regulations Rev B. The cage surrounds a single upright driver; vehicle design mass with driver 350 kg. Required per ASC 2026 Rev B: primary roll hoop members 31.75 mm (1.25 in) OD x 2.0 mm wall (0.080 in) mild steel or 4130 chromoly tubing. Helmet clearance to any cage surface >= 50 mm; helmet top >= 50 mm below the top of the main roll hoop when the driver is secured. Material: 4130 chromoly normalized steel, E = 205 GPa, yield = 460 MPa, ultimate = 670 MPa, density = 7850 kg/m^3. Geometry: main hoop height 1300 mm, width at top 600 mm, wheelbase of vehicle 2500 mm (context). Cage anchors at 4 primary bolts M12 Grade 8.8 to the carbon chassis. Load cases per ASC 2026 Rev B regulations (derived from FIA-like rollover test): (R1) Vertical roof crush: 1.5 x vehicle mass x g = 1.5 x 350 x 9.81 = 5,150 N applied vertically at the top of the main hoop; max von Mises in tubes <= yield / 1.15 = 400 MPa; vertical deflection at load point <= 50 mm (maintain helmet clearance). (R2) Lateral load: 1.0 x vehicle mass x g = 3,433 N applied horizontally at the top of the main hoop; max deflection <= 50 mm; max von Mises <= 400 MPa. (R3) Longitudinal load: 0.6 x vehicle mass x g = 2,060 N at the top; max von Mises <= 400 MPa; max deflection <= 50 mm. (R4) Brake test: vehicle shall decelerate from 60 km/h (16.67 m/s) to rest with all 4 wheels locked. Brake-related loads are not transferred through the cage but the cage shall not interfere with brake-actuator packaging (geometric constraint). (R5) Cage mass <= 8 kg. (R6) Battery-energy cap per ASC 2026 Rev B Li-ion chemistry: pack energy <= 5.28 kWh (reference, non-structural). Primary verification: structural FEA (linear static for R1-R3). Vibration, thermal, fluid, radiation, buckling NOT required. Deliverables: STEP AP242 welded cage, weld map, and a report listing mass in kg, max deflection and max von Mises per load case.",
+  "short_prompt": "Design the roll cage for a 2026 American Solar Challenge Single Occupant Class (SOC) vehicle, compliant with ASC 2026 Regulations Rev B. The cage surrounds a single upright driver; vehicle design mass with driver 350 kg. Per ASC 2026 Rev B: primary roll-hoop members 31.75 mm OD x 2.0 mm wall mild steel or 4130 chromoly; helmet clearance to any cage surface >= 50 mm; helmet top >= 50 mm below the main hoop top. Anchors are 4 x M12 Grade 8.8 bolts to the carbon chassis. Load factors are derived from a FIA-like rollover test scaled by vehicle mass.\n\nEnvelope: main hoop height 1300 mm, top width 600 mm (context wheelbase 2500 mm).\n\nLoad cases.\n- LC1 vertical roof crush: 1.5 x vehicle mass x g = 5,150 N at the top of the main hoop; load-point deflection <= 50 mm.\n- LC2 lateral: 1.0 x vehicle mass x g = 3,433 N horizontal at the top of the main hoop; deflection <= 50 mm.\n- LC3 longitudinal: 0.6 x vehicle mass x g = 2,060 N at the top; deflection <= 50 mm.\n- LC4 brake-test geometric: vehicle must stop from 60 km/h (16.67 m/s) with all 4 wheels locked and the cage must not foul brake-actuator packaging.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ASC 2026 SOC roll cage",
+    "brief": "4130 chromoly 1.25 in OD x 0.080 in wall welded cage; 1.5/1.0/0.6 g rollover/lateral/longitudinal test loads.",
+    "geometric_constraints": {
+      "tube_OD_mm": 31.75,
+      "tube_wall_mm": 2.0,
+      "main_hoop_height_mm": 1300,
+      "main_hoop_width_top_mm": 600,
+      "helmet_clearance_mm_min": 50,
+      "anchor_bolts": {
+        "count": 4,
+        "size": "M12 Grade 8.8"
+      }
+    },
+    "material": {
+      "name": "AISI 4130 normalized",
+      "properties": {
+        "youngs_modulus_GPa": 205,
+        "yield_strength_MPa": 460,
+        "ultimate_tensile_strength_MPa": 670,
+        "density_kg_m3": 7850
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "roof_crush_1.5g",
+        "force_N": 5150,
+        "direction": "-Z at hoop top",
+        "deflection_limit_mm": 50
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_1g",
+        "force_N": 3433,
+        "direction": "+Y at hoop top",
+        "deflection_limit_mm": 50
+      },
+      {
+        "id": "LC3",
+        "name": "longitudinal_0.6g",
+        "force_N": 2060,
+        "direction": "+X at hoop top",
+        "deflection_limit_mm": 50
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "four M12 anchors fully fixed",
+      "loads": "point or distributed at hoop top"
+    },
+    "objective": {
+      "minimize": "cage_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "cage_mass_kg",
+        "max_deflection_LC1_mm",
+        "max_deflection_LC2_mm",
+        "max_deflection_LC3_mm",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "max_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3a",
+        "type": "structural_analysis",
+        "metric": "max_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "cage_mass",
+        "limit_kg": 8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B32)",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x3 cases)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static rollover test.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Closed frame; not driving."
+    }
+  },
+  "eval_coverage": [
+    "three ASC Rev B rollover directions",
+    "deflection tied to helmet clearance",
+    "single-occupant vehicle class"
+  ]
+}

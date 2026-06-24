@@ -1,0 +1,163 @@
+{
+  "id": "084_kr11_yak_water_rocket",
+  "source": {
+    "catalog_ref": "KR11",
+    "year": 2024,
+    "tier": "B"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "water_rocket_airframe",
+  "full_prompt": "Design a water rocket airframe for a youth water-rocket benchmark event. The rocket uses a pressurized PET bottle (standard 1.5 L carbonated-beverage bottle) as the pressure vessel and water-propellant tank. The competition target is a range of 60 m along the ground, measured from launch point. Launch angle is required to be between 40 degrees (inclusive) and strictly less than 90 degrees from horizontal. The rocket is pressurized with air to a typical 5-7 bar (500-700 kPa) gauge at launch (some PET bottles have tested burst pressure around 14 bar, giving SF about 2-3). Water fill is typically 30-40% of bottle volume (450-600 mL in a 1.5 L bottle). Dry mass of the airframe (bottle + nose cone + fins + any electronics) must be kept low; target dry mass 200-400 g. Safety and structural pass/fail: (1) the PET bottle plus any nose-cone or fin attachment must not leak at 700 kPa gauge (proof pressure check); (2) the 1.5 L PET bottle at 700 kPa gauge gives hoop stress PR/t = 700e3 * 0.045 / 0.00035 ~= 90 MPa on a 90 mm ID bottle with 0.35 mm wall — well below PET UTS around 55-75 MPa, so actual carbonated-soda PET works with SF 0.6-0.8 — flag this as a safety-margin concern that the rules address by limiting pressure to the bottle's rated-soda pressure; design must not exceed 700 kPa for a soda bottle; (3) fin attachment must survive 20 g axial deceleration at ejection; (4) range with 40 deg launch and given propellant mass must land within +/- 10 m of the 60 m target (ballistic trajectory check, non-FEA). Primary verification is a structural / pressure-vessel FEA check on the bottle at the launch pressure and a simple pressure-proof check. Ballistic trajectory is non-FEA. Vibration, thermal, fluid (internal water/air dynamics are approximated), and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the rocket, and a report listing dry mass in g, fill fraction, launch pressure in kPa, bottle hoop stress in MPa with SF, and predicted range in m.",
+  "short_prompt": "Design a youth-class water-rocket airframe built around a standard 1.5 L PET carbonated-soda bottle as the pressure vessel and water-propellant tank, with a nose cone, fins and ground launcher interface. The design target is a 60 m downrange impact (+/- 10 m) from a launch at >= 40 deg and strictly < 90 deg from horizontal, with launch pressure capped at the bottle's rated soda pressure. Dry-mass target 200-400 g.\n\nLoad cases.\n- LC1 launch pressure: 700 kPa gauge in the PET bottle at launch.\n- LC2 fin ejection shock: 20 g axial at fin attachments.\n- Predicted range from a ballistic-trajectory model (non-FEA) must land within +/- 10 m of 60 m.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ballistic_trajectory",
+        "reason": "Range prediction is a 2D ballistic simulation with drag, not FEA.",
+        "examples": [
+          "python trajectory model",
+          "OpenRocket water-rocket plugin"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Youth-class water rocket",
+    "brief": "Design a PET 1.5 L water rocket launching at 40 to <90 deg, hitting 60 m range, launch pressure ≤ 700 kPa, dry mass 200-400 g.",
+    "geometric_constraints": {
+      "bottle_volume_L": 1.5,
+      "bottle_ID_mm_approx": 90,
+      "bottle_wall_mm_approx": 0.35,
+      "launch_angle_deg_min": 40,
+      "launch_angle_deg_max_strict": 90,
+      "target_range_m": 60,
+      "range_tolerance_m": 10
+    },
+    "material": {
+      "bottle": "PET (carbonated soda rated)",
+      "PET_properties": {
+        "UTS_MPa_range": [
+          55,
+          75
+        ],
+        "E_GPa": 2.5
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_pressure",
+        "magnitude_kPa": 700,
+        "description": "peak gauge"
+      },
+      {
+        "id": "LC2",
+        "name": "fin_ejection_shock",
+        "magnitude_g": 20,
+        "direction": "axial"
+      }
+    ],
+    "boundary_conditions": {
+      "bottle_neck": "sealed at launcher"
+    },
+    "objective": {
+      "range_m_target": 60
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "dry_mass_g",
+        "water_fill_fraction",
+        "launch_pressure_kPa",
+        "bottle_hoop_stress_MPa",
+        "bottle_safety_factor",
+        "predicted_range_m"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "launch_pressure_kPa",
+        "limit_kPa": 700,
+        "derivation": "PET soda bottle rated pressure limit",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "bottle_SF_against_UTS",
+        "limit": 1.25,
+        "derivation": "Conservative SF against rated UTS lower bound 55 MPa",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "launch_angle_deg",
+        "limit_lower_deg": 40,
+        "limit_upper_deg_strict": 90,
+        "derivation": "Rulebook launch angle rule",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "predicted_range_error_m",
+        "limit_m": 10,
+        "derivation": "Within 10 m of 60 m target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (bottle)",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static (pressure)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not applicable.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Internal flow approximated by trajectory model.",
+      "radiation_analysis": "Not applicable."
+    },
+    "flagged_uncertainty": "PET bottle wall thickness and UTS vary by manufacturer; use 0.35 mm / 55 MPa as conservative baseline."
+  },
+  "eval_coverage": [
+    "PET pressure-vessel hoop stress",
+    "launch angle rule",
+    "60 m range accuracy",
+    "fin ejection shock"
+  ]
+}

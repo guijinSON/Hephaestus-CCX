@@ -1,0 +1,179 @@
+{
+  "id": "163_cn13_asabe_gunlogson",
+  "source": {
+    "catalog_ref": "CN13",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "agricultural_environmental",
+  "part_class": "farm_check_dam",
+  "full_prompt": "Design a single farm check-dam structure for edge-of-field stormwater sediment capture in a midwestern row-crop runoff context. The check-dam must be placed in a grassed waterway 2.4 m wide and 0.60 m deep on a longitudinal slope of 2.0 percent, constructed from rock riprap D50 of 150 mm encased in a galvanized hardware-cloth gabion frame 2.4 m wide x 0.90 m long x 0.45 m tall. The dam must intercept a 10-year storm peak discharge of 0.85 m^3/s, 25 mg/L baseline sediment load with 60% mass as particles finer than 63 um, and leave a maximum ponded water depth of 0.40 m behind the dam without overtopping the grassed waterway banks. Pass/fail criteria: (R1) peak stage behind the dam under 0.85 m^3/s must not exceed 0.40 m per broad-crested weir flow through the dam, (R2) total sediment trapping efficiency over the 10-year storm event must be at least 60% by mass, computed from Stokes settling over the ponded volume and hydraulic retention time, (R3) sliding factor of safety of the gabion against horizontal hydrostatic thrust plus debris impact must be at least 1.5, (R4) overturning factor of safety about the downstream toe must be at least 2.0, and (R5) gabion wire pull-out FoS must be at least 2.0 against tensile tearing of the galvanized wire under accumulated sediment plus debris loading. Vibration, thermal, fluid CFD, and radiation analyses are not required; the hydraulic load is applied via broad-crested weir equations plus closed-form Stokes settling. Deliver STEP AP242 assembly of the gabion check-dam with rock + wire cage + anchor pins as sub-bodies plus a hydrology and stability report with ponded stage, sediment trapping efficiency, sliding, overturning, and wire pull-out FoS.",
+  "short_prompt": "Design a farm check-dam for edge-of-field stormwater sediment capture in a grassed waterway 2.4 m wide on a 2% longitudinal slope. The dam is a rock-filled gabion, approximately 2.4 m wide x 0.9 m long x 0.45 m tall, with riprap (D50 ~150 mm) encased in a galvanized wire cage, anchored in the channel bottom.\n\nHydrology and loads apply USDA/NRCS broad-crested weir hydraulics plus Stokes settling (closed form, no CFD).\n- LC1 10-year peak discharge: 0.85 m^3/s steady-state flow over the dam, with a baseline 25 mg/L sediment load (60% finer than 63 um).\n- LC2 sediment + debris static: hydrostatic thrust plus accumulated sediment load acting on the dam.\n\nStability (sliding, overturning) and gabion wire pull-out are the governing structural checks.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "broad_crested_weir_hydraulics",
+        "reason": "Peak stage and discharge-over-dam are closed-form weir equations (Henderson 1966), not FEA or CFD.",
+        "examples": [
+          "USDA-NRCS EFH Chapter 14",
+          "HEC-RAS weir coefficient"
+        ]
+      },
+      {
+        "tool": "stokes_settling_trapping",
+        "reason": "Sediment trapping efficiency is computed by particle settling velocity over residence time per USDA SEDIMOT.",
+        "examples": [
+          "USDA SEDIMOT III",
+          "Stokes law spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Gabion check-dam for farm stormwater sediment capture",
+    "brief": "Design a 2.4 m wide x 0.90 m long x 0.45 m tall rock-filled gabion check-dam in a 2% grassed waterway for a 10-year 0.85 m^3/s event with at least 60% sediment trapping and stability FoS.",
+    "geometric_constraints": {
+      "dam_width_m": 2.4,
+      "dam_length_along_flow_m": 0.9,
+      "dam_height_m": 0.45,
+      "D50_riprap_mm": 150,
+      "waterway_slope_pct": 2.0
+    },
+    "material": {
+      "riprap": "angular stone D50 150 mm",
+      "gabion_wire": "galvanized hardware cloth, 2.7 mm wire",
+      "anchor_pins": "ASTM A615 Grade 60, 16 mm dia"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "10yr_peak_discharge",
+        "magnitude_m3_s": 0.85,
+        "application": "steady-state overtopping or weir flow"
+      },
+      {
+        "id": "LC2",
+        "name": "sediment_plus_debris_static",
+        "application": "hydrostatic + accumulated sediment thrust"
+      }
+    ],
+    "boundary_conditions": {
+      "dam_base": "set in waterway bottom, passive soil resistance on downstream toe"
+    },
+    "objective": {
+      "primary": "pass ponded stage + trapping efficiency + stability",
+      "secondary": "minimize gabion volume"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "ponded_stage_m",
+        "sediment_trapping_efficiency_pct",
+        "sliding_FoS",
+        "overturning_FoS",
+        "wire_pullout_FoS"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "ponded_stage_behind_dam",
+        "limit_m": 0.4,
+        "derivation": "grassed waterway bank freeboard",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "sediment_trapping_efficiency",
+        "limit_pct": 60,
+        "derivation": "USDA SEDIMOT Stokes settling target",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "sliding_FoS",
+        "limit": 1.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "overturning_FoS",
+        "limit": 2.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "wire_pullout_FoS",
+        "limit": 2.0,
+        "derivation": "galvanized wire ultimate vs cage tensile demand",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "rigid-body + shell wire cage",
+      "solver_hints": [
+        "HEC-RAS + hand calc",
+        "PLAXIS 2D"
+      ],
+      "analysis_types": [
+        "weir hydraulics",
+        "limit-equilibrium stability"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static stormwater event.",
+      "thermal_analysis": "Outdoor ambient.",
+      "fluid_analysis": "Weir flow closed form; CFD not required.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Gabion is not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Longer-term vegetation establishment",
+      "Debris jam scenarios",
+      "Maintenance access"
+    ]
+  },
+  "eval_coverage": [
+    "weir hydraulics + Stokes settling non-FEA solvers",
+    "limit-equilibrium sliding/overturning FoS",
+    "sediment-trapping efficiency target",
+    "agricultural edge-of-field structural use case"
+  ]
+}

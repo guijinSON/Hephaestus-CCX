@@ -1,0 +1,216 @@
+{
+  "id": "272_a32_robotx_wamv_payload_deck",
+  "source": {
+    "catalog_ref": "A32",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "marine_structural",
+  "part_class": "wamv_payload_deck",
+  "full_prompt": "Design a single-part monolithic payload deck for the 2026 RobotX WAM-V 16 USV, compliant with the 2026 RobotX Team Handbook. The WAM-V has two 5 m pontoons connected by a 4 m x 2 m deck bridging structure on top of which the team must mount sensors, a UAV launch/recovery interface, and a UUV deployment gantry. Payload mass limit 500 kg on the deck. The deck is a honeycomb sandwich composite panel: outer skin 3 mm carbon/epoxy quasi-isotropic, 25 mm Nomex honeycomb core, inner skin 3 mm carbon/epoxy. Overall dimensions 4000 mm x 2000 mm x 31 mm. Deck attaches to the WAM-V inflatable pontoon rigid inserts via 8 clamping strap interfaces on each long edge (16 total) - model as pinned. Material: carbon/epoxy (E1 = 135 GPa, E2 = 10 GPa, strength L = 1500 MPa, density 1600 kg/m^3); Nomex honeycomb (density 48 kg/m^3, out-of-plane compressive 2.4 MPa, shear 1.2 MPa). Skin layup [0/45/90/-45]s. Load cases: (R1) Distributed payload 500 kg x 9.81 = 4,905 N uniformly over deck center 2000 mm x 1000 mm area; max fiber stress <= 1500 / 3.0 = 500 MPa; max core shear <= 1.2 MPa; max deck deflection <= L/200 = 20 mm. (R2) Concentrated UAV launch load: 80 kg UAV + 3 g launch recoil = 2,354 N at a single 500 mm x 500 mm pad location near deck center; max fiber stress <= 500 MPa; max deflection at load <= 15 mm. (R3) UUV deployment: 25 kg UUV hoisted and swung, producing 50 kg equivalent dynamic load at the deployment boom rooted at deck edge => 490 N vertical + 200 N horizontal; max fiber stress <= 500 MPa. (R4) Wave-hogging asymmetric load: full 500 kg concentrated at one corner (worst case of waves lifting one pontoon), 4,905 N corner load; max fiber stress <= 500 MPa; max corner deflection <= 30 mm. (R5) Deck structural mass <= 60 kg. (R6) Deck first modal frequency pinned at 16 strap interfaces >= 15 Hz (decouple from wave excitation <= 1 Hz x 10 margin). Primary verification: laminate-composite structural FEA (linear static x4) + modal (R6). Vibration secondary via R6. Thermal, fluid, radiation NOT required. Deliverables: STEP AP242 deck panel, laminate schedule, strap-mount drawings, and a report listing deck mass in kg, max fiber stress per case, max deflection per case, first modal frequency in Hz.",
+  "short_prompt": "Design a single-part monolithic carbon/epoxy honeycomb-sandwich payload deck for the 2026 RobotX WAM-V 16 USV, compliant with the 2026 RobotX Team Handbook. The deck bridges the two 5 m pontoons and carries sensors, a UAV launch/recovery pad, and a UUV deployment gantry; total deck payload capped at 500 kg. Skins are 3 mm carbon/epoxy quasi-isotropic ([0/45/90/-45]s) around a 25 mm Nomex honeycomb core. The deck attaches to the WAM-V pontoon rigid inserts via 16 clamping strap interfaces (8 on each long edge, modelled as pinned).\n\nEnvelope: 4000 x 2000 x 31 mm.\n\nLoad cases.\n- LC1 distributed payload: 500 kg (4,905 N) uniform over a central 2000 x 1000 mm area; deck deflection <= L/200 = 20 mm.\n- LC2 concentrated UAV launch: 2,354 N (80 kg UAV x 3 g recoil) over a 500 x 500 mm pad near deck center; deflection <= 15 mm.\n- LC3 UUV deployment: 490 N vertical + 200 N horizontal at a deck-edge boom root (25 kg UUV swung, 50 kg equivalent dynamic).\n- LC4 wave-hogging asymmetric: full 500 kg (4,905 N) concentrated at one corner; corner deflection <= 30 mm.\n- LC5 modal: pinned at the 16 strap interfaces, first frequency >= 15 Hz (10 x margin over ~1 Hz wave excitation).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "RobotX 2026 WAM-V payload deck",
+    "brief": "Carbon/Nomex sandwich deck 4 x 2 m for 500 kg payload + UAV launch + UUV deployment loads.",
+    "geometric_constraints": {
+      "deck_length_mm": 4000,
+      "deck_width_mm": 2000,
+      "deck_thickness_mm": 31,
+      "skin_thickness_mm": 3,
+      "core_thickness_mm": 25,
+      "skin_layup": "[0/45/90/-45]s",
+      "strap_attachments_per_edge": 8,
+      "payload_mass_kg_max": 500
+    },
+    "material": {
+      "skin": {
+        "name": "Carbon/epoxy",
+        "E1_GPa": 135,
+        "long_strength_MPa": 1500,
+        "density_kg_m3": 1600
+      },
+      "core": {
+        "name": "Nomex honeycomb",
+        "density_kg_m3": 48,
+        "compressive_strength_MPa": 2.4,
+        "shear_strength_MPa": 1.2
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "uniform_payload",
+        "total_force_N": 4905,
+        "area_mm": "2000 x 1000"
+      },
+      {
+        "id": "LC2",
+        "name": "UAV_launch_3g",
+        "force_N": 2354,
+        "patch_mm": "500 x 500"
+      },
+      {
+        "id": "LC3",
+        "name": "UUV_deployment",
+        "vertical_N": 490,
+        "horizontal_N": 200
+      },
+      {
+        "id": "LC4",
+        "name": "wave_hogging_corner",
+        "force_N": 4905,
+        "location": "corner"
+      },
+      {
+        "id": "LC5",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "16 strap interfaces pinned (8 per long edge)",
+      "loads": "distributed or point on deck surface"
+    },
+    "objective": {
+      "minimize": "deck_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "deck_mass_kg",
+        "max_fiber_stress_LC1_MPa",
+        "max_fiber_stress_LC2_MPa",
+        "max_fiber_stress_LC3_MPa",
+        "max_fiber_stress_LC4_MPa",
+        "max_core_shear_MPa",
+        "max_deck_deflection_mm",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 500,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_core_shear",
+        "limit_MPa": 1.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1c",
+        "type": "structural_analysis",
+        "metric": "max_deck_deflection",
+        "limit_mm": 20,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 500,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 500,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 500,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "deck_structural_mass",
+        "limit_kg": 60,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 15,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "sandwich shell or solid-shell",
+      "mesh_size_mm_in_critical_regions": 25,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient ocean.",
+      "fluid_analysis": "Wave excitation out of scope at deck level.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not driving for bending-dominated deck."
+    }
+  },
+  "eval_coverage": [
+    "multi-payload combined load (UAV + UUV)",
+    "asymmetric wave hogging",
+    "wave-frequency modal decoupling"
+  ]
+}

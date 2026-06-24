@@ -1,0 +1,270 @@
+{
+  "id": "054_s23_milstd1522a_missile_tank",
+  "source": {
+    "catalog_ref": "S23",
+    "year": 1984,
+    "tier": "A"
+  },
+  "domain": "aerospace_pressure_vessel",
+  "part_class": "missile_class_pressurized_tank",
+  "full_prompt": "Design a 300 mm diameter aluminum pressure tank for an amateur/experimental sounding-rocket class application (collegiate-class but targeting the stricter missile/space pressurized-system factors), governed by MIL-STD-1522A (1984). MIL-STD-1522A specifies proof pressure 1.5x Maximum Expected Operating Pressure (MEOP), burst pressure 2.5x MEOP for metallic tanks, minimum safe-life factor 4x for cyclic loading, and provisions for non-destructive inspection and cycle testing. Note MIL-STD-1522A has been cancelled and superseded by MIL-STD-1540D/E and AFSPCMAN 91-710; this brief uses MIL-STD-1522A verbatim as documented in the catalog.\n\nGeometry. Cylindrical tank, outer diameter 300 mm, cylindrical length 800 mm, two ellipsoidal heads with axial height 75 mm each (2:1 ellipsoidal). Internal volume approx pi*(0.15)^2*0.8 + 2*(2/3)*pi*(0.15)^2*0.075 = 0.0566 + 0.00353 = 0.0601 m^3 = 60 L. One 25 mm ID outlet boss at each end, one 15 mm vent boss at the top. Tank mounts via four axial straps (out of scope). Wall thickness design variable 2.0-5.0 mm, minimum manufacturing 2.0 mm.\n\nMaterial. Al 6061-T6 per MMPDS S-basis: E = 68.9 GPa, nu = 0.33, rho = 2700 kg/m^3, Fty = 276 MPa, Ftu = 310 MPa, K_IC = 29 MPa*m^0.5. Weld efficiency 0.85 for TIG-welded girth seams.\n\nOperating envelope. MEOP = 3.5 MPa (nominal LOX run pressure = 2.8 MPa + regulator margin). Proof pressure = 1.5 x MEOP = 5.25 MPa. Burst pressure = 2.5 x MEOP = 8.75 MPa. Service cycles 50 (launch + hotfires + checkout); safe-life factor 4 => analysis life 200 cycles. Temperature range -180 C (LOX service) to +50 C. For simplicity this brief evaluates at room temperature only and notes cryogenic properties as an out-of-scope downstream concern.\n\nLoad cases. LC1 (proof): internal 5.25 MPa room temperature, max von Mises must not exceed Fty. LC2 (burst): internal 8.75 MPa, max von Mises in parent must not exceed Ftu and in weld must not exceed Ftu * 0.85 = 263.5 MPa. LC3 (combined MEOP + launch): 3.5 MPa internal + 10 g axial + 5 g lateral on 10 kg LOX + 3 kg dry tank = 13 kg inertial load. LC4 (leak-before-burst): initial flaw a_i = 0.25 mm (standard PT NDI) must not grow through the wall before burst; K_I at burst pressure must exceed K_IC in a meaningful sense (for aluminum LBB analysis, the crack must penetrate the wall before K_I reaches K_IC). LC5 (fatigue safe-life 200 cycles): Paris-law integration from a_i = 0.25 mm at Delta sigma = 80 MPa at R = 0 (cycling 0 to MEOP), Paris C = 1.8e-11, m = 3.0.\n\nPass/fail criteria per MIL-STD-1522A. (R1) LC1 proof: max parent von Mises <= Fty = 276 MPa; max weld von Mises <= Fty * 0.85 = 234.6 MPa. (R2) LC2 burst: max parent von Mises <= Ftu = 310 MPa; max weld von Mises <= Ftu * 0.85 = 263.5 MPa. (R3) LC3 combined MEOP + launch: max von Mises at limit <= Fty / 1.25 = 220.8 MPa (applying NASA-STD-5001B-equivalent yield factor on combined state). (R4) LC4 leak-before-burst: a_crit at burst >= t_wall, or equivalently for MIL-STD-1522A tanks the LBB criterion is 'a_crit <= through-wall flaw length equivalent' - for this brief use K_I = 1.12 * sigma * sqrt(pi * a) and verify a_crit > t_wall. (R5) LC5 fatigue: cycles to through-wall >= 200. (R6) Dry tank mass <= 5.5 kg. (R7) NDI minimum-detectable flaw on all welds per MIL-STD-1522A Table II: PT a_i = 0.25 mm (documented). (R8) Hydrostatic proof test plan: a proof pressure test at 5.25 MPa for >= 10 minutes must be specified as a verification activity (procedural).\n\nSolver and analysis expectations. Primary: axisymmetric elastic FEM for LC1-LC3; LC4 via LEFM K-solution (Newman-Raju); LC5 via Paris-law integration. Combined LC3 requires 3D shell or solid model with inertial plus internal pressure loads. Buckling, modal (dynamic), thermal-transient, fluid, radiation NOT required for this brief.\n\nDeliverables. STEP AP242 of tank, wall thickness in mm, dry mass in kg, max von Mises at proof / burst / launch in MPa for both parent and weld, LBB margin, and cycles-to-failure from Paris-law integration.",
+  "short_prompt": "Design a ~60 L cylindrical Al 6061-T6 TIG-welded pressurized tank (for amateur-class LOX/run duty on a sounding rocket) per MIL-STD-1522A (1984). MIL-STD-1522A specifies proof = 1.5 x MEOP, burst = 2.5 x MEOP for metallic tanks, a 4x safe-life factor on cyclic loading, and NDI + cycle testing. Weld efficiency 0.85.\n\nEnvelope: OD 300 mm, cylindrical length 800 mm, two 2:1 ellipsoidal heads 75 mm tall; 25 mm ID outlet boss at each end; 15 mm vent boss at top. Wall thickness design variable 2-5 mm (min 2.0 mm manufacturing).\n\nOperating envelope: MEOP 3.5 MPa, service cycles 50 => analytical life 200 cycles.\n\nLoad cases.\n- LC1 proof: internal 5.25 MPa (1.5 x MEOP) at room temperature.\n- LC2 burst: internal 8.75 MPa (2.5 x MEOP).\n- LC3 MEOP + launch: 3.5 MPa internal + 10 g axial + 5 g lateral on the 13 kg inertial system.\n- LC4 leak-before-burst: PT initial flaw a_i = 0.25 mm; a_crit must exceed wall thickness.\n- LC5 safe-life: 200 cycles at Delta sigma = 80 MPa, R = 0 (0 to MEOP cycling).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "LEFM_K_solution",
+        "reason": "MIL-STD-1522A LBB requires K-solution evaluation.",
+        "examples": [
+          "NASGRO",
+          "hand calc Newman-Raju"
+        ]
+      },
+      {
+        "tool": "Paris_law_cycle_integration",
+        "reason": "Safe-life 4x cycles.",
+        "examples": [
+          "NASGRO",
+          "AFGROW",
+          "spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "60 L Al 6061 missile-class pressurized tank per MIL-STD-1522A",
+    "brief": "Al 6061 LOX/run tank, MEOP 3.5 MPa, proof 1.5xMEOP, burst 2.5xMEOP, 4x safe-life on 50 cycles, LBB mandatory.",
+    "geometric_constraints": {
+      "OD_mm": 300,
+      "cylindrical_length_mm": 800,
+      "ellipsoidal_head_height_mm": 75,
+      "ellipsoidal_ratio": "2:1",
+      "internal_volume_L": 60,
+      "outlet_boss_ID_mm": 25,
+      "vent_boss_ID_mm": 15,
+      "min_wall_thickness_mm": 2.0
+    },
+    "material": {
+      "name": "Al 6061-T6 TIG-welded",
+      "Fty_MPa": 276,
+      "Ftu_MPa": 310,
+      "E_GPa": 68.9,
+      "density_kg_m3": 2700,
+      "K_IC_MPa_sqrt_m": 29,
+      "weld_efficiency": 0.85
+    },
+    "operating_envelope": {
+      "MEOP_MPa": 3.5,
+      "proof_MPa": 5.25,
+      "burst_MPa": 8.75,
+      "service_cycles": 50,
+      "safe_life_factor": 4,
+      "temperature_C": {
+        "min": -180,
+        "max": 50,
+        "analyzed_at_C": 20
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof",
+        "internal_MPa": 5.25
+      },
+      {
+        "id": "LC2",
+        "name": "burst",
+        "internal_MPa": 8.75
+      },
+      {
+        "id": "LC3",
+        "name": "MEOP_plus_launch",
+        "internal_MPa": 3.5,
+        "axial_g": 10,
+        "lateral_g": 5,
+        "inertial_mass_kg": 13
+      },
+      {
+        "id": "LC4",
+        "name": "LBB",
+        "a_i_mm": 0.25
+      },
+      {
+        "id": "LC5",
+        "name": "fatigue",
+        "cycles": 200,
+        "delta_sigma_MPa": 80,
+        "R": 0,
+        "paris_C": 1.8e-11,
+        "paris_m": 3.0
+      }
+    ],
+    "boundary_conditions": {
+      "strap_mounts": "out of scope"
+    },
+    "objective": {
+      "minimize": "dry_mass",
+      "target_kg_max": 5.5
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "MIL-STD-1522A",
+      "revision": "1984 (cancelled; superseded by MIL-STD-1540 and AFSPCMAN 91-710)"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "parent_max_von_mises_at_proof",
+        "limit_MPa": 276,
+        "derivation": "Fty at 1.5 x MEOP proof per MIL-STD-1522A",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "weld_max_von_mises_at_proof",
+        "limit_MPa": 234.6,
+        "derivation": "Fty * 0.85 weld efficiency",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "parent_max_von_mises_at_burst",
+        "limit_MPa": 310,
+        "derivation": "Ftu at 2.5 x MEOP burst per MIL-STD-1522A",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "structural_analysis",
+        "metric": "weld_max_von_mises_at_burst",
+        "limit_MPa": 263.5,
+        "derivation": "Ftu * 0.85",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_MEOP_plus_launch",
+        "limit_MPa": 220.8,
+        "derivation": "Fty / 1.25",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "LBB_a_crit_vs_wall",
+        "limit": 1.0,
+        "derivation": "LBB: a_crit must exceed t_wall",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "cycles_to_through_wall_safe_life",
+        "limit_cycles": 200,
+        "derivation": "4x 50 service cycles",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_kg": 5.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "NDI_PT_a_i_declared_mm",
+        "limit_mm": 0.25,
+        "derivation": "MIL-STD-1522A Table II PT minimum",
+        "applies_to": [
+          "plan"
+        ],
+        "operator": "<=",
+        "note": "a_i used in LC5 must not exceed this NDI threshold"
+      },
+      {
+        "id": "R8",
+        "type": "structural_analysis",
+        "metric": "proof_pressure_test_duration_documented_min",
+        "limit_min": 10,
+        "derivation": "MIL-STD-1522A proof test plan",
+        "applies_to": [
+          "plan"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "axisymmetric or 3D TET10",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical",
+        "NASGRO"
+      ],
+      "analysis_types": [
+        "linear static pressure",
+        "LEFM K",
+        "Paris-law"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Enveloped by LC3 QS.",
+      "thermal_analysis": "Cryogenic LOX properties out of scope; room-temp analysis.",
+      "fluid_analysis": "LOX treated as lumped mass; no slosh.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Internal pressure stabilizes shell."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Cryogenic material property knockdown",
+      "Stress-corrosion in welds",
+      "Hydrostatic proof-test fixturing"
+    ]
+  },
+  "eval_coverage": [
+    "proof 1.5x + burst 2.5x factors (missile-class)",
+    "weld efficiency applied to weld region only",
+    "safe-life 4x with declared NDI a_i"
+  ]
+}

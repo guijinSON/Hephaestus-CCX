@@ -1,0 +1,228 @@
+{
+  "id": "347_i_la_baja_mexico_hub",
+  "source": {
+    "catalog_ref": "I-EU10 (collegiate off-road benchmark Mexico, I-LA thread)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "baja_front_hub_and_upright",
+  "full_prompt": "Design the front wheel hub and upright (steering knuckle) assembly of a collegiate off-road benchmark Mexico 2026 car. Vehicle curb 275 kg + driver 90 kg; front axle supports 42% = 153 kg, per front wheel 77 kg. Tire rolling radius 280 mm. The hub is a machined 7075-T6 aluminum part (E 71.7 GPa, yield 503 MPa, ultimate 572 MPa, density 2810 kg/m^3) carrying a press-fit 6205-2RS deep-groove ball bearing (ID 25 mm, OD 52 mm, width 15 mm) and four M10 class 10.9 lug studs on a 100 mm PCD for the wheel. The upright is a separate machined 6061-T6 aluminum part (E 68.9 GPa, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3) that mounts the hub bearing, two ball-joint tapers for upper/lower A-arms, one steering tie-rod tapered mount, and two M10 class 10.9 brake-caliper mount bolts. Assembly envelope: overall 180 mm wide x 200 mm tall. Load cases: (LC1) static 1 g corner: vertical reaction 755 N at tire contact patch, transmitted through hub to bearing; (LC2) 3 g bump: 2266 N vertical at tire patch; (LC3) 1.5 g cornering lateral on outside wheel: 1133 N lateral + 755 N vertical at tire patch (lateral creates moment on upright about bearing); (LC4) braking 1.2 g fore-aft: 906 N fore-aft at tire patch + 2200 N torque reaction at caliper mount bolts (mu = 0.45 at pad, rotor radius 140 mm gives caliper bolts 8.8 kN shear equivalent per conservative factor); (LC5) pothole 5 g vertical: 3776 N at tire patch; (LC6) mandatory scrutineering 3 g combined vertical + 2 g lateral + 1 g longitudinal as conservative envelope per collegiate off-road benchmark T.6. Pass/fail: (R1) hub max stress under LC1-LC4 must remain below 335 MPa (503 / 1.5 yield FoS); (R2) upright max stress under LC1-LC4 must remain below 184 MPa (276 / 1.5 yield FoS); (R3) under LC5 and LC6, yield must not be reached (503 MPa hub, 276 MPa upright); (R4) hub + upright combined dry mass must not exceed 3.5 kg; (R5) bearing press-fit seat deflection under LC2 must remain below 25 microns to preserve bearing radial play; (R6) M10 lug stud shear under LC4 braking reaction must remain below 375 MPa (class 10.9 shear allowable). Thermal, fluid, radiation analyses not primary. A buckling check is inapplicable at this part scale. Deliverables: STEP AP242 assembly with hub, upright, bearing (reference model), 4 lug studs, caliper bolts as separate bodies; machining notes; FEA per load case; bearing-seat deflection report; mass budget.",
+  "short_prompt": "Design the front wheel hub and upright (steering knuckle) assembly of a collegiate off-road benchmark Mexico 2026 car. Vehicle curb 275 kg + 90 kg driver; front axle 42% = 153 kg (77 kg per wheel); tire rolling radius 280 mm. Hub: 7075-T6 aluminum around a press-fit 6205-2RS (25 ID x 52 OD x 15) bearing and 4 x M10 class 10.9 lug studs on a 100 mm PCD. Upright: 6061-T6 aluminum carrying the hub bearing, two A-arm ball-joint tapers, one tie-rod taper, and 2 x M10 class 10.9 caliper bolts. Assembly envelope 180 x 200 mm.\n\nFactor regime: hub yield FoS 1.5 (allowable 335 MPa) on LC1-LC4; upright yield FoS 1.5 (allowable 184 MPa) on LC1-LC4; LC5-LC6 must stay below yield (503 / 276 MPa); hub + upright combined dry mass <= 3.5 kg; bearing-seat deflection under bump < 25 microns (preserve bearing radial play); M10 10.9 lug-stud shear allowable 375 MPa under braking.\n\nLoad cases.\n- Static 1 g corner: 755 N vertical at the contact patch.\n- 3 g bump: 2266 N vertical.\n- 1.5 g cornering outside wheel: 1133 N lateral + 755 N vertical (creates upright moment about the bearing).\n- 1.2 g fore-aft braking: 906 N + 2200 N torque reaction at the caliper mount (mu = 0.45 at 140 mm rotor radius giving ~8.8 kN caliper-bolt shear equivalent).\n- 5 g pothole: 3776 N vertical.\n- Baja T.6 scrutineering envelope: 3 g vertical + 2 g lateral + 1 g longitudinal combined.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate off-road benchmark Mexico 2026 Front Hub + Upright Assembly",
+    "brief": "7075-T6 machined hub + 6061-T6 upright for 77 kg corner, bearing press-fit, collegiate off-road benchmark + MX FoS 1.5.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "w": 180,
+        "h": 200
+      },
+      "bearing": "6205-2RS (ID25 OD52 W15)",
+      "lug_pattern": {
+        "count": 4,
+        "size": "M10",
+        "grade": "10.9",
+        "PCD_mm": 100
+      },
+      "caliper_bolts": {
+        "count": 2,
+        "size": "M10",
+        "grade": "10.9"
+      },
+      "rotor_radius_mm": 140,
+      "tire_rolling_radius_mm": 280
+    },
+    "material": {
+      "hub": {
+        "name": "Aluminum 7075-T6",
+        "E_GPa": 71.7,
+        "yield_MPa": 503,
+        "ultimate_MPa": 572,
+        "density_kg_m3": 2810
+      },
+      "upright": {
+        "name": "Aluminum 6061-T6",
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "corner_mass_kg": 77,
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_1g",
+        "magnitude_N": 755
+      },
+      {
+        "id": "LC2",
+        "name": "bump_3g",
+        "magnitude_N": 2266
+      },
+      {
+        "id": "LC3",
+        "name": "cornering_1p5g_lat",
+        "lat_N": 1133,
+        "vert_N": 755
+      },
+      {
+        "id": "LC4",
+        "name": "braking_1p2g",
+        "longit_N": 906,
+        "vert_N": 755,
+        "caliper_bolt_shear_N_per_bolt": 4400
+      },
+      {
+        "id": "LC5",
+        "name": "pothole_5g",
+        "magnitude_N": 3776
+      },
+      {
+        "id": "LC6",
+        "name": "combined_3g_2g_1g",
+        "application": "conservative envelope"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 8,
+      "report_fields": [
+        "hub_mass_kg",
+        "upright_mass_kg",
+        "hub_max_stress_MPa",
+        "upright_max_stress_MPa",
+        "bearing_seat_deflection_um_LC2",
+        "lug_shear_LC4_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "hub_max_stress",
+        "limit_MPa": 335,
+        "derivation": "503 / 1.5 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "upright_max_stress",
+        "limit_MPa": 184,
+        "derivation": "276 / 1.5 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3a",
+        "type": "structural_analysis",
+        "metric": "hub_max_stress_pothole_combined",
+        "limit_MPa": 503,
+        "applies_to": [
+          "LC5",
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3b",
+        "type": "structural_analysis",
+        "metric": "upright_max_stress_pothole_combined",
+        "limit_MPa": 276,
+        "applies_to": [
+          "LC5",
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "hub_plus_upright_mass",
+        "limit_kg": 3.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "bearing_seat_radial_deflection",
+        "limit_um": 25,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "M10_lug_shear",
+        "limit_MPa": 375,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10 for hub and upright; contact at bearing press-fit surface",
+      "mesh_size_mm": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SolidWorks Simulation Pro",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x6)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "vibration_analysis": "Hub rotates well below structural modes.",
+      "thermal_analysis": "Brake heating handled by caliper, not hub (which is separate from rotor).",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "N/A at this compact part scale."
+    }
+  },
+  "eval_coverage": [
+    "multi-body machined-aluminum FEA",
+    "bearing press-fit deflection",
+    "lug shear",
+    "braking reaction at caliper",
+    "collegiate off-road benchmark scrutineering envelope"
+  ]
+}

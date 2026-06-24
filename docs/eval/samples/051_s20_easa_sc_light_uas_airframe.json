@@ -1,0 +1,249 @@
+{
+  "id": "051_s20_easa_sc_light_uas_airframe",
+  "source": {
+    "catalog_ref": "S20",
+    "year": 2020,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "light_uas_airframe_frame",
+  "full_prompt": "Design the main carbon-fiber-reinforced polymer (CFRP) fuselage truss frame of a 25 kg-class light unmanned aircraft, governed by EASA Special Condition Light-UAS 01 (2020). The SC covers UAS in the Specific / Certified categories depending on MTOM; this brief targets the tier 25 kg < MTOM <= 150 kg for a fixed-wing UAS. Applicable clauses: SC Light-UAS.2255 (maneuver envelope with n_pos = +3.8 and n_neg = -1.52 by default VLA-equivalent), SC Light-UAS.2270 (ultimate = 1.5 x limit), and SC Light-UAS.2310 (crashworthiness: the airframe must dissipate the crash kinetic energy such that peak occupant-equivalent acceleration, here the payload bay, is bounded - for UAS the occupant proxy is the payload; energy dissipation must deform the airframe progressively rather than fracturing brittlely).\n\nGeometry. Main fuselage truss frame: 6 longerons (carbon-epoxy pultruded tubes, 20 mm OD, 2 mm wall), 8 transverse bulkheads (CFRP plates 150 mm x 120 mm x 3 mm), and diagonal shear braces. Frame envelope 2000 mm long x 300 mm wide x 250 mm tall. Payload bay is a 600 mm x 250 mm x 200 mm volume at the CG. Wing attach points (4 bolts) at the top, engine mount (4 bolts) at the nose. All joints adhesively bonded with structural epoxy; mechanical fasteners used only at wing and engine mounts.\n\nMaterial. Carbon-epoxy pultruded tube (T700/epoxy): E_L = 120 GPa, E_T = 9 GPa, rho = 1550 kg/m^3, tensile strength Xt = 1800 MPa, compression Xc = 1100 MPa. Bulkhead CFRP plate quasi-isotropic layup [0/+45/-45/90]_s: E_in_plane = 52 GPa, tensile 650 MPa, compression 480 MPa, shear 110 MPa.\n\nService envelope. MTOM 25 kg, cruise VC = 40 m/s, VD = 55 m/s, stall VS = 18 m/s. n_pos limit = +3.8, n_neg limit = -1.52, ultimate = 1.5 x limit => n_pos_ult = +5.7, n_neg_ult = -2.28. Crashworthiness: impact energy 0.5 * m * V_impact^2 with V_impact = 15 m/s (VS-based minimum per SC Light-UAS.2310 crash scenario) = 0.5 * 25 * 225 = 2812 J must be dissipated by airframe deformation over a stroke that limits peak deceleration at the payload bay to <= 20 g (per SC Light-UAS.2310 payload-protection proxy value; the actual SC references an acceleration limit for occupants that does not apply here - this 20 g is a representative project proxy). Landing: tricycle gear with 3 g ultimate landing inertia on the payload bay.\n\nLoad cases. LC1 (pos maneuver ultimate, +5.7 g): inertial load on airframe + payload (10 kg lumped) = 5.7 * 35 kg * 9.81 = 1957 N applied at payload bay CG. LC2 (neg maneuver ultimate, -2.28 g): -783 N. LC3 (landing ultimate 3 g): 1030 N vertical on gear attach. LC4 (wing bending moment at root): 3.8 * 25 * 9.81 * 0.4 * 1.5 = 560 N vertical at wing attach (ultimate). LC5 (crashworthiness energy absorption): dynamic 15 m/s impact; evaluate via explicit crash FEM or by ensuring progressive-failure energy dissipation exceeds 2812 J over <= 300 mm crush stroke.\n\nPass/fail criteria. (R1) LC1 and LC2 max composite fiber stress (longeron) must not exceed Xt = 1800 MPa (tension) and Xc = 1100 MPa (compression) with an additional composite ultimate knockdown of 1.25 (environment + scatter for primary composite) => effective allowables Xt_eff = 1440 MPa, Xc_eff = 880 MPa. (R2) Bulkhead max in-plane stress must not exceed 650 / 1.25 = 520 MPa tension, 480 / 1.25 = 384 MPa compression. (R3) LC3 landing max stress <= allowables of R1/R2. (R4) LC4 wing-attach bolt interface stress in longeron <= 1440 MPa. (R5) Crashworthiness LC5: total energy absorbed >= 2812 J in <= 300 mm stroke (equivalent to average deceleration <= 20 g at payload bay under uniform deceleration: a_avg = V^2 / (2 * stroke) = 225 / 0.6 = 375 m/s^2 = 38 g, which exceeds the 20 g proxy; designer must therefore extend the crush stroke to >= 573 mm or add controlled-failure stages). (R6) Frame mass <= 2.8 kg. (R7) No mechanical joint may fail before progressive composite failure at the longerons under LC5 (toughening-priority ordering).\n\nSolver and analysis expectations. Primary: linear static FEM for LC1-LC4 in a composite-shell or continuum-shell framework. Explicit dynamic crash FEM (LS-DYNA or Abaqus Explicit) required for LC5; alternatively a closed-form energy-absorption hand-calc accepted for R5 if the stroke/acceleration relationship is transparent. Modal, thermal, fluid, radiation, buckling NOT required for this brief.\n\nDeliverables. STEP AP242 of frame, mass in kg, max composite fiber stress per LC, energy-absorption curve or value for LC5, crush stroke in mm, and peak payload-bay deceleration in g.",
+  "short_prompt": "Design the main CFRP fuselage truss frame of a 25 kg-class light fixed-wing UAS (payload bay at CG, wing attach at the top, engine mount at the nose). Design to EASA Special Condition Light-UAS 01 (2020): SC Light-UAS.2255 maneuver envelope (n +3.8 / -1.52), SC Light-UAS.2270 ultimate = 1.5 x limit, and SC Light-UAS.2310 crashworthiness. A composite environment/scatter knockdown of 1.25 applies on top of the 1.5 ultimate.\n\nEnvelope: truss frame 2000 mm long x 300 mm wide x 250 mm tall; 6 T700/epoxy pultruded longerons (20 mm OD, 2 mm wall); 8 CFRP quasi-isotropic bulkheads 150 x 120 x 3 mm; 600 x 250 x 200 mm payload bay at CG; bonded joints, mechanical fasteners only at wing (4) and engine mount (4).\n\nLoad cases. Inertial loads applied at payload bay CG (airframe + 10 kg lumped payload = 35 kg).\n- LC1 positive maneuver ultimate (+5.7 g): 1,957 N.\n- LC2 negative maneuver ultimate (-2.28 g): -783 N.\n- LC3 landing 3 g ultimate: 1,030 N on gear attach.\n- LC4 wing-attach ultimate moment: 560 N at the wing attach.\n- LC5 crashworthiness (SC.2310): 15 m/s impact of 25 kg => 2,812 J to be absorbed with peak payload-bay deceleration bounded (20 g target proxy).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_crash_FEM_or_closed_form_energy",
+        "reason": "SC Light-UAS.2310 crashworthiness is a kinetic-energy-absorption problem.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Radioss",
+          "hand energy calc"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "25 kg light UAS CFRP fuselage frame per EASA SC Light-UAS",
+    "brief": "Pultruded CFRP truss + bulkheads, n +3.8/-1.52 maneuver, ultimate 1.5x, 15 m/s crash energy absorbed in <=300 mm or extended stroke.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 2000,
+        "y": 300,
+        "z": 250
+      },
+      "longerons": {
+        "count": 6,
+        "OD_mm": 20,
+        "wall_mm": 2
+      },
+      "bulkheads": {
+        "count": 8,
+        "dims_mm": {
+          "x": 150,
+          "y": 120,
+          "z": 3
+        }
+      },
+      "payload_bay_mm": {
+        "x": 600,
+        "y": 250,
+        "z": 200
+      },
+      "wing_attach_bolts": 4,
+      "engine_mount_bolts": 4
+    },
+    "material": {
+      "longeron": {
+        "name": "T700/epoxy pultruded UD",
+        "E_L_GPa": 120,
+        "Xt_MPa": 1800,
+        "Xc_MPa": 1100,
+        "density_kg_m3": 1550
+      },
+      "bulkhead": {
+        "name": "CFRP QI [0/45/-45/90]s",
+        "E_GPa": 52,
+        "tensile_MPa": 650,
+        "compression_MPa": 480,
+        "shear_MPa": 110
+      }
+    },
+    "service_envelope": {
+      "MTOM_kg": 25,
+      "n_pos": 3.8,
+      "n_neg": -1.52,
+      "ult_factor": 1.5,
+      "V_impact_m_s": 15,
+      "crash_energy_J": 2812,
+      "payload_accel_g_max": 20,
+      "stroke_target_mm_max": 300
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pos_maneuver_ultimate",
+        "F_N": 1957
+      },
+      {
+        "id": "LC2",
+        "name": "neg_maneuver_ultimate",
+        "F_N": -783
+      },
+      {
+        "id": "LC3",
+        "name": "landing_3g_ultimate",
+        "F_N": 1030
+      },
+      {
+        "id": "LC4",
+        "name": "wing_attach_ultimate",
+        "F_N": 560
+      },
+      {
+        "id": "LC5",
+        "name": "crash_energy_absorption",
+        "E_J": 2812
+      }
+    ],
+    "boundary_conditions": {
+      "nose": "engine mount fixed in static; free-free in crash explicit"
+    },
+    "objective": {
+      "minimize": "frame_mass",
+      "target_kg_max": 2.8
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "EASA SC Light-UAS 01",
+      "revision": "2020"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "longeron_fiber_stress_ultimate_tension",
+        "limit_MPa": 1440,
+        "derivation": "Xt / 1.25 composite knockdown",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "bulkhead_in_plane_stress_ultimate_tension",
+        "limit_MPa": 520,
+        "derivation": "QI tensile / 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "longeron_compression_stress_ultimate",
+        "limit_MPa": 880,
+        "derivation": "Xc / 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "wing_attach_interface_longeron_stress",
+        "limit_MPa": 1440,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "crash_energy_absorbed_at_payload_accel_bound",
+        "limit_J": 2812,
+        "derivation": "0.5 * m * V^2 with m=25 kg, V=15 m/s; peak payload-bay accel <= 20 g proxy",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "frame_mass",
+        "limit_kg": 2.8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "joint_failure_order_check",
+        "limit": 1,
+        "derivation": "Progressive composite failure before brittle mechanical-joint failure",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "==",
+        "note": "binary (ordered failure)"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "composite shell + continuum shell for crash",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "Abaqus Standard for static",
+        "LS-DYNA for crash",
+        "Radioss for crash"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "explicit dynamic crash"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Flutter out of scope.",
+      "thermal_analysis": "Ambient operation assumed.",
+      "fluid_analysis": "Lift already reduced to inertia load.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Longeron local buckling production concern; not in this brief."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Flutter per SC Light-UAS.2629",
+      "Battery pack crash containment",
+      "BVID / damage tolerance per composite handbook"
+    ]
+  },
+  "eval_coverage": [
+    "SC Light-UAS maneuver envelope",
+    "composite Xt/Xc/knockdown",
+    "crashworthiness energy absorption via explicit FEM",
+    "failure-ordering gate"
+  ]
+}

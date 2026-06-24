@@ -1,0 +1,153 @@
+{
+  "id": "205_oc5_monash_heavy_vehicle_design",
+  "source": {
+    "catalog_ref": "OC5",
+    "year": 2026,
+    "tier": "C"
+  },
+  "domain": "heavy_vehicle_chassis",
+  "part_class": "trailer_chassis_rail",
+  "full_prompt": "Design a single chassis main rail for a tandem-axle heavy road-train trailer to be operated under Australian Design Rule (ADR) 42/45 conditions, with nominal gross trailer mass 34 tonnes distributed 18 t on the two rear axles and 16 t on the kingpin, spanning a wheelbase from kingpin to tandem-axle centroid of 8.5 m. Rail cross section: hot-rolled structural steel I-beam profile, overall depth 350 mm x flange width 120 mm x web thickness 8 mm x flange thickness 14 mm, material AS/NZS 3678 Grade 350 plate (Young's modulus 200 GPa, Poisson 0.30, yield 350 MPa, ultimate 450 MPa, density 7850 kg/m^3). The rail is supported by a kingpin bolster at its forward end and by a tandem suspension bolster at the rear. Load cases: (LC1) static payload 16 t kingpin reaction + 18 t tandem reaction with uniformly distributed load along the deck representing 20 t payload; (LC2) ADR dynamic amplification factor 1.5 on LC1 vertical loads representing pothole/corrugated-road encounter; (LC3) kingpin lateral 0.4 g cornering load applied at 1.2 m height above rail centroid; (LC4) fatigue: 1 million cycles of the LC1 vertical load varying between 40% and 110% of static level, representing ~1e6 km service. Pass/fail: under LC1-LC3, maximum von Mises stress must remain below 233 MPa (350 / 1.5 yield factor), maximum mid-span vertical deflection must remain below span/500 = 17 mm, lateral tip at 1.2 m must remain below 20 mm; under LC4, alternating stress range must remain below the BS 7608 Class F weld detail endurance limit of 40 MPa at 1e6 cycles. Global beam buckling (torsion-flexural) at LC2 amplified load must have linear eigenvalue factor >= 3.0. Deliverables: STEP geometry, per-case FEA stress contours, fatigue check, buckling eigenvalue report, and rail mass per metre of length.",
+  "short_prompt": "Design one chassis main rail for a tandem-axle Australian heavy road-train trailer, rolled I-beam in structural steel plate (AS/NZS 3678 Grade 350 class), operated per Australian Design Rule (ADR) 42/45 with BS 7608 fatigue classes for the weld details.\n\nEnvelope: kingpin-to-tandem wheelbase 8.5 m; gross trailer mass 34 t distributed 16 t on the kingpin and 18 t on the tandem.\n\nLoad cases.\n- LC1 static payload: 16 t kingpin + 18 t tandem reactions with a 20 t UDL along the deck.\n- LC2 ADR dynamic amplification: 1.5 x LC1 verticals.\n- LC3 cornering: 0.4 g lateral at 1.2 m above the rail centroid.\n- LC4 fatigue: 1 million cycles of the LC1 vertical varying between 40% and 110% of static.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Heavy-vehicle trailer main chassis rail",
+    "brief": "Single I-beam chassis rail for a tandem-axle 34 t road-train trailer per AS/NZS and ADR 42/45.",
+    "geometric_constraints": {
+      "rail_cross_section": {
+        "depth_mm": 350,
+        "flange_width_mm": 120,
+        "web_thickness_mm": 8,
+        "flange_thickness_mm": 14
+      },
+      "wheelbase_kingpin_to_tandem_m": 8.5,
+      "gross_trailer_mass_t": 34
+    },
+    "material": {
+      "name": "AS/NZS 3678 Grade 350 plate steel",
+      "youngs_modulus_GPa": 200,
+      "poissons_ratio": 0.3,
+      "density_kg_m3": 7850,
+      "yield_strength_MPa": 350,
+      "ultimate_tensile_strength_MPa": 450
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_payload",
+        "kingpin_t": 16,
+        "tandem_t": 18,
+        "deck_udl_t": 20,
+        "application": "supports at kingpin and tandem bolsters"
+      },
+      {
+        "id": "LC2",
+        "name": "ADR_1_5_dynamic",
+        "application": "LC1 vertical x 1.5"
+      },
+      {
+        "id": "LC3",
+        "name": "lateral_cornering",
+        "accel_g": 0.4,
+        "height_above_centroid_m": 1.2
+      },
+      {
+        "id": "LC4",
+        "name": "fatigue_1e6_cycles",
+        "range_pct_of_LC1": [
+          40,
+          110
+        ]
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "rail_mass_kg_per_m",
+        "max_von_mises_per_case_MPa",
+        "mid_span_deflection_mm",
+        "lateral_tip_mm",
+        "alt_stress_range_at_weld_MPa",
+        "buckling_eigenvalue"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 233,
+        "derivation": "350 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mid_span_vertical_deflection",
+        "limit_mm": 17,
+        "derivation": "span/500 with 8.5 m span",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "lateral_tip_at_1p2m",
+        "limit_mm": 20,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "weld_detail_alternating_stress_range",
+        "limit_MPa": 40,
+        "derivation": "BS 7608 Class F at 1e6 cycles",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

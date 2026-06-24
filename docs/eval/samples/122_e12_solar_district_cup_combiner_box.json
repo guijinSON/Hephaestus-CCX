@@ -1,0 +1,227 @@
+{
+  "id": "122_e12_solar_district_cup_combiner_box",
+  "source": {
+    "catalog_ref": "E12",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "photovoltaic_electrical_enclosure",
+  "part_class": "dc_combiner_enclosure",
+  "full_prompt": "Design a monolithic 316L stainless steel NEMA 4X / IP66 rated outdoor DC combiner box enclosure for a collegiate campus-scale photovoltaic benchmark (1 MW array), complying with UL 1741 (inverters, converters, controllers), UL 50E (enclosures for electrical equipment), and NEC 2023 Article 690 Part III (DC PV system wiring and protection). The enclosure is a single formed-and-welded part (treated as monolithic for the CAD prompt; all corner seams integral). External dimensions 600 mm wide x 800 mm tall x 300 mm deep, wall thickness 2.0 mm, integral rear mounting flange 650 mm x 850 mm with four 10 mm holes for pole/wall mounting on a 550 x 750 pattern, one hinged door on the front (for CAD purposes the door is integral closed; the hinge and latch are separate). Integral cable entry bosses on the bottom face: twelve 40 mm NPT entry bosses for DC strings (one per string), two 50 mm NPT entries for combined DC output, and one 25 mm NPT entry for communications. Sun-shield louvered vent on top (rain-proof integral louvers). Bounding envelope 660 mm x 850 mm x 320 mm. Material 316L stainless with Young's modulus 193 GPa, Poisson's ratio 0.30, density 8000 kg/m^3, yield 205 MPa at 20 C, 170 MPa at 85 C (NEMA 4X outdoor peak per UL 50E tabulated temperature). Load and environmental basis: 12 strings of 15 modules each at 40 V per module nominal = 600 VDC open-circuit per string, 10 A string current, 120 A combined DC output; ambient temperature range -40 C to +50 C outdoor per UL 50E Type 4X, solar loading 1000 W/m^2 on south face, internal heat dissipation 120 W from 12 fuse holders and bus-bars; wind per ASCE 7-22 at 55 m/s gust, pole height 3 m. Three load cases. Load Case 1 (wind on pole-mounted): uniform pressure of 1.9 kPa on the front face (1/2 * rho * v^2 * Cf with Cf = 1.2) with the rear mounting flange fully fixed. Load Case 2 (snow + ice load on top): 1.5 kPa on the top surface (sustained for 7 days per ASCE 7-22 Chapter 10 ice accretion), plus concurrent 300 N weight of snow accumulation, flange fixed. Load Case 3 (impact): UL 50E mechanical impact test, 20 J drop onto the enclosure door from a 0.5 m height of a 4 kg steel sphere, represented quasi-statically as a 2.0 kN concentrated load on a 50 mm circular area at the door center. Pass/fail: (R1) under LC1 wind, peak von Mises must not exceed 103 MPa (yield/2.0); (R2) under LC2 snow+ice, peak stress 103 MPa (yield/2.0); (R3) under LC3 impact, peak stress must not exceed 171 MPa (yield/1.2, short transient impact), AND plastic deformation depth at the door center must remain below 5 mm to preserve IP66 seal contact; (R4) a steady-state thermal analysis at 50 C ambient, 1000 W/m^2 solar absorbed on front (absorptivity 0.6 for painted white), 120 W internal dissipation, natural convection externally (h=8 W/m^2-K) and internally (h=4 W/m^2-K) must show internal air volume temperature below 85 C to preserve fuse ratings; (R5) a buckling eigenvalue analysis under LC1 wind must yield a first-mode load factor of at least 3.0 (unstiffened front panel); (R6) mass of the enclosure must not exceed 25 kg for manual pole installation; (R7) mounting flange deflection under LC1 must not exceed 2.0 mm to preserve IP66 gasket compression. Vibration, fluid, and radiation (beyond solar absorption BC) analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 316L stainless steel NEMA 4X / IP66 outdoor DC combiner-box enclosure for a 1 MW collegiate campus PV benchmark, with integral bottom cable-entry bosses, a louvered rain-proof top vent, a rear mounting flange for pole/wall installation, and an integral (closed) front door. The enclosure is treated as a single formed-and-welded monolithic body. Design per UL 1741, UL 50E, and NEC 2023 Article 690 Part III, applying the usual yield/2.0 continuous and yield/1.2 short-transient impact safety factors.\n\nEnvelope: roughly 600 x 800 x 300 mm external with a ~650 x 850 mm rear mounting flange.\n\nLoad cases.\n- LC1 wind on pole mount: 1.9 kPa uniform pressure on the front face (55 m/s gust, Cf = 1.2), rear mounting flange fixed.\n- LC2 snow + ice: 1.5 kPa sustained top-face pressure plus a concurrent 300 N snow weight, flange fixed.\n- LC3 UL 50E mechanical impact: 2.0 kN over a 50 mm circular patch at the door center (equivalent to a 20 J 4 kg steel-sphere drop).\n- LC4 steady-state thermal: 50 C ambient, 1000 W/m^2 solar on the front (absorptivity 0.6), 120 W internal dissipation, natural convection BCs inside and outside.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "NEMA 4X DC combiner enclosure for collegiate campus-scale PV benchmark",
+    "brief": "316L stainless enclosure 600x800x300, 12x DC string entries + 2x DC output + 1x comms, UL 1741 / NEC 690 / UL 50E.",
+    "geometric_constraints": {
+      "outside_mm": {
+        "w": 600,
+        "h": 800,
+        "d": 300
+      },
+      "wall_thickness_mm": 2.0,
+      "mounting_flange_mm": {
+        "w": 650,
+        "h": 850,
+        "pattern_mm": [
+          550,
+          750
+        ],
+        "hole_mm": 10
+      },
+      "bottom_entries": [
+        {
+          "size_NPT": 40,
+          "count": 12
+        },
+        {
+          "size_NPT": 50,
+          "count": 2
+        },
+        {
+          "size_NPT": 25,
+          "count": 1
+        }
+      ],
+      "bounding_envelope_mm": {
+        "x": 660,
+        "y": 850,
+        "z": 320
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "316L stainless",
+      "properties": {
+        "youngs_modulus_GPa": 193,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 8000,
+        "yield_20C_MPa": 205,
+        "yield_85C_MPa": 170
+      }
+    },
+    "pv_config": {
+      "strings": 12,
+      "modules_per_string": 15,
+      "string_voc_V": 600,
+      "string_current_A": 10,
+      "combined_output_A": 120,
+      "internal_dissipation_W": 120
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "wind_55mps_gust",
+        "pressure_kPa": 1.9
+      },
+      {
+        "id": "LC2",
+        "name": "snow_ice_sustained",
+        "pressure_kPa": 1.5,
+        "point_N": 300
+      },
+      {
+        "id": "LC3",
+        "name": "UL50E_impact",
+        "force_N": 2000,
+        "area_mm_dia": 50,
+        "energy_J": 20
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "door_plastic_deformation_mm",
+        "internal_air_temp_C",
+        "first_buckling_load_factor",
+        "mass_kg",
+        "flange_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 103,
+        "derivation": "yield_20C/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 103,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_and_door_deformation",
+        "limit_compound": {
+          "stress_MPa": 171,
+          "deformation_mm": 5
+        },
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "internal_air_temp",
+        "limit_C": 85,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "flange_deflection",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell with solid transitions at flange",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling",
+        "steady-state thermal with mixed convection"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Pole-mounted outdoor enclosure; no mechanical excitation source.",
+      "fluid_analysis": "Wind reduced to equivalent static pressure.",
+      "radiation_analysis": "Solar absorption captured as boundary heat flux."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Arc-fault clearance per NEC 690.11",
+      "Ground-bonding impedance",
+      "Gasket compression-set ratings"
+    ]
+  },
+  "eval_coverage": [
+    "outdoor enclosure multi-physics gate",
+    "UL 50E impact plastic-deformation limit",
+    "thermal sizing of internal fused volume",
+    "IP66 gasket-preserving flange deflection"
+  ]
+}

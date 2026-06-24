@@ -1,0 +1,211 @@
+{
+  "id": "195_sa12_usm_cubesat",
+  "source": {
+    "catalog_ref": "SA12",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cubesat_1u_primary_structure",
+  "full_prompt": "Design the primary structural chassis of a 1U CubeSat as an open-source 1U CubeSat primary structure benchmark. The mission is a low-Earth-orbit technology demonstrator with an on-board UHF amateur-radio payload and a tri-axial magnetometer, targeted for a PSLV or Falcon 9 rideshare deployment from a standard 1U P-POD or equivalent deployer.\n\nGeometry. The structure follows Cal Poly CubeSat Design Specification Rev 14.1 for 1U: external envelope 100 mm x 100 mm x 113.5 mm (with +/-0.1 mm tolerance on all faces). Four rails span the full 113.5 mm length with a chamfer of 1 mm x 45 deg at rail ends and a minimum rail-contact region of 8.5 mm wide by 6.5 mm from each end. The structure is machined from 6061-T6 aluminum with wall thickness 2.0 mm on the four side frames and 1.5 mm on the top and bottom caps. One internal bulkhead at Z = 56.75 mm mounts a PC/104 PCB stack (up to four PCBs total). The -Z face carries the separation-spring interface and the deployment-switch cutouts; the +Z face carries a 50 mm x 50 mm payload aperture. Maximum wet mass 1.33 kg per Cal Poly CDS 1U spec.\n\nMaterial. 6061-T6 aluminum (Young's modulus 68.9 GPa, Poisson 0.33, density 2700 kg/m^3, yield strength 276 MPa, ultimate tensile strength 310 MPa). Surface finish: hard anodize MIL-A-8625 Type III 25 um on rails and chemically conductive Alodine 1200S on internal surfaces for ESD bonding. Fasteners are 18-8 stainless M2.5 x 5 mm SHCS with Helicoil inserts in the 2 mm rail walls.\n\nLoad cases. (LC1) Launch quasi-static: 8.5 g longitudinal and 3.2 g lateral applied simultaneously per PSLV user manual Section 3.5. (LC2) Launch random vibration: GEVS-STD-7000A qualification level 14.1 g-rms, 20-2000 Hz, applied to each of three axes independently. (LC3) Launch sine sweep: 5-100 Hz at 2.5 g per GEVS-STD-7000A. (LC4) Deployment spring release: 55 N peak, 60 ms half-sine, applied to the -Z face spring interface. (LC5) Shock: 1500 g SRS 100-10000 Hz per MIL-STD-1540E launch-separation shock, applied at the deployer/CubeSat interface.\n\nPass/fail criteria. (R1) Maximum von Mises stress must not exceed 184 MPa (yield / 1.5) under LC1, LC4, and LC5. (R2) First natural frequency must be above 120 Hz per Cal Poly CDS 1U guidance (higher than 3U due to shorter rail length). (R3) PSD random-vibration 3-sigma stress under LC2 must not exceed yield 276 MPa. (R4) Total wet mass must not exceed 1.33 kg per Cal Poly CDS 1U cap. (R5) Deployment switches must remain accessible and unobstructed with clearance below 0.5 mm at switch locations under all load cases. (R6) Rail dimensional compliance: rails within +/-0.1 mm after all load cases. (R7) Minimum margin of safety MS >= 0.2 on all fasteners per NASA-STD-5020.\n\nSolver and analysis expectations. Linear static structural FEA for LC1 and LC4. PSD random-vibration analysis for LC2. Sine-sweep harmonic response for LC3. Shock-response-spectrum analysis for LC5. Modal analysis for R2. Fastener margin-of-safety calculation per NASA-STD-5020 for R7. Thermal, fluid, and radiation analyses are not required for this structural deliverable.\n\nDeliverables. STEP (AP242) + Parasolid of the complete 1U chassis (four side frames, top and bottom caps, internal bulkhead, rail chamfer detail). Cal Poly CDS rail dimensional compliance report. Mass budget. Structural report covering LC1-LC5 stress extrema, first 6 modal frequencies, PSD 3-sigma stress, SRS peak acceleration transmitted to the PC/104 bulkhead, and fastener MS table.",
+  "short_prompt": "Design a 1U CubeSat primary structural chassis for a PSLV or Falcon 9 rideshare from a 1U P-POD-class deployer (UHF amateur-radio + tri-axial magnetometer payload). The structure follows Cal Poly CDS Rev 14.1: envelope 100 x 100 x 113.5 mm (+/-0.1 mm), four rails the full 113.5 mm with 1 mm x 45 deg end chamfers and 8.5 mm wide x 6.5 mm end-contact regions, machined from 6061-T6 aluminum (2.0 mm side frames, 1.5 mm end caps), surface-treated hard-anodize MIL-A-8625 Type III 25 um on rails and Alodine 1200S on internal ESD surfaces. One internal bulkhead at Z = 56.75 mm mounts up to four PC/104 PCBs; -Z face has the separation-spring and deployment-switch interfaces; +Z face is a 50 x 50 mm payload aperture. Wet mass cap 1.33 kg; fasteners are 18-8 stainless M2.5 SHCS with Helicoil inserts.\n\nGoverning standards: Cal Poly CDS Rev 14.1, GEVS-STD-7000A, MIL-STD-1540E, NASA-STD-5020, PSLV User Manual.\n\nLoad cases.\n- LC1 PSLV quasi-static: 8.5 g longitudinal + 3.2 g lateral simultaneously (PSLV UM Sec 3.5).\n- LC2 launch random vibration: 14.1 GRMS, 20-2000 Hz, each axis (GEVS-STD-7000A).\n- LC3 launch sine sweep: 5-100 Hz at 2.5 g (GEVS-STD-7000A).\n- LC4 deployment spring release: 55 N peak, 60 ms half-sine, on -Z face.\n- LC5 separation shock: 1500 g SRS, 100-10000 Hz (MIL-STD-1540E).\n\nFirst natural frequency must be >=120 Hz per Cal Poly CDS 1U guidance; deployment-switch clearance, rail dimensional compliance, and NASA-STD-5020 fastener MS are additional checks.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "1U CubeSat primary structure benchmark",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 100,
+        "y": 100,
+        "z": 113.5
+      },
+      "envelope_tolerance_mm": 0.1,
+      "rail_chamfer": "1 mm x 45 deg",
+      "rail_contact_region": "8.5 mm wide x 6.5 mm from each end",
+      "wall_thickness_mm": {
+        "side_frames": 2.0,
+        "end_caps": 1.5
+      },
+      "surface_treatment": {
+        "rails": "hard anodize MIL-A-8625 Type III, 25 um",
+        "internal": "Alodine 1200S (ESD)"
+      },
+      "max_wet_mass_kg": 1.33
+    },
+    "material": {
+      "name": "Al-6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "psLV_quasi_static",
+        "longitudinal_g": 8.5,
+        "lateral_g": 3.2,
+        "spec": "PSLV User Manual Sec 3.5"
+      },
+      {
+        "id": "LC2",
+        "name": "launch_random_vibration",
+        "spec": "GEVS-STD-7000A",
+        "g_rms": 14.1,
+        "frequency_Hz_range": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "launch_sine_sweep",
+        "spec": "GEVS-STD-7000A",
+        "frequency_Hz_range": [
+          5,
+          100
+        ],
+        "amplitude_g": 2.5
+      },
+      {
+        "id": "LC4",
+        "name": "deployment_spring",
+        "magnitude_N": 55,
+        "duration_ms": 60,
+        "shape": "half_sine"
+      },
+      {
+        "id": "LC5",
+        "name": "separation_shock",
+        "spec": "MIL-STD-1540E",
+        "peak_g": 1500,
+        "frequency_Hz_range": [
+          100,
+          10000
+        ]
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield / 1.5 = 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 120,
+        "derivation": "Cal Poly CDS 1U guidance",
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "random_vibration_3sigma_stress",
+        "limit_MPa": 276,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_wet_mass",
+        "limit_kg": 1.33,
+        "derivation": "Cal Poly CDS 1U cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "deployment_switch_clearance",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "dimensional_compliance",
+        "metric": "rail_tolerance_postload",
+        "limit_mm": 0.1,
+        "applies_to": [
+          "LC1",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "fastener_margin_of_safety",
+        "limit": 0.2,
+        "derivation": "NASA-STD-5020",
+        "applies_to": [
+          "all_fasteners"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Structural deliverable only; thermal cycling handled separately in the thermal-control subsystem.",
+      "fluid_analysis": "Vacuum orbit.",
+      "radiation_analysis": "Covered by electronics-level TID analysis, not structural."
+    },
+    "governing_standards": [
+      "Cal Poly CDS Rev 14.1",
+      "GEVS-STD-7000A",
+      "MIL-STD-1540E",
+      "NASA-STD-5020",
+      "PSLV User Manual"
+    ]
+  },
+  "eval_coverage": [
+    "1U CubeSat form factor (higher fn requirement than 3U)",
+    "shock-response-spectrum (SRS) analysis for launch-separation event",
+    "fastener margin-of-safety check per NASA-STD-5020"
+  ]
+}

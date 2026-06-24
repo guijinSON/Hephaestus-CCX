@@ -1,0 +1,149 @@
+{
+  "id": "202_oc2_ahpvss_hpv_chassis",
+  "source": {
+    "catalog_ref": "OC2",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "human_powered_vehicle_structural",
+  "part_class": "hpv_rollcage_chassis",
+  "full_prompt": "Design the Roll-over Protection System (RRPS) and integrated chassis of a recumbent, fully-faired three-wheel human-powered vehicle intended for a 24-hour human-powered-vehicle endurance benchmark, fitted for one rider at a time during crew rotations. The RRPS must consist of at least two longitudinal bars running from front bulkhead to rear bulkhead with lateral separation no greater than 200 mm measured at the rider's head position, connected by cross-bracing at the top of the helmet-clearance plane so that the rider's helmet is fully enclosed within a protected cell. Material is 4130 chromoly steel tubing (Young's modulus 205 GPa, Poisson ratio 0.29, yield strength 435 MPa, ultimate tensile strength 670 MPa, density 7850 kg/m^3) with minimum outer diameter 25.4 mm and minimum wall thickness 1.6 mm for all RRPS primary tubes. Inside the RRPS, mandatory head-foam lining of thickness at least 25 mm (closed-cell EPP, density 45 kg/m^3) must be provided around the driver's head-impact envelope. The vehicle footprint must remain within 2.5 m length x 0.9 m width x 1.1 m height. Load cases: (LC1) vertical crush load 2670 N (600 lbf) applied to the top of the RRPS at the helmet position while the wheel-axle mounts are fully fixed; (LC2) lateral side load 1330 N (300 lbf) applied at the same top-cage point; (LC3) forward longitudinal load 1330 N (300 lbf) at the top point simulating a roll-over slide; (LC4) 24-hour duty-cycle fatigue representation as a pedaling reaction of 800 N alternating at 90 rpm (1.5 Hz) at the pedal axis for 86,400 cycles. Pass/fail: under LC1-LC3 no point in the RRPS may displace more than 25 mm toward the rider's head envelope and no tube element may exceed 290 MPa von Mises stress (435 / 1.5 ultimate factor); under LC4 the maximum alternating stress at the pedal-boom weld must remain below the 10^5-cycle S-N endurance limit of 4130 taken as 240 MPa; first global torsional natural frequency must exceed 8 Hz to avoid shimmy coupling. Deliverables: STEP AP242 chassis + RRPS geometry, static FEA report for LC1-LC3, fatigue check for LC4, modal analysis of first three torsion/bending modes, and a mass report with the bare RRPS tube mass separated from the rest of the chassis.",
+  "short_prompt": "Design the Roll-over Protection System (RRPS) and integrated chassis of a faired recumbent three-wheel human-powered vehicle for a 24-hour HPV endurance benchmark, with the driver's helmet fully enclosed in a protected cell. Material class: 4130 chromoly steel tubing for the RRPS, with EPP closed-cell head foam lining the rider envelope. No external standard is named in the source; design to a 1.5 FoS on yield for static cases and a 4130 S-N endurance floor for fatigue.\n\nEnvelope: vehicle footprint on the order of 2.5 m x 0.9 m x 1.1 m.\n\nLoad cases.\n- LC1 vertical crush: 2670 N (600 lbf) down at the top of the RRPS at the helmet position, wheel-axle mounts fixed.\n- LC2 lateral: 1330 N (300 lbf) sideways at the same top point.\n- LC3 longitudinal: 1330 N forward at the same top point.\n- LC4 pedaling fatigue: 800 N alternating at 1.5 Hz (90 rpm) at the pedal axis for 86,400 cycles.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "24-hour human-powered vehicle RRPS + chassis",
+    "brief": "Tube-frame RRPS + chassis for a faired recumbent HPV in a 24-hour endurance benchmark.",
+    "geometric_constraints": {
+      "envelope_m": {
+        "L": 2.5,
+        "W": 0.9,
+        "H": 1.1
+      },
+      "rrps_longitudinal_bars_min": 2,
+      "rrps_longitudinal_bar_separation_mm_max": 200,
+      "tube_od_mm_min": 25.4,
+      "tube_wall_mm_min": 1.6,
+      "head_foam_thickness_mm_min": 25
+    },
+    "material": {
+      "primary": {
+        "name": "4130 chromoly steel",
+        "youngs_modulus_GPa": 205,
+        "poissons_ratio": 0.29,
+        "density_kg_m3": 7850,
+        "yield_strength_MPa": 435,
+        "ultimate_tensile_strength_MPa": 670
+      },
+      "head_foam": {
+        "name": "EPP closed-cell foam",
+        "density_kg_m3": 45
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical_crush",
+        "magnitude_N": 2670,
+        "application": "top of RRPS at helmet"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral",
+        "magnitude_N": 1330,
+        "application": "top of RRPS"
+      },
+      {
+        "id": "LC3",
+        "name": "longitudinal_slide",
+        "magnitude_N": 1330,
+        "application": "top of RRPS"
+      },
+      {
+        "id": "LC4",
+        "name": "pedaling_fatigue",
+        "magnitude_N": 800,
+        "cycles": 86400,
+        "frequency_Hz": 1.5,
+        "application": "pedal axis"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "rrps_mass_kg",
+        "chassis_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "max_head_envelope_intrusion_mm",
+        "first_torsional_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 290,
+        "derivation": "yield 435 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_rrps_intrusion_toward_head_envelope",
+        "limit_mm": 25,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "alternating_stress_at_pedal_boom_weld",
+        "limit_MPa": 240,
+        "derivation": "4130 S-N endurance at 1e5 cycles",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_natural_frequency",
+        "limit_Hz": 8,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

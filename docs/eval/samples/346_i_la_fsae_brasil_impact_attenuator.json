@@ -1,0 +1,209 @@
+{
+  "id": "346_i_la_fsae_brasil_impact_attenuator",
+  "source": {
+    "catalog_ref": "I-EU8 (I-LA thread collegiate formula-class racecar benchmark Brasil)",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "automotive_structural_crash",
+  "part_class": "fsae_impact_attenuator",
+  "full_prompt": "Design an impact attenuator for an collegiate formula-class racecar benchmark Brasil 2025 car (handbook V3 + addendum V1). collegiate formula-class racecar benchmark rules require the impact attenuator to decelerate a 300 kg mass at 7 m/s (49 J/kg, total 7350 J kinetic energy) with peak deceleration no greater than 40 g and average deceleration no greater than 20 g. Minimum envelope: 200 mm length x 200 mm width x 200 mm height (per collegiate formula-class racecar benchmark IA requirement). Must attach to the Anti-Intrusion Plate (AIP) via 4 M8 A2-70 bolts through a 4 mm aluminum mounting plate. Attenuator is an aluminum 6061-T6 honeycomb block (core density 83 kg/m^3, crush strength 2.41 MPa per MatWeb AL 6061-T6 3/16 in cell 0.003 wall, analogous to standard collegiate formula-class racecar benchmark AIA datasheet value), surrounded by a 1.0 mm 6061-T6 aluminum skin formed as an open-top box. Full honeycomb cell axis aligned along crush direction. Load cases (collegiate formula-class racecar benchmark IA is a crash case): (LC1) nominal crash: 300 kg mass at 7 m/s impacts attenuator axially; verify 7350 J absorbed over <=150 mm crush stroke with peak <=40 g and average <=20 g (explicit dynamics or simplified 1D energy-stroke analysis); (LC2) oblique crash: 15 degree off-axis impact at 7 m/s on 300 kg, still must not punch through AIP; (LC3) post-crash residual: after crush, the attenuator must remain attached to the AIP by the 4 M8 bolts - compute bolt shear after typical post-crash offset force of 5 kN; (LC4) handling / towing: 500 N horizontal static load at attenuator front face (non-crash). Pass/fail: (R1) energy absorption under LC1 must be >= 7350 J over <=150 mm stroke (R1 is the primary collegiate formula-class racecar benchmark gate); (R2) peak deceleration under LC1 must be <= 40 g; (R3) average deceleration under LC1 must be <= 20 g; (R4) under LC2 oblique, AIP must not yield (max local stress <= yield 276 MPa); (R5) attenuator dry mass (core + skin + mount plate) must not exceed 3.5 kg; (R6) M8 bolt shear stress under LC3 must remain below 180 MPa shear (approx 0.5 x 360 MPa tensile yield for A2-70). Thermal, fluid, radiation, and vibration analyses not required. Buckling of the outer skin is captured via the crush-stroke calculation. Deliverables: STEP AP242 of honeycomb core + skin + mount plate as assembly, material datasheet reference, crush-stroke vs force curve computed via 1D analytical + verified by explicit dynamics, acceleration trace, bolt shear calculation, mass budget.",
+  "short_prompt": "Design an impact attenuator for a collegiate formula-class racecar benchmark Brasil 2025 car (handbook V3 + addendum V1). Rules: decelerate a 300 kg mass at 7 m/s (49 J/kg, 7350 J KE), peak <= 40 g, average <= 20 g. Minimum envelope 200 x 200 x 200 mm. Attach to the AIP via 4 x M8 A2-70 through a 4 mm aluminum mounting plate.\n\nEnvelope: 6061-T6 aluminum honeycomb block (core 83 kg/m^3, crush 2.41 MPa, cells aligned with the crush axis); 1.0 mm 6061-T6 open-top-box skin around the core.\n\nFactor regime: IA is a crash case - explicit-dynamics gates on energy and decel; AIP local yield (276 MPa); A2-70 M8 shear allowable 180 MPa; IA dry mass (core + skin + mount plate) <= 3.5 kg.\n\nLoad cases.\n- Nominal crash: 300 kg at 7 m/s axial; verify 7350 J over <= 150 mm stroke, peak <= 40 g, avg <= 20 g.\n- Oblique crash: 15 deg off-axis at 7 m/s on 300 kg (no AIP punch-through).\n- Post-crash residual: 4 M8 bolts holding the attenuator to the AIP after a typical 5 kN offset force.\n- Handling / towing: 500 N horizontal static on the attenuator front face.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_nonlinear_dynamics",
+        "reason": "collegiate formula-class racecar benchmark impact-attenuator 7350 J crash is a nonlinear crush event; primary verification is explicit dynamics (LS-DYNA / Abaqus Explicit / Radioss), not linear FEA.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Altair Radioss"
+        ]
+      },
+      {
+        "tool": "1D_energy_balance",
+        "reason": "collegiate formula-class racecar benchmark IA Data Report allows verification via 1D energy + crush stroke + datasheet honeycomb crush curve, which is accepted in lieu of full dynamic simulation.",
+        "examples": [
+          "Excel/Python 1D calc per collegiate formula-class racecar benchmark IA Data Report template"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-class racecar benchmark Brasil 2025 Impact Attenuator",
+    "brief": "Aluminum 6061-T6 honeycomb IA, 200x200x200 mm min, absorb 7350 J on 300 kg @ <=40 g peak <=20 g avg.",
+    "geometric_constraints": {
+      "envelope_min_mm": {
+        "l": 200,
+        "w": 200,
+        "h": 200
+      },
+      "mount_plate_mm": 4,
+      "mount_bolts": {
+        "count": 4,
+        "size": "M8",
+        "grade": "A2-70"
+      }
+    },
+    "material": {
+      "core": {
+        "name": "Aluminum 6061-T6 honeycomb 83 kg/m^3",
+        "crush_MPa": 2.41,
+        "density_kg_m3": 83
+      },
+      "skin_plate": {
+        "name": "Aluminum 6061-T6",
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "test_conditions": {
+      "impact_mass_kg": 300,
+      "impact_velocity_mps": 7,
+      "required_energy_J": 7350
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "nominal_crash",
+        "application": "axial 7 m/s on 300 kg"
+      },
+      {
+        "id": "LC2",
+        "name": "oblique_crash_15deg",
+        "application": "off-axis 7 m/s on 300 kg"
+      },
+      {
+        "id": "LC3",
+        "name": "post_crash_residual",
+        "magnitude_N": 5000,
+        "application": "at bolts"
+      },
+      {
+        "id": "LC4",
+        "name": "handling_500N",
+        "magnitude_N": 500
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 3,
+      "report_fields": [
+        "IA_mass_kg",
+        "energy_absorbed_J",
+        "peak_decel_g",
+        "avg_decel_g",
+        "AIP_stress_LC2_MPa",
+        "bolt_shear_LC3_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "energy_absorbed",
+        "limit_J_min": 7350,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_deceleration",
+        "limit_g": 40,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "average_deceleration",
+        "limit_g": 20,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "AIP_max_stress",
+        "limit_MPa": 276,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "IA_total_mass",
+        "limit_kg": 3.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "bolt_shear_stress",
+        "limit_MPa": 180,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "explicit shell/solid for skin; crushable foam material model for core",
+      "mesh_size_mm": 3,
+      "solver_hints": [
+        "LS-DYNA",
+        "Abaqus Explicit",
+        "Altair Radioss"
+      ],
+      "analysis_types": [
+        "explicit dynamics (LC1, LC2)",
+        "linear static (LC3, LC4)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "vibration_analysis": "One-shot crash event, no modal gate.",
+      "thermal_analysis": "N/A.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Skin crush and core crush modeled in nonlinear crush curve, not linear eigenvalue."
+    }
+  },
+  "eval_coverage": [
+    "nonlinear crash-event FEA",
+    "collegiate formula-class racecar benchmark IA energy gate",
+    "peak + average acceleration gates",
+    "bolt retention post-crash",
+    "mass budget"
+  ]
+}

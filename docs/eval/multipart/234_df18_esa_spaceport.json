@@ -1,0 +1,331 @@
+{
+  "id": "234_df18_esa_spaceport",
+  "source": {
+    "catalog_ref": "DF18",
+    "year": 2026,
+    "tier": "B",
+    "original_sample": "docs/eval/samples/234_df18_esa_spaceport.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "launch_ground_structural",
+  "part_class": "mobile_launch_tower_base_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the base frame of a Mobile Launch Tower for a small-launcher launch-site benchmark as a welded/bolted multi-part steel assembly consisting of four outer UC-section columns, diagonal CHS tube cross-bracing, horizontal CHS tube cross-bracing at base level, a four-corner base gusset plate set welded between columns and braces, four outer umbilical-arm tip attachment brackets where hold-down loads enter the tower top, and 12 M48 Grade 10.9 anchor bolts into the launch-site concrete mat. The tower supports a 50 t launch vehicle (fueled) at T-0 and must carry a 1 MN hold-down force per umbilical arm with four arms total (4 MN total hold-down). Tower overall height 30 m, base footprint 8 m x 8 m square. Base frame primary material: AS/NZS 3679.1 Grade 350 structural steel (Young's modulus 200 GPa, Poisson 0.30, yield 350 MPa, ultimate 450 MPa, density 7850 kg/m^3) rolled sections. Four outer columns built from UC 310 x 283 kg/m W-sections; cross-bracing from CHS 200 x 8 mm tubes. Base anchor bolts: 12 x M48 Grade 10.9 into launch-site concrete mat. Load cases per Eurocode EN 1990 + EN 1991-1-4 wind + ISO 19901 offshore-ish launch environment: (LC1) dead load: tower self-weight 200 t + launch vehicle 50 t = 2450 kN vertical on base frame; (LC2) pre-launch hold-down: 4 MN upward at the four umbilical arm tips + 2450 kN down = 1550 kN net upward on base; (LC3) ignition transient: 1 MN horizontal blast load on one side of tower for 500 ms; (LC4) wind 50 m/s ULS (1/100 yr): 1.0 kPa dynamic pressure x 30 m tower x ~8 m projected = 240 kN horizontal at mid-height; (LC5) seismic 0.2 g horizontal per site design spectrum; (LC6) T-0 release: 4 MN hold-down instantaneous release = 4 MN downward rebound on base for 100 ms. Pass/fail per EN 1993-1 (γM0 = 1.00, γM2 = 1.25): (R1) max von Mises in W-sections under LC1-LC5 <= 350 MPa (γM0 yield); (R2) base anchor bolt tension under LC2 + LC3 <= 660 kN per bolt (M48 Grade 10.9 tensile capacity 910 kN / 1.38 ULS combined with shear); (R3) horizontal deflection at tower top under LC4 wind <= H/200 = 150 mm; (R4) base frame mass <= 50 t; (R5) first sway mode above 2 Hz to stay clear of ignition transient excitation; (R6) linear buckling eigenvalue of columns under LC2 upward reaction >= 2.5. Verification is performed on the assembled columns + braces + gussets + anchor-bolts multi-body welded/bolted model with representative weld and bolt-preload stiffness; per-part stress is reported but does not gate pass/fail. Deliverables: STEP AP242, FEA per case, anchor-bolt tension table, modal, buckling eigenvalue, and mass report.",
+  "short_prompt": "Design the base frame of a Mobile Launch Tower for a small-launcher launch-site benchmark.\n\nThe tower supports a 50 t launch vehicle (fueled) at T-0 and must carry a 1 MN hold-down force per umbilical arm with four arms total (4 MN total hold-down). Tower overall height 30 m, base footprint 8 m x 8 m square. Base frame primary material: AS/NZS 3679.1 Grade 350 structural steel (Young's modulus 200 GPa, Poisson 0.30, yield 350 MPa, ultimate 450 MPa, density 7850 kg/m^3) rolled sections. Four outer columns built from UC 310 x 283 kg/m W-sections; cross-bracing from CHS 200 x 8 mm tubes. Base anchor bolts: 12 x M48 Grade 10.9 into launch-site concrete mat.\n\nLoad cases per Eurocode EN 1990 + EN 1991-1-4 wind + ISO 19901: LC1 dead load 2450 kN vertical on base frame; LC2 pre-launch hold-down 4 MN upward + 2450 kN down = 1550 kN net upward; LC3 ignition transient 1 MN horizontal blast load for 500 ms; LC4 wind 50 m/s ULS 240 kN horizontal at mid-height; LC5 seismic 0.2 g horizontal; LC6 T-0 release 4 MN downward rebound on base for 100 ms.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Mobile launch tower base (multi-part welded/bolted steel assembly)",
+    "brief": "Grade 350 steel base frame: 4 UC 310x283 columns + CHS 200x8 diagonal & horizontal bracing + 4-corner gusset plates + 4 umbilical-arm brackets + 12 M48 anchor bolts, 30 m tower for 50 t launcher with 4 MN hold-down.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "outer_column",
+        "role": "UC 310x283 kg/m W-section outer column at each of four tower corners",
+        "count_min": 4,
+        "geometric_constraints": {
+          "section": "UC 310x283",
+          "tower_H_m": 30
+        },
+        "material_hint": "AS/NZS 3679.1 Grade 350 W-section",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "diagonal_brace",
+        "role": "CHS 200 x 8 mm diagonal cross-brace tube between columns",
+        "count_min": 8,
+        "geometric_constraints": {
+          "section": "CHS 200x8"
+        },
+        "material_hint": "AS/NZS 3679.1 Grade 350 CHS",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "horizontal_brace",
+        "role": "CHS 200 x 8 mm horizontal base-level cross-brace between columns",
+        "count_min": 4,
+        "geometric_constraints": {
+          "section": "CHS 200x8",
+          "base_footprint_m": 8
+        },
+        "material_hint": "AS/NZS 3679.1 Grade 350 CHS",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "base_gusset_plate",
+        "role": "corner gusset plate welded between columns and braces at each of four base corners",
+        "count_min": 4,
+        "geometric_constraints": {},
+        "material_hint": "Grade 350 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "umbilical_arm_bracket",
+        "role": "tip attachment bracket at each of four umbilical-arm positions where 1 MN hold-down loads enter the tower",
+        "count_min": 4,
+        "geometric_constraints": {
+          "hold_down_kN_per_arm": 1000
+        },
+        "material_hint": "Grade 350 plate + stiffeners",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "anchor_bolt",
+        "role": "M48 Grade 10.9 anchor bolt tying the base frame to the launch-site concrete mat (12 bolts total)",
+        "count_min": 12,
+        "geometric_constraints": {
+          "bolt": "M48 Grade 10.9",
+          "bolt_cap_kN": 910,
+          "limit_kN": 660
+        },
+        "material_hint": "Grade 10.9 steel bolt",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "8 m x 8 m base footprint x 30 m tower height",
+      "coordinate_system": "X, Y ground plane, Z vertical; anchor bolts at base corners"
+    },
+    "material": {
+      "name": "AS/NZS 3679.1 Grade 350 / EN 10025 S355 analog",
+      "youngs_modulus_GPa": 200,
+      "poissons_ratio": 0.3,
+      "density_kg_m3": 7850,
+      "yield_strength_MPa": 350,
+      "ultimate_tensile_strength_MPa": 450
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "dead",
+        "F_kN": 2450
+      },
+      {
+        "id": "LC2",
+        "name": "hold_down",
+        "F_kN_up": 4000,
+        "F_kN_dn": 2450,
+        "net_up_kN": 1550
+      },
+      {
+        "id": "LC3",
+        "name": "ignition_blast",
+        "F_kN_H": 1000,
+        "duration_ms": 500
+      },
+      {
+        "id": "LC4",
+        "name": "wind_50mps_ULS",
+        "F_kN_H": 240
+      },
+      {
+        "id": "LC5",
+        "name": "seismic",
+        "g_lateral": 0.2
+      },
+      {
+        "id": "LC6",
+        "name": "T0_release",
+        "F_kN_dn": 4000,
+        "duration_ms": 100
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "columns welded to gusset plates at base; diagonal and horizontal braces welded to columns; umbilical-arm brackets welded to column tops; anchor bolts preloaded through base gussets into concrete mat with representative preload stiffness",
+      "support": "anchor-bolt pattern fixed to concrete mat in all LCs"
+    },
+    "objective": "minimize base-frame mass under 50 t while passing yield, anchor-bolt, deflection, modal, and column-buckling gates",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "base_mass_t",
+        "max_von_mises_per_case_MPa",
+        "anchor_bolt_tension_kN",
+        "tower_top_deflection_mm",
+        "first_sway_mode_Hz",
+        "buckling_eigenvalue",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 350,
+        "derivation": "Eurocode γM0 yield",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "anchor_bolt_tension_per_bolt",
+        "limit_kN": 660,
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tower_top_deflection_wind",
+        "limit_mm": 150,
+        "derivation": "H/200 = 30000/200",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "base_frame_mass",
+        "limit_t": 50,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_sway_mode",
+        "limit_Hz": 2.0,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "column_buckling_eigenvalue",
+        "limit": 2.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5",
+          "LC6"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "welded",
+      "load_path": "diagonal braces welded into columns"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "welded",
+      "load_path": "horizontal base braces welded into columns"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "welded",
+      "load_path": "corner gusset plates welded between columns at base"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "welded",
+      "load_path": "diagonal braces welded into corner gusset plates"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "umbilical-arm brackets welded to column tops, 1 MN hold-down path into tower"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "D",
+        "F"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "anchor bolts preloaded through corner gusset plates into launch-site concrete mat"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Mobile launch tower bases are welded steel space-frames with four columns, diagonal and horizontal braces, corner gussets, umbilical-arm brackets, and anchor-bolt groups; hold-down, T-0 release, and anchor-bolt-tension gates explicitly cross weld and bolt interfaces that must be modelled as a multi-body frame.",
+    "speculation_caveats": "Brace count (8 diagonals + 4 horizontals) and gusset count are speculative; materials, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "docs/eval/samples/234_df18_esa_spaceport.json"
+  }
+}

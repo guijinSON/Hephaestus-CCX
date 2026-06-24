@@ -1,0 +1,154 @@
+{
+  "id": "213_af1_shell_eco_marathon_africa",
+  "source": {
+    "catalog_ref": "AF1",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "efficiency_vehicle_structural",
+  "part_class": "urbanconcept_rollbar_chassis",
+  "full_prompt": "Design the roll bar and supporting primary chassis of an UrbanConcept-class fuel-efficiency vehicle benchmark for an African-regional round. Total vehicle mass without driver must not exceed 225 kg. Overall vehicle width must be between 1200 mm and 1300 mm, overall height between 1000 mm and 1300 mm, and wheelbase at least 1200 mm with track width at least 1000 mm. The roll bar is a steel tubular hoop that extends at least 5 cm above the driver's helmet in the seated driving posture, mounted to the chassis at three attachment points (centerline and two bases), spanning the full width of the driver cell. Material: 4130 chromoly steel tubing (Young's modulus 205 GPa, Poisson 0.29, yield 435 MPa, ultimate 670 MPa, density 7850 kg/m^3), 1.0 inch (25.4 mm) OD x 0.065 inch (1.65 mm) wall minimum. Load cases (roll-bar 700 N triaxial gate): (LC1) roll-bar vertical: 700 N applied downward at the top of the bar while the three mounting points are fully fixed; (LC2) roll-bar longitudinal: 700 N applied forward at the same top point; (LC3) roll-bar lateral: 700 N applied sideways at the same top point; (LC4) driver-restraint attachment: simultaneous 3000 N on each of the four harness anchor points in the most adverse crash direction (forward + down 30 degrees). Pass/fail: (R1) under LC1-LC3 no point of the roll bar may deflect by more than 5 cm (50 mm) toward the helmet envelope, (R2) no tube element exceeds yield 435 MPa under any of LC1-LC4, (R3) harness anchor attachment under LC4 does not exceed 435 MPa at the weld, (R4) total chassis + roll-bar mass below 80 kg to stay within the 225 kg vehicle budget, (R5) first global torsional chassis mode above 12 Hz. Deliverables: STEP, FEA per load case, modal, and a mass summary allocating chassis/roll-bar/harness anchors.",
+  "short_prompt": "Design the roll bar and supporting primary chassis of an UrbanConcept-class fuel-efficiency vehicle for an African-regional round. The roll bar is a tubular 4130 chromoly steel hoop clearing the driver's helmet by >= 5 cm in the seated posture, attached to the chassis at three points and spanning the full driver-cell width. Qualify to the 700 N triaxial roll-bar gate called out for the competition class; design to 4130 yield.\n\nEnvelope: vehicle width 1200-1300 mm, height 1000-1300 mm, wheelbase >= 1200 mm, track >= 1000 mm, vehicle mass (no driver) <= 225 kg, tube OD >= 25.4 mm and wall >= 1.65 mm.\n\nLoad cases.\n- LC1 roll-bar vertical: 700 N down at the top of the bar, three mount points fixed.\n- LC2 roll-bar longitudinal: 700 N forward at the same top point.\n- LC3 roll-bar lateral: 700 N sideways at the same top point.\n- LC4 harness anchors: 3000 N simultaneous on each of four 4-point harness anchors in the most adverse direction (forward + down 30 deg).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "UrbanConcept efficiency-vehicle roll bar",
+    "brief": "UrbanConcept roll bar + chassis under 700 N triaxial structural gates.",
+    "geometric_constraints": {
+      "vehicle_width_mm": [
+        1200,
+        1300
+      ],
+      "vehicle_height_mm": [
+        1000,
+        1300
+      ],
+      "wheelbase_mm_min": 1200,
+      "track_width_mm_min": 1000,
+      "vehicle_mass_no_driver_kg_max": 225,
+      "rollbar_above_helmet_cm_min": 5,
+      "tube_od_in_min": 1.0,
+      "tube_wall_in_min": 0.065
+    },
+    "material": {
+      "name": "4130 chromoly steel",
+      "youngs_modulus_GPa": 205,
+      "poissons_ratio": 0.29,
+      "density_kg_m3": 7850,
+      "yield_strength_MPa": 435,
+      "ultimate_tensile_strength_MPa": 670
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "rollbar_vertical",
+        "F_N": 700,
+        "application": "top of roll bar, downward"
+      },
+      {
+        "id": "LC2",
+        "name": "rollbar_longitudinal",
+        "F_N": 700,
+        "application": "top, forward"
+      },
+      {
+        "id": "LC3",
+        "name": "rollbar_lateral",
+        "F_N": 700,
+        "application": "top, sideways"
+      },
+      {
+        "id": "LC4",
+        "name": "harness_anchors",
+        "F_N_per_point": 3000,
+        "application": "four harness anchors, forward+down 30 deg"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "total_mass_kg",
+        "rollbar_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "max_rollbar_deflection_mm",
+        "first_torsional_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_rollbar_deflection_toward_helmet",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_rollbar",
+        "limit_MPa": 435,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "harness_weld_stress",
+        "limit_MPa": 435,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_chassis_plus_rollbar_mass",
+        "limit_kg": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 12,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

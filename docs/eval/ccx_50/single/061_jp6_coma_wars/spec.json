@@ -1,0 +1,144 @@
+{
+  "id": "061_jp6_coma_wars",
+  "source": {
+    "catalog_ref": "JP6",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "precision_mechanical",
+  "part_class": "spinning_top",
+  "full_prompt": "Design a spinning top (koma) for a standard-class precision-manufacturing benchmark. The top must fit inside an outside-diameter envelope of 20 mm maximum and an overall height of 60 mm maximum, measured including any spike, axle, or tip. The top may be made of any material and must be primarily lathe-machinable; assemblies are permitted if all components fit the envelope and no material is added during the match. The top is spun by hand or with a standard launcher on a flat tournament dohyo (arena) and must spin for as long as possible while also resisting being knocked out of the arena or stopped by an opposing top during head-to-head matches. The design objective is therefore a high polar moment of inertia about the spin axis combined with a low center of gravity and a hard, durable tip for minimum rolling friction. Structural pass/fail requirements: under a worst-case collision impact modeled as a quasi-static 50 N lateral force applied at the widest point of the top, the body must not plastically yield, and the tip (typically hardened steel, tungsten carbide, or zirconia) must not chip. The mass must fit within whatever dohyo rulebook class the team declares; the standard class is typically constrained by envelope rather than mass, but designs heavier than 50 g are flagged for review. Precision concentricity of the spin axis to the geometric center must be within 0.02 mm to ensure balanced spin. Primary verification is structural FEA (linear static) for the 50 N lateral impact plus a center-of-mass / moment-of-inertia calculation performed analytically from the CAD mass properties (not FEA). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the top, a mass properties report (mass, CG height, polar moment of inertia Izz in kg*mm^2, concentricity), and max von Mises stress under the 50 N lateral load in MPa.",
+  "short_prompt": "Design a spinning top (koma) for a standard-class precision-manufacturing benchmark. The envelope is 20 mm OD maximum x 60 mm total height including tip. Any lathe-machinable material is allowed; assemblies permitted if nothing is added during the match. Spin-axis concentricity must be within 0.02 mm. The design objective is a high polar moment of inertia Izz about the spin axis with a low CG and a hard durable tip; the competitive gate is spin-down time and resistance to being knocked out of the arena.\n\nLoad cases.\n- LC1 collision-impact equivalent: 50 N static lateral force applied at the widest diameter of the top; no plastic yield in the body and no chipping of the tip.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "mass_property_calculation",
+        "reason": "Polar moment of inertia, CG height, and concentricity are computed from CAD mass properties, not FEA.",
+        "examples": [
+          "Onshape / SolidWorks mass properties"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Standard-class manufacturing spinning top",
+    "brief": "Design a 20 mm OD x 60 mm H spinning top with maximum Izz, durable tip, and survives 50 N lateral collision.",
+    "geometric_constraints": {
+      "OD_mm_max": 20,
+      "height_mm_max": 60,
+      "concentricity_mm_max": 0.02
+    },
+    "material": {
+      "typical_body": "brass, tungsten, stainless steel",
+      "typical_tip": "hardened steel / tungsten carbide / zirconia"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "collision_lateral",
+        "magnitude_N": 50,
+        "direction": "lateral at widest diameter"
+      }
+    ],
+    "boundary_conditions": {
+      "tip_contact": "point contact on dohyo, constrained in 3 translations"
+    },
+    "objective": {
+      "maximize": "spin_down_time",
+      "secondary": "collision_robustness"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "mass_g",
+        "CG_height_mm",
+        "polar_moment_Izz_kg_mm2",
+        "concentricity_mm",
+        "max_vm_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "OD_mm",
+        "limit_mm": 20,
+        "derivation": "Standard class envelope",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "height_mm",
+        "limit_mm": 60,
+        "derivation": "Standard class envelope",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "concentricity_mm",
+        "limit_mm": 0.02,
+        "derivation": "Balanced-spin tolerance",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 1.0,
+        "derivation": "No plastic yield under 50 N lateral collision",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Spin is rigid-body, not a modal problem.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Air drag not in pass/fail.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "tight-envelope precision part",
+    "mass-properties (Izz, CG)",
+    "collision impact static equivalent",
+    "concentricity tolerance"
+  ]
+}

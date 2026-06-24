@@ -1,0 +1,364 @@
+{
+  "id": "084_kr11_yak_water_rocket",
+  "source": {
+    "catalog_ref": "KR11",
+    "year": 2024,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/084_kr11_yak_water_rocket.json",
+    "multipart_basis": "Decomposition inferred from the physical architecture of a youth-class PET-bottle water rocket: the PET bottle body is the pressure vessel and water tank, capped by a bottle-neck-to-launcher seal at the aft end (nozzle region); a molded or taped nose cone is glued to the bottle base; 3 or 4 flat plastic/cardboard fins are taped circumferentially around the aft third of the bottle; a small pressure-relief or fill valve sits at the neck. No rulebook citations are added beyond those present in the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "water_rocket_airframe_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a water rocket airframe for a youth water-rocket benchmark event. The rocket uses a pressurized PET bottle (standard 1.5 L carbonated-beverage bottle) as the pressure vessel and water-propellant tank. The competition target is a range of 60 m along the ground, measured from launch point. Launch angle is required to be between 40 degrees (inclusive) and strictly less than 90 degrees from horizontal. The rocket is pressurized with air to a typical 5-7 bar (500-700 kPa) gauge at launch (some PET bottles have tested burst pressure around 14 bar, giving SF about 2-3). Water fill is typically 30-40% of bottle volume (450-600 mL in a 1.5 L bottle). Dry mass of the airframe (bottle + nose cone + fins + any electronics) must be kept low; target dry mass 200-400 g. Safety and structural pass/fail: (1) the PET bottle plus any nose-cone or fin attachment must not leak at 700 kPa gauge (proof pressure check); (2) the 1.5 L PET bottle at 700 kPa gauge gives hoop stress PR/t = 700e3 * 0.045 / 0.00035 ~= 90 MPa on a 90 mm ID bottle with 0.35 mm wall — well below PET UTS around 55-75 MPa, so actual carbonated-soda PET works with SF 0.6-0.8 — flag this as a safety-margin concern that the rules address by limiting pressure to the bottle's rated-soda pressure; design must not exceed 700 kPa for a soda bottle; (3) fin attachment must survive 20 g axial deceleration at ejection; (4) range with 40 deg launch and given propellant mass must land within +/- 10 m of the 60 m target (ballistic trajectory check, non-FEA). Primary verification is a structural / pressure-vessel FEA check on the bottle at the launch pressure and a simple pressure-proof check. Ballistic trajectory is non-FEA. Vibration, thermal, fluid (internal water/air dynamics are approximated), and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the rocket, and a report listing dry mass in g, fill fraction, launch pressure in kPa, bottle hoop stress in MPa with SF, and predicted range in m.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe rocket is delivered as a multi-part assembly: a PET bottle body (the pressurized tank, flown inverted with neck down), a nose cone attached at the closed base (flown-forward) of the bottle, 3-4 flat fins taped circumferentially around the aft (neck) third of the bottle, a bottle-neck launcher seal / nozzle insert that plugs into the launch pad, and a fill/relief valve at or near the neck. Load paths: LC1 internal 700 kPa pressure acts on the bottle hoop and the neck seal; LC2 20 g axial fin ejection shock acts from the fin root adhesive into the bottle sidewall and back into the nose-cone adhesive joint. The final FEM verification runs on the ASSEMBLED model only; per-part stress is reported but does not gate pass/fail. Inter-part adhesive / tape joint demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case (peel + shear allowables for tape or hot-glue). All inherited load magnitudes, material properties, and pass/fail thresholds from the original brief are preserved verbatim.",
+  "short_prompt": "Design a student water-rocket airframe + nozzle assembly for the Korean YAK water-rocket competition. Pressure vessel is a 1.5 L PET bottle; launch pressure up to 700 kPa; propellant water 200-400 g; launch angle 40 <= theta < 90 deg; target apogee 60 m +/- 10 m.\n\nLoad case: LC1 20 g axial shock at launch. Pass/fail: no yield; stability margin positive; FEM at assembled level; fin-to-bottle and nozzle-to-bottle interface DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ballistic_trajectory",
+        "reason": "Range prediction is a 2D ballistic simulation with drag, not FEA.",
+        "examples": [
+          "python trajectory model",
+          "OpenRocket water-rocket plugin"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Youth-class water rocket (multi-part PET bottle assembly)",
+    "brief": "Design a 1.5 L PET water rocket as an assembly: bottle body (pressure vessel + water tank), nose cone on bottle base, 3-4 fins taped around aft neck end, launcher neck seal, and fill/relief valve. Launch at 40 to <90 deg, hit 60 m range, launch pressure <= 700 kPa, dry mass 200-400 g. FEM at assembled level; adhesive-joint DCR <= 1.0.",
+    "geometric_constraints": {
+      "bottle_volume_L": 1.5,
+      "bottle_ID_mm_approx": 90,
+      "bottle_wall_mm_approx": 0.35,
+      "bottle_length_mm_approx": 320,
+      "launch_angle_deg_min": 40,
+      "launch_angle_deg_max_strict": 90,
+      "target_range_m": 60,
+      "range_tolerance_m": 10,
+      "flight_orientation": "bottle inverted: neck (nozzle) aft, closed base forward with nose cone",
+      "fin_count_min": 3,
+      "fin_count_max": 4
+    },
+    "material": {
+      "bottle": "PET (carbonated soda rated)",
+      "PET_properties": {
+        "UTS_MPa_range": [
+          55,
+          75
+        ],
+        "E_GPa": 2.5,
+        "elongation_at_break_pct": 50
+      },
+      "nose_cone": "molded plastic (e.g. HDPE soda cap or 3D-printed PLA)",
+      "fins": "stiff cardboard, corrugated plastic (coroplast), or 2 mm balsa",
+      "adhesive": "hot-melt glue, duct tape, or clear packing tape per youth-class rules",
+      "launcher_seal": "rubber O-ring or silicone bung in a plastic/aluminum launcher nozzle"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_pressure",
+        "magnitude_kPa": 700,
+        "description": "peak gauge internal pressure at the moment the launcher releases; acts on bottle hoop and on nose-cone / fin adhesive joints indirectly via bottle skin deformation"
+      },
+      {
+        "id": "LC2",
+        "name": "fin_ejection_shock",
+        "magnitude_g": 20,
+        "direction": "axial",
+        "description": "quasi-static 20 g decel at water-exhaust end of boost; fin root adhesive peel + nose cone adhesive shear"
+      }
+    ],
+    "boundary_conditions": {
+      "bottle_neck": "sealed at launcher with O-ring / bung during LC1; modeled as clamped ring around neck thread",
+      "fin_root": "bonded to bottle sidewall over a footprint of 30-60 mm x 20 mm per fin; sidewall provides curved substrate",
+      "nose_cone_interface": "bonded to bottle base with a disk-shaped adhesive footprint",
+      "launch_rail": "during LC1 the rocket is retained by the launcher pin; released at peak pressure"
+    },
+    "objective": {
+      "range_m_target": 60,
+      "design_heuristic": "Use 30-40% water fill and 550-650 kPa launch pressure to hit 60 m at 40-50 deg launch angle; keep dry mass near 250 g."
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (bottle + nose cone + 3-4 fins + launcher seal + valve)",
+      "body_metadata": [
+        "part_family (A-E)",
+        "instance_index",
+        "material_tag"
+      ],
+      "report_fields": [
+        "dry_mass_g",
+        "water_fill_fraction",
+        "launch_pressure_kPa",
+        "bottle_hoop_stress_MPa",
+        "bottle_safety_factor",
+        "predicted_range_m",
+        "fin_root_adhesive_DCR",
+        "nose_cone_adhesive_DCR",
+        "per_part_max_stress_MPa"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "PET_bottle_body",
+        "role": "pressure vessel and water propellant tank; the single structural element carrying LC1 hoop stress; also the mounting substrate for nose cone, fins, and launcher seal",
+        "count_min": 1,
+        "geometric_constraints": {
+          "volume_L": 1.5,
+          "ID_mm_approx": 90,
+          "wall_mm_min": 0.35,
+          "length_mm_approx": 320,
+          "hoop_stress_MPa_at_700kPa_approx": 90,
+          "SF_against_UTS_min": 1.25,
+          "orientation_in_flight": "neck aft, closed base forward"
+        },
+        "material_hint": "PET (carbonated-soda-rated 1.5 L bottle, not still-water-rated)",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "nose_cone",
+        "role": "aerodynamic fairing bonded to the closed base of the bottle (which points forward in flight); reduces drag, moves CP aft for stability",
+        "count_min": 1,
+        "geometric_constraints": {
+          "profile": "conical or tangent-ogive, base OD matching bottle base diameter (~95 mm)",
+          "length_mm_range": [
+            60,
+            120
+          ],
+          "wall_mm_min": 1.5,
+          "adhesive_footprint_mm2_min": 3000
+        },
+        "material_hint": "3D-printed PLA, molded HDPE, or stacked paper-mache cone",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "fin",
+        "role": "planar aerodynamic stabilizer taped around the aft (neck) third of the bottle; 3 or 4 fins equally spaced; sets stability margin and takes minor lateral gust loads",
+        "count_min": 3,
+        "count_note": "3 fins at 120 deg spacing minimum; some teams use 4 fins at 90 deg. Sum of count_min values plus other parts satisfies the 2+ total rule.",
+        "geometric_constraints": {
+          "planform": "trapezoidal or delta",
+          "root_chord_mm_range": [
+            60,
+            100
+          ],
+          "tip_chord_mm_range": [
+            30,
+            60
+          ],
+          "span_mm_range": [
+            50,
+            80
+          ],
+          "thickness_mm_range": [
+            1.5,
+            3.0
+          ],
+          "adhesive_footprint_mm2_per_fin_min": 600,
+          "taping_requirement": "minimum 2 wraps of clear packing tape around the bottle over the fin roots"
+        },
+        "material_hint": "corrugated plastic (coroplast), stiff cardboard, or 2 mm balsa",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "launcher_neck_seal_nozzle",
+        "role": "elastomeric plug or O-ring sized to the bottle neck internal thread that mates with the launch pad; retains pressure during LC1 and guides the water exhaust; detaches from the rocket at launch release",
+        "count_min": 1,
+        "geometric_constraints": {
+          "bottle_neck_ID_mm": 21.5,
+          "seal_OD_mm_range": [
+            20.5,
+            22.0
+          ],
+          "seal_material": "silicone rubber or EPDM bung",
+          "pressure_rating_kPa_min": 700,
+          "retention_mechanism": "launch pad pin; not glued to rocket"
+        },
+        "material_hint": "silicone / EPDM bung; plastic launch pad nozzle",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "fill_relief_valve",
+        "role": "Schrader or manual tire valve near the bottle neck that allows inflation to the launch pressure and, optionally, a pressure relief at the event safety limit; not a primary structural member but a safety item",
+        "count_min": 1,
+        "geometric_constraints": {
+          "valve_type": "Schrader (tire) or manual stopcock",
+          "mounting": "threaded into launcher nozzle D, not into bottle wall",
+          "burst_pressure_kPa_min": 1400,
+          "safety_role": "prevents overpressure above soda-bottle rated pressure"
+        },
+        "material_hint": "commercial Schrader valve (brass + rubber seal)",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_length_mm_approx": 400,
+      "overall_OD_mm_approx": 95,
+      "CG_aft_of_nose_mm_approx": 200,
+      "CP_aft_of_nose_mm_approx": 260,
+      "stability_caliber_min": 1.0
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "launch_pressure_kPa",
+        "limit_kPa": 700,
+        "derivation": "PET soda bottle rated pressure limit",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "bottle_SF_against_UTS",
+        "limit": 1.25,
+        "derivation": "Conservative SF against rated UTS lower bound 55 MPa",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "launch_angle_deg",
+        "limit_lower_deg": 40,
+        "limit_upper_deg_strict": 90,
+        "derivation": "Rulebook launch angle rule",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "predicted_range_error_m",
+        "limit_m": 10,
+        "derivation": "Within 10 m of 60 m target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "type": "structural_analysis",
+        "metric": "adhesive_joint_DCR_max",
+        "limit": 1.0,
+        "derivation": "Tape/glue peel and shear DCR at IF1 (nose-cone-to-bottle) and IF2 (fin-to-bottle) must remain <= 1.0 under LC2 20 g axial shock.",
+        "applies_to": [
+          "IF1",
+          "IF2",
+          "IF3"
+        ],
+        "operator": "<=",
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "type": "structural_analysis",
+        "metric": "neck_seal_leak_test_Pa_per_s",
+        "limit": 1000,
+        "derivation": "Proof pressure check: bottle + neck seal assembly must hold 700 kPa with leak rate < 1 kPa/s (1000 Pa/s) for 10 s.",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<=",
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (bottle) + solid (nose cone, fins, launcher seal)",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static (pressure)",
+        "linear static (20 g axial)"
+      ],
+      "contact_modeling": "tied / cohesive zone at adhesive footprints; rigid body for launcher seal during LC1"
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "B",
+        "A"
+      ],
+      "mediated_by": "disk-shaped hot-melt glue or tape footprint (>= 3000 mm^2) bonding nose cone base to bottle closed base",
+      "load_path": "LC2 20 g axial shock: nose cone inertia pulls forward, shear + peel across adhesive footprint"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "C",
+        "A"
+      ],
+      "mediated_by": "fin root contact-cemented and wrapped with >= 2 turns of packing tape around the aft neck third of the bottle",
+      "load_path": "LC2 fin inertia + aerodynamic lateral load; peel dominates at the leading edge of the tape wrap, shear dominates along the root chord"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "D",
+        "A"
+      ],
+      "mediated_by": "silicone / EPDM bung compressed into the bottle neck thread (mechanical interference fit, not glued)",
+      "load_path": "LC1 700 kPa internal pressure tries to push the bung out of the neck; frictional and elastic retention of the bung seal the rocket"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "The neck seal, bottle hoop, fin adhesive, and nose cone adhesive all participate in holding the rocket together through pressurization and release; per-part stress in isolation can't verify the combined leak-tightness and ejection-shock integrity. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A water rocket is physically an assembly: the bottle is a commercial-off-the-shelf pressure vessel, the fins must be added and are intentionally removable/replaceable (fin-tuning is part of the competition), the nose cone is a separate molded or 3D-printed part, and the launcher seal is a launch-pad component that is not bonded to the rocket.",
+    "speculation_caveats": "Exact fin planform, adhesive footprint, and nose cone profile are team-selected; the part taxonomy (bottle body + nose cone + fins + launcher seal + valve) is universal for this class.",
+    "flagged_uncertainty": "PET bottle wall thickness and UTS vary by manufacturer; use 0.35 mm / 55 MPa as conservative baseline.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not applicable.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Internal flow approximated by trajectory model.",
+      "radiation_analysis": "Not applicable."
+    },
+    "original_sample_preserved_at": "docs/eval/samples/084_kr11_yak_water_rocket.json"
+  },
+  "eval_coverage": [
+    "PET pressure-vessel hoop stress",
+    "launch angle rule",
+    "60 m range accuracy",
+    "fin ejection shock",
+    "multi-part water-rocket assembly (bottle + nose cone + 3-4 fins + launcher seal + valve)",
+    "adhesive / tape joint DCR under ejection shock",
+    "mechanical neck-seal leak-tightness"
+  ]
+}

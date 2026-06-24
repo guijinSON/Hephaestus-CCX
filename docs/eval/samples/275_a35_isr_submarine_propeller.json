@@ -1,0 +1,207 @@
+{
+  "id": "275_a35_isr_submarine_propeller",
+  "source": {
+    "catalog_ref": "A35",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "marine_structural",
+  "part_class": "human_powered_propeller",
+  "full_prompt": "Design a single-part monolithic propeller for an ISR (International Submarine Races) human-powered submarine, compliant with ISR 18 Contestant Manual v1.2. The pilot drives the propeller via a pedal crank at 120 RPM (design point). Propeller geometry: 3 blades, diameter 600 mm, hub diameter 60 mm, pitch-to-diameter ratio 1.2 (so pitch = 720 mm), blade root chord 100 mm, blade tip chord 40 mm, blade twist at root 45 deg, twist at tip 15 deg. Material: 6061-T6 aluminum (machined), E = 68.9 GPa, yield = 276 MPa, ultimate = 310 MPa, density = 2700 kg/m^3. Shaft interface: 25 mm diameter keyed bore, 8 mm key width. Rated continuous pilot power 300 W -> shaft torque = 300 / (2 pi x 120/60) = 23.9 N*m. Peak sprint power 600 W for 30 s -> 47.8 N*m. Load cases: (R1) Continuous operation: 23.9 N*m torque at 120 RPM; each blade root carries equal share; max von Mises at blade root fillet <= yield / 3.0 = 92 MPa (fatigue factor for continuous operation). (R2) Sprint peak: 47.8 N*m torque; max von Mises <= yield / 1.5 = 184 MPa. (R3) Hydrodynamic thrust: at 120 RPM and operating submarine speed 2 m/s, propeller generates thrust approximately 150 N, reacted through the hub onto the shaft; max von Mises at hub <= 92 MPa. (R4) Debris strike: a 200 N tangential impact at blade tip (simulating blade strike on pool debris) applied as transient quasi-static; max von Mises <= ultimate / 1.5 = 207 MPa. (R5) Centrifugal: at 2 x sprint RPM = 240 RPM (safety envelope), centrifugal tensile stress at blade root <= 92 MPa. (R6) Propeller mass <= 1.5 kg. (R7) First modal frequency cantilevered at hub bore >= 100 Hz (>>2x blade-passing frequency 6 Hz at continuous operation). Primary verification: structural FEA (linear static x4 cases + centrifugal body load) + modal for R7. Vibration secondary via R7. Thermal, fluid, radiation NOT required (the hydrodynamic thrust is pre-reduced to an equivalent force). Deliverables: STEP AP242 monolithic propeller, shaft-interface drawing, and a report listing mass in kg, max von Mises per case in MPa, first modal frequency in Hz.",
+  "short_prompt": "Design a single-part monolithic 6061-T6 aluminum propeller for an ISR (International Submarine Races) human-powered submarine, compliant with ISR 18 Contestant Manual v1.2. Drive is a pedal crank at a design point of 120 RPM. 3 blades, pitch/diameter ratio 1.2, twist 45 deg at root to 15 deg at tip. Shaft interface is a 25 mm keyed bore (8 mm key). Rated continuous pilot power 300 W (23.9 N*m shaft torque at 120 RPM); peak sprint 600 W for 30 s (47.8 N*m).\n\nEnvelope: diameter 600 mm, hub diameter 60 mm, root chord 100 mm, tip chord 40 mm.\n\nLoad cases.\n- LC1 continuous operation: 23.9 N*m torque at 120 RPM, fatigue factor at blade-root fillet.\n- LC2 sprint peak: 47.8 N*m torque.\n- LC3 hydrodynamic thrust: ~150 N at 120 RPM and 2 m/s submarine speed, reacted through the hub.\n- LC4 debris strike: 200 N tangential at the blade tip (transient quasi-static, ultimate-load case).\n- LC5 centrifugal safety: 2 x sprint RPM = 240 RPM body load at the blade root.\n- LC6 modal: cantilevered at the hub bore, first frequency >= 100 Hz (>> 6 Hz blade-passing at continuous).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ISR human-powered submarine propeller",
+    "brief": "3-blade 600 mm 6061-T6 propeller for pilot-powered submarine, continuous 300 W / sprint 600 W.",
+    "geometric_constraints": {
+      "blade_count": 3,
+      "diameter_mm": 600,
+      "hub_diameter_mm": 60,
+      "pitch_mm": 720,
+      "root_chord_mm": 100,
+      "tip_chord_mm": 40,
+      "twist_root_deg": 45,
+      "twist_tip_deg": 15,
+      "shaft_bore_mm": 25,
+      "key_width_mm": 8,
+      "monolithic": true
+    },
+    "material": {
+      "name": "6061-T6 aluminum",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "continuous_torque_23.9Nm",
+        "torque_Nm": 23.9,
+        "RPM": 120
+      },
+      {
+        "id": "LC2",
+        "name": "sprint_torque_47.8Nm",
+        "torque_Nm": 47.8,
+        "RPM": 120
+      },
+      {
+        "id": "LC3",
+        "name": "thrust_150N",
+        "force_N": 150
+      },
+      {
+        "id": "LC4",
+        "name": "debris_strike",
+        "force_N": 200,
+        "direction": "tangential at blade tip"
+      },
+      {
+        "id": "LC5",
+        "name": "centrifugal_240RPM",
+        "RPM": 240
+      },
+      {
+        "id": "LC6",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "shaft bore + key constrained",
+      "loads": "torque via shaft, thrust along axis, tip impact, centrifugal body load"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa",
+        "max_von_mises_LC5_MPa",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 92,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 92,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 207,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 92,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 100,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static + centrifugal body",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Water ambient.",
+      "fluid_analysis": "Hydrodynamic thrust reduced to equivalent force.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Blade is bending + tension dominated."
+    }
+  },
+  "eval_coverage": [
+    "continuous-fatigue and sprint-peak safety factors",
+    "hydrodynamic thrust + debris strike",
+    "blade-passing modal margin"
+  ]
+}

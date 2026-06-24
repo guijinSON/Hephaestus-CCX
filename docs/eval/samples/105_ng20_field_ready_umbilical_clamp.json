@@ -1,0 +1,161 @@
+{
+  "id": "105_ng20_field_ready_umbilical_clamp",
+  "source": {
+    "catalog_ref": "NG20",
+    "year": 2024,
+    "tier": "C+"
+  },
+  "domain": "medical_devices_open_source",
+  "part_class": "3d_printed_umbilical_cord_clamp",
+  "full_prompt": "Design one representative 3D-printed single-use umbilical cord clamp compliant with the Field Ready humanitarian 3D-print library. The clamp is a hinged plastic jaw with a snap-lock closure approximately 50 mm long x 20 mm wide x 6 mm thick, printed in PLA (or medical-grade equivalent) on an FFF printer, used to occlude a newborn's umbilical cord after delivery. Functional requirement: when latched closed around a nominal 10 mm diameter umbilical cord, the clamp must sustain a minimum retention / closing force of 80 N across the jaw without disengaging the snap lock or fracturing any part, and must maintain that force for at least 24 hours of sustained loading (creep considered by using a reduced long-term PLA design strength). Safety factor of 2 per Field Ready design brief, so verification load is 160 N. Target material: PLA FFF-printed with bulk tensile yield ~50 MPa, design strength 25 MPa (accounting for anisotropy + creep reduction). Snap-lock geometry is a cantilever beam with a 1.5 mm x 2 mm latch barb engaging a mating pocket. Deliverable is a single CAD part (or 2-part snap assembly) suitable for linear static structural FEA at 160 N verification load with the jaw tips fixed and the hinge pin free. Vibration, thermal, fluid, radiation, buckling analyses are NOT required.",
+  "short_prompt": "Design a 3D-printed single-use hinged umbilical-cord clamp with a snap-lock closure per the Field Ready humanitarian 3D-print library. The clamp is printed in PLA (or medical-grade equivalent) on an FFF printer and latches around a nominal 10 mm umbilical cord. Sustained 24 h retention with creep-reduced PLA design strength 25 MPa (bulk yield ~50 MPa). Safety factor 2.0 per the Field Ready brief; snap must not disengage below the verification load.\n\nEnvelope: ~50 x 20 x 6 mm hinged jaw with a cantilever snap barb (1.5 x 2.0 mm latch into a mating pocket).\n\nLoad cases.\n- LC1 retention nominal: 80 N closing force across the jaw.\n- LC2 retention factored (SF 2): 160 N verification load, jaw tips fixed and hinge pinned.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Field Ready 3D-printed umbilical cord clamp",
+    "brief": "Design a PLA 3D-printed umbilical cord clamp retaining 80 N closing force with SF 2 (verified to 160 N).",
+    "geometric_constraints": {
+      "overall_length_mm": 50,
+      "overall_width_mm": 20,
+      "overall_thickness_mm": 6,
+      "nominal_cord_diameter_mm": 10,
+      "snap_barb_mm": [
+        1.5,
+        2.0
+      ]
+    },
+    "material": {
+      "name": "PLA FFF-printed",
+      "bulk_tensile_yield_MPa": 50,
+      "design_strength_MPa": 25,
+      "density_kg_m3": 1240
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "retention_nominal",
+        "magnitude_N": 80,
+        "application": "clamp closing force"
+      },
+      {
+        "id": "LC2",
+        "name": "retention_factored_SF2",
+        "magnitude_N": 160,
+        "application": "verification load"
+      }
+    ],
+    "boundary_conditions": {
+      "jaw_tips": "fixed during structural test",
+      "hinge": "pinned"
+    },
+    "objective": {
+      "primary": "pass retention + no-fracture",
+      "secondary": "minimize print time / mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STL",
+        "STEP_AP242"
+      ],
+      "body_count": "single part (or 2-part snap)",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "snap_disengagement_force_N",
+        "part_mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "retention_force_N",
+        "limit_N": 80,
+        "derivation": "Field Ready brief",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "retention_safety_factor",
+        "limit": 2.0,
+        "derivation": "Field Ready brief SF",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_MPa",
+        "limit_MPa": 25,
+        "derivation": "PLA design strength including creep + anisotropy",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "snap_disengagement_force_N",
+        "limit_N": 160,
+        "derivation": "snap must not release below 2x design load",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10",
+      "mesh_size_mm_in_critical_regions": 0.3,
+      "solver_hints": [
+        "FreeCAD-FEM",
+        "CalculiX",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static single-use device.",
+      "thermal_analysis": "Not applicable (though sterilization is a separate concern).",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Stocky part."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Biocompatibility of FFF-PLA for clinical use",
+      "Sterilization method and resistance",
+      "Regulatory (ISO 13485) path for clinical deployment"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "single-part 3D-print structural FEA",
+    "snap-fit disengagement load",
+    "humanitarian medical open-source scope",
+    "SF 2 verification on retention force",
+    "creep-reduced PLA design strength"
+  ]
+}

@@ -1,0 +1,173 @@
+{
+  "id": "249_a9_sae_aero_design_landing_gear",
+  "source": {
+    "catalog_ref": "A9",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "uav_main_landing_gear",
+  "full_prompt": "Design a single-part monolithic main landing gear for a piston-powered radio-controlled aero-design competition aircraft. Gross Take-Off Weight (GTOW) is capped at 55 lb (24.95 kg), and the aircraft must complete a 200 ft (61 m) take-off and a 400 ft (122 m) landing. The landing gear is a single bowed 'A-frame' spring with two wheel mounts, root-bolted to the fuselage belly via four M6 bolts on a 100 mm x 60 mm rectangular pattern. Geometric constraints: gear track (wheel centerline to wheel centerline) 450 mm; gear height (ground to mounting flange) 180 mm; cross section of the spring arm 25 mm wide x 6 mm thick (flat spring). Material: 7075-T6 aluminum plate, E = 71.7 GPa, yield = 503 MPa, ultimate = 572 MPa, density = 2810 kg/m^3. Load cases: (R1) Static ground load at GTOW: aircraft weight 24.95 kg x 9.81 = 245 N distributed 50/50 to each wheel = 122 N per wheel acting vertically; max von Mises in spring arm <= yield / 1.5 = 335 MPa. (R2) Hard-landing dynamic impact: sink rate 3.0 m/s at touch-down with GTOW, treated as a 3 g vertical impact => total 3 x 245 N = 735 N, 367 N per wheel; max von Mises <= ultimate / 1.5 = 381 MPa. (R3) Side load during crosswind landing: 0.5 g lateral = 122 N on one wheel while supporting 2 g vertical = 245 N on same wheel; combined bending + torsion; max von Mises <= yield / 1.5 = 335 MPa. (R4) Mass of gear <= 180 g. (R5) Elastic deflection at wheel centerline under R2 shall be <= 40 mm (so gear does not bottom against fuselage). Primary verification: structural FEA (linear static for R1, R2, R3). Vibration, thermal, fluid, radiation, buckling explicitly NOT required at this gate. Deliverables: STEP AP242, material certificate, and a report listing gear mass in g, max von Mises per load case in MPa, max wheel deflection under hard landing in mm.",
+  "short_prompt": "Design a single-part monolithic flat-spring 'A-frame' main landing gear for a piston-powered radio-controlled aero-design competition aircraft (GTOW capped at 55 lb / 24.95 kg, 200 ft take-off / 400 ft landing requirement). The gear is a 7075-T6 aluminum spring, 25 x 6 mm cross section, root-bolted to the fuselage belly via four M6 bolts on a 100 x 60 mm rectangular pattern; wheel track 450 mm, gear height 180 mm.\n\nLoad cases.\n- LC1 static ground load at GTOW: 122 N per wheel vertically.\n- LC2 hard-landing dynamic impact: 3 g vertical at GTOW sink rate 3.0 m/s, 367 N per wheel; wheel-centerline deflection <= 40 mm to avoid fuselage bottoming.\n- LC3 crosswind side load: 0.5 g lateral (122 N) on one wheel while carrying 2 g vertical (245 N), combined bending + torsion.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "RC aero-design main landing gear (55 lb GTOW class)",
+    "brief": "7075-T6 bowed 'A-frame' gear for 55 lb GTOW RC aero-design aircraft. Three static load cases + deflection limit.",
+    "geometric_constraints": {
+      "gear_track_mm": 450,
+      "gear_height_mm": 180,
+      "arm_cross_section_mm": "25 x 6",
+      "mounting_bolts": {
+        "count": 4,
+        "size": "M6",
+        "pattern_mm": "100 x 60"
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "7075-T6 aluminum plate",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "yield_strength_MPa": 503,
+        "ultimate_tensile_strength_MPa": 572,
+        "density_kg_m3": 2810
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_ground",
+        "force_per_wheel_N": 122,
+        "direction": "vertical"
+      },
+      {
+        "id": "LC2",
+        "name": "hard_landing_3g",
+        "force_per_wheel_N": 367,
+        "direction": "vertical"
+      },
+      {
+        "id": "LC3",
+        "name": "crosswind_combined",
+        "vertical_per_wheel_N": 245,
+        "lateral_per_wheel_N": 122
+      },
+      {
+        "id": "LC4",
+        "name": "deflection_check",
+        "applied_load": "LC2"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "four M6 bolt holes fully fixed",
+      "loads": "applied at wheel centerline point"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_wheel_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 335,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 381,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 335,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 180,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_wheel_deflection",
+        "limit_mm": 40,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet or hex",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x3 cases + deflection)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Landing gear is quasi-static qualified.",
+      "thermal_analysis": "Ambient, no thermal loads.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Slender flat spring, but not critical under specified loads."
+    }
+  },
+  "eval_coverage": [
+    "three independent static load cases",
+    "combined bending + torsion",
+    "deflection budget constraint"
+  ]
+}

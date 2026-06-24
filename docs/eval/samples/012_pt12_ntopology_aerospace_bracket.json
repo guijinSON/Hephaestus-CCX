@@ -1,0 +1,234 @@
+{
+  "id": "012_pt12_ntopology_aerospace_bracket",
+  "source": {
+    "catalog_ref": "PT12",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "lattice_optimized_mounting_bracket",
+  "full_prompt": "Design a laser-powder-bed AlSi10Mg satellite payload mounting bracket per a canonical AM aerospace case-study template: minimize mass while surviving quasi-static launch loads at both ultimate and yield safety factors, with an embedded lattice or topology-optimized core. The bracket interfaces a payload attachment pad 100 mm x 100 mm (with four M6 threaded bosses on a 70 x 70 mm square pattern, 6H threads, minimum 12 mm engagement) to a satellite deck rail carrying four M8 bolt holes on a 150 x 80 mm rectangular pattern. The usable design envelope is 200 mm x 150 mm x 80 mm. Material: AM AlSi10Mg per standard LPBF material datasheet (yield 230 MPa, UTS 345 MPa, Young's modulus 68 GPa, density 2670 kg/m^3, elongation 6%), stress-relieved at 300 C. Load cases per NASA-STD-5001B / GEVS random vibration + quasi-static envelope: LC1 quasi-static x-axis 20 g with payload effective mass 5 kg = 980 N applied at payload pad center; LC2 quasi-static y-axis 15 g = 735 N; LC3 quasi-static z-axis 25 g = 1,225 N; LC4 random vibration 14.1 g RMS (GEVS 14.1 g RMS, 20 Hz-2000 Hz) over the four deck-rail bolt holes. Pass/fail: (R1) max von Mises under any quasi-static case <= UTS / 1.4 = 345 / 1.4 = 246 MPa (NASA-STD-5001B ultimate SF 1.4); (R2) max von Mises <= yield / 1.25 = 230 / 1.25 = 184 MPa (NASA-STD-5001B yield SF 1.25); (R3) final bracket mass <= 150 g (canonical AM showcase target for this envelope, about 65% lighter than bulk AlSi10Mg envelope which would be ~6,400 g); (R4) first natural mode frequency >= 200 Hz (standard space-bracket modal gate to decouple from payload fundamental at ~50 Hz and launcher modes <= 120 Hz); (R5) random vibration response: 3-sigma von Mises under the GEVS 14.1 g RMS PSD <= 246 MPa (same ultimate gate); (R6) AM manufacturability constraints: minimum feature size 0.4 mm, minimum overhang-self-supporting angle 45 deg from build plate, maximum enclosed-void dimension for powder removal 10 mm (standard LPBF AlSi10Mg best-practice limits). Deliverables: STEP AP242 + 3MF of the final part with any lattice baked as solid, STL-high-res for AM build preparation, build orientation callout, and a report with quasi-static per-case max von Mises, mass, first mode frequency, and random-vibration 3-sigma stress.",
+  "short_prompt": "Design a laser-powder-bed AlSi10Mg satellite payload mounting bracket per a canonical AM aerospace case-study template: minimize mass while surviving quasi-static launch loads at both ultimate and yield factors, with an embedded lattice or topology-optimized core.\n\nGeometry: payload attachment pad 100 x 100 mm with four M6 threaded bosses on 70 x 70 mm (minimum 12 mm engagement); deck-rail interface with four M8 bolts on 150 x 80 mm. Usable design envelope 200 x 150 x 80 mm.\n\nMaterial: AM AlSi10Mg (yield 230 MPa, UTS 345 MPa), stress-relieved at 300 C.\n\nDesign per NASA-STD-5001B with ultimate SF = 1.4 and yield SF = 1.25, plus a GEVS random-vibration envelope.\n\nLoad cases.\n- LC1 quasi-static x-axis 20 g at 5 kg payload mass = 980 N.\n- LC2 quasi-static y-axis 15 g = 735 N.\n- LC3 quasi-static z-axis 25 g = 1,225 N.\n- LC4 random vibration 14.1 g RMS, 20 Hz-2000 Hz at the four deck-rail bolt holes.\n\nAdditional gates: first natural mode >= 200 Hz; mass <= 150 g; AM manufacturability (min feature 0.4 mm, self-supporting overhang angle 45 deg from build plate, max enclosed-void 10 mm).\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "Mass target unreachable without topo-opt / lattice; outer loop around the structural FEA.",
+        "examples": [
+          "implicit-lattice topology tool",
+          "Altair OptiStruct",
+          "Ansys Mechanical Topo-Opt"
+        ]
+      },
+      {
+        "tool": "am_build_orientation_optimizer",
+        "reason": "Overhang + support minimization is an AM-process optimizer, not an FEA physics.",
+        "examples": [
+          "build orientation optimizer",
+          "Materialise Magics"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "AM AlSi10Mg satellite payload mounting bracket (canonical AM aerospace template)",
+    "brief": "Minimize mass of an AM AlSi10Mg satellite payload bracket in a 200x150x80 mm envelope surviving 25 g quasi-static + 14.1 g RMS random per NASA GEVS, with mass target 150 g and first mode >= 200 Hz.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 200,
+        "y": 150,
+        "z": 80
+      },
+      "payload_pad": {
+        "size_mm": {
+          "x": 100,
+          "y": 100
+        },
+        "M6_pattern_mm": 70,
+        "engagement_mm_min": 12
+      },
+      "deck_rail_bolts": {
+        "count": 4,
+        "thread": "M8",
+        "pattern_mm": {
+          "x": 150,
+          "y": 80
+        }
+      },
+      "am_process": "LPBF",
+      "min_feature_mm": 0.4,
+      "min_overhang_angle_deg": 45,
+      "max_enclosed_void_mm": 10
+    },
+    "material": {
+      "name": "AM AlSi10Mg (LPBF)",
+      "condition": "stress-relieved 300 C",
+      "yield_MPa": 230,
+      "ultimate_MPa": 345,
+      "youngs_modulus_GPa": 68,
+      "density_kg_m3": 2670
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "qs_x_20g",
+        "force_N": 980,
+        "direction": "x"
+      },
+      {
+        "id": "LC2",
+        "name": "qs_y_15g",
+        "force_N": 735,
+        "direction": "y"
+      },
+      {
+        "id": "LC3",
+        "name": "qs_z_25g",
+        "force_N": 1225,
+        "direction": "z"
+      },
+      {
+        "id": "LC4",
+        "name": "random_vib_GEVS",
+        "grms": 14.1,
+        "band_Hz": [
+          20,
+          2000
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "deck_rail_bolts": "4 x M8 fully constrained",
+      "payload_pad_center": "inertial load applied via 5 kg effective payload mass"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_mass_g": 150
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "3MF",
+        "STL_high_res"
+      ],
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_QS_case_MPa",
+        "first_mode_Hz",
+        "random_3sigma_von_mises_MPa",
+        "build_orientation_deg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 246,
+        "derivation": "UTS / 1.4 = 345 / 1.4 per NASA-STD-5001B",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 184,
+        "derivation": "yield / 1.25 = 230 / 1.25 per NASA-STD-5001B",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 150,
+        "derivation": "Canonical AM showcase mass target (approx 65% lighter than bulk envelope)",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 200,
+        "derivation": "decoupling from payload fundamental + launcher modes",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_von_mises",
+        "limit_MPa": 246,
+        "derivation": "3-sigma <= ultimate/1.4 under GEVS 14.1 g RMS 20-2000 Hz",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "geometric_check",
+        "metric": "am_manufacturability_compliance",
+        "limit": 1,
+        "derivation": "feature >= 0.4 mm, overhang >= 45 deg, enclosed void <= 10 mm (LPBF AlSi10Mg)",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      }
+    ],
+    "governing_standard": "NASA-STD-5001B + NASA-STD-7001B (GEVS) + LPBF AlSi10Mg material data sheet + generic AM best practices",
+    "recommended_fea_setup": {
+      "element_type": "TET10 for lattice, TET4 for rapid iteration",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus Standard",
+        "implicit-lattice simulation tool"
+      ],
+      "analysis_types": [
+        "linear static x3 QS + random vibration PSD"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Thermal-cycle orbital is a separate space-qualification brief.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "Space radiation dose is out of scope here."
+    },
+    "numeric_source": "NASA-STD-5001B ultimate SF 1.4, yield SF 1.25. GEVS (NASA-STD-7001B) random vibration 14.1 g RMS. LPBF AlSi10Mg datasheet mechanical properties."
+  },
+  "eval_coverage": [
+    "lattice/topology optimization in a tight envelope",
+    "quasi-static + random vibration dual verification",
+    "AM manufacturability constraints enforced",
+    "mass-target driven optimization"
+  ]
+}

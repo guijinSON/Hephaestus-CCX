@@ -1,0 +1,206 @@
+{
+  "id": "116_e6_aiche_student_design_reactor_vessel",
+  "source": {
+    "catalog_ref": "E6",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "chemical_process_equipment",
+  "part_class": "asme_viii_div1_reactor_shell",
+  "full_prompt": "Design the pressure-boundary shell and dished heads of a steam-methane reforming pre-reformer reactor vessel for a national collegiate chemical-plant design benchmark (blue-hydrogen plant), sized per ASME BPVC Section VIII Division 1 with CS acceptance by the 2023 Edition. The vessel is a vertical cylindrical shell with two ASME 2:1 semi-elliptical heads. Design basis per the chemical-plant design benchmark problem statement inheritance: nominal capacity 10 MMSCFD hydrogen plant, pre-reformer feed 450 C, design temperature 480 C, design pressure 2.8 MPa gauge (406 psig) with 10% overpressure margin to 3.08 MPa for relief, hydrogen service MDMT -29 C, contents: hydrocarbon-steam mixture, hydrogen partial pressure 0.8 MPa (requires NACE / API 941 Nelson-chart check but that is outside this CAD prompt). Geometry: inside diameter 1800 mm, straight-flange tangent-to-tangent length 4500 mm, 2:1 SE heads (crown radius 1620 mm, knuckle radius 306 mm), four N1 nozzles at 150 mm NPS (ANSI B16.5 Class 300 RF flanges) arranged at 0/90/180/270 degrees on the upper shell, one bottom drain N2 at 50 mm NPS, one top vent N3 at 25 mm NPS. Shell and heads must be a single monolithic welded assembly per UW-2(a) Cat. A/B/C welds fully radiographed (spot RT-2 allowed), but for this CAD prompt treat the vessel as one solid body with integral welds (no bolted shell-to-head joints). Material SA-516 Grade 70N (normalized) carbon steel; at 480 C design temp the ASME BPVC Section II Part D maximum allowable stress is 97 MPa (down from 138 MPa at room temp); density 7850 kg/m^3, Young's modulus 179 GPa at 480 C, Poisson's ratio 0.30. Corrosion allowance 3.0 mm. Joint efficiency E = 1.0 (full RT). Three load cases. Load Case 1 (design): 2.8 MPa gauge internal at 480 C plus vessel dead weight (filled with liquid water for hydrotest density 1000 kg/m^3 used for self-weight conservatism). Load Case 2 (hydrotest): 1.3x design = 3.64 MPa gauge internal at 30 C with full water fill per UG-99(b) 2017 edition (1.3 factor, previously 1.5). Load Case 3 (MDMT + vacuum excursion): -29 C metal temperature, internal pressure -14.7 psig (vacuum) per bellowsless refractory shrinkage event, external atmospheric 101 kPa. Pass/fail: (R1) under LC1 design conditions, shell thickness per UG-27 and head thickness per UG-32(d) must result in circumferential shell stress not exceeding the SA-516-70N allowable of 97 MPa at 480 C, including the 3.0 mm corrosion allowance; (R2) under LC2 hydrotest, primary membrane stress must not exceed 90% of yield per UG-99(c), i.e. 0.9 * 262 = 236 MPa at 30 C; (R3) a linear buckling eigenvalue analysis under LC3 external-pressure vacuum condition must yield a first-mode factor of at least 3.0 per UG-28 external pressure charts conservative interpretation; (R4) a steady-state thermal analysis with 480 C process side and ambient 20 C with 25 mm mineral-wool external insulation (k = 0.045 W/m-K) must show outer insulation jacket surface temperature below 60 C for personnel safety per ASME B31.3 industry practice; (R5) a modal analysis must place the first ovalizing mode above 25 Hz to avoid ground-level seismic excitation; (R6) the vessel total empty weight must not exceed 15000 kg to suit the module shipping envelope. Fluid and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design the pressure-boundary shell and 2:1 semi-elliptical heads of a vertical cylindrical steam-methane-reforming pre-reformer reactor vessel for a national collegiate chemical-plant (blue-hydrogen) design benchmark, per ASME BPVC Section VIII Division 1 (2023 Ed.), SA-516 Gr 70N material. Four 150 NPS N1 nozzles (ANSI B16.5 Class 300 RF) at 0/90/180/270 deg on the upper shell, one 50 NPS N2 bottom drain, one 25 NPS N3 top vent. Corrosion allowance 3.0 mm; joint efficiency E = 1.0 (full RT). ASME allowables: S_allow = 97 MPa at 480 C for SA-516-70N (Sec. II-D); hydrotest allowable 0.9 x yield_at_30C = 236 MPa per UG-99(c); external-collapse buckling SF 3.0 per UG-28 intent; first ovalizing mode >= 25 Hz; empty mass <= 15000 kg.\n\nEnvelope: 1800 mm ID x 4500 mm T-to-T cylindrical shell, 2:1 SE heads (crown 1620, knuckle 306 mm).\n\nLoad cases.\n- LC1 design: 2.8 MPa g internal at 480 C (plus water-fill conservatism for self-weight) -- hoop/membrane stress <= S_allow.\n- LC2 hydrotest: 3.64 MPa g (1.3 x design per UG-99(b) 2017 Ed.) at 30 C, full water fill.\n- LC3 MDMT + vacuum: -29 C metal, internal at vacuum (101 kPa external).\n- Plus steady-state thermal with 480 C process side, 20 C ambient and 25 mm mineral-wool external insulation (k = 0.045 W/m-K) -- outer jacket <= 60 C for personnel safety.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "buckling_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ASME VIII Div.1 pre-reformer vessel for collegiate blue-H2 plant benchmark",
+    "brief": "Vertical SA-516-70N vessel, 1800 ID x 4500 T/T, 2:1 SE heads, 4x N1 150 NPS + N2 drain + N3 vent. 2.8 MPa @ 480 C design. MDMT -29 C.",
+    "geometric_constraints": {
+      "inside_diameter_mm": 1800,
+      "tangent_to_tangent_length_mm": 4500,
+      "head_type": "2:1 SE",
+      "head_crown_radius_mm": 1620,
+      "head_knuckle_radius_mm": 306,
+      "nozzles": [
+        {
+          "tag": "N1",
+          "nps_mm": 150,
+          "count": 4,
+          "rating": "ANSI Class 300 RF"
+        },
+        {
+          "tag": "N2",
+          "nps_mm": 50,
+          "count": 1
+        },
+        {
+          "tag": "N3",
+          "nps_mm": 25,
+          "count": 1
+        }
+      ],
+      "corrosion_allowance_mm": 3.0,
+      "joint_efficiency": 1.0,
+      "monolithic": true
+    },
+    "material": {
+      "name": "SA-516 Grade 70N (normalized)",
+      "properties": {
+        "youngs_modulus_GPa_at_480C": 179,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 7850,
+        "S_allowable_MPa_at_480C": 97,
+        "yield_at_30C_MPa": 262,
+        "ASME_BPVC_reference": "Section II Part D; Section VIII Div.1 UG-27/UG-32"
+      }
+    },
+    "design_conditions": {
+      "design_P_MPa_g": 2.8,
+      "design_T_C": 480,
+      "MDMT_C": -29
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "design",
+        "internal_MPa_g": 2.8,
+        "temp_C": 480
+      },
+      {
+        "id": "LC2",
+        "name": "hydrotest",
+        "internal_MPa_g": 3.64,
+        "temp_C": 30
+      },
+      {
+        "id": "LC3",
+        "name": "MDMT_vacuum",
+        "internal_kPa_abs": 0.1,
+        "external_kPa": 101,
+        "temp_C": -29
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "shell_thickness_mm",
+        "head_thickness_mm",
+        "max_primary_membrane_stress_per_case_MPa",
+        "first_buckling_load_factor",
+        "peak_insulation_surface_temp_C",
+        "first_ovalizing_mode_Hz",
+        "empty_mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "primary_membrane_hoop_stress",
+        "limit_MPa": 97,
+        "derivation": "ASME II-D S_allow SA-516-70N at 480 C",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "primary_membrane_stress_hydrotest",
+        "limit_MPa": 236,
+        "derivation": "0.9 * yield_at_30C per UG-99(c)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "peak_insulation_outer_surface_temp",
+        "limit_C": 60,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_ovalizing_mode",
+        "limit_Hz": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "empty_mass",
+        "limit_kg": 15000,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "axisymmetric or shell with 3D at nozzles (second-order)",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x2",
+        "linear buckling (external)",
+        "steady-state thermal",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Process fluid dynamics handled in separate process simulation (HYSYS/Aspen).",
+      "radiation_analysis": "Captured as part of insulation surface-temp thermal BC."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Hydrogen embrittlement API 941",
+      "Nozzle reinforcement per UG-37",
+      "Saddle support WRC 107 analysis"
+    ]
+  },
+  "eval_coverage": [
+    "ASME BPVC Section VIII Div.1 temperature-dependent allowable",
+    "hydrotest stress check UG-99",
+    "external-pressure buckling vacuum case",
+    "insulation surface temperature personnel-safety gate"
+  ]
+}

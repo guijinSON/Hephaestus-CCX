@@ -1,0 +1,231 @@
+{
+  "id": "282_a42_nasa_super_heavy_logistics_rover",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A42",
+    "year": 2022,
+    "tier": "A+"
+  },
+  "domain": "space_structural",
+  "part_class": "lunar_mars_logistics_rover_chassis",
+  "full_prompt": "Design a single-part monolithic main chassis skid for a NASA Super Heavy Logistics Transport rover per the NASA 'Super Heavy Logistics Transport for the Moon and Mars' open-CAD challenge. The rover transports a 100 metric-ton pressurized logistics module (habitat-scale) across Lunar and Martian terrain, rotating the module >= 180 deg in place for offload alignment, and traversing at least 500 m of 20 deg grade without stopping. Only the chassis skid (central structural weldment-like monolithic plate) is the subject of this prompt; wheels, motors, and hydraulics are out of scope. Geometric constraints: skid bounding footprint 10 m x 6 m x 0.8 m deep; four corner wheel-attachment bosses each 0.6 m x 0.6 m x 0.4 m with 8x M30 tapped holes in a 300 mm x 300 mm pattern; central rotating payload interface is a 4.0 m diameter slewing-ring mount (bolt circle 3.8 m OD with 72 bolts) through which the 100 t module is attached; four tie-down hardpoints on the perimeter (rated 250 kN each). Material: Ti-6Al-4V Grade 5 annealed (E = 113.8 GPa, yield = 880 MPa, ultimate = 950 MPa, density = 4430 kg/m^3). Environments: Lunar ambient -173 C to +127 C; Martian -125 C to +20 C. Load cases: (R1) Static 100 t payload in Lunar gravity (1.62 m/s^2): payload mass x g = 100,000 kg x 1.62 = 162 kN downward uniform on slewing-ring bolt circle. (R2) Static 100 t payload in Mars gravity (3.71 m/s^2) = 371 kN downward. (R3) Driving on 20 deg slope in Mars gravity: vehicle + payload 120 t x 3.71 x sin(20 deg) = 152 kN longitudinal shear at slewing ring + 120,000 x 3.71 x cos(20 deg) = 418 kN vertical reaction; combined loading at the slewing ring. (R4) Rotational inertia: payload rotated +/-180 deg in 60 s yields omega-dot = pi/60 rad/s^2 applied to 100 t at 4 m radius; torque 100,000 x 0.0524 x 4 = 20.9 kN*m applied to skid through slewing ring. (R5) Dynamic pothole impact: Mars 1.5 m rock strike at one wheel at 5 m/s; lumped as 800 kN vertical shock at one corner boss (0.5 s half-sine). Pass/fail: (R1-R4) max von Mises <= yield / 1.5 = 587 MPa; (R5) max von Mises under dynamic shock <= ultimate / 1.25 = 760 MPa; all cases max deflection at slewing-ring center <= 25 mm (module alignment); skid mass <= 18,000 kg (structural mass budget); first modal frequency with corner bosses hard-mounted >= 8 Hz (avoid coupling with drive motor 5 Hz peak); thermal warp differential between Lunar day (+127 C) and night (-173 C) must produce slewing-ring flatness deviation <= 1.0 mm (structural-thermal CTE check at alpha = 8.6e-6 /K). Primary verification: structural FEA (linear static x4 + dynamic x1) + modal + coupled thermal-structural. Vibration secondary via R6 modal. Fluid, radiation, buckling NOT required. Deliverables: STEP AP242 + Parasolid skid, slewing-ring bolt drawing, and a report listing skid mass in kg, max von Mises per case in MPa, max slewing-ring deflection in mm, first modal frequency in Hz, thermal flatness delta in mm.",
+  "short_prompt": "Design a single-part monolithic main chassis skid for a NASA 'Super Heavy Logistics Transport for the Moon and Mars' open-CAD rover. The skid transfers a 100 t pressurized logistics module through a central slewing ring into four corner wheel bosses, must permit >= 180 deg in-place module rotation, and handle a 20 deg Mars grade.\n\nEnvelope: skid 10 m x 6 m x 0.8 m deep; four 0.6 x 0.6 x 0.4 m corner bosses with 8 x M30 on 300 mm patterns; 4.0 m diameter slewing-ring bolt circle (3.8 m OD, 72 bolts); four 250 kN perimeter tie-downs.\n\nFactor regime: yield FoS 1.5 for static/rotational cases, ultimate FoS 1.25 for the dynamic pothole, slewing-ring flatness tolerance 1.0 mm on thermal warp.\n\nLoad cases.\n- Static 100 t in Lunar gravity (1.62 m/s^2): 162 kN on the slewing-ring bolt circle.\n- Static 100 t in Mars gravity (3.71 m/s^2): 371 kN.\n- Driving 20 deg Mars slope (120 t vehicle+payload): 152 kN longitudinal + 418 kN vertical at the slewing ring.\n- Rotational inertia: 100 t rotated +/- 180 deg in 60 s, ~20.9 kN-m torque at the slewing ring.\n- Pothole: 800 kN half-sine over 0.5 s at one corner boss (Mars 1.5 m rock strike).\n- Thermal: Lunar day +127 C to night -173 C (CTE 8.6e-6 /K).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics",
+        "reason": "800 kN half-sine rock-strike shock at one corner requires explicit time integration.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "NASA super heavy logistics rover chassis skid",
+    "brief": "Ti-6Al-4V monolithic skid, 100 t payload on Moon/Mars, 20 deg slope + 180 deg rotate + 800 kN rock strike.",
+    "geometric_constraints": {
+      "skid_footprint_m": "10 x 6 x 0.8",
+      "slewing_ring_OD_m": 4.0,
+      "slewing_ring_bolt_circle_mm": 3800,
+      "slewing_ring_bolt_count": 72,
+      "corner_boss_mm": "600 x 600 x 400",
+      "corner_bolts_each": "8 x M30 @ 300 x 300",
+      "tie_downs_count": 4,
+      "tie_down_rating_kN_each": 250,
+      "mass_kg_max": 18000,
+      "monolithic": true
+    },
+    "material": {
+      "name": "Ti-6Al-4V Grade 5 annealed",
+      "properties": {
+        "youngs_modulus_GPa": 113.8,
+        "yield_strength_MPa": 880,
+        "ultimate_tensile_strength_MPa": 950,
+        "density_kg_m3": 4430,
+        "cte_per_K": 8.6e-06
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_moon_100t",
+        "force_kN": 162,
+        "mode": "uniform on slewing ring"
+      },
+      {
+        "id": "LC2",
+        "name": "static_mars_100t",
+        "force_kN": 371,
+        "mode": "uniform on slewing ring"
+      },
+      {
+        "id": "LC3",
+        "name": "mars_20deg_slope",
+        "shear_kN": 152,
+        "vertical_kN": 418
+      },
+      {
+        "id": "LC4",
+        "name": "payload_rotation",
+        "torque_kNm": 20.9,
+        "duration_s": 60
+      },
+      {
+        "id": "LC5",
+        "name": "rock_strike_shock",
+        "force_kN": 800,
+        "pulse": "0.5 s half-sine, one corner"
+      },
+      {
+        "id": "LC6",
+        "name": "modal"
+      },
+      {
+        "id": "LC7",
+        "name": "thermal_lunar_day_night",
+        "range_C": [
+          -173,
+          127
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "four corner wheel-attachment bosses fully fixed",
+      "loads": "slewing ring, tie-downs, corner impact"
+    },
+    "objective": {
+      "minimize": "skid_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "skid_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa",
+        "max_von_mises_LC5_MPa",
+        "slewing_ring_deflection_mm",
+        "first_modal_frequency_Hz",
+        "thermal_flatness_delta_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 587,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 760,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "slewing_ring_deflection",
+        "limit_mm": 25,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "skid_mass",
+        "limit_kg": 18000,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 8,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "thermal_analysis",
+        "metric": "slewing_ring_flatness_delta",
+        "limit_mm": 1.0,
+        "applies_to": [
+          "LC7"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet or hex",
+      "mesh_size_mm_in_critical_regions": 20,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "Abaqus Explicit"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "explicit dynamics",
+        "modal",
+        "coupled thermal-structural"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Lunar vacuum; Mars atmosphere negligible aero on skid.",
+      "radiation_analysis": "Handled in separate radiation budget.",
+      "buckling_analysis": "Skid is bending-stiffness dominated; not driving."
+    }
+  },
+  "eval_coverage": [
+    "100 t payload on two gravity environments",
+    "slope traverse + payload rotation torque",
+    "rock-strike explicit dynamics",
+    "Lunar day/night thermal warp"
+  ]
+}

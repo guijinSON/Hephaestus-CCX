@@ -1,0 +1,197 @@
+{
+  "id": "285_a45_nist_first_responder_uas",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A45",
+    "year": 2020,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "vtol_fixed_wing_fuselage_spar",
+  "full_prompt": "Design a single-part monolithic main wing spar (center carry-through structure) for a VTOL fixed-wing UAS per the NIST First Responder UAS Endurance Challenge (HeroX). Mission: carry a 10 lb (4.5 kg) comms-relay payload continuously for >= 90 min at 30 m/s cruise; VTOL takeoff and landing; ignition-kill capability required. Vehicle is a quad-tiltrotor tail-sitter with a 3.0 m wingspan and 20 kg MTOW (15.5 kg empty + 4.5 kg payload). This prompt is for the wing center-spar: a single carbon-composite part that carries wing-root bending moment and houses the wing-to-fuselage bolted joint. Geometric constraints: spar length 1200 mm (fuselage-width + wing-root joint both sides); spar cross-section hollow rectangular 80 mm x 40 mm with 4 mm wall; 8x M6 tapped wing-attach holes on each end in a 60 mm x 30 mm pattern; 4x M8 fuselage-attach holes at center in a 100 mm x 40 mm pattern. Material: T700S carbon fiber / epoxy unidirectional prepreg [0/+45/-45/90]s quasi-isotropic layup, E1 (fiber) = 135 GPa, E2 = 10 GPa, G12 = 5 GPa, X_tension = 2050 MPa, X_compression = 1470 MPa, Y_tension = 70 MPa, Y_compression = 170 MPa, density = 1600 kg/m^3. Load cases: (R1) 3.8 g pull-up maneuver (FAA Part 23 utility-class limit): 20 kg x 3.8 x 9.81 = 745 N lift; distributed over 3.0 m span produces wing-root bending moment of approximately 745 N x 0.75 m = 559 N*m; evaluate spar with Tsai-Wu failure index <= 1.0 / 1.5 = 0.667 (ultimate factor 1.5 per FAR 23.303). (R2) -1.5 g negative-g push-over: wing-root moment reversed, magnitude 220 N*m, Tsai-Wu index <= 0.667. (R3) 6 g hard landing: VTOL hard set-down 20 kg x 6 g = 1177 N at fuselage attach through spar, Tsai-Wu index <= 0.9 (yield factor). (R4) Tip strike during VTOL transition: 200 N horizontal at one wingtip, root moment 200 x 1.5 = 300 N*m, Tsai-Wu index <= 0.667. (R5) Spar mass <= 450 g. (R6) First modal frequency spar hard-mounted at fuselage attach with wing-tip masses lumped at ends >= 15 Hz (above UAS propeller 1P at approximately 5 Hz with 3x margin). (R7) Linear buckling eigenvalue of spar under compressive bending flange under LC1 >= 2.0. Primary verification: structural FEA (linear static x4 with progressive composite failure) + modal + linear buckling. Vibration secondary. Thermal, fluid, radiation NOT required. Deliverables: STEP AP242 + Parasolid spar, layup diagram, and a report listing spar mass in g, Tsai-Wu index per case, first modal frequency in Hz, first buckling load factor.",
+  "short_prompt": "Design the single-part carbon-composite main wing center carry-through spar of a quad-tiltrotor tail-sitter VTOL UAS for the NIST First Responder UAS Endurance Challenge, carrying a 4.5 kg (10 lb) comms-relay payload >= 90 min at 30 m/s cruise. Wingspan 3.0 m, MTOW 20 kg.\n\nEnvelope: spar 1200 mm long, hollow rectangular 80 x 40 mm with 4 mm wall; 8 x M6 wing-attach bolts on 60 x 30 mm patterns at each end; 4 x M8 fuselage-attach bolts at center on a 100 x 40 mm pattern; T700S quasi-isotropic [0/+45/-45/90]s layup.\n\nFactor regime: FAR 23.303 ultimate FoS 1.5 on limit load for composite, Tsai-Wu failure index <= 1.0 / 1.5 = 0.667 on limit cases.\n\nLoad cases.\n- +3.8 g pull-up (FAR 23 utility): 745 N lift, wing-root bending ~559 N-m.\n- -1.5 g push-over: reversed moment ~220 N-m.\n- 6 g hard VTOL landing: 1177 N at the fuselage attach.\n- Tip strike during VTOL transition: 200 N horizontal at wingtip, root moment 300 N-m.\n- Linear buckling eigenvalue on compressed flange under LC1 >= 2.0.\n- Spar-hard-mounted first modal frequency >= 15 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "composite_progressive_failure",
+        "reason": "Unidirectional CFRP quasi-isotropic layup requires Tsai-Wu progressive failure, not isotropic von Mises.",
+        "examples": [
+          "ANSYS ACP",
+          "Abaqus Composite Modeler",
+          "HyperSizer"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "NIST first responder UAS wing spar",
+    "brief": "T700S quasi-iso monolithic center wing spar, 20 kg MTOW VTOL tiltrotor, 3.8 g + VTOL hard-landing + tip-strike.",
+    "geometric_constraints": {
+      "spar_length_mm": 1200,
+      "spar_cross_section_mm": "80 x 40 hollow, 4 mm wall",
+      "wing_attach_bolts": "8 x M6 on 60 x 30 pattern each end",
+      "fuselage_bolts": "4 x M8 on 100 x 40 pattern at center",
+      "mass_g_max": 450,
+      "monolithic": true
+    },
+    "material": {
+      "name": "T700S carbon/epoxy quasi-iso [0/+45/-45/90]s",
+      "properties": {
+        "E1_GPa": 135,
+        "E2_GPa": 10,
+        "G12_GPa": 5,
+        "Xt_MPa": 2050,
+        "Xc_MPa": 1470,
+        "Yt_MPa": 70,
+        "Yc_MPa": 170,
+        "density_kg_m3": 1600
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pullup_3.8g",
+        "root_moment_Nm": 559
+      },
+      {
+        "id": "LC2",
+        "name": "pushover_neg1.5g",
+        "root_moment_Nm": 220
+      },
+      {
+        "id": "LC3",
+        "name": "VTOL_hard_landing_6g",
+        "fuselage_force_N": 1177
+      },
+      {
+        "id": "LC4",
+        "name": "wingtip_strike",
+        "tip_force_N": 200,
+        "root_moment_Nm": 300
+      },
+      {
+        "id": "LC5",
+        "name": "modal"
+      },
+      {
+        "id": "LC6",
+        "name": "buckling_under_LC1"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "fuselage-attach bolts fully fixed for structural and buckling; lumped wing-tip masses for modal",
+      "loads": "root bending moments or tip forces"
+    },
+    "objective": {
+      "minimize": "spar_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "spar_mass_g",
+        "tsai_wu_LC1",
+        "tsai_wu_LC2",
+        "tsai_wu_LC3",
+        "tsai_wu_LC4",
+        "first_modal_frequency_Hz",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_index",
+        "limit": 0.667,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_index",
+        "limit": 0.9,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "spar_mass",
+        "limit_g": 450,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 15,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell (composite)",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Composite Modeler"
+      ],
+      "analysis_types": [
+        "linear static x4 with composite failure",
+        "modal",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient flight temperatures.",
+      "fluid_analysis": "Aerodynamic loads reduced to wing-root moments.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "NIST endurance mission wing-root structural budget",
+    "composite progressive failure Tsai-Wu",
+    "modal 1P decoupling + flange buckling"
+  ]
+}

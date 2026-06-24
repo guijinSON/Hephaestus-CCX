@@ -1,0 +1,258 @@
+{
+  "id": "031_pt32_grabcad_challenges_2024_26",
+  "source": {
+    "catalog_ref": "PT32",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "am_topology_optimized_challenge_bracket",
+  "full_prompt": "Design a topology-optimized Ti-6Al-4V AM bracket for a representative Renishaw/open-CAD platform 2025 aerospace bracket challenge (analogous in format to the GE Jet Engine Bracket Challenge but scaled for Renishaw RenAM 500Q four-laser LPBF machines and their published Ti-6Al-4V ELI data). Envelope: 180 x 120 x 80 mm. Interfaces: top planar flange with four 10 mm diameter bolt holes on 100 x 60 mm rectangular pattern (for M8 fasteners); bottom pin hole 20 mm diameter with axis perpendicular to the flange. Material: LPBF Renishaw Ti-6Al-4V ELI per Renishaw material data sheet, post-HIP'd (yield 860 MPa, UTS 930 MPa, E 113.8 GPa, density 4430 kg/m^3, elongation 10%). Load cases: LC1 vertical at pin hole 25 kN; LC2 horizontal 20 kN; LC3 off-axis 30 degrees from vertical 28 kN; LC4 torsional 3 kN*m about pin axis; LC5 sine vibration 10 g 5-500 Hz for qualification. Pass/fail per challenge rules (SF 1.5 on UTS, AM minimum feature, mass target): (R1) max von Mises any static case <= UTS / 1.5 = 620 MPa; (R2) max von Mises any static case <= yield / 1.15 = 748 MPa (looser, retained for traceability); (R3) mass target <= 400 g AND >= 50% lighter than bulk-billet baseline filling the 180x120x80 envelope; (R4) first linear buckling eigenvalue under LC3 >= 2.0; (R5) first natural frequency >= 150 Hz; (R6) AM manufacturability: min printable feature 0.3 mm (Renishaw RenAM 500Q typical), min overhang angle 45 deg, max enclosed void 8 mm; (R7) sine-vibration LC5 transmissibility-amplified peak stress <= 620 MPa; (R8) geometry must be single connected monolithic body, no supports internal to the part after HIP. Deliverables: STEP AP242 + 3MF + STL hi-res; per-case FEA report; modal + buckling analysis; mass vs baseline; submitted in Renishaw/open-CAD challenge-compatible archive with screenshot render per challenge submission rules.",
+  "short_prompt": "Design a topology-optimized Ti-6Al-4V AM bracket for a representative Renishaw/open-CAD 2025 aerospace bracket challenge scaled to Renishaw RenAM 500Q four-laser LPBF machines and their published Ti-6Al-4V ELI data.\n\nEnvelope: 180 x 120 x 80 mm. Interfaces: top planar flange with four 10 mm diameter bolt holes on 100 x 60 mm (for M8 fasteners); bottom 20 mm diameter pin hole with axis perpendicular to the flange.\n\nMaterial: Renishaw LPBF Ti-6Al-4V ELI, post-HIP.\n\nDesign per challenge rules (SF 1.5 on UTS; AM minimum feature; mass target).\n\nLoad cases.\n- LC1 vertical at pin hole: 25 kN.\n- LC2 horizontal: 20 kN.\n- LC3 off-axis 30 degrees from vertical: 28 kN.\n- LC4 torsional 3 kN*m about the pin axis.\n- LC5 sine vibration 10 g 5-500 Hz for qualification.\n\nGates: mass <= 400 g and >= 50% lighter than a bulk-billet baseline filling 180x120x80; first linear buckling eigenvalue under LC3 >= 2.0; first natural frequency >= 150 Hz; AM manufacturability (min feature 0.3 mm, min overhang 45 deg, max enclosed void 8 mm); single connected monolithic body with no internal supports after HIP.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "50% mass reduction target drives topo-opt outer loop.",
+        "examples": [
+          "Altair OptiStruct",
+          "nTopology",
+          "Ansys Mechanical Topo-Opt"
+        ]
+      },
+      {
+        "tool": "am_build_preparation",
+        "reason": "Build orientation + support minimization is AM-process optimization.",
+        "examples": [
+          "Renishaw QuantAM",
+          "Materialise Magics"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "LPBF Ti-6Al-4V ELI aerospace bracket for Renishaw/open-CAD challenge",
+    "brief": "Design a 180x120x80 mm LPBF Ti-6Al-4V ELI bracket passing 4 static + sine vibration with SF 1.5 on UTS, mass target 400 g, and >=50% reduction vs bulk billet.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 180,
+        "y": 120,
+        "z": 80
+      },
+      "top_flange": {
+        "bolt_holes": 4,
+        "diameter_mm": 10,
+        "pattern_mm": {
+          "x": 100,
+          "y": 60
+        }
+      },
+      "pin_hole": {
+        "diameter_mm": 20,
+        "axis": "perpendicular to flange"
+      },
+      "am_process": "LPBF Renishaw RenAM 500Q + HIP",
+      "min_feature_mm": 0.3,
+      "min_overhang_deg": 45,
+      "max_enclosed_void_mm": 8,
+      "monolithic": true
+    },
+    "material": {
+      "name": "LPBF Ti-6Al-4V ELI post-HIP",
+      "yield_MPa": 860,
+      "ultimate_MPa": 930,
+      "youngs_modulus_GPa": 113.8,
+      "density_kg_m3": 4430
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical",
+        "force_N": 25000
+      },
+      {
+        "id": "LC2",
+        "name": "horizontal",
+        "force_N": 20000
+      },
+      {
+        "id": "LC3",
+        "name": "off_axis_30deg",
+        "force_N": 28000
+      },
+      {
+        "id": "LC4",
+        "name": "torsion",
+        "torque_Nm": 3000
+      },
+      {
+        "id": "LC5",
+        "name": "sine_vibration_10g",
+        "amplitude_g": 10,
+        "band_Hz": [
+          5,
+          500
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "top_flange_bolt_holes": "4 bolts fully constrained",
+      "pin_hole": "bearing load over 180 deg arc"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_mass_g_max": 400,
+      "mass_reduction_vs_baseline_pct": 50
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "3MF",
+        "STL_hi_res"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "first_buckling_factor_LC3",
+        "first_mode_Hz",
+        "am_build_orientation",
+        "mass_reduction_vs_baseline_pct"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 620,
+        "derivation": "UTS / 1.5 = 930 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 748,
+        "derivation": "yield / 1.15 = 860 / 1.15",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 400,
+        "secondary": ">=50% lighter than bulk-billet baseline",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 150,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "am_manufacturability",
+        "limit": 1,
+        "derivation": "feature >=0.3 mm, overhang >=45 deg, void <=8 mm",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R7",
+        "type": "vibration_analysis",
+        "metric": "sine_transmissibility_peak_stress",
+        "limit_MPa": 620,
+        "derivation": "UTS / 1.5",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R8",
+        "type": "structural_analysis",
+        "metric": "monolithic_single_body",
+        "limit": 1,
+        "derivation": "challenge submission rule",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "Altair OptiStruct",
+        "Ansys Mechanical",
+        "Abaqus",
+        "nTopology Implicit+Sim"
+      ],
+      "analysis_types": [
+        "topology optimization + linear static x4 + modal + buckling + sine"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Out of scope for challenge.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "Renishaw Ti-6Al-4V ELI AM material data sheet (yield 860 MPa, UTS 930 MPa post-HIP). Challenge load magnitudes scaled from jet-engine OEM challenge as representative values."
+  },
+  "eval_coverage": [
+    "topology optimization with mass target",
+    "multi-case static + buckling + modal + sine",
+    "AM manufacturability checks",
+    "challenge-style submission deliverables"
+  ]
+}

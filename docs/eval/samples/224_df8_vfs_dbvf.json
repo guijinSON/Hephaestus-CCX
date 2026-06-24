@@ -1,0 +1,152 @@
+{
+  "id": "224_df8_vfs_dbvf",
+  "source": {
+    "catalog_ref": "DF8",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "evtol_rc_structural",
+  "part_class": "dbvf_quadrotor_arm",
+  "full_prompt": "Design one of four arms of an electric RC quadrotor design-build-vertical-flight benchmark, sized to carry a 500 g payload through an obstacle course while remaining under the FAA Part 107 sUAS envelope. Per the benchmark RFP: total takeoff mass including payload <= 4.0 kg, battery limited to a single 6S LiPo pack 4000-6000 mAh, hover endurance >= 10 min with payload, payload carry hook mounted at airframe centerline, obstacle course including 1 m x 1 m gates at 2 m altitude. Arm geometry: tubular carbon-fiber (wound CFRP, E = 70 GPa, Poisson 0.30, density 1550 kg/m^3, tensile 900 MPa, compressive 700 MPa), 20 mm OD x 16 mm ID x 250 mm length cantilevered from central hub, with motor mount plate at tip carrying a 320 g BLDC motor spinning a 12-inch (305 mm) propeller at up to 9500 rpm producing up to 12.5 N hover thrust and 20 N peak thrust for evasive maneuvers. Load cases: (LC1) hover: steady 12.5 N upward at motor mount plus motor mass 320 g at 1 g; (LC2) max-thrust evasive: 20 N at motor mount plus 2 g lateral on hub representing aggressive roll; (LC3) propeller unbalance: residual 5% unbalance at 9500 rpm = 158 Hz = 1.0 N radial oscillation at motor mount during full endurance 10 min = 9.5e4 cycles; (LC4) hard landing: 1 m drop onto one arm modeled as 10 g impulse at motor mount; (LC5) storage/transport: clip-on wall load 50 N lateral at tip. Pass/fail: (R1) max ply strain below 0.4% under LC1-LC4, (R2) arm deflection at motor plate under LC2 below 8 mm, (R3) first arm bending mode above 50 Hz to stay below 1P = 158 Hz third harmonic sideband and avoid coupling, (R4) arm mass below 45 g each (4 arms contribute to 4.0 kg budget), (R5) linear buckling eigenvalue under LC4 compression above 3.0. Deliverables: STEP, FEA per case, modal, buckling eigenvalue, and mass table.",
+  "short_prompt": "Design one of four arms of an electric RC quadrotor for a design-build-vertical-flight benchmark, carrying a 500 g payload through an obstacle course while staying inside the FAA Part 107 sUAS envelope. Arm material class: filament-wound CFRP tube. No external structural standard is named; design to a 0.4% ply-strain allowable.\n\nEnvelope: arm 20 mm OD x 16 mm ID x 250 mm cantilever from the central hub, tip motor mount with a 320 g BLDC motor spinning a 12-inch (305 mm) prop at up to 9500 rpm (12.5 N hover, 20 N peak thrust). Total MTOW 4.0 kg (incl 500 g payload + 6S LiPo), hover endurance >= 10 min.\n\nLoad cases.\n- LC1 hover: 12.5 N up at the motor mount + 320 g motor mass at 1 g.\n- LC2 max-thrust evasive: 20 N at the motor mount + 2 g lateral on the hub.\n- LC3 prop unbalance: 5% residual at 9500 rpm = ~1.0 N radial at 158 Hz for 10 min hover (~9.5e4 cycles).\n- LC4 hard landing: 1 m drop on one arm, 10 g impulse at the motor mount.\n- LC5 transport clip: 50 N lateral at the arm tip.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Design-build-vertical-flight quadrotor arm",
+    "brief": "One arm of a 4.0 kg MTOW quad with 320 g motor + 12-inch prop.",
+    "geometric_constraints": {
+      "arm_mm": {
+        "OD": 20,
+        "ID": 16,
+        "L": 250
+      },
+      "motor_mass_g": 320,
+      "prop_in": 12,
+      "mtow_kg_max": 4.0,
+      "pack_cells": 6,
+      "hover_min_min": 10
+    },
+    "material": {
+      "name": "CFRP filament wound",
+      "E_GPa": 70,
+      "poissons_ratio": 0.3,
+      "density_kg_m3": 1550,
+      "tensile_MPa": 900,
+      "compressive_MPa": 700
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hover",
+        "F_N": 12.5
+      },
+      {
+        "id": "LC2",
+        "name": "max_thrust_evasive",
+        "F_N": 20,
+        "g_lateral": 2
+      },
+      {
+        "id": "LC3",
+        "name": "prop_unbalance",
+        "F_N": 1.0,
+        "freq_Hz": 158,
+        "cycles": 95000.0
+      },
+      {
+        "id": "LC4",
+        "name": "hard_landing_10g",
+        "F_N_equiv": 31.4
+      },
+      {
+        "id": "LC5",
+        "name": "transport_clip",
+        "F_N": 50
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "arm_mass_g",
+        "max_ply_strain_pct",
+        "motor_plate_deflection_mm",
+        "first_arm_mode_Hz",
+        "buckling_eigenvalue"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_ply_strain",
+        "limit_pct": 0.4,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "motor_plate_deflection",
+        "limit_mm": 8,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_arm_bending_mode",
+        "limit_Hz": 50,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "arm_mass",
+        "limit_g": 45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "arm_compression_eigenvalue",
+        "limit": 3.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

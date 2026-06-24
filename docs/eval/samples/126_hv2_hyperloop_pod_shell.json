@@ -1,0 +1,215 @@
+{
+  "id": "126_hv2_hyperloop_pod_shell",
+  "source": {
+    "catalog_ref": "HV2",
+    "year": 2026,
+    "tier": "A+"
+  },
+  "domain": "hyperloop_structural",
+  "part_class": "pod_shell_section",
+  "full_prompt": "Design a monolithic carbon-fiber-reinforced-aluminum-core (for this CAD prompt, treat as 7075-T73 aluminum equivalent isotropic material) pressurized pod shell section for a collegiate low-pressure transport pod benchmark on a host track (420 m length x 2.5 m inside diameter at 100 Pa absolute), operating at 100 km/h on the straight and 75 km/h on the curve per the benchmark Rules & Regulations v1.0. The pod shell is a single cylindrical body (no welded splices, no bonded longerons; all stiffeners integral) forming a 2.0 m long pressurized crew/payload section. External diameter 1.800 m (to clear the 2.500 m tube ID by 350 mm per side), internal diameter 1.790 m, wall thickness 5 mm including integral longitudinal + circumferential ring stiffeners (eight longitudinal tee-section stringers 25 mm wide x 40 mm tall x 3 mm wall spaced evenly; four circumferential ring frames at 400 mm spacing 30 mm wide x 35 mm tall x 3 mm wall). Integral end flanges: two ANSI B16.47 class B-style flanges, 1.900 m OD x 30 mm thick with a 24-bolt circle on 1.840 m PCD, hole diameter 18 mm for M16 bolts. Overall bounding envelope 1.900 m diameter x 2.120 m length. Material: 7075-T73 aluminum with Young's modulus 72 GPa, Poisson's ratio 0.33, density 2810 kg/m^3, yield 435 MPa, UTS 505 MPa, endurance limit 140 MPa at 5e8 cycles per MIL-HDBK-5J. Operating environment: external pressure 100 Pa absolute (near-vacuum), internal pressure 101325 Pa absolute (sea-level atmosphere) giving a delta-P of 101225 Pa internal pressurization; passenger+systems mass 400 kg distributed; cruise 100 km/h (27.8 m/s) with lateral 0.4 g at curve; thermal range -20 C to +60 C. Three load cases, all with the MANDATORY benchmark R&R safety factor of 2x on calculated load. Load Case 1 (internal pressurization): internal 101325 Pa abs, external 100 Pa abs gauge = delta-P +101225 Pa outward, with 2x factor applied -> design delta-P = 202450 Pa, both end flanges fully constrained axially. Load Case 2 (external crush fault): an accidental tube over-pressurization from 100 Pa to 200 kPa with the pod interior still at 101 kPa = delta-P -99 kPa inward, with 2x factor applied -> design inward delta-P = -198 kPa, both flanges fixed. Load Case 3 (curve cornering): 0.4g lateral inertia on 400 kg distributed mass plus 2g vertical bump at 75 km/h through a curve, applied as body-force on the shell + passenger mass, flanges fixed. Pass/fail: (R1) under LC1 factored internal pressurization, peak von Mises in the shell or stringer-frame intersection must not exceed 218 MPa (yield/2.0 again inside the already-factored load case is not double-dipped; apply yield/2.0 directly per the benchmark rulebook's 'SF 2x on calc load' phrasing so R1 limit is 218 MPa = 435/2.0); (R2) under LC2 factored external crush fault, peak stress 218 MPa AND a linear buckling eigenvalue analysis must yield a first-mode load factor of at least 2.0 (R2 explicitly tests the R&R mandatory SF2); (R3) under LC3 cornering, peak stress 218 MPa; (R4) first five natural frequencies in the empty shell must lie outside the dominant track-induced excitation band of 10-40 Hz (from joint spacing at 100 km/h, 3.5 m concrete panel joints); (R5) shell mass (the monolithic part) must not exceed 180 kg per the pod mass budget; (R6) fatigue: under 1000 pressure cycles (Evac + vent) the stress range at any stringer-frame intersection must remain below 140 MPa. Thermal, fluid, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic pressurized pod shell section for a collegiate low-pressure transport pod (host track 420 m x 2.5 m ID at 100 Pa absolute, cruise 100 km/h straight / 75 km/h curve), treated as 7075-T73 aluminum equivalent isotropic. The shell is a single cylindrical body with integral longitudinal tee stringers and circumferential ring frames and two large bolted end flanges; no welded splices. The benchmark Rules and Regulations v1.0 mandate a 2x safety factor on the calculated load for every load case.\n\nEnvelope: ~1.9 m OD flanges, 2.12 m long, 1.8 m shell OD with a 5 mm wall including integral stiffeners.\n\nLoad cases.\n- LC1 internal pressurization: delta-P +101225 Pa outward (interior 101325 Pa abs, exterior 100 Pa abs), both end flanges axially fixed; design load 2x.\n- LC2 external crush fault: tube over-pressurized to 200 kPa with interior at ~101 kPa, delta-P -99 kPa inward; design load 2x, flanges fixed; also check linear buckling.\n- LC3 curve cornering: 0.4 g lateral and 2 g vertical body force on shell plus 400 kg passenger/systems mass at 75 km/h, flanges fixed.\nAlso check first five natural frequencies against the 10-40 Hz track-joint excitation band and a 1000-cycle pressure-cycle fatigue margin at stringer-frame intersections.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Pressurized pod shell section for collegiate low-pressure transport pod benchmark",
+    "brief": "Stiffened 7075-T73 cylindrical shell 1.8 m OD x 2.0 m long; tube at 100 Pa; pod at 101 kPa; benchmark mandatory SF 2x.",
+    "geometric_constraints": {
+      "external_diameter_m": 1.8,
+      "internal_diameter_m": 1.79,
+      "length_m": 2.0,
+      "wall_thickness_mm": 5,
+      "stringers": {
+        "count": 8,
+        "section_mm": {
+          "w": 25,
+          "h": 40,
+          "wall": 3
+        }
+      },
+      "ring_frames": {
+        "count": 4,
+        "pitch_mm": 400,
+        "section_mm": {
+          "w": 30,
+          "h": 35,
+          "wall": 3
+        }
+      },
+      "end_flanges": {
+        "count": 2,
+        "od_m": 1.9,
+        "thickness_mm": 30,
+        "bolts": 24,
+        "pcd_m": 1.84,
+        "hole_mm": 18
+      },
+      "bounding_envelope_m": {
+        "diameter": 1.9,
+        "length": 2.12
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 7075-T73",
+      "properties": {
+        "youngs_modulus_GPa": 72,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2810,
+        "yield_MPa": 435,
+        "ultimate_tensile_strength_MPa": 505,
+        "endurance_limit_5e8_MPa": 140
+      }
+    },
+    "pressures": {
+      "tube_internal_Pa_abs": 100,
+      "pod_internal_Pa_abs": 101325,
+      "nominal_deltaP_Pa": 101225,
+      "factored_deltaP_Pa": 202450,
+      "fault_deltaP_inward_Pa": -198000
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "factored_internal_pressurization",
+        "deltaP_Pa": 202450
+      },
+      {
+        "id": "LC2",
+        "name": "factored_external_crush_fault",
+        "deltaP_Pa": -198000
+      },
+      {
+        "id": "LC3",
+        "name": "curve_cornering_75kmh",
+        "lateral_g": 0.4,
+        "vertical_g": 2.0
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_buckling_load_factor_LC2",
+        "first_five_freqs_Hz",
+        "fatigue_stress_range_MPa",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 218,
+        "derivation": "yield/2.0 per benchmark R&R SF2",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_crush",
+        "limit_MPa": 218,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_five_natural_frequencies_outside_10_40Hz",
+        "limit_band_Hz": [
+          10,
+          40
+        ],
+        "applies_to": [
+          "design"
+        ],
+        "operator": "must_be_outside"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 180,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "fatigue_stress_range",
+        "limit_MPa": 140,
+        "cycles": 1000,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (SHELL281) with solid 3D at flanges and frame-stringer intersections",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling (LC2)",
+        "modal free-free and bolted"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Pod-interior ECS outside this CAD prompt scope.",
+      "fluid_analysis": "External near-vacuum; aerodynamic drag handled by envelope drag model.",
+      "radiation_analysis": "Not applicable in tube."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Composite layup for true CFRP shell",
+      "Window/viewport penetrations",
+      "Man-rating criteria beyond competition scope"
+    ]
+  },
+  "eval_coverage": [
+    "benchmark mandatory SF 2x on calculated load",
+    "external-pressure crush buckling with SF2",
+    "track-joint excitation band frequency avoidance",
+    "pressurization + cornering concurrent gate"
+  ]
+}

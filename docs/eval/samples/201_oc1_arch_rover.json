@@ -1,0 +1,149 @@
+{
+  "id": "201_oc1_arch_rover",
+  "source": {
+    "catalog_ref": "OC1",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "planetary_rover_structural",
+  "part_class": "rover_chassis",
+  "full_prompt": "Design the primary load-bearing chassis frame of a lunar-analog rover benchmark, competing in the all-tasks configuration that combines the Mapping, Excavation, and Science missions. The chassis must host six independently-driven wheel modules on a rocker-bogie suspension, a front-mounted excavation tool mount able to transmit a 500 N horizontal digging reaction force, and a top-deck payload interface plate. Total rover wet mass including payload and excavation regolith must not exceed 90 kg for the combined all-tasks configuration (50 kg for Mapping-only and 60 kg for Excavation-only sub-configurations must also remain feasible by removing bolt-on payload). The structure is manufactured from 6061-T6 aluminum alloy (Young's modulus 68.9 GPa, Poisson ratio 0.33, yield strength 276 MPa, ultimate tensile strength 310 MPa, density 2700 kg/m^3). The chassis must fit within a stowed envelope of 1.2 m length x 0.9 m width x 0.8 m height with suspension retracted. Load cases: (LC1) 4 g vertical shock on all four outer wheel mounts representing curb drop, with 90 kg total mass supported; (LC2) excavation reaction 500 N horizontal plus 200 N vertical applied at the tool-mount bolt pattern while the six wheel contact patches are pinned; (LC3) slope traversal at 30 degree pitch with 1 g gravity and 90 kg mass; (LC4) lateral tip load 300 N at the top-deck payload center-of-mass at 0.5 m height above the wheel plane. Pass/fail: maximum von Mises stress across all load cases must remain below 184 MPa (276 MPa / 1.5 ultimate FoS), maximum chassis deflection at payload deck must remain below 3 mm, first natural frequency of the bare chassis must exceed 30 Hz to avoid coupling with drive-motor excitation, and chassis dry mass must remain below 35 kg to preserve mass budget for drivetrain, avionics, and payload. Deliverables: STEP AP242 solid model, FEA report with stress and deflection per load case, modal analysis for the first five eigenmodes, and a mass budget summary.",
+  "short_prompt": "Design the primary load-bearing chassis frame of a lunar-analog rover benchmark running the combined Mapping + Excavation + Science mission, supporting six rocker-bogie wheel modules, a front excavation tool mount, and a top-deck payload plate. Rover wet mass is capped at 90 kg.\n\nMaterial class: 6061-T6 aluminum. No explicit standard is cited in the source; design to a 1.5 FoS on yield.\n\nEnvelope: stowed on the order of 1.2 m x 0.9 m x 0.8 m, payload deck ~0.5 m above the wheel plane.\n\nLoad cases.\n- LC1 curb drop: 4 g vertical at the four outer wheel mounts with 90 kg supported.\n- LC2 excavation reaction: 500 N horizontal + 200 N vertical at the tool-mount bolt pattern, six wheels pinned.\n- LC3 slope: 1 g gravity at 30 deg pitch on 90 kg.\n- LC4 lateral tip: 300 N at the top-deck CoM, 0.5 m above the wheel plane.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "All-tasks lunar-analog rover primary chassis frame",
+    "brief": "Load-bearing chassis for a 90 kg all-tasks lunar-analog rover performing Mapping, Excavation, and Science missions.",
+    "geometric_constraints": {
+      "stowed_envelope_m": {
+        "x": 1.2,
+        "y": 0.9,
+        "z": 0.8
+      },
+      "wheel_mounts": 6,
+      "suspension_type": "rocker-bogie",
+      "payload_deck_height_m_above_wheel_plane": 0.5,
+      "excavation_tool_mount": "front, bolted interface"
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "curb_drop_4g",
+        "magnitude": "4 g vertical on 90 kg",
+        "application": "all outer wheel mounts"
+      },
+      {
+        "id": "LC2",
+        "name": "excavation_reaction",
+        "magnitude_N": {
+          "horizontal": 500,
+          "vertical": 200
+        },
+        "application": "tool-mount bolt pattern, wheels pinned"
+      },
+      {
+        "id": "LC3",
+        "name": "slope_30deg",
+        "magnitude": "1 g at 30 deg pitch on 90 kg",
+        "application": "static gravity on tilted chassis"
+      },
+      {
+        "id": "LC4",
+        "name": "lateral_tip",
+        "magnitude_N": 300,
+        "application": "top-deck CoM, 0.5 m above wheel plane"
+      }
+    ],
+    "objective": {
+      "minimize": "chassis_dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_kg",
+        "max_von_mises_per_case_MPa",
+        "max_deflection_mm",
+        "first_five_natural_frequencies_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "ultimate 310 / 1.5 = 207 capped by yield 276 / 1.5 = 184",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_payload_deck_deflection",
+        "limit_mm": 3.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 30,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "chassis_dry_mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "id": "254_a14_asme_iam3d_bracket",
+  "source": {
+    "catalog_ref": "A14",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "mechanical_structural",
+  "part_class": "am_weight_reduction_bracket",
+  "full_prompt": "Design a single-part monolithic additively manufactured (AM) weight-reduction bracket. Replace an existing machined mounting bracket with a topology-optimized AM part that preserves the same interface and load-carrying capability while reducing mass by at least 50%. Bracket connects a 10 kg payload to a rectangular mounting face via 4x M6 bolts on a 80 mm x 60 mm rectangular pattern. Bounding envelope: 120 mm x 100 mm x 60 mm. Payload attaches at a single M10 threaded boss located 90 mm from the mounting face. Material: SLS/DMLS AlSi10Mg (aluminum 3D print), E = 70 GPa, yield = 220 MPa, ultimate = 440 MPa, density = 2670 kg/m^3. Baseline machined bracket mass 350 g (solid block equivalent); target AM part mass <= 175 g (50% reduction). Load cases: (R1) Static payload 10 kg x 9.81 = 98 N at the M10 boss, vertically downward; max von Mises <= yield / 2.0 = 110 MPa. (R2) Transport shock 5 g x 10 kg = 490 N in the worst-case direction (45 deg from vertical in the YZ plane); max von Mises <= yield / 1.5 = 147 MPa. (R3) Side-load maneuver 2 g lateral = 196 N at the boss; max von Mises <= 110 MPa. (R4) Mass <= 175 g AND mass reduction vs baseline >= 50%. (R5) Displacement at the M10 boss under LC1 <= 0.5 mm. (R6) Modal first frequency hard-mounted at four M6 holes >= 120 Hz (to avoid coupling with typical chassis vibration at 60 Hz 2x margin). Primary verification: structural FEA for R1-R3 + R5, modal for R6. Vibration secondary via R6. Thermal, fluid, radiation, buckling explicitly NOT required. AM-specific constraint: all overhangs >= 45 deg from build plate OR include sacrificial support, and no internal voids without drain holes of at least 3 mm diameter. Topology optimization required as the outer design loop. Deliverables: STEP AP242, build orientation recommendation, and a report listing mass in g, mass reduction %, max von Mises per case in MPa, displacement at boss in mm, first modal frequency in Hz.",
+  "short_prompt": "Design a single-part monolithic additively manufactured AlSi10Mg mounting bracket that replaces an existing machined bracket supporting a 10 kg payload, preserving the same interface (4x M6 bolts on an 80 x 60 mm pattern on the mount face, single M10 threaded payload boss 90 mm from the mount face) while reducing mass by at least 50% against the 350 g machined baseline.\n\nEnvelope: bounding box 120 x 100 x 60 mm. DfAM rules apply (overhangs >= 45 deg or sacrificial support; no internal voids without >= 3 mm drain holes). Topology optimization is required as the outer loop.\n\nLoad cases.\n- LC1 static payload: 10 kg x 9.81 = 98 N at the M10 boss, vertical, boss displacement <= 0.5 mm.\n- LC2 transport shock: 5 g x 10 kg = 490 N at the boss, worst-case 45 deg direction in the YZ plane.\n- LC3 side-load maneuver: 2 g lateral = 196 N at the boss.\n- LC4 modal: hard-mounted at the four M6 holes, first frequency clear of ~60 Hz chassis vibration by 2 x margin.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "50% mass reduction vs baseline is the scoring driver; topo-opt calls structural FEA inside.",
+        "examples": [
+          "Altair OptiStruct",
+          "Ansys Mechanical Topology Optimization"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Additively manufactured weight-reduction bracket",
+    "brief": "AlSi10Mg AM bracket replacing a 350 g machined baseline; must be <= 175 g, survive 3 static load cases, meet displacement and modal limits.",
+    "geometric_constraints": {
+      "bounding_envelope_mm": "120 x 100 x 60",
+      "mounting_bolts": {
+        "count": 4,
+        "size": "M6",
+        "pattern_mm": "80 x 60"
+      },
+      "payload_boss": {
+        "thread": "M10",
+        "offset_from_face_mm": 90
+      },
+      "AM_overhang_deg_min": 45,
+      "internal_drain_hole_mm_min": 3,
+      "monolithic": true
+    },
+    "material": {
+      "name": "AlSi10Mg (DMLS/SLS aluminum)",
+      "properties": {
+        "youngs_modulus_GPa": 70,
+        "yield_strength_MPa": 220,
+        "ultimate_tensile_strength_MPa": 440,
+        "density_kg_m3": 2670
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_payload",
+        "force_N": 98,
+        "direction": "vertical down at M10 boss"
+      },
+      {
+        "id": "LC2",
+        "name": "transport_shock_5g",
+        "force_N": 490,
+        "direction": "45 deg off vertical in YZ"
+      },
+      {
+        "id": "LC3",
+        "name": "side_load_2g",
+        "force_N": 196,
+        "direction": "lateral at boss"
+      },
+      {
+        "id": "LC4",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "four M6 bolt holes fully fixed",
+      "loads": "point load at M10 boss"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_reduction_vs_baseline_pct_min": 50
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "mass_reduction_pct",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "displacement_boss_LC1_mm",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 110,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 147,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 110,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4a",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 175,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4b",
+        "type": "structural_analysis",
+        "metric": "mass_reduction_pct",
+        "limit": 50,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "displacement_at_boss",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 120,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x3)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "AM residual stress and warpage are manufacturing qualification steps, out of scope here.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Load cases dominated by bending."
+    }
+  },
+  "eval_coverage": [
+    "topology optimization outer loop",
+    "AM process constraints (overhang angle, drain holes)",
+    "mass-reduction-versus-baseline metric"
+  ]
+}

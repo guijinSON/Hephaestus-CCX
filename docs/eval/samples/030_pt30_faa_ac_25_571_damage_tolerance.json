@@ -1,0 +1,242 @@
+{
+  "id": "030_pt30_faa_ac_25_571_damage_tolerance",
+  "source": {
+    "catalog_ref": "PT30",
+    "year": 2011,
+    "tier": "B"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "fuselage_longeron_attachment_bracket",
+  "full_prompt": "Design a fuselage longeron-to-frame attachment bracket for a Part 25 transport aircraft per FAA AC 25.571-1D damage tolerance and CS-25.305 limit/ultimate, using 7075-T7351 plate machined to a net-shape bracket. Envelope: 150 x 100 x 50 mm. Interfaces: longeron side four NAS-1351 5/16 inch bolts on 80 x 40 mm rectangular pattern; frame-side four HI-LOK HL-12 5/16 inch pins on 80 x 40 mm rectangular pattern; the two faces are normal to each other (90 deg corner bracket). Material: aluminum 7075-T7351 per AMS 4078 (yield 434 MPa, UTS 496 MPa, E 71.7 GPa, density 2810 kg/m^3, elongation 8%); A-basis per MMPDS. Representative cyclic + limit loads: LC1 limit tension along longeron axis 18 kN (representative transport longeron attachment per MIL-HDBK-5 / MMPDS equivalents); LC2 limit shear across frame face 10 kN; LC3 limit combined 15 + 8 kN; LC4 ultimate 1.5 x LC3; LC5 1-cog fatigue spectrum: TWIST or FALSTAFF cyclic loading representative of 60,000 flights x 1 flight-cycle block each, total ~1e6 major cycles; LC6 damage-tolerance analysis: initial flaw 1.27 mm (0.05 inch) corner crack at worst fastener hole per AC 25.571-1D Appendix A continuing-damage definition, grown under LC5 spectrum. Pass/fail per CS-25.305 + AC 25.571-1D: (R1) max von Mises at limit (LC1-3) <= yield = 434 MPa (no permanent deformation at limit); (R2) max von Mises at ultimate LC4 <= UTS / 1.0 = 496 MPa (no rupture); binding effectively 496/1.5 = 330 MPa at limit level; (R3) damage tolerance: initial 0.05-inch flaw grown under LC5 spectrum must not reach critical crack size in 2 x inspection interval (factor of 2 per AC 25.571-1D for safe-life / damage-tolerance backup); inspection interval shall be set such that a flaw detectable with current NDI (typically 0.10 inch) has life margin >= 2 inspection intervals before criticality; (R4) residual strength with detectable crack shall be >= limit load (i.e., structure carrying a 0.10 inch flaw must still pass LC3 limit); (R5) Kt at fastener hole <= 3.0 (use cold-expansion or interference-fit fastener installation to reduce Kt, per AC 25.571 best practice); (R6) mass <= 250 g; (R7) corrosion protection: chromate conversion + primer per MIL-DTL-5541 Type I Class 1A + MIL-PRF-23377 epoxy primer. Deliverables: STEP AP242; FEA static limit + ultimate; da/dN crack growth analysis with AFGROW or NASGRO; inspection interval determination with AC 25.571-1D compliance matrix.",
+  "short_prompt": "Design a fuselage longeron-to-frame attachment bracket for a Part 25 transport aircraft per FAA AC 25.571-1D damage tolerance and CS-25.305 limit/ultimate, using 7075-T7351 plate machined to a net-shape bracket.\n\nEnvelope: 150 x 100 x 50 mm, 90 deg corner bracket. Longeron side: four NAS-1351 5/16 inch bolts on 80 x 40 mm. Frame side: four HI-LOK HL-12 5/16 inch pins on 80 x 40 mm.\n\nMaterial: 7075-T7351 per AMS 4078, A-basis per MMPDS.\n\nDesign per CS-25.305 + AC 25.571-1D with an effective ultimate 496/1.5 = 330 MPa at limit level.\n\nLoad cases.\n- LC1 limit tension along longeron axis: 18 kN.\n- LC2 limit shear across frame face: 10 kN.\n- LC3 limit combined: 15 + 8 kN.\n- LC4 ultimate 1.5 x LC3.\n- LC5 fatigue spectrum: TWIST or FALSTAFF representative of 60,000 flights, ~1e6 major cycles.\n- LC6 damage tolerance: initial 1.27 mm (0.05 inch) corner crack at worst fastener hole per AC 25.571-1D Appendix A, grown under LC5 spectrum.\n\nGates: detectable NDI flaw 0.10 inch must have life margin >= 2 inspection intervals; residual strength with detectable crack >= limit load; Kt at fastener hole <= 3.0 (cold-expansion or interference fit recommended); mass <= 250 g; corrosion protection chromate conversion + epoxy primer per MIL-DTL-5541 Type I Class 1A + MIL-PRF-23377.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "crack_growth_solver",
+        "reason": "da/dN + Paris or NASGRO crack growth is a specialized fracture mechanics tool.",
+        "examples": [
+          "AFGROW",
+          "NASGRO",
+          "Zencrack"
+        ]
+      },
+      {
+        "tool": "residual_strength_K_crit",
+        "reason": "Residual strength via fracture toughness Kc / K-R curve is post-processing.",
+        "examples": [
+          "MMPDS fracture section"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "7075-T7351 fuselage longeron-to-frame bracket per FAA AC 25.571-1D",
+    "brief": "Design a 150x100x50 mm 7075-T7351 longeron attachment bracket; pass CS-25.305 limit/ultimate AND AC 25.571-1D damage tolerance with 0.05-in initial flaw.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 150,
+        "y": 100,
+        "z": 50
+      },
+      "longeron_interface": {
+        "bolts": 4,
+        "fastener": "NAS-1351 5/16 in",
+        "pattern_mm": {
+          "x": 80,
+          "y": 40
+        }
+      },
+      "frame_interface": {
+        "pins": 4,
+        "fastener": "HI-LOK HL-12",
+        "pattern_mm": {
+          "x": 80,
+          "y": 40
+        }
+      },
+      "fastener_hole_Kt_max": 3.0,
+      "fastener_installation": "cold-expansion or interference fit required",
+      "coating": "MIL-DTL-5541 Type I Class 1A + MIL-PRF-23377"
+    },
+    "material": {
+      "name": "7075-T7351 per AMS 4078 (A-basis)",
+      "yield_MPa": 434,
+      "ultimate_MPa": 496,
+      "youngs_modulus_GPa": 71.7,
+      "density_kg_m3": 2810
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "limit_tension",
+        "force_N": 18000
+      },
+      {
+        "id": "LC2",
+        "name": "limit_shear",
+        "force_N": 10000
+      },
+      {
+        "id": "LC3",
+        "name": "limit_combined",
+        "tension_N": 15000,
+        "shear_N": 8000
+      },
+      {
+        "id": "LC4",
+        "name": "ultimate_1.5xLC3",
+        "tension_N": 22500,
+        "shear_N": 12000
+      },
+      {
+        "id": "LC5",
+        "name": "fatigue_TWIST_spectrum",
+        "flights": 60000
+      },
+      {
+        "id": "LC6",
+        "name": "damage_tolerance_initial_flaw_0.05in",
+        "initial_a_mm": 1.27
+      }
+    ],
+    "boundary_conditions": {
+      "longeron_interface": "4 NAS-1351 fully constrained",
+      "frame_interface": "4 HI-LOK pin-bearing"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "max_von_mises_limit_MPa",
+        "max_von_mises_ultimate_MPa",
+        "Kt_at_worst_hole",
+        "crack_growth_life_flights",
+        "inspection_interval_flights",
+        "residual_strength_with_0.1in_flaw_N",
+        "mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_limit",
+        "limit_MPa": 434,
+        "derivation": "A-basis yield per CS-25.305",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_ultimate",
+        "limit_MPa": 496,
+        "derivation": "A-basis UTS per CS-25.305",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "life_margin_vs_inspection_interval",
+        "limit": 2,
+        "derivation": "AC 25.571-1D factor 2 on detectable-flaw life",
+        "applies_to": [
+          "LC5",
+          "LC6"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "residual_strength_with_0.1in_flaw",
+        "limit_N": 18000,
+        "derivation": "residual strength >= limit load LC1 per AC 25.571-1D",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "Kt_at_fastener_hole",
+        "limit": 3.0,
+        "derivation": "AC 25.571 best-practice via cold-expansion",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 250,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "corrosion_protection_compliance",
+        "limit": 1,
+        "derivation": "MIL-DTL-5541 Type I Class 1A + MIL-PRF-23377",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      }
+    ],
+    "governing_standard": "CS-25.305 + CS-25.571 + FAA AC 25.571-1D + MMPDS A-basis",
+    "recommended_fea_setup": {
+      "element_type": "TET10 + submodel at crack tip",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus",
+        "AFGROW / NASGRO for crack growth"
+      ],
+      "analysis_types": [
+        "linear static limit + ultimate + crack growth + residual strength"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Fatigue spectrum is the cyclic driver, no dedicated modal analysis.",
+      "thermal_analysis": "Ambient cabin pressure region.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "AC 25.571-1D damage-tolerance framework; TWIST transport spectrum; 7075-T7351 A-basis per MMPDS-2019."
+  },
+  "eval_coverage": [
+    "damage tolerance with initial flaw",
+    "crack growth vs inspection interval",
+    "residual strength with detectable flaw",
+    "Kt reduction via cold expansion",
+    "coating spec compliance"
+  ]
+}

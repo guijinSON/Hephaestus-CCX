@@ -1,0 +1,329 @@
+{
+  "id": "003_pt3_hilti_profis_hit_hy200",
+  "source": {
+    "catalog_ref": "PT3",
+    "year": 2024,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/003_pt3_hilti_profis_hit_hy200.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "civil_structural",
+  "part_class": "anchored_baseplate_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a bolted/adhesive-anchored steel baseplate assembly that anchors a tubular steel column to a cracked C20/25 normal-weight concrete slab. The assembly must be modeled as an explicit multi-body system containing: (A) one rectangular S355 steel baseplate 300 x 300 mm, at least 20 mm thick, with four 18 mm anchor clearance holes on a 200 x 200 mm square pattern; (B) one welded S355 RHS 120 x 120 x 8 column stub, 300 mm tall, centered on the baseplate; (C) four M16 grade 8.8 threaded rod anchors bonded into the cracked C20/25 concrete with an epoxy-acrylate adhesive at an effective embedment h_ef = 125 mm (catalog canonical size); (D) four hex nuts + washers at the top of the anchor rods providing baseplate clamp-up; (E) fillet weld fillets at the column-to-baseplate interface.\n\nThe representative published characteristic resistances for this configuration in cracked C20/25 concrete per representative 2024 ETA data are: characteristic tension (bond/pull-out combined) N_Rk = 74 kN per anchor, characteristic steel tension N_Rk,s = 90.4 kN per anchor, characteristic steel shear V_Rk,s = 54.2 kN per anchor, with characteristic concrete cone N_Rk,c depending on spacing and edge distance. The anchor pattern shall maintain edge distance c >= 80 mm (>= 0.5 h_ef per ETA minimum) and spacing s >= 100 mm. Anchor holes are drilled oversize by 2 mm relative to anchor diameter.\n\nApplied loads at the top of the column stub: axial tension up to 120 kN, horizontal shear up to 80 kN, and an overturning moment of 25 kN*m about the strong axis. Pass/fail is evaluated under the ACI 318-19 Chapter 17 / EOTA TR 029 framework: (R1) per-anchor tension demand <= phi * N_Rk / gamma_M with phi = 0.75 and gamma_M,p = 1.5 for adhesive bond, giving factored tension capacity N_Rd ~= 37 kN per anchor; (R2) per-anchor shear demand <= V_Rd,s = V_Rk,s / gamma_M,s with gamma_M,s = 1.25, giving V_Rd,s ~= 43 kN per anchor; (R3) combined tension+shear interaction (N/N_Rd)^5/3 + (V/V_Rd)^5/3 <= 1.0 at every anchor; (R4) concrete breakout and pryout checks must satisfy the same gamma_M = 1.5 with the effective anchor group area A_Nc/A_Nc0; (R5) baseplate bending stress <= 0.9 * f_y = 319.5 MPa under the factored load combination (AISC 360-22 LRFD flexural resistance); (R6) plate deflection at the column footprint <= L/300 = 1.0 mm across the 300 mm plate width; (R_asm1) connection DCR for every bolted/bonded interface <= 1.0; (R_asm2) fillet weld between column stub and baseplate shall meet AISC 360-22 weld strength with DCR <= 1.0 under the factored load combination.\n\nManufacturing: baseplate is flame-cut then machined flat to within 0.5 mm across the column footprint; holes drilled oversize by 2 mm relative to anchor diameter; fillet welds between column stub and baseplate shop-welded per AWS D1.1. The final FEM check runs on the fully assembled model (baseplate + column stub + welds + four anchor rod bodies + four nut/washer bodies) with contact at the baseplate-to-concrete interface, preloaded bond-anchor stiffness, and explicit fillet-weld fillets. Per-part stress is reported for each part family but assembly-level passing requires all interface DCRs and assembly-scope checks to pass simultaneously.\n\nDeliverables: STEP AP242 assembly file with distinct solid bodies for baseplate, column stub, weld fillets, four anchor rod envelopes, and four nut+washer bodies, each tagged with part_family and instance_index metadata; a loads/capacities report listing per-anchor demand vs capacity, combined interaction, concrete cone check, plate stress, plate deflection, per-part max stress, and assembly-level connection DCR.",
+  "short_prompt": "Design a bolted/adhesive-anchored steel baseplate assembly anchoring a tubular steel column into a cracked C20/25 normal-weight concrete slab, delivered as an explicit multi-body system. The plate is S355 steel 300 x 300 mm (>= 20 mm thick) with four 18 mm anchor clearance holes on a 200 x 200 mm pattern; the column is a welded S355 RHS 120 x 120 x 8 stub 300 mm tall; four M16 grade 8.8 threaded rods are bonded into the concrete with an epoxy-acrylate adhesive at h_ef = 125 mm. Edge distance c >= 80 mm, spacing s >= 100 mm, holes oversized by 2 mm.\n\nApplied at the top of the column stub: axial tension up to 120 kN, horizontal shear up to 80 kN, overturning moment 25 kN*m about the strong axis.\n\nGoverning standard ACI 318-19 Chapter 17 + EOTA TR 029 + AISC 360-22 with phi = 0.75, gamma_M,p = 1.5 for bond, gamma_M,s = 1.25 for steel. Representative characteristics: N_Rk = 74 kN, N_Rk,s = 90.4 kN, V_Rk,s = 54.2 kN, giving N_Rd ~= 37 kN and V_Rd,s ~= 43 kN per anchor. Combined interaction (N/N_Rd)^5/3 + (V/V_Rd)^5/3 <= 1.0. Plate bending stress <= 0.9 * f_y = 319.5 MPa; plate deflection <= L/300 = 1.0 mm across the 300 mm plate.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "connection_integrity"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "anchor_design_calculator",
+        "reason": "Concrete cone breakout, pry-out, and combined interaction are closed-form equations from ACI 318-19 Ch.17 / EOTA TR 029, not FEA. Standard implementations are available in anchor-design software packages.",
+        "examples": [
+          "adhesive-anchor design software",
+          "hand calculation against ACI 318-19 Ch.17"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Adhesive-anchor steel baseplate on C20/25 concrete (multi-part assembly)",
+    "brief": "Multi-part assembly: S355 baseplate + welded RHS column stub + 4 adhesive anchor rods + 4 nut/washer sets + fillet welds, anchoring a tubular column to cracked C20/25 concrete under combined axial, shear, and moment. Final FEM check runs on the assembled model only; per-part stress is reported but does not gate pass/fail.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "steel_baseplate",
+        "role": "distributes column forces into the anchor group and concrete bearing surface",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_mm": {
+            "x": 300,
+            "y": 300
+          },
+          "thickness_mm_min": 20,
+          "anchor_holes": 4,
+          "anchor_hole_pattern_mm": {
+            "x": 200,
+            "y": 200
+          }
+        },
+        "material_hint": "S355",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "rhs_column_stub",
+        "role": "short welded tubular column stub that delivers service load into the baseplate via fillet welds",
+        "count_min": 1,
+        "geometric_constraints": {
+          "section": "RHS 120x120x8",
+          "height_mm": 300
+        },
+        "material_hint": "S355",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "adhesive_anchor_rod",
+        "role": "M16 grade 8.8 threaded rod bonded into cracked C20/25 concrete with epoxy-acrylate adhesive at h_ef = 125 mm",
+        "count_min": 4,
+        "geometric_constraints": {
+          "thread": "M16",
+          "grade": "8.8",
+          "effective_embedment_mm": 125,
+          "hole_oversize_mm": 2
+        },
+        "material_hint": "grade 8.8 steel",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "nut_and_washer",
+        "role": "hex nut + washer at the top of each anchor rod providing baseplate clamp-up",
+        "count_min": 4,
+        "geometric_constraints": {
+          "thread": "M16",
+          "grade": "8.8"
+        },
+        "material_hint": "grade 8.8 steel",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "fillet_weld",
+        "role": "shop-welded fillet weld between column stub and baseplate per AWS D1.1",
+        "count_min": 1,
+        "geometric_constraints": {
+          "weld_family": "fillet around RHS 120x120x8 perimeter",
+          "standard": "AWS D1.1"
+        },
+        "material_hint": "AWS D1.1 filler compatible with S355",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "approximately 300 x 300 x 320 mm (baseplate plan + column stub height)",
+      "coordinate_system": "Z up along column axis; XY in baseplate plane with anchor pattern 200 x 200 mm centered"
+    },
+    "material": {
+      "plate": {
+        "name": "S355",
+        "yield_strength_MPa": 355,
+        "ultimate_tensile_strength_MPa": 510
+      },
+      "concrete": {
+        "class": "C20/25",
+        "condition": "cracked",
+        "f_ck_MPa": 20
+      },
+      "anchor_rod": {
+        "grade": "8.8",
+        "yield_MPa": 640,
+        "UTS_MPa": 800
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "combined_service",
+        "axial_tension_kN": 120,
+        "shear_kN": 80,
+        "moment_kNm": 25,
+        "application": "at top of column stub"
+      }
+    ],
+    "boundary_conditions": {
+      "concrete_interface": "baseplate bearing on concrete; uplift resisted only by anchors",
+      "anchor_preload": "catalog value per adhesive-anchor design software for M16 threaded rod",
+      "inter_part_fastener_stiffness": "each anchor rod modeled with axial + shear bond stiffness consistent with the adhesive bond + rod cross-section; nuts/washers coupled to rod top and bearing on baseplate top face"
+    },
+    "objective": {
+      "minimize": "baseplate mass subject to passing all anchor + plate + assembly-scope checks"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "per_anchor_tension_demand_kN",
+        "per_anchor_shear_demand_kN",
+        "combined_interaction_ratio",
+        "concrete_cone_utilization",
+        "plate_max_bending_MPa",
+        "plate_max_deflection_mm",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "per_anchor_tension_demand",
+        "limit_kN": 37,
+        "derivation": "N_Rd = N_Rk / gamma_M,p = 74 / 1.5 * phi with phi=0.75 and gamma_M,p=1.5 per representative ETA + ACI 318-19 Ch.17",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<=",
+        "note": "Representative factored capacity for adhesive anchor + M16 h_ef=125 mm, cracked C20/25."
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "per_anchor_shear_demand",
+        "limit_kN": 43,
+        "derivation": "V_Rd,s = V_Rk,s / gamma_M,s = 54.2 / 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "combined_tension_shear_interaction",
+        "limit": 1.0,
+        "derivation": "(N/N_Rd)^(5/3) + (V/V_Rd)^(5/3) <= 1.0 per EOTA TR 029",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "concrete_cone_utilization",
+        "limit": 1.0,
+        "derivation": "group N_Rd,c with A_Nc/A_Nc0 per ACI 318-19 17.4.2",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "plate_max_bending_stress",
+        "limit_MPa": 319.5,
+        "derivation": "0.9 * f_y = 0.9 * 355 (AISC 360-22 LRFD)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "plate_deflection_across_column_footprint",
+        "limit_mm": 1.0,
+        "derivation": "L/300 with L = 300 mm plate span",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "type": "connection_integrity",
+        "metric": "connection_DCR",
+        "limit": 1.0,
+        "derivation": "assembly-scope demand/capacity ratio on every bolted/bonded interface under LC1",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm2",
+        "type": "connection_integrity",
+        "metric": "fillet_weld_DCR",
+        "limit": 1.0,
+        "derivation": "AISC 360-22 Chapter J weld strength under factored load combination",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "ACI 318-19 Chapter 17 + EOTA TR 029 + AISC 360-22 + representative adhesive-anchor ETA",
+    "recommended_fea_setup": {
+      "element_type": "shell (baseplate) + solid bolt stubs",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "IDEA StatiCa Connection",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static + anchor design code-check"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "welded",
+      "load_path": "column axial + shear + moment into baseplate via fillet weld"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "baseplate uplift reacted by anchor rods bonded in concrete"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "nut/washer clamp on baseplate top face transferring preload"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "weld filler reinforcing column-to-baseplate interface"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Baseplate, welded column stub, four adhesive anchor rods, four nut/washer sets, and fillet weld are distinct bodies with distinct load paths that cannot be represented as a single solid body.",
+    "speculation_caveats": "parts[] counts and interfaces[] are inferred from the original prompt; nut/washer and weld fillet bodies are speculative modeling artifacts included to make the assembly explicit.",
+    "original_sample_preserved_at": "docs/eval/samples/003_pt3_hilti_profis_hit_hy200.json"
+  }
+}

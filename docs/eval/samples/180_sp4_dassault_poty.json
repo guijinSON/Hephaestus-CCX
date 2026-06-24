@@ -1,0 +1,193 @@
+{
+  "id": "180_sp4_dassault_poty",
+  "source": {
+    "catalog_ref": "SP4",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "consumer_safety",
+  "part_class": "helmet_liner_lattice",
+  "full_prompt": "Design a 3D-printed cellular lattice inner liner for a bicycle helmet as an open-source explicit-dynamics simulation benchmark. The liner replaces traditional EPS foam with a lattice printed in TPU 95A (hyperelastic, 2nd-order Ogden with C10 ~ 0.4 MPa, density 1200 kg/m^3) occupying the shell between the outer PC shell and the rider's head. The liner must conform to a standard medium adult helmet inner volume with a wall thickness of 25 mm across the cranial region, a nominal mass less than 180 g, and a lattice cell type (gyroid TPMS or BCC / FCC / octet truss) chosen by the designer. The helmet must satisfy the CPSC 1203 / EN 1078 impact test protocol: (LC1) a 5.0 kg headform dropped from 1.2 m onto a flat anvil (impact velocity 4.85 m/s, kinetic energy 58.8 J), (LC2) the same 5.0 kg headform dropped from 1.05 m onto a curbstone anvil (impact velocity 4.54 m/s, kinetic energy 51.5 J), (LC3) a quasi-static roll-off test at 3 kg moment, (LC4) penetration resistance at 3.0 kg pointed striker from 0.3 m. Pass/fail criteria: (R1) peak headform linear acceleration during flat-anvil impact must not exceed 250 g, the CPSC 1203 limit, (R2) peak linear acceleration during curbstone impact must not exceed 250 g per CPSC 1203, (R3) the TPU lattice must absorb at least 85% of the incoming 58.8 J kinetic energy via plastic/hyperelastic deformation without full densification, (R4) liner mass must not exceed 180 g, and (R5) a linear buckling analysis of a representative lattice unit cell under 1.5x flat-impact peak load must yield a first-mode load factor of at least 2.0. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 solid body or lattice-file of the liner plus a verification report with peak linear acceleration for flat and curbstone impacts, energy absorbed, liner mass, and first buckling load factor.",
+  "short_prompt": "Design a 3D-printed TPU 95A lattice inner liner for a bicycle helmet, replacing conventional EPS foam. The liner occupies the shell between the outer PC shell and the rider's head, conforming to a medium adult helmet inner volume with a ~25 mm wall thickness across the cranial region. Designer chooses the lattice cell type (gyroid TPMS, BCC, FCC, or octet truss). TPU 95A is hyperelastic (Ogden).\n\nDesign to CPSC 1203 / EN 1078. The headform is a rigid mass seating against the liner between the outer PC shell and the head.\n\nLoad cases.\n- LC1 flat-anvil drop: 5.0 kg headform at 1.2 m (4.85 m/s, 58.8 J).\n- LC2 curbstone drop: 5.0 kg headform at 1.05 m (4.54 m/s, 51.5 J).\n- LC3 roll-off: quasi-static 3 kg moment.\n- LC4 penetration: 3.0 kg pointed striker from 0.3 m.\n\nLiner mass target is <=180 g; also check unit-cell buckling at 1.5x flat-impact peak load.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "lattice_homogenization",
+        "reason": "Lattice-cell effective stiffness and energy-density curves are pre-computed by homogenization and fed to the full-helmet explicit-dynamic FEA.",
+        "examples": [
+          "nTopology Homogenization",
+          "Abaqus Micromechanics"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "TPU lattice bicycle helmet liner (explicit-dynamics benchmark)",
+    "brief": "Design a TPU 95A 3D-printed lattice inner liner (25 mm wall, <=180 g) for a bicycle helmet passing CPSC 1203 / EN 1078 flat and curbstone 250 g peak impact, 85% energy absorption, and 2x buckling margin.",
+    "geometric_constraints": {
+      "liner_wall_mm": 25,
+      "lattice_type_allowed": [
+        "gyroid",
+        "BCC",
+        "FCC",
+        "octet_truss"
+      ],
+      "liner_mass_max_g": 180
+    },
+    "material": {
+      "name": "TPU 95A",
+      "constitutive": "2nd-order Ogden (C10 ~0.4 MPa)",
+      "density_kg_m3": 1200
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "flat_anvil_drop",
+        "headform_kg": 5.0,
+        "drop_height_m": 1.2,
+        "velocity_m_s": 4.85,
+        "KE_J": 58.8
+      },
+      {
+        "id": "LC2",
+        "name": "curbstone_drop",
+        "headform_kg": 5.0,
+        "drop_height_m": 1.05,
+        "velocity_m_s": 4.54,
+        "KE_J": 51.5
+      },
+      {
+        "id": "LC3",
+        "name": "roll_off",
+        "moment_kg": 3
+      },
+      {
+        "id": "LC4",
+        "name": "penetration",
+        "striker_kg": 3.0,
+        "drop_m": 0.3
+      }
+    ],
+    "boundary_conditions": {
+      "headform": "rigid mass; liner seats between outer PC shell and headform"
+    },
+    "objective": {
+      "primary": "pass CPSC 1203 / EN 1078",
+      "secondary": "minimize liner mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "peak_linear_accel_flat_g",
+        "peak_linear_accel_curbstone_g",
+        "energy_absorbed_pct",
+        "liner_mass_g",
+        "unit_cell_buckling_LF"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "peak_linear_acceleration_flat",
+        "limit_g": 250,
+        "derivation": "CPSC 1203 / EN 1078",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_linear_acceleration_curbstone",
+        "limit_g": 250,
+        "derivation": "CPSC 1203 / EN 1078",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "energy_absorbed_pct",
+        "limit_pct": 85,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "liner_mass",
+        "limit_g": 180,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "unit_cell_buckling_LF",
+        "limit": 2.0,
+        "derivation": "1.5x flat-impact peak load",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order solid or homogenized continuum",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "Abaqus/Explicit",
+        "LS-DYNA",
+        "nTopology homogenization"
+      ],
+      "analysis_types": [
+        "explicit dynamic",
+        "lattice homogenization",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Helmet impact is one-time transient.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "No fluid.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "MIPS / oblique rotational impact (ECE 22.06)",
+      "Retention strap tensile test per CPSC 1203",
+      "UV aging of TPU"
+    ]
+  },
+  "eval_coverage": [
+    "CPSC 1203 explicit dynamic impact benchmark",
+    "lattice homogenization non-FEA solver",
+    "energy-absorption pass/fail",
+    "unit-cell buckling margin"
+  ]
+}

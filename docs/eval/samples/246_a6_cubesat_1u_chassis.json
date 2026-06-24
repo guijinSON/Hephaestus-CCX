@@ -1,0 +1,204 @@
+{
+  "id": "246_a6_cubesat_1u_chassis",
+  "source": {
+    "catalog_ref": "A6",
+    "year": 2022,
+    "tier": "A"
+  },
+  "domain": "space_structural",
+  "part_class": "cubesat_1u_primary_structure",
+  "full_prompt": "Design a single-part monolithic 1U CubeSat primary structure (chassis / frame) compliant with the 1U CubeSat design envelope and dispenser-interface specification. The structure provides four rails, six face mounting interfaces, and an internal stack interface for PC/104-Plus PCB stack. External envelope constraints: 100.0 +0.0/-0.1 mm along X and Y, 113.5 +0.0/-0.1 mm along Z (to accommodate rail protrusion above faces), with rails 8.5 x 8.5 mm cross section at each of the four longitudinal corners, and rails protruding at least 6.5 mm above +Z / -Z faces. Rail straightness <= 0.1 mm over full length; rail contact surface Ra <= 1.6 um; rail top/bottom hard-anodized per MIL-A-8625 Type III. Internal PCB stack accommodation: four M3 standoff holes on a 93.0 mm x 82.5 mm rectangular pattern. Center of mass offset from geometric center <= 20 mm along each axis. Total mass of 1U (structure + all payload + battery + boards) <= 2.0 kg; the structure alone shall not exceed 200 g. Material: 7075-T6 aluminum, hard-anodized. E = 71.7 GPa, yield = 503 MPa, ultimate = 572 MPa, density = 2810 kg/m^3. Qualification load cases (typical launch-vehicle ICD): (R1) quasi-static 25 g in each of three orthogonal axes applied to a 2.0 kg lumped internal mass at the CM; max von Mises in structure <= yield / 1.25 = 402 MPa. (R2) first natural frequency in hard-mounted configuration (dispenser rail-contact BC) >= 100 Hz in all three axes (typical small-launcher ICD minimum). (R3) random vibration qualification level 14.1 Grms over 20-2000 Hz, 3-sigma margin; max von Mises <= yield / 1.25 = 402 MPa. (R4) after qualification, all dimensional envelopes and rail straightness <= 0.1 mm shall still be met. (R5) structure mass <= 200 g. Primary verification: structural FEA (linear static for R1 and R4, modal for R2, random vibration PSD for R3). Thermal, fluid, and radiation analyses explicitly NOT required at this structural gate (thermal and radiation are separate mission-analysis gates). Deliverables: STEP AP242 monolithic part, rail inspection drawing, and a report listing mass in g, CM offset in mm, first three modal frequencies in Hz, max von Mises for quasi-static and random-vibration cases in MPa.",
+  "short_prompt": "Design a single-part monolithic 1U CubeSat primary structure compliant with the 1U CubeSat design envelope and dispenser interface: four 8.5 x 8.5 mm longitudinal rails (protruding >= 6.5 mm above the +Z / -Z faces, rail straightness <= 0.1 mm, Ra <= 1.6 um, hard-anodized per MIL-A-8625 Type III), six face mounting interfaces, and an internal PC/104-Plus stack on four M3 standoffs. Material is hard-anodized 7075-T6 aluminum. Total 1U mass (structure + payloads) <= 2.0 kg; CM offset from geometric center <= 20 mm per axis.\n\nEnvelope: outer 100 x 100 x 113.5 mm. Internal PCB stack pattern 93.0 x 82.5 mm.\n\nLoad cases (typical small-launcher ICD).\n- LC1 quasi-static: 25 g in each of three orthogonal axes on the 2.0 kg lumped internal mass at the CM, rail-contact BC.\n- LC2 modal: hard-mounted at rail contact, first frequency floor in all three axes.\n- LC3 random vibration: 14.1 Grms qualification level over 20-2000 Hz with 3-sigma margin.\n- LC4 post-test dimensional retention (rails still straight to <= 0.1 mm).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "1U CubeSat monolithic primary structure",
+    "brief": "1U chassis in hard-anodized 7075-T6. Passes 25 g quasi-static + 14.1 Grms random vib; first mode >= 100 Hz; mass <= 200 g.",
+    "geometric_constraints": {
+      "envelope_X_mm": 100.0,
+      "envelope_Y_mm": 100.0,
+      "envelope_Z_mm": 113.5,
+      "rail_cross_section_mm": "8.5 x 8.5",
+      "rail_protrusion_above_faces_mm_min": 6.5,
+      "rail_straightness_mm_max": 0.1,
+      "rail_Ra_um_max": 1.6,
+      "stack_hole_pattern_mm": "93.0 x 82.5",
+      "stack_hole_thread": "M3",
+      "CM_offset_mm_max": 20,
+      "monolithic": true
+    },
+    "material": {
+      "name": "7075-T6 aluminum, hard-anodized per MIL-A-8625 Type III",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "yield_strength_MPa": 503,
+        "ultimate_tensile_strength_MPa": 572,
+        "density_kg_m3": 2810
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static_25g_x",
+        "acceleration_g": 25,
+        "direction": "X",
+        "applied_mass_kg": 2.0
+      },
+      {
+        "id": "LC2",
+        "name": "quasi_static_25g_y",
+        "acceleration_g": 25,
+        "direction": "Y",
+        "applied_mass_kg": 2.0
+      },
+      {
+        "id": "LC3",
+        "name": "quasi_static_25g_z",
+        "acceleration_g": 25,
+        "direction": "Z",
+        "applied_mass_kg": 2.0
+      },
+      {
+        "id": "LC4",
+        "name": "modal",
+        "description": "hard-mounted at four rails over dispenser contact length"
+      },
+      {
+        "id": "LC5",
+        "name": "random_vibration",
+        "grms": 14.1,
+        "band_Hz": [
+          20,
+          2000
+        ],
+        "margin_sigma": 3
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "rail contact surfaces constrained in transverse directions, bottom face axial support (dispenser)",
+      "applied_mass": "lumped 2 kg at CM coupled to four stack standoff holes"
+    },
+    "objective": {
+      "minimize": "structure_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "structure_mass_g",
+        "CM_offset_mm",
+        "first_three_modal_frequencies_Hz",
+        "max_von_mises_quasi_static_MPa",
+        "max_von_mises_random_3sigma_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 402,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 100,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "max_von_mises_stress_3sigma",
+        "limit_MPa": 402,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4a",
+        "type": "dimensional_compliance",
+        "metric": "envelope_X_post_qual_mm",
+        "limit_mm": 100.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4b",
+        "type": "dimensional_compliance",
+        "metric": "rail_straightness_post_qual_mm",
+        "limit_mm": 0.1,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "structure_mass",
+        "limit_g": 200,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order hex or tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Nastran",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x3 axes)",
+        "modal",
+        "random vibration PSD"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Thermal cycling and TVAC are a separate mission gate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "TID/DD mission analysis is separate.",
+      "buckling_analysis": "Not a driving mode for 1U monocoque."
+    }
+  },
+  "eval_coverage": [
+    "quasi-static x 3 axes",
+    "modal frequency floor",
+    "random vibration 3-sigma stress",
+    "dimensional envelope retention"
+  ]
+}

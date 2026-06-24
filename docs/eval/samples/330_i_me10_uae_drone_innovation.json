@@ -1,0 +1,194 @@
+{
+  "id": "330_i_me10_uae_drone_innovation",
+  "source": {
+    "catalog_ref": "I-ME10 (UAE Drone Innovation Challenge)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural_thermal",
+  "part_class": "uav_motor_arm_hot_climate",
+  "full_prompt": "Design a single quadrotor motor arm intended for a UAE Drone Innovation Challenge entry operated in typical Gulf region ambient conditions. The parent vehicle is a quadrotor with MTOW 8 kg, hovering max per-motor thrust 25 N and peak (1.5 g pull-up limit) 37.5 N per motor. The arm is a hollow tubular cantilever of length 300 mm from chassis clamp to motor boss, outer diameter 24 mm, wall 2 mm, made of T700 woven CFRP (E 60 GPa, tensile 550 MPa, compressive 450 MPa, density 1520 kg/m^3, glass transition Tg 120 C for the epoxy matrix). The competition environment subjects the arm to a combined mechanical + thermal case: ambient air 50 C at sea level, direct solar irradiance 1100 W/m^2 on the upper surface, motor conducting heat into the motor-boss clamp at 90 C steady state when in hover. Load cases: (LC1) hover thrust 25 N per arm upward with 8 kg vehicle at 1 g gravity (quasi-static); (LC2) limit pull-up 1.5 g: thrust 37.5 N per arm; (LC3) ultimate = 1.5 x LC2 = 56.25 N per arm, per STANAG 4703 composite FoS 1.5 on limit; (LC4) combined thermal-mechanical: steady-state thermal field with 50 C ambient, 1100 W/m^2 solar on upper tube half, 90 C motor boss. Solve thermal steady state first; then run the mechanical LC3 load on top of the thermal strains computed from that temperature field (reference temperature 25 C); (LC5) bird-strike-equivalent lateral impact 200 N at the motor boss. Pass/fail criteria: (R1) under LC3 ultimate mechanical, maximum stress must remain below 275 MPa (550 / 2.0 composite FoS); (R2) under LC4 combined thermal-mechanical, maximum stress must remain below 275 MPa AND maximum arm temperature must remain below 100 C (20 C below matrix Tg) to preserve composite stiffness (R2 is a coupled multi-physics gate); (R3) tip deflection under LC1 must remain below 3 mm to preserve flight-controller IMU alignment; (R4) first arm bending natural frequency must exceed 40 Hz; (R5) arm dry mass must not exceed 85 g. Thermal analysis is a primary verification gate here (unlike most structural UAV problems) because Gulf-climate operating envelope is tight. Fluid and radiation (ionizing) analyses not required; solar irradiance is modeled as a surface heat flux boundary condition. Deliverables: STEP AP242 solid model, composite layup schedule, steady-state thermal FEA result with temperature field, mechanical FEA per load case, combined thermal-mechanical report for LC4, modal report, mass check.",
+  "short_prompt": "Design a single quadrotor motor arm for a UAE Drone Innovation Challenge entry operated in Gulf ambient. MTOW 8 kg, max per-motor thrust 25 N hover, 37.5 N at 1.5 g limit pull-up, ultimate 1.5 x limit per STANAG 4703. Environment: 50 C ambient, 1100 W/m^2 solar on the upper arm surface, 90 C steady motor-boss heat-in; thermal-mechanical is a primary gate here.\n\nEnvelope: hollow cantilever T700 woven CFRP tube, 300 mm long x 24 mm OD x 2 mm wall, matrix Tg 120 C.\n\nFactor regime: composite FoS 2.0 (allowable 275 MPa) on ultimate; max arm temperature <= 100 C (20 C margin to Tg); tip deflection at hover < 3 mm; first cantilever mode > 40 Hz; dry mass < 85 g.\n\nLoad cases.\n- Hover: 25 N up per arm with 8 kg at 1 g.\n- Limit pull-up 1.5 g: 37.5 N per arm.\n- Ultimate 1.5 x limit: 56.25 N per arm.\n- Combined thermal-mechanical: steady thermal field (50 C ambient / 1100 W/m^2 solar / 90 C boss) with reference 25 C, superposed on ultimate mechanical.\n- Bird-strike-equivalent lateral 200 N at the motor boss.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "UAE Drone Challenge Hot-Climate Quadrotor Arm",
+    "brief": "T700 CFRP tube arm, 300 mm cantilever, 50 C ambient + 1100 W/m^2 solar + 90 C motor boss thermal load combined with 1.5 g ultimate mechanical.",
+    "geometric_constraints": {
+      "length_mm": 300,
+      "OD_mm": 24,
+      "wall_mm": 2,
+      "clamp_interface": "chassis 4-bolt M3",
+      "motor_boss_interface": "2-bolt M3"
+    },
+    "material": {
+      "name": "T700 woven CFRP (epoxy matrix)",
+      "properties": {
+        "E_GPa": 60,
+        "tensile_MPa": 550,
+        "compressive_MPa": 450,
+        "density_kg_m3": 1520,
+        "matrix_Tg_C": 120
+      }
+    },
+    "environment": {
+      "ambient_C": 50,
+      "solar_W_m2_upper_surface": 1100,
+      "motor_boss_steady_C": 90,
+      "reference_temperature_C": 25
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hover",
+        "magnitude_N": 25,
+        "application": "motor boss upward"
+      },
+      {
+        "id": "LC2",
+        "name": "limit_1p5g",
+        "magnitude_N": 37.5,
+        "application": "motor boss upward"
+      },
+      {
+        "id": "LC3",
+        "name": "ultimate_1p5xLC2",
+        "magnitude_N": 56.25,
+        "application": "motor boss upward"
+      },
+      {
+        "id": "LC4",
+        "name": "thermal_mechanical_combined",
+        "application": "steady thermal + LC3 mechanical on pre-strained structure"
+      },
+      {
+        "id": "LC5",
+        "name": "bird_strike_lateral",
+        "magnitude_N": 200,
+        "application": "motor boss lateral"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "arm_mass_g",
+        "stress_LC3_MPa",
+        "stress_LC4_MPa",
+        "max_temp_LC4_C",
+        "tip_deflection_LC1_mm",
+        "first_bending_freq_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_stress_mechanical",
+        "limit_MPa": 275,
+        "derivation": "550 / 2.0 composite FoS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "max_stress_thermal_mechanical",
+        "limit_MPa": 275,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "thermal_analysis",
+        "metric": "max_arm_temperature",
+        "limit_C": 100,
+        "derivation": "Tg 120 - 20 C margin",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tip_deflection",
+        "limit_mm": 3,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_bending_freq",
+        "limit_Hz": 40,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "arm_dry_mass",
+        "limit_g": 85,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell for tube; solid TET10 for bosses",
+      "mesh_size_mm": 2,
+      "solver_hints": [
+        "ANSYS Mechanical (Thermal + Static coupled)",
+        "Abaqus Standard Thermal-Stress"
+      ],
+      "analysis_types": [
+        "steady-state thermal",
+        "linear static (x4)",
+        "thermo-structural coupled (LC4)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "MBRSC UAE Drone Olympiad / Drone Innovation Challenge has no public design-requirement PDF (per catalog Tier C note). Numeric values assume hot-climate gates inferred from regional practice; confirm MTOW class, exact ambient temperature case, and FoS on rulebook fetch.",
+    "exclusions_explained": {
+      "fluid_analysis": "Solar input modeled as surface heat flux.",
+      "radiation_analysis": "Ionizing radiation not relevant at sea level ops.",
+      "buckling_analysis": "Short cantilever; stress gate bounds."
+    }
+  },
+  "eval_coverage": [
+    "thermal + mechanical coupled UAV design",
+    "solar surface flux BC",
+    "Tg margin gate",
+    "modal decoupling",
+    "mass budget"
+  ]
+}

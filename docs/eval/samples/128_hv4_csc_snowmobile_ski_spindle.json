@@ -1,0 +1,197 @@
+{
+  "id": "128_hv4_csc_snowmobile_ski_spindle",
+  "source": {
+    "catalog_ref": "HV4",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "snowmobile_chassis",
+  "part_class": "front_ski_spindle",
+  "full_prompt": "Design a monolithic 4140 chromoly steel front-ski spindle (steering knuckle) for a collegiate clean-snowmobile IC-class benchmark, sized to deliver the benchmark minimum trail-speed (45 mph = 20.1 m/s), range (100 mi), and 500 ft acceleration (in <=12 s) capabilities on a 320 kg gross-weight prototype. The spindle is a single forged and machined AISI 4140 normalized + QT part (no welds, no bolted yokes) with integral upper and lower A-arm ball-joint sockets, integral steering-arm lug, and integral ski saddle stub. Geometry: overall bounding envelope 180 mm x 140 mm x 200 mm. Upper A-arm ball-joint socket: 25 mm hemispherical seat with 10 mm threaded retainer boss, M24 x 1.5 internal thread. Lower A-arm ball-joint socket: 28 mm hemispherical seat with 12 mm threaded retainer boss, M27 x 1.5. Steering-arm lug: 12 mm thick flat ear at 45 degrees with a 12 mm hole for the tie-rod rod-end, 80 mm from the spindle centerline. Ski saddle stub: 22 mm OD x 55 mm long cylindrical shaft downward from the lower socket, with a 10 mm through-pin hole perpendicular to its axis for the ski pivot. Kingpin axis (upper-to-lower socket): 150 mm vertical distance. Material AISI 4140 Q&T at 30 HRC: E 205 GPa, Poisson's ratio 0.29, density 7850 kg/m^3, yield 655 MPa, UTS 850 MPa; Charpy at -40 C (benchmark cold-start target) 27 J minimum per SAE J429 equivalent; endurance limit 0.5 * UTS * surface_factor 0.7 = 298 MPa at R=-1 for notched machined surface. Three load cases plus a cold impact case. Load Case 1 (cornering + bump): vertical 1800 N downward at the lower ball joint (2g on 220 kg rear-biased front corner weight ~90 kg front, plus 100% dynamic factor), combined with 1200 N lateral outward at lower ball-joint during 0.8g corner, upper ball joint constrained as pin, steering arm free. Load Case 2 (curb impact): 6.0 kN horizontal rearward load on the ski saddle stub pivot pin location, simulating a solid frozen stump strike at 45 mph per benchmark durability practice, both A-arm ball joints constrained. Load Case 3 (steering reaction): 800 N lateral at the steering-arm tie-rod hole (driver input + kingpin resistance at full lock with snow bogging), both ball joints constrained. Cold Impact Case: the curb impact of LC2 must also be evaluated at -30 C metal temperature (benchmark cold-start regime at -20 C ambient with wind chill) using the ductile-to-brittle transition knock-down: 4140 at -30 C has about 20% yield increase but toughness reduces; require minimum impact energy 20 J at -30 C. Pass/fail: (R1) under LC1 operating, peak von Mises must not exceed 327 MPa (yield/2.0); (R2) under LC2 curb impact, peak stress 436 MPa (yield/1.5, short-duration impact); (R3) under LC3 steering, peak stress 327 MPa; (R4) fatigue: 10^6 cycles of LC1 scaled stress range 60%, local stress range at any ball-joint socket fillet must remain below 298 MPa; (R5) a linear buckling eigenvalue analysis under LC2 curb impact (compressive kingpin loading) must yield a first-mode factor of at least 2.5; (R6) spindle mass must not exceed 1.35 kg per typical benchmark mass budget; (R7) minimum Charpy impact toughness at -30 C must be >= 20 J (material specification gate, no FEA needed). Thermal, fluid, and radiation analyses are not required. Deliver STEP AP242 and Parasolid plus report.",
+  "short_prompt": "Design a monolithic 4140 Q&T chromoly-steel front-ski spindle (steering knuckle) for a collegiate clean-snowmobile IC-class benchmark (320 kg GVW, 45 mph trail-speed target). The spindle is a single forged-and-machined AISI 4140 part with integral upper and lower A-arm ball-joint sockets, an integral steering-arm lug, and an integral ski saddle stub; no welds, no bolted yokes. Apply yield/2.0 operating and yield/1.5 short-impact safety factors, plus a -30 C cold-impact toughness gate tied to SAE J429-equivalent Charpy practice.\n\nEnvelope: ~180 x 140 x 200 mm, kingpin axis 150 mm upper-to-lower socket.\n\nLoad cases.\n- LC1 cornering + bump: 1.8 kN vertical + 1.2 kN lateral outward at the lower ball joint (2 g + 0.8 g corner), upper ball joint pinned, steering arm free.\n- LC2 curb impact: 6.0 kN horizontal rearward at the ski saddle pivot (frozen-stump strike at 45 mph), both ball joints constrained; also a buckling check under compressive kingpin loading.\n- LC3 steering reaction: 800 N lateral at the tie-rod hole (full-lock snow bogging), both ball joints constrained.\nCold impact: LC2 re-evaluated with a minimum Charpy toughness requirement of 20 J at -30 C.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Collegiate clean-snowmobile front-ski spindle benchmark (4140 chromoly)",
+    "brief": "Monolithic forged 4140 knuckle with integral ball-joint sockets + steering arm + ski stub; -30 C cold-start impact gate.",
+    "geometric_constraints": {
+      "bounding_envelope_mm": {
+        "x": 180,
+        "y": 140,
+        "z": 200
+      },
+      "upper_ball_socket_mm": 25,
+      "lower_ball_socket_mm": 28,
+      "steering_arm_hole_mm": {
+        "diameter": 12,
+        "offset_mm": 80,
+        "angle_deg": 45
+      },
+      "ski_stub_mm": {
+        "od": 22,
+        "length": 55,
+        "pin_hole_mm": 10
+      },
+      "kingpin_axis_length_mm": 150,
+      "monolithic": true
+    },
+    "material": {
+      "name": "AISI 4140 Q&T",
+      "properties": {
+        "youngs_modulus_GPa": 205,
+        "poissons_ratio": 0.29,
+        "density_kg_m3": 7850,
+        "yield_MPa": 655,
+        "ultimate_tensile_strength_MPa": 850,
+        "endurance_limit_MPa": 298,
+        "charpy_minus30C_J_min": 20
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "corner_plus_bump",
+        "vertical_N": 1800,
+        "lateral_N": 1200,
+        "location": "lower_ball_joint"
+      },
+      {
+        "id": "LC2",
+        "name": "curb_impact",
+        "force_N": 6000,
+        "direction": "rearward",
+        "location": "ski_stub"
+      },
+      {
+        "id": "LC3",
+        "name": "steering_reaction",
+        "force_N": 800,
+        "location": "tie_rod_hole"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_buckling_load_factor",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 327,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 436,
+        "derivation": "yield/1.5 impact",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 298,
+        "cycles": 1000000,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "charpy_minus30C_toughness",
+        "limit_J": 20,
+        "applies_to": [
+          "material_spec"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "fatigue S-N",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Cold toughness handled via material gate, not heat transfer.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "vibration_analysis": "Snowmobile NVH not governing at spindle level."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Ball-joint retainer thread preload",
+      "Corrosion under salt spray",
+      "Full-vehicle dynamic load spectrum"
+    ]
+  },
+  "eval_coverage": [
+    "cold-environment toughness gate",
+    "impact vs operating SF differentiation",
+    "fatigue at ball-joint fillets",
+    "buckling under compressive kingpin load"
+  ]
+}

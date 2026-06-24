@@ -1,0 +1,207 @@
+{
+  "id": "104_ng19_opp_socket_pylon",
+  "source": {
+    "catalog_ref": "NG19",
+    "year": 2020,
+    "tier": "B+"
+  },
+  "domain": "medical_devices_open_source",
+  "part_class": "transtibial_socket_with_pylon_adapter",
+  "full_prompt": "Design one representative total-surface-bearing (TSB) transtibial prosthetic socket + integrated pylon adapter per the Open Prosthetics Project (OPP) guidance and qualified to ISO 10328 P5 loads at the pylon interface. The socket is a carbon-fiber-reinforced epoxy laminate (4 layers nylon stockinette + 2 layers 6-oz carbon + 4 layers nylon, total wall thickness ~3.5 mm in the wall and ~5 mm at the distal cup) shaped to a representative residual-limb positive (tibial length 150 mm, circumference at MPT 340 mm, circumference at trimline 420 mm). The distal end has a 4-hole pyramid-receiver laminate plate bonded/laminated in, accepting a standard 30 mm male pyramid adapter coupling to a 30 mm aluminum pylon 250 mm long. Two independent verification load cases apply: (A) SOCKET PRESSURE COMFORT CHECK — under static 100 kg body-weight loading in mid-stance, the peak interfacial contact pressure between the socket wall and the residual limb must not exceed 300 kPa over any sensitive region (patellar tendon bar, distal tibia, fibular head) per OPP / ISPO comfort guidance; 150 kPa is the target peak in pressure-tolerant regions (shaft of tibia, medial gastrocnemius). This is evaluated with a soft-tissue + socket contact FEA using a hyperelastic limb model. (B) PYLON STRUCTURAL CHECK — the pyramid receiver + distal cup + pylon assembly must pass the ISO 10328 P5 ultimate static toe and heel tests (3360 N toe / 4000 N heel along the Annex A test lines) without fracture or permanent deformation exceeding clause limits. Target materials: carbon-epoxy laminate (tensile strength ~500 MPa in fiber direction, conservative design strength 250 MPa per OPP), 6061-T6 aluminum pylon + pyramid (yield 276 MPa). Deliverable is a single CAD assembly (socket shell + pyramid-receiver plate + pyramid adapter + pylon) suitable for (a) nonlinear contact FEA with hyperelastic limb for socket-pressure check, (b) linear-elastic structural FEA of pyramid-receiver + pylon for ISO 10328 P5. Vibration, thermal, fluid, radiation analyses NOT required.",
+  "short_prompt": "Design a total-surface-bearing transtibial prosthetic socket (carbon-fiber/epoxy laminate over a shaped residual-limb positive, with a laminated 4-hole pyramid-receiver plate at the distal end) plus a 30 mm aluminum pylon and 30 mm pyramid adapter, per Open Prosthetics Project guidance and qualified at the pylon interface to ISO 10328 P5. The socket-pressure comfort check uses a hyperelastic (Ogden) residual-limb soft-tissue model in contact with the rigid socket per OPP / ISPO guidance; the pylon structural check uses ISO 10328 Annex A offset test lines. Socket laminate design allowable 250 MPa (OPP conservative); 6061-T6 pylon yield 276 MPa. Socket wall ~3.5 mm in the wall, ~5 mm at the distal cup.\n\nEnvelope: 420 mm trimline circumference, 340 mm MPT circumference, 150 mm tibial length; 30 mm x 250 mm pylon.\n\nLoad cases.\n- LC1 static body weight (100 kg): 981 N mid-stance vertical through the pylon into the distal cup, with peak socket-limb contact pressure <= 300 kPa in sensitive regions (patellar tendon bar, distal tibia, fibular head) and 150 kPa target in tolerant regions.\n- LC2 ISO 10328 P5 toe (Test Condition I): 3360 N on the Annex A toe line at the pylon.\n- LC3 ISO 10328 P5 heel (Test Condition II): 4000 N on the Annex A heel line.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "hyperelastic_soft_tissue_FEA",
+        "reason": "Socket interfacial pressure requires a hyperelastic (Ogden / Mooney-Rivlin) residual-limb model in contact with the rigid socket; not standard linear-elastic static.",
+        "examples": [
+          "Abaqus/Standard with Ogden",
+          "FEBio",
+          "FEniCS"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "OPP TSB transtibial socket + pylon to ISO 10328 P5",
+    "brief": "Design a carbon-epoxy TSB socket + 30 mm pylon passing OPP socket pressure limits (<= 300 kPa peak) and ISO 10328 P5 structural tests (3360 N toe / 4000 N heel).",
+    "geometric_constraints": {
+      "socket_trimline_circumference_mm": 420,
+      "socket_MPT_circumference_mm": 340,
+      "tibial_length_mm": 150,
+      "socket_wall_thickness_mm": 3.5,
+      "distal_cup_thickness_mm": 5,
+      "pyramid_adapter": "30 mm male pyramid",
+      "pylon_OD_mm": 30,
+      "pylon_length_mm": 250
+    },
+    "material": {
+      "socket": {
+        "name": "carbon-epoxy laminate",
+        "design_tensile_MPa": 250
+      },
+      "pylon_and_pyramid": {
+        "name": "6061-T6 aluminum",
+        "yield_strength_MPa": 276,
+        "E_GPa": 68.9
+      },
+      "limb_tissue_model": {
+        "model": "Ogden hyperelastic",
+        "reference": "OPP / ISPO soft-tissue guidance"
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_body_weight_100kg",
+        "magnitude_N": 981,
+        "application": "mid-stance vertical load via pylon into distal cup"
+      },
+      {
+        "id": "LC2",
+        "name": "ISO10328_P5_toe",
+        "magnitude_N": 3360,
+        "application": "Annex A toe test line at pylon"
+      },
+      {
+        "id": "LC3",
+        "name": "ISO10328_P5_heel",
+        "magnitude_N": 4000,
+        "application": "Annex A heel test line at pylon"
+      }
+    ],
+    "boundary_conditions": {
+      "residual_limb": "proximal end fixed to mock-up femur plate",
+      "socket": "in frictional contact with limb",
+      "pylon": "clamped at foot adapter end for ISO tests"
+    },
+    "objective": {
+      "primary": "pass all criteria",
+      "secondary": "minimize socket mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "peak_socket_pressure_kPa",
+        "pressure_distribution_map",
+        "max_socket_wall_stress_MPa",
+        "max_pylon_von_mises_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "peak_socket_contact_pressure_sensitive_regions_kPa",
+        "limit_kPa": 300,
+        "derivation": "OPP / ISPO comfort upper bound",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "ISO10328_P5_toe_force_N",
+        "limit_N": 3360,
+        "derivation": "ISO 10328 P5 Test I",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "ISO10328_P5_heel_force_N",
+        "limit_N": 4000,
+        "derivation": "ISO 10328 P5 Test II",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_socket_laminate_stress_MPa",
+        "limit_MPa": 250,
+        "derivation": "OPP design tensile allowable",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_pylon_von_mises_MPa",
+        "limit_MPa": 276,
+        "derivation": "6061-T6 yield",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10 socket + hyperelastic limb + rigid pyramid + solid pylon",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "FEBio (soft-tissue)",
+        "Abaqus/Standard",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "hyperelastic contact",
+        "linear static ISO 10328"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not required.",
+      "thermal_analysis": "Not required.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not a governing mode."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fabrication layup sequence",
+      "Suspension sleeve / pin lock",
+      "Patient-specific limb geometry acquisition (MRI or cast)"
+    ],
+    "uncertainty_flags": [
+      {
+        "field": "peak_socket_pressure_limit_kPa",
+        "value": 300,
+        "note": "OPP does not publish a single hard limit; 300 kPa is a conservative upper bound commonly used in ISPO literature, 150 kPa is a comfort target. Confirm per-patient clinician guidance."
+      }
+    ]
+  },
+  "eval_coverage": [
+    "hyperelastic soft-tissue contact FEA",
+    "composite socket laminate design check",
+    "ISO 10328 P5 combined with socket comfort",
+    "medical assistive open-source scope",
+    "multi-body assembly (socket + receiver + pyramid + pylon)"
+  ]
+}

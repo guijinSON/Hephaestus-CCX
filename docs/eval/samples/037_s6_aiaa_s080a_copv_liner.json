@@ -1,0 +1,238 @@
+{
+  "id": "037_s6_aiaa_s080a_copv_liner",
+  "source": {
+    "catalog_ref": "S6",
+    "year": 2018,
+    "tier": "A"
+  },
+  "domain": "aerospace_pressure_vessel",
+  "part_class": "metallic_liner_for_COPV",
+  "full_prompt": "Design a seamless spun aluminum alloy 6061-T6 metallic liner for a Composite-Overwrapped Pressure Vessel (COPV) used as a helium pressurant bottle on a small launch vehicle. The liner is the primary pressure boundary inside a carbon/epoxy overwrap; only the liner structural design is in scope for this brief. Governing standard: ANSI/AIAA S-080A-2018. MEOP = 31.0 MPa (310 bar, 4500 psi). The vessel operates in the non-hazardous category for helium (inert). Applicable factors: burst = 1.5 x MEOP, proof = 1.25 x MEOP, service-life factor >= 4 on cycles, autofrettage pressure between MEOP and burst to set favorable liner residual stress.\n\nGeometry. Outer diameter of liner 250 mm (inside the overwrap). Cylindrical length 380 mm with two hemispherical heads of radius 125 mm. Internal volume approximately pi*(0.125)^2*0.38 + (4/3)*pi*(0.125)^3 = 0.01865 + 0.01636 = 0.0350 m^3 = 35.0 L. Single boss at one pole with 25 mm ID outlet. Liner wall thickness design variable, minimum manufacturing limit 0.8 mm. Overwrap is present but its stiffness is represented only as a uniform external support pressure on the outside of the liner during operation; the liner in isolation must also withstand proof pressure without the overwrap carrying any load (per AIAA S-080A metallic-liner-only proof).\n\nMaterial. Al 6061-T6 per MMPDS S-basis: E = 68.9 GPa, nu = 0.33, rho = 2700 kg/m^3, Fty = 276 MPa, Ftu = 310 MPa, K_IC = 29 MPa*m^0.5, fatigue constant for Paris law C = 1.8e-11 m/cycle, m = 3.0.\n\nOperating envelope. Service life cycles: 50 pressurization cycles; safe-life factor 4 => fatigue life must cover 200 equivalent cycles. Proof pressure 1.25 * 31 = 38.75 MPa (liner-only proof without overwrap). Burst pressure 1.5 * 31 = 46.5 MPa (system-level with overwrap contribution). Autofrettage pressure 42 MPa (between MEOP and burst). Operating temperature -40 C to +70 C.\n\nLoad cases. LC1 (liner-only proof): internal 38.75 MPa applied to the liner with NO overwrap support (per AIAA S-080A metallic-liner proof clause). Max von Mises must not exceed Fty = 276 MPa at room temperature. LC2 (system burst): internal 46.5 MPa with overwrap support modeled as a uniform external pressure of 35 MPa (representing overwrap reaction at system burst). Liner max von Mises must not exceed Ftu = 310 MPa. LC3 (autofrettage): 42 MPa applied without overwrap to establish favorable compressive residual in the liner at zero internal pressure; not a pass/fail, but the post-autofrettage residual compressive stress at MEOP must be <= 0 to count as favorable. LC4 (cyclic fatigue): 50 service cycles between 0 and MEOP (with overwrap), safe-life factor 4 => analyze 200 cycles. Use Paris-law with C=1.8e-11, m=3.0 starting from assumed initial flaw depth a_i = 0.2 mm (NDI minimum detectable). LC5 (launch quasi-static): MEOP + 15 g axial + 6 g lateral inertial on the 3.5 kg estimated dry liner + 1.2 kg helium fill mass.\n\nPass/fail criteria. (R1) LC1 liner-only proof max von Mises <= Fty = 276 MPa. (R2) LC2 system burst max liner von Mises <= Ftu = 310 MPa. (R3) LC3 post-autofrettage residual hoop stress at MEOP must be compressive (<= 0) in the liner inner surface for a favorable autofrettage. (R4) LC4 cycles-to-failure from a_i = 0.2 mm by Paris-law integration must be >= 200 (= 4x safe-life of 50 service cycles). (R5) LC5 combined max von Mises <= Fty / 1.1 = 251 MPa (AIAA S-080A yield factor for system-level limit when overwrap carries share). (R6) Liner dry mass <= 3.5 kg. (R7) Minimum fracture-mechanics-derived critical flaw depth at burst must exceed wall thickness (leak-before-burst, per AIAA S-080A Section 4.3).\n\nSolver and analysis expectations. Primary is axisymmetric elastic-plastic FEM of liner for LC1-LC3 (autofrettage sets plastic residual, so elastoplastic material model required with isotropic or kinematic hardening). LC4 requires Paris-law integration (hand calc or NASGRO). LC5 is linear static. LC2 and LC5 require a tied-contact overwrap-to-liner interface or a prescribed external pressure BC. Buckling, modal, thermal, fluid, and radiation analyses are NOT required. Note the overwrap composite itself (carbon/epoxy shell) is out of scope beyond its reaction pressure.\n\nDeliverables. STEP AP242 of the liner, dry mass in kg, liner wall thickness in mm, max von Mises at proof / burst / launch / autofrettage, residual hoop stress at MEOP after autofrettage, cycles-to-failure from Paris-law integration, and critical flaw depth at burst.",
+  "short_prompt": "Design a seamless spun aluminum 6061-T6 metallic liner for a Composite-Overwrapped Pressure Vessel (COPV) helium pressurant bottle on a small launch vehicle. Only the liner structural design is in scope; the carbon/epoxy overwrap is out of scope beyond its reaction pressure. Governing standard: ANSI/AIAA S-080A-2018. MEOP = 31.0 MPa (310 bar, 4500 psi). Non-hazardous helium. Factors: burst = 1.5 x MEOP, proof = 1.25 x MEOP, service-life factor >= 4 on cycles.\n\nGeometry: OD 250 mm, cylindrical length 380 mm, two hemispherical heads of radius 125 mm, internal volume ~35.0 L. Single 25 mm ID outlet boss at one pole. Minimum manufacturing wall 0.8 mm.\n\nMaterial: Al 6061-T6 per MMPDS S-basis, K_IC = 29 MPa*m^0.5, Paris C = 1.8e-11 m/cycle, m = 3.0.\n\nOperating envelope: 50 pressurization cycles with safe-life factor 4 (200 equivalent); proof 38.75 MPa (liner-only, no overwrap support, per AIAA S-080A metallic-liner proof clause); burst 46.5 MPa (with overwrap contribution); autofrettage 42 MPa (between MEOP and burst). Operating temperature -40 C to +70 C.\n\nLoad cases.\n- LC1 liner-only proof: 38.75 MPa, no overwrap support.\n- LC2 system burst: 46.5 MPa internal with overwrap modeled as uniform 35 MPa external pressure.\n- LC3 autofrettage: 42 MPa without overwrap to set favorable residual.\n- LC4 cyclic fatigue: 50 service cycles 0 to MEOP (with overwrap), safe-life factor 4 -> 200 cycles, initial flaw a_i = 0.2 mm.\n- LC5 launch quasi-static: MEOP + 15 g axial + 6 g lateral on 3.5 kg estimated dry liner + 1.2 kg helium fill mass.\n\nLiner dry mass <= 3.5 kg. Leak-before-burst required (critical flaw depth at burst exceeds wall thickness).\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "paris_law_cycle_integration",
+        "reason": "LC4 safe-life fatigue needs crack-growth integration.",
+        "examples": [
+          "NASGRO",
+          "AFGROW",
+          "spreadsheet"
+        ]
+      },
+      {
+        "tool": "elastoplastic_FEM_for_autofrettage",
+        "reason": "Autofrettage residual stress requires elastic-plastic material model.",
+        "examples": [
+          "Abaqus Standard",
+          "ANSYS Mechanical APDL"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Al 6061-T6 COPV liner per AIAA S-080A factors",
+    "brief": "35 L helium-COPV Al liner, MEOP 31 MPa, proof 1.25xMEOP liner-only, burst 1.5xMEOP with overwrap, autofrettage 42 MPa, 4x safe-life on 50 cycles.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 250,
+      "cylindrical_length_mm": 380,
+      "hemispherical_head_radius_mm": 125,
+      "internal_volume_L": 35.0,
+      "outlet_boss_ID_mm": 25,
+      "min_wall_thickness_mm": 0.8
+    },
+    "material": {
+      "name": "Al 6061-T6",
+      "basis": "MMPDS S-basis",
+      "properties": {
+        "E_GPa": 68.9,
+        "nu": 0.33,
+        "density_kg_m3": 2700,
+        "Fty_MPa": 276,
+        "Ftu_MPa": 310,
+        "K_IC_MPa_sqrt_m": 29,
+        "paris_C": 1.8e-11,
+        "paris_m": 3.0
+      }
+    },
+    "operating_envelope": {
+      "MEOP_MPa": 31.0,
+      "proof_MPa": 38.75,
+      "burst_MPa": 46.5,
+      "autofrettage_MPa": 42,
+      "service_cycles": 50,
+      "safe_life_factor": 4
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "liner_only_proof",
+        "internal_MPa": 38.75,
+        "overwrap_support": false
+      },
+      {
+        "id": "LC2",
+        "name": "system_burst",
+        "internal_MPa": 46.5,
+        "overwrap_external_MPa": 35
+      },
+      {
+        "id": "LC3",
+        "name": "autofrettage",
+        "internal_MPa": 42,
+        "overwrap_support": false
+      },
+      {
+        "id": "LC4",
+        "name": "fatigue",
+        "cycles": 200,
+        "a_i_mm": 0.2,
+        "dR": "0-MEOP"
+      },
+      {
+        "id": "LC5",
+        "name": "launch_qs",
+        "internal_MPa": 31,
+        "axial_g": 15,
+        "lateral_g": 6,
+        "inertial_mass_kg": 4.7
+      }
+    ],
+    "boundary_conditions": {
+      "outlet_boss": "clamped to system manifold"
+    },
+    "objective": {
+      "minimize": "dry_mass",
+      "target_kg_max": 3.5
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "ANSI/AIAA S-080A-2018",
+      "revision": "2018"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_liner_only_proof",
+        "limit_MPa": 276,
+        "derivation": "Fty at proof = 1.25 x MEOP per AIAA S-080A",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_system_burst",
+        "limit_MPa": 310,
+        "derivation": "Ftu at burst = 1.5 x MEOP per AIAA S-080A Table",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "post_autofrettage_residual_hoop_at_MEOP",
+        "limit_MPa": 0,
+        "derivation": "Favorable autofrettage requires compressive residual at operating surface",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "cycles_to_failure_paris_law",
+        "limit_cycles": 200,
+        "derivation": "4x safe-life of 50 service cycles per AIAA S-080A",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_launch_combined",
+        "limit_MPa": 251,
+        "derivation": "Fty / 1.1 AIAA S-080A system yield factor",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_kg": 3.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "leak_before_burst_a_crit_vs_wall",
+        "limit": 1.0,
+        "derivation": "AIAA S-080A Section 4.3 leak-before-burst",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "axisymmetric elastoplastic",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical",
+        "NASGRO"
+      ],
+      "analysis_types": [
+        "elastoplastic proof",
+        "elastoplastic autofrettage",
+        "linear static launch",
+        "Paris-law integration"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Enveloped by LC5 quasi-static.",
+      "thermal_analysis": "Temperature envelope imposed as scalar; no transient.",
+      "fluid_analysis": "Helium is inert, lumped as mass.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Internal pressure stabilizes; no external-collapse governing case."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Composite overwrap design (carbon/epoxy laminate schedule)",
+      "Autofrettage pressure bench testing",
+      "Burst-test correlation"
+    ]
+  },
+  "eval_coverage": [
+    "liner-only proof vs system burst",
+    "autofrettage residual-stress check",
+    "Paris-law safe-life with 4x factor",
+    "leak-before-burst gate"
+  ]
+}

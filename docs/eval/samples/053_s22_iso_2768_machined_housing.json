@@ -1,0 +1,247 @@
+{
+  "id": "053_s22_iso_2768_machined_housing",
+  "source": {
+    "catalog_ref": "S22",
+    "year": 1989,
+    "tier": "A"
+  },
+  "domain": "mechanical_precision",
+  "part_class": "machined_gearbox_housing",
+  "full_prompt": "Design a machined aluminum 6061-T6 gearbox housing with all non-individually-toleranced dimensions governed by ISO 2768-mK (medium linear + K geometric class), per ISO 2768-1:1989 Table 1 and ISO 2768-2:1989 Table 1. The housing contains two bearing bores that hold a single-stage spur-gear reduction; the bearing bores and gear-mesh center distance ARE individually toleranced (not ISO 2768) to IT7 / h7 fits and thus fall outside the general-tolerance pass/fail for this brief. All other dimensions (envelope, rib thicknesses, non-functional external surfaces, mounting-hole center-to-center, cosmetic chamfers, flatness of outside faces) are ISO 2768-mK.\n\nGeometry. Housing envelope 220 mm x 160 mm x 110 mm, wall thickness 6 mm nominal, top lid joint plane through the gear centerline. Two bearing bores 72 mm H7 ID (individually toleranced, not ISO 2768) with shoulders 10 mm deep. Mounting flange 220 mm x 160 mm with four M10 through holes on a 180 mm x 120 mm pattern (center-to-center dimensioning falls under ISO 2768-m for this brief - see R2). Four internal ribs 5 mm x 20 mm stiffen the bearing-bore shoulders. External surface finishes: Ra 3.2 micron mill finish.\n\nMaterial. Al 6061-T6, E = 68.9 GPa, nu = 0.33, rho = 2700 kg/m^3, Fty = 276 MPa, Ftu = 310 MPa. For structural check only; the primary pass/fail is tolerance compliance.\n\nISO 2768-m linear tolerance table applied to non-individually-toleranced linear dimensions:\n- 0.5 to 3 mm: +/- 0.1 mm\n- over 3 to 6 mm: +/- 0.1 mm\n- over 6 to 30 mm: +/- 0.2 mm\n- over 30 to 120 mm: +/- 0.3 mm\n- over 120 to 400 mm: +/- 0.5 mm\n- over 400 to 1000 mm: +/- 0.8 mm\n\nISO 2768-m angular tolerance:\n- short side <= 10 mm: +/- 1 degree\n- over 10 to 50 mm: +/- 30 minutes\n- over 50 to 120 mm: +/- 20 minutes\n\nISO 2768-2 K class geometric tolerances:\n- straightness/flatness up to 10 mm: 0.05 mm; up to 30: 0.1; up to 100: 0.2; up to 300: 0.4; up to 1000: 0.6\n- perpendicularity up to 100 mm: 0.4; up to 300: 0.6; up to 1000: 0.8\n- symmetry/runout up to 100 mm: 0.6; etc.\n\nLoad cases (tolerance + minor structural). LC1 (tolerance compliance, full manufacturing dimensional stack): every non-individually-toleranced dimension must fall within its ISO 2768-mK tolerance band. LC2 (structural under bearing loads): radial load 2500 N at each bearing bore, axial 500 N, with mounting flange fully fixed. Compute max von Mises in housing walls; not a precision test but retained for design credibility.\n\nPass/fail criteria. (R1) Envelope faces flatness over 220 mm must be <= 0.4 mm (ISO 2768-K from 100 to 300 mm). (R2) Mounting-hole center-to-center at 180 mm nominal: +/- 0.5 mm per ISO 2768-m linear (120-400 mm band). (R3) Rib thickness 5 mm nominal: +/- 0.1 mm (ISO 2768-m linear, 3-6 mm band). (R4) External corner chamfer angles nominally 45 degrees on edges <= 50 mm long: +/- 30 minutes per ISO 2768-m angular (10-50 mm band). (R5) Top lid joint plane perpendicularity to mounting-face reference A: <= 0.6 mm over 160 mm (ISO 2768-K perpendicularity 100-300 mm band). (R6) Structural: max von Mises under LC2 bearing loads must not exceed Fty / 1.5 = 184 MPa (generic 1.5 structural FoS, not from ISO 2768). (R7) Housing mass <= 3.0 kg. (R8) All individually toleranced dimensions (bearing bores 72 H7, gear center distance 90 +/- 0.02) must be called out separately on the drawing and must NOT default to ISO 2768 (meta-check).\n\nSolver and analysis expectations. Primary: a CAD-native tolerance audit (PMI / GD&T check script) comparing nominal geometry to ISO 2768-mK tolerance bands on all non-individually-toleranced dimensions. Secondary: linear static FEM for LC2 structural confirmation. GD&T profile of a surface checks require either NX/CATIA PMI validation or a toleranced GD&T spreadsheet. Vibration, thermal, fluid, radiation, buckling NOT required.\n\nDeliverables. STEP AP242 with PMI annotations including one ISO 2768-mK title-block callout (e.g. 'Linear and angular tolerances per ISO 2768-m; geometric per ISO 2768-K unless otherwise specified'), a tolerance-audit report listing every non-individually-toleranced dimension and its ISO 2768-m allowed band, and the LC2 structural von Mises report.",
+  "short_prompt": "Design a machined 6061-T6 gearbox housing with all non-individually-toleranced dimensions governed by ISO 2768-mK (ISO 2768-1 + ISO 2768-2, 1989). The two bearing bores (72 H7) and the gear-mesh center distance (90 +/- 0.02) are individually toleranced and must be called out separately on the drawing.\n\nEnvelope: 220 x 160 x 110 mm housing with 6 mm nominal wall, mounting flange 220 x 160 mm with 4 M10 through-holes on a 180 x 120 mm pattern, four 5 x 20 mm internal ribs, and top lid joint plane through the gear centerline. External surface Ra 3.2 um.\n\nLoad cases.\n- LC1 tolerance compliance: every non-individually-toleranced linear, angular, and geometric dimension must fall inside the ISO 2768-mK band for its size range (linear tables in ISO 2768-1; flatness/perpendicularity from ISO 2768-2 K class).\n- LC2 bearing-load structural check: 2,500 N radial + 500 N axial at each bearing bore with the mounting flange fully fixed.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "GDT_and_ISO_2768_tolerance_audit",
+        "reason": "Primary pass/fail is dimensional-tolerance compliance, not FEM.",
+        "examples": [
+          "Siemens NX PMI check",
+          "CATIA FTA check",
+          "tolerance-audit spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Gearbox housing with ISO 2768-mK general tolerances",
+    "brief": "220x160x110 mm 6061-T6 gearbox housing; linear + angular + geometric tolerances default to ISO 2768-mK on all non-individually-toleranced features; bearing bores IT7/h7 individually toleranced.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 220,
+        "y": 160,
+        "z": 110
+      },
+      "wall_thickness_mm": 6,
+      "bearing_bores": {
+        "count": 2,
+        "ID_mm": 72,
+        "fit": "H7",
+        "individually_toleranced": true
+      },
+      "gear_center_distance_mm": {
+        "nominal": 90,
+        "plus_minus": 0.02,
+        "individually_toleranced": true
+      },
+      "mounting_flange_mm": {
+        "x": 220,
+        "y": 160
+      },
+      "mounting_holes": {
+        "count": 4,
+        "size": "M10",
+        "pattern_mm": {
+          "x": 180,
+          "y": 120
+        }
+      },
+      "internal_ribs": {
+        "count": 4,
+        "width_mm": 5,
+        "depth_mm": 20
+      },
+      "surface_Ra_um": 3.2
+    },
+    "material": {
+      "name": "Al 6061-T6",
+      "Fty_MPa": 276,
+      "Ftu_MPa": 310,
+      "E_GPa": 68.9,
+      "density_kg_m3": 2700
+    },
+    "iso_2768_m_linear": {
+      "0.5_to_3_mm": 0.1,
+      "3_to_6_mm": 0.1,
+      "6_to_30_mm": 0.2,
+      "30_to_120_mm": 0.3,
+      "120_to_400_mm": 0.5,
+      "400_to_1000_mm": 0.8
+    },
+    "iso_2768_m_angular": {
+      "under_10_mm_deg": 1,
+      "10_to_50_mm_min": 30,
+      "50_to_120_mm_min": 20
+    },
+    "iso_2768_K_geometric": {
+      "flatness_100_to_300_mm": 0.4,
+      "perpendicularity_100_to_300_mm": 0.6
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "tolerance_compliance"
+      },
+      {
+        "id": "LC2",
+        "name": "bearing_loads_structural",
+        "radial_N": 2500,
+        "axial_N": 500
+      }
+    ],
+    "boundary_conditions": {
+      "mounting_flange": "fully fixed"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_kg_max": 3.0
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "ISO 2768-1 + ISO 2768-2",
+      "revision": "1989"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "envelope_face_flatness_over_220_mm",
+        "limit_mm": 0.4,
+        "derivation": "ISO 2768-K flatness 100-300 mm band",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mounting_hole_center_to_center_tolerance",
+        "limit_mm": 0.5,
+        "derivation": "ISO 2768-m linear 120-400 mm band",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "rib_thickness_tolerance",
+        "limit_mm": 0.1,
+        "derivation": "ISO 2768-m linear 3-6 mm band",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "chamfer_angle_tolerance_min",
+        "limit_min": 30,
+        "derivation": "ISO 2768-m angular 10-50 mm band",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "lid_joint_perpendicularity_over_160_mm",
+        "limit_mm": 0.6,
+        "derivation": "ISO 2768-K perpendicularity 100-300 mm band",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "housing_max_von_mises_under_LC2",
+        "limit_MPa": 184,
+        "derivation": "Fty / 1.5 generic structural FoS",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "housing_mass",
+        "limit_kg": 3.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R8",
+        "type": "structural_analysis",
+        "metric": "individually_toleranced_features_documented",
+        "limit": 1,
+        "derivation": "Bearing bores + gear center distance must NOT default to ISO 2768",
+        "applies_to": [
+          "drawing"
+        ],
+        "operator": "==",
+        "note": "binary"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 for structural",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "NX PMI tolerance audit"
+      ],
+      "analysis_types": [
+        "dimensional tolerance audit",
+        "linear static"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not applicable.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Gear mesh tolerance stack (AGMA / ISO 1328)",
+      "Surface roughness functional specs beyond Ra 3.2",
+      "Fastener-hole positional tolerances for gasketed joints"
+    ]
+  },
+  "eval_coverage": [
+    "ISO 2768-m linear + angular bands",
+    "ISO 2768-K geometric (flatness, perpendicularity)",
+    "individually-toleranced-feature callout discipline"
+  ]
+}

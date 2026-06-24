@@ -1,0 +1,207 @@
+{
+  "id": "332_i_me_israel_technion_cansat",
+  "source": {
+    "catalog_ref": "I-ME (Israel / Technion AeroSpace student challenge)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "balloon_sounding_payload_enclosure",
+  "full_prompt": "Design the primary enclosure of a sounding-balloon stratospheric payload entered in the Technion Aerospace Faculty student balloon challenge. The payload rides under a latex sounding balloon with a burst altitude of approximately 30 km AGL and descends under a 0.9 m parachute at a terminal rate of 6 m/s at sea level. Enclosure envelope: 200 x 150 x 150 mm, total payload wet mass 1.2 kg (including batteries, camera, radio, sensors). Housing is 3D-printed PETG (E 2.1 GPa, tensile 45 MPa at 20 C, but tensile drops to 40 MPa at -40 C and glass transition Tg = 85 C; density 1270 kg/m^3). The enclosure walls are 3 mm thick with internal reinforcing ribs on all six faces. Stratospheric environment: ambient pressure 1 kPa absolute at 30 km, ambient temperature -60 C, solar irradiance 1360 W/m^2 on the sun-exposed face (no atmospheric attenuation at altitude), internal dissipation 5 W (radio + compute). Parachute attachment is a 6 mm M6 eyelet at the top face. Load cases: (LC1) launch handling / drop during release: 5 g on 1.2 kg in any direction, applied at the parachute eyelet (equivalent 60 N tensile); (LC2) parachute opening shock: 150 N at the eyelet axial; (LC3) burst shock at balloon release: 3 g impulse on 1.2 kg at CoM; (LC4) ground impact at 6 m/s: 10 g equivalent deceleration on 1.2 kg onto the bottom face; (LC5) steady stratospheric thermal at 30 km cruise: -60 C ambient, 1360 W/m^2 solar on top face, 5 W internal, free convection negligible at 1 kPa (radiation + conduction dominate). Pass/fail: (R1) under LC1-LC4 at -40 C (worst cold-soak before ground impact), max enclosure stress must remain below 20 MPa (40 / 2.0 FoS at cold); (R2) under LC5 steady thermal, internal air temperature must remain above 0 C (to keep electronics and batteries operable) AND enclosure max surface temperature must remain below 65 C (Tg - 20 C margin) on the sun-exposed face; (R3) eyelet pull-out reinforcement must carry LC2 parachute shock without local stress exceeding 20 MPa in PETG near the insert; (R4) enclosure dry mass (walls + ribs only) must not exceed 250 g; (R5) enclosure must remain vacuum-sealed (no active venting) - verify by showing differential pressure case: internal 101 kPa vs external 1 kPa produces an effective outward pressure of 100 kPa on all walls; check wall deflection below 2 mm (to avoid structural failure or hinge damage). Fluid, radiation (ionizing), and buckling analyses not primary gates. Deliverables: STEP AP242 solid model, rib schedule, mechanical FEA at room and cold temperatures, steady-state thermal with solar + radiation BCs, pressure-differential FEA, mass budget.",
+  "short_prompt": "Design the primary enclosure of a Technion Aerospace Faculty sounding-balloon stratospheric payload. Ride under a latex balloon to ~30 km AGL burst, descend under a 0.9 m parachute at 6 m/s terminal at sea level. Payload wet 1.2 kg; 3D-printed PETG walls 3 mm with internal ribs on all six faces.\n\nEnvelope: 200 x 150 x 150 mm box with 6 mm M6 parachute eyelet at top. Stratospheric environment: 1 kPa absolute at 30 km, -60 C ambient, 1360 W/m^2 solar on the sun-exposed face, 5 W internal dissipation.\n\nFactor regime: material FoS 2.0 at -40 C cold-soak (allowable 20 MPa); electronics-operability thermal gate (internal air >= 0 C and enclosure surface <= 65 C = Tg - 20); local-insert stress at eyelet < 20 MPa; pressure-differential wall deflection < 2 mm; dry mass <= 250 g.\n\nLoad cases.\n- Launch / drop handling: 5 g on 1.2 kg (60 N tensile) at the eyelet in any direction.\n- Parachute-opening shock: 150 N axial at the eyelet.\n- Burst-release impulse: 3 g on 1.2 kg at CoM.\n- Ground impact at 6 m/s: 10 g equivalent decel on 1.2 kg onto the bottom face.\n- Steady stratospheric thermal at 30 km cruise (solar + radiation + conduction; convection negligible at 1 kPa).\n- Pressure differential: sealed internal 101 kPa vs external 1 kPa = 100 kPa outward on all walls.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Technion Sounding-Balloon Stratospheric Payload Enclosure",
+    "brief": "PETG enclosure 200x150x150 mm for 1.2 kg payload at 30 km, -60 C / 1360 W/m^2 / 100 kPa pressure differential.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 200,
+        "y": 150,
+        "z": 150
+      },
+      "wall_thickness_mm": 3,
+      "internal_ribs": "all 6 faces",
+      "parachute_eyelet": "M6 at top face"
+    },
+    "material": {
+      "name": "PETG FDM",
+      "properties": {
+        "E_GPa": 2.1,
+        "tensile_MPa_20C": 45,
+        "tensile_MPa_-40C": 40,
+        "Tg_C": 85,
+        "density_kg_m3": 1270
+      }
+    },
+    "mission": {
+      "burst_altitude_km": 30,
+      "terminal_velocity_mps": 6,
+      "ambient_pressure_kPa_at_alt": 1,
+      "ambient_C_at_alt": -60,
+      "solar_W_m2": 1360,
+      "internal_dissipation_W": 5
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_handling_5g",
+        "magnitude_N": 60,
+        "application": "parachute eyelet any direction"
+      },
+      {
+        "id": "LC2",
+        "name": "parachute_opening",
+        "magnitude_N": 150,
+        "application": "eyelet axial"
+      },
+      {
+        "id": "LC3",
+        "name": "burst_shock_3g",
+        "magnitude_g": 3,
+        "application": "CoM"
+      },
+      {
+        "id": "LC4",
+        "name": "ground_impact_10g",
+        "magnitude_g": 10,
+        "application": "bottom face"
+      },
+      {
+        "id": "LC5",
+        "name": "steady_stratospheric_thermal",
+        "application": "-60 C + solar + 5 W internal at 1 kPa"
+      },
+      {
+        "id": "LC6",
+        "name": "pressure_differential",
+        "magnitude_kPa": 100,
+        "application": "outward uniform on all walls"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "enclosure_mass_g",
+        "stress_LC1_LC4_MPa_at_cold",
+        "internal_air_temp_LC5_C",
+        "sun_face_max_temp_LC5_C",
+        "wall_deflection_LC6_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_stress_mechanical_cold",
+        "limit_MPa": 20,
+        "derivation": "40 / 2.0 cold FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "thermal_analysis",
+        "metric": "internal_air_temperature",
+        "limit_C_min": 0,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2b",
+        "type": "thermal_analysis",
+        "metric": "sun_exposed_face_max_temp",
+        "limit_C": 65,
+        "derivation": "Tg 85 - 20 C margin",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "eyelet_pullout_local_stress",
+        "limit_MPa": 20,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "enclosure_dry_mass",
+        "limit_g": 250,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "wall_deflection_pressure",
+        "limit_mm": 2,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10 for ribbed wall; shell for skins",
+      "mesh_size_mm": 2,
+      "solver_hints": [
+        "ANSYS Mechanical (thermal-structural)",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x4 mech)",
+        "steady thermal with solar + internal heat",
+        "linear static pressure-differential"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "Technion balloon/CanSat rulebook is an internal-university document with no public PDF surfaced. Numeric gates extrapolate from ESA BEXUS and Technion space-lab known practice.",
+    "exclusions_explained": {
+      "vibration_analysis": "Balloon ascent vibration negligible.",
+      "fluid_analysis": "Thin atmosphere; free convection neglected at 1 kPa.",
+      "radiation_analysis": "Solar input as surface flux; ionizing radiation not evaluated at this altitude.",
+      "buckling_analysis": "Ribbed enclosure; stress gate bounds stability."
+    }
+  },
+  "eval_coverage": [
+    "thermo-structural combined",
+    "cold-soak material degradation",
+    "pressure differential FEA",
+    "Tg margin gate",
+    "mass budget"
+  ]
+}

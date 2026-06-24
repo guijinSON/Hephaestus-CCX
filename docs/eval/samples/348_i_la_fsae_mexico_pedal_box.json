@@ -1,0 +1,215 @@
+{
+  "id": "348_i_la_fsae_mexico_pedal_box",
+  "source": {
+    "catalog_ref": "I-EU11 (collegiate formula-class racecar benchmark Mexico, I-LA thread)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "fsae_brake_pedal",
+  "full_prompt": "Design the brake pedal of an collegiate formula-class racecar benchmark Mexico 2026 car per FS Rules 2026 T.4.8 Brake Pedal, which requires the pedal to withstand a 2000 N applied load (per collegiate formula-class racecar benchmark 2024+ update, raised from 1779 N in older revisions) without yielding and without fracture. Pedal geometry: total lever length 200 mm from pivot axis to pedal pad centerline, pivot axis on a 10 mm steel dowel (12H7 bore through the pedal), pedal pad 80 mm x 50 mm. Pedal machined from 6061-T6 aluminum billet (E 68.9 GPa, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3), 10 mm thick along pedal axis, with a reinforcing web running the pedal length 15 mm tall. Master cylinder pushrod attaches to a clevis 60 mm from pivot axis via a 6 mm steel pin. Pedal ratio 200/60 = 3.33. Load cases: (LC1) mandatory collegiate formula-class racecar benchmark qualification: 2000 N applied axially at pad centerline along the primary pedal axis (worst-case direction per T.4.8), reacting at pivot and pushrod clevis; (LC2) lateral slip: 200 N lateral applied at pad while pedal is held at nominal braking force 1000 N (inadvertent lateral input from driver foot); (LC3) fatigue: 0 - 500 N repeated brake application over 1e5 cycles (typical endurance race duty); (LC4) adverse pivot misalignment: pedal binds and reacts 2000 N pad load through only the pushrod clevis at 60 mm while pivot is frictionally locked; (LC5) emergency stall: pedal stuck fully depressed and driver kicks it with 3000 N for 0.5 s (transient overload, FEA as static envelope). Pass/fail: (R1) under LC1 mandatory 2000 N case, max von Mises stress must remain below 276 MPa yield AND below 207 MPa (276 / 1.33 yield FoS per collegiate formula-class racecar benchmark T.4.8 safety margin); (R2) pedal pad deflection under LC1 must remain below 10 mm (excessive travel wastes brake stroke); (R3) pedal dry mass must not exceed 0.45 kg; (R4) fatigue alternating stress under LC3 must remain below 96 MPa endurance limit for 6061-T6 with 1.3 margin = 74 MPa; (R5) under LC5 overload, pedal must not fracture (max stress < 310 MPa ultimate) but permanent deformation is acceptable; (R6) pushrod-clevis bolt (6 mm steel) shear under LC1 must remain below 250 MPa. Thermal, fluid, radiation, vibration analyses not primary. Deliverables: STEP AP242 of pedal, machining drawing, FEA per load case, fatigue margin, mass.",
+  "short_prompt": "Design the brake pedal of a collegiate formula-class racecar benchmark Mexico 2026 car per FS Rules 2026 T.4.8 Brake Pedal: withstand a 2000 N applied load without yielding and without fracture (2024+ update, up from 1779 N in older revisions).\n\nEnvelope: 6061-T6 aluminum billet, 200 mm total lever length pivot-to-pad, 12H7 pivot bore on a 10 mm steel dowel, 80 x 50 mm pad, 10 mm thick along pedal axis with a 15 mm-tall reinforcing web along the length; master-cylinder pushrod clevis at 60 mm from pivot via a 6 mm steel pin. Pedal ratio 200/60 = 3.33.\n\nFactor regime: LC1 must stay below yield 276 MPa AND below 207 MPa (276/1.33 T.4.8 safety margin); pad deflection under LC1 < 10 mm; pedal dry mass <= 0.45 kg; LC3 alternating < 74 MPa (endurance 96 MPa with 1.3 margin); LC5 overload < 310 MPa ultimate (permanent deformation acceptable); pushrod-clevis bolt shear under LC1 < 250 MPa.\n\nLoad cases.\n- T.4.8 qualification: 2000 N axial at pad centerline along the primary pedal axis, reacting at pivot and pushrod clevis.\n- Lateral slip: 200 N lateral at pad while held at nominal 1000 N braking force.\n- Fatigue: 0-500 N repeated brake application over 1e5 cycles (endurance-race duty).\n- Adverse pivot misalignment: pedal binds and 2000 N reacts only through the 60 mm pushrod clevis (pivot frictionally locked).\n- Emergency stall: 3000 N for 0.5 s (static envelope for transient kick).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "fatigue_post_processor",
+        "reason": "Endurance-life check LC3 uses FEA stress output in Goodman post-process.",
+        "examples": [
+          "nCode DesignLife",
+          "FE-SAFE"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-class racecar benchmark Mexico 2026 Brake Pedal",
+    "brief": "6061-T6 machined brake pedal for collegiate formula-class racecar benchmark T.4.8 2000 N qualification, 200/60 mm ratio, 1e5 cycle fatigue.",
+    "geometric_constraints": {
+      "lever_length_mm": 200,
+      "pushrod_offset_mm": 60,
+      "pad_mm": {
+        "h": 80,
+        "w": 50
+      },
+      "pedal_thickness_mm": 10,
+      "web_height_mm": 15,
+      "pivot_bore_mm": 12,
+      "pushrod_pin_mm": 6
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700,
+        "endurance_limit_MPa": 96
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "FSAE_qualification_2000N",
+        "magnitude_N": 2000,
+        "application": "pad centerline primary axis"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_slip",
+        "magnitude_N_lateral": 200,
+        "nominal_brake_N": 1000
+      },
+      {
+        "id": "LC3",
+        "name": "fatigue_1e5",
+        "cycles": 100000,
+        "load_range_N": [
+          0,
+          500
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "pivot_bind",
+        "magnitude_N": 2000,
+        "application": "through pushrod clevis only"
+      },
+      {
+        "id": "LC5",
+        "name": "emergency_overload_3000N",
+        "magnitude_N": 3000,
+        "application": "transient static envelope"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "pedal_mass_kg",
+        "max_stress_LC1_MPa",
+        "pad_deflection_LC1_mm",
+        "fatigue_margin_LC3",
+        "stress_LC5_MPa",
+        "pin_shear_LC1_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_qualification",
+        "limit_MPa": 276,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_with_FoS",
+        "limit_MPa": 207,
+        "derivation": "276 / 1.33 per collegiate formula-class racecar benchmark T.4.8",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "pad_deflection",
+        "limit_mm": 10,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "pedal_dry_mass",
+        "limit_kg": 0.45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "fatigue_alternating_stress",
+        "limit_MPa": 74,
+        "derivation": "96 / 1.3",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "overload_max_stress",
+        "limit_MPa": 310,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "pushrod_pin_shear",
+        "limit_MPa": 250,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10",
+      "mesh_size_mm": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SolidWorks Simulation",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "fatigue post-process (LC3)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "vibration_analysis": "Pedal operates below structural modes.",
+      "thermal_analysis": "N/A.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "N/A."
+    }
+  },
+  "eval_coverage": [
+    "small-part machined FEA",
+    "collegiate formula-class racecar benchmark T.4.8 mandatory load case",
+    "fatigue margin",
+    "misalignment pathological load",
+    "overload envelope"
+  ]
+}

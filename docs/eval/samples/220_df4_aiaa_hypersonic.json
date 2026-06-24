@@ -1,0 +1,165 @@
+{
+  "id": "220_df4_aiaa_hypersonic",
+  "source": {
+    "catalog_ref": "DF4",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "hypersonic_missile_structural",
+  "part_class": "hypersonic_airframe_ring_frame",
+  "full_prompt": "Design one mid-body structural ring frame of a high-volume low-cost hypersonic cruise missile benchmark. Missile diameter 0.53 m (21 inch Mk-41 VLS-compatible), overall length 6.0 m, launch mass 1500 kg, cruise Mach 6 at 80,000 ft on scramjet sustainer, range 1500 km, warhead 100 kg, unit cost cap US$1,000,000 in lot-1000 production. Ring frame is located at the inlet-to-combustor bulkhead station (axial position 2.5 m from nose). Frame material: Inconel 718 aged (Young's modulus 200 GPa, Poisson 0.29, yield 1034 MPa, ultimate 1240 MPa, density 8190 kg/m^3) given sustained skin temperature ~900 C at Mach 6 / 80 kft stagnation. Frame geometry: I-cross section radial depth 80 mm x flange width 50 mm x web 6 mm x flange 8 mm, formed into a full 530 mm OD ring with six equally-spaced radial fittings for inlet/combustor attachment. Load cases per missile RFP baseline + MIL-HDBK-516C Part V: (LC1) maneuver 30 g normal at Mach 6 cruise; (LC2) axial thrust transient: scramjet restart transient 2.5 g forward for 200 ms; (LC3) aerodynamic pressure load: cruise dynamic pressure q = 70 kPa acting on external skin, transmitted to frame as radial 80 kN inward on six fittings; (LC4) thermal: uniform ring temperature sustained 900 C, with forward flange at 900 C and aft flange at 600 C (300 C gradient) through a 20-minute cruise; (LC5) launch VLS ejection: 15 g axial for 200 ms; (LC6) combined thermo-structural: LC1 + LC4 simultaneous. Pass/fail: (R1) at 900 C, Inconel 718 retains yield ~790 MPa, ultimate ~965 MPa; max von Mises across LC1-LC3 and LC5 at elevated temp <= 643 MPa (ultimate_hot 965 / 1.5); (R2) LC4 + LC6 combined thermo-mechanical stress <= 790 MPa (yield at 900 C); (R3) ring out-of-round distortion under LC4 <= 0.5 mm; (R4) first ovalization mode >= 150 Hz; (R5) mass per frame <= 8.5 kg to hit cost + weight targets. Deliverables: STEP AP242, coupled thermal-structural FEA per case, modal, and mass report.",
+  "short_prompt": "Design one mid-body structural ring frame of a high-volume low-cost hypersonic cruise missile, located at the scramjet inlet-to-combustor bulkhead station (axial 2.5 m from nose). Cruise is Mach 6 at 80,000 ft with sustained skin ~900 C, so the frame is sized hot. Material class: Inconel 718 aged, with elevated-temperature allowables (yield ~790 MPa / ultimate ~965 MPa at 900 C). Qualify per MIL-HDBK-516C Part V missile criteria, ultimate FoS 1.5 on hot allowables.\n\nEnvelope: 530 mm OD (21 in Mk-41 VLS compatible) cylindrical frame with an I cross-section on the order of 80 mm radial depth, with six equally-spaced radial inlet/combustor fittings.\n\nLoad cases.\n- LC1 maneuver: 30 g normal at Mach 6 cruise.\n- LC2 scramjet restart: 2.5 g forward axial for 200 ms.\n- LC3 aerodynamic pressure: q = 70 kPa cruise, transmitted as 80 kN radial inward on each of six fittings.\n- LC4 thermal: sustained ring 900 C with forward flange 900 C / aft flange 600 C (300 C through-depth gradient), 20 min cruise.\n- LC5 VLS ejection: 15 g axial for 200 ms.\n- LC6 combined: LC1 + LC4 simultaneous.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Hypersonic cruise missile mid-body ring frame",
+    "brief": "Inconel 718 ring frame at scramjet inlet-combustor bulkhead, Mach 6 at 80 kft.",
+    "geometric_constraints": {
+      "OD_mm": 530,
+      "missile_length_m": 6.0,
+      "axial_station_m": 2.5,
+      "frame_depth_mm": 80,
+      "web_mm": 6,
+      "flange_mm": 8,
+      "radial_fittings": 6
+    },
+    "material": {
+      "name": "Inconel 718 aged",
+      "youngs_modulus_GPa": 200,
+      "poissons_ratio": 0.29,
+      "density_kg_m3": 8190,
+      "yield_strength_MPa_rt": 1034,
+      "ultimate_tensile_strength_MPa_rt": 1240,
+      "yield_strength_MPa_900C": 790,
+      "ultimate_tensile_strength_MPa_900C": 965
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "30g_maneuver",
+        "g": 30
+      },
+      {
+        "id": "LC2",
+        "name": "scramjet_restart",
+        "g_axial": 2.5,
+        "duration_ms": 200
+      },
+      {
+        "id": "LC3",
+        "name": "q_cruise",
+        "q_kPa": 70,
+        "radial_N_per_fitting": 80000
+      },
+      {
+        "id": "LC4",
+        "name": "thermal",
+        "ring_temp_C": [
+          900,
+          600
+        ],
+        "duration_min": 20
+      },
+      {
+        "id": "LC5",
+        "name": "VLS_ejection",
+        "g_axial": 15,
+        "duration_ms": 200
+      },
+      {
+        "id": "LC6",
+        "name": "combined",
+        "combine": [
+          "LC1",
+          "LC4"
+        ]
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "frame_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "out_of_round_mm",
+        "first_oval_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_hot",
+        "limit_MPa": 643,
+        "derivation": "ultimate_hot 965 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "combined_thermo_mechanical_stress",
+        "limit_MPa": 790,
+        "derivation": "yield at 900 C",
+        "applies_to": [
+          "LC4",
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "ring_out_of_round_distortion",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_ovalization_mode",
+        "limit_Hz": 150,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "frame_mass",
+        "limit_kg": 8.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

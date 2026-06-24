@@ -1,0 +1,58 @@
+**
+** FSAE / Student Formula Japan 2025 chassis - submission-agnostic template
+** Units: mm, N, MPa, t (tonne), s
+**
+** This template is spliced together by wire_bcs.py with:
+**   - mesh.inp                (gmsh-produced C3D tet mesh of the agent's STEP)
+**   - *ELSET=Eall             (auto-built from C3D ELSETs by wire_bcs.py)
+**   - *NSET=NFIXED, NLOAD     (built from meta.json selectors)
+**
+** The original 056 deck used B32R beams + PIPE section to model the tubular
+** space frame. Beam-section semantics do NOT survive a STEP -> tet mesh
+** (gmsh emits C3D solids, not B32R), so this template uses a SOLID C3D
+** approximation of the chassis envelope. Per notes.md, the rule pass/fail
+** is dominated by closed-form geometric/material checks (R1..R6), with
+** chassis FEA serving only as informational stress / displacement output.
+**
+** (mesh.inp already provides *Heading; do not redeclare here.)
+**
+** ---- Material (mild steel SAE/AISI 1010, mm-MPa-N-tonne) ----
+*MATERIAL, NAME=__MATERIAL__
+*ELASTIC
+200000., 0.3
+*DENSITY
+7.85e-9
+**
+** ---- Solid section: Eall is auto-built by wire_bcs.py from C3D* ELSETs ----
+*SOLID SECTION, ELSET=Eall, MATERIAL=__MATERIAL__
+**
+** ---- Boundary conditions ----
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ---- LC1: IA quasi-static front-bulkhead push -----------------------------
+** 300 kg * 7.5 g (rule IA target average) ~ 22 070 N total in -x
+** Distributed as a *CLOAD on the NLOAD nodes (front bulkhead surrogate face).
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD
+NLOAD, 1, -22070.0
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NFIXED
+U
+*END STEP
+**
+** ---- LC2: 60-deg static tilt body load -------------------------------------
+** Gravity vector (0, -sin60, -cos60) = (0, -0.86603, -0.5) at 9810 mm/s^2.
+*STEP
+*STATIC
+1.0, 1.0
+*DLOAD
+Eall, GRAV, 9810.0, 0.0, -0.86603, -0.5
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NFIXED
+U
+*END STEP

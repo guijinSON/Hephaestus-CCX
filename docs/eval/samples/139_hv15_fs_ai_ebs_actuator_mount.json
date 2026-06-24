@@ -1,0 +1,211 @@
+{
+  "id": "139_hv15_fs_ai_ebs_actuator_mount",
+  "source": {
+    "catalog_ref": "HV15 (user-assigned FS-AI)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "fsae_autonomous_safety",
+  "part_class": "ebs_actuator_mount_bracket",
+  "full_prompt": "Design a monolithic 7075-T6 aluminum Emergency Brake System (EBS) pneumatic actuator mounting bracket for a collegiate formula-class autonomous-class benchmark 2026 (FS-AI) driverless entry, per FS-AI 2026 Rules v1.0 section on autonomous driving system EBS mandatory architecture, inheriting the FS Rules 2026 chassis chapter T (tube OD 25.4 x 2.4 mm steel chassis datum, 95th-%ile driver template despite the driverless operation since the DV can be operated manually in scrutineering, 20 mm gasoline restrictor not applicable for ADS-only). The EBS bracket carries a Festo DSBC-50 pneumatic cylinder (50 mm bore, 160 mm stroke, body mass 0.65 kg, max operating pressure 1.0 MPa delivering 1.96 kN piston force at 1.0 MPa) whose piston rod pulls the hydraulic brake master-cylinder pushrod through a mechanical linkage to apply full braking on loss of ADS signal. Bracket is a single billet-machined 7075-T6 part (no welds, no inserts; 2 integral chassis-tube saddle clamps + integral actuator clamp + integral pushrod guide). Geometry: two integral saddle clamps (each a 32 mm ID x 40 mm wide half-circle cradle matching the 25.4 mm OD frame tube through a 4 mm rubber isolator allowance) at 200 mm pitch, the saddles join via a 140 mm wide x 8 mm thick web running the 200 mm pitch. At the web center, integral actuator saddle clamp 52 mm ID x 60 mm long with a 5 mm wall (5 mm clearance for 50 mm actuator body) and 2 integral M8 (9 mm clearance) clamp-screw features. Integral pushrod guide bracket: 25 mm OD x 20 mm long stub with 10 mm through-bore at the actuator rod end, offset 80 mm from the actuator clamp center. Overall bounding envelope 240 x 90 x 100 mm. Material 7075-T6 (E 71.7 GPa, nu 0.33, density 2810 kg/m^3, yield 503 MPa, UTS 572 MPa, endurance 159 MPa at 5e8). Three load cases per FS-AI EBS safety rules. Load Case 1 (EBS activation at 1.0 MPa): 1.96 kN pulling axial force along the pushrod guide axis, reacted at the two chassis saddles; this is the design EBS activation load. Load Case 2 (EBS hot pressure spike 1.5 MPa fault): 2.94 kN pulling axial force for 200 ms during a supply-regulator failure, same geometry. Load Case 3 (20g longitudinal crash): the 0.65 kg actuator body decelerating at 20g = 128 N longitudinal on the actuator clamp; same time, 1.96 kN EBS activation still engaged; superposition total. Pass/fail: (R1) under LC1 activation, peak von Mises must not exceed 252 MPa (yield/2.0, FS-AI EBS safety allowable); (R2) under LC2 hot pressure spike, peak stress must not exceed 335 MPa (yield/1.5 transient, safety-critical so tighter than normal); (R3) under LC3 crash + EBS active, peak stress 335 MPa; (R4) fatigue: EBS is activated at least 10^4 cycles per vehicle life; stress range at any fillet under LC1 spectrum must remain below 159 MPa (derated endurance for notched) but with a 3.0 SF applied on cycles for FS-AI safety-critical = design against 3e4 cycle endurance; use S-N 5e8 endurance as conservative floor; (R5) first six natural frequencies (actuator mass lumped at clamp) must exceed 150 Hz to decouple from ADS compute-fan vibration 80-120 Hz; (R6) mass of the bracket must not exceed 0.45 kg; (R7) deflection at the pushrod-guide hole under LC1 must not exceed 0.5 mm to preserve EBS response-time requirement of brake activation within 200 ms per FS-AI EBS response rule (ADS.6). Thermal, fluid, buckling, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 7075-T6 aluminum Emergency Brake System (EBS) pneumatic-actuator mounting bracket for a collegiate formula-class driverless racecar (FS-AI 2026), carrying a Festo DSBC-50 cylinder (50 mm bore, 160 mm stroke, 0.65 kg, 1.0 MPa max delivering 1.96 kN piston force) that actuates the hydraulic master cylinder on loss of ADS signal. The bracket is a single billet-machined 7075-T6 part with two integral 25.4 mm chassis-tube saddle clamps on 200 mm pitch, an integral actuator saddle clamp, and an integral pushrod-guide boss; no welds, no inserts. Apply yield/2.0 operating and yield/1.5 safety-critical transient SF per FS-AI EBS rules.\n\nEnvelope: 240 x 90 x 100 mm.\n\nLoad cases.\n- LC1 EBS activation at 1.0 MPa: 1.96 kN axial pulling force along the pushrod guide axis, both chassis saddles reacted.\n- LC2 hot pressure spike fault (1.5 MPa, 200 ms): 2.94 kN axial.\n- LC3 20 g longitudinal crash + EBS active: 128 N on the actuator body plus 1.96 kN EBS pull, superposed.\nAlso check fatigue at 1e4 activations with FS-AI 3x safety factor on cycles, first six modes above 150 Hz (decouple ADS compute-fan 80-120 Hz), and pushrod-guide deflection under LC1 below 0.5 mm to preserve 200 ms EBS response per ADS.6.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FS-AI EBS pneumatic actuator mount bracket",
+    "brief": "Monolithic 7075-T6 bracket for Festo DSBC-50 EBS actuator on 25.4 OD chassis tube; FS-AI safety-critical allowables.",
+    "geometric_constraints": {
+      "chassis_saddles": {
+        "count": 2,
+        "id_mm": 32,
+        "width_mm": 40,
+        "pitch_mm": 200
+      },
+      "web_mm": {
+        "w": 140,
+        "t": 8,
+        "l": 200
+      },
+      "actuator_clamp_mm": {
+        "id": 52,
+        "length": 60,
+        "wall": 5,
+        "clamp_screws_mm": 9
+      },
+      "pushrod_guide_mm": {
+        "od": 25,
+        "length": 20,
+        "bore_mm": 10,
+        "offset_mm": 80
+      },
+      "bounding_envelope_mm": {
+        "x": 240,
+        "y": 90,
+        "z": 100
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 7075-T6",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2810,
+        "yield_MPa": 503,
+        "ultimate_tensile_strength_MPa": 572,
+        "endurance_5e8_MPa": 159
+      }
+    },
+    "actuator": {
+      "model_ref": "Festo DSBC-50",
+      "bore_mm": 50,
+      "stroke_mm": 160,
+      "mass_kg": 0.65,
+      "max_operating_pressure_MPa": 1.0,
+      "activation_force_N": 1960
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "EBS_activation",
+        "axial_force_N": 1960
+      },
+      {
+        "id": "LC2",
+        "name": "EBS_hot_spike_fault",
+        "axial_force_N": 2940,
+        "duration_ms": 200
+      },
+      {
+        "id": "LC3",
+        "name": "crash_plus_EBS",
+        "axial_force_N": 1960,
+        "lateral_actuator_body_N": 128
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_six_freqs_Hz",
+        "pushrod_guide_deflection_mm",
+        "mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 252,
+        "derivation": "yield/2.0 FS-AI EBS safety",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 335,
+        "derivation": "yield/1.5 safety-critical transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 159,
+        "cycles": 30000,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 150,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "pushrod_guide_deflection",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal",
+        "S-N fatigue"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Pneumatic cylinder is ambient.",
+      "fluid_analysis": "Internal pressure of actuator handled as axial pulling force.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compact geometry, not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "EBS activation response time verification",
+      "Pneumatic-line pressure decay fail-safe logic",
+      "ADS self-diagnostic coverage"
+    ]
+  },
+  "eval_coverage": [
+    "FS-AI EBS safety-critical SF",
+    "pushrod-guide deflection preserves response time",
+    "ADS-compute fan vibration decoupling",
+    "pressure-spike fault transient"
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "id": "076_kr1_ksce_civil_model",
+  "source": {
+    "catalog_ref": "KR1",
+    "year": 2026,
+    "tier": "A+"
+  },
+  "domain": "civil_structural",
+  "part_class": "civil_structure_model",
+  "full_prompt": "Design a civil-engineering structural model for a university civil-infrastructure benchmark (2026 edition). The model must fit inside a bounding envelope of 1200 mm x 800 mm x 600 mm (L x W x H). Allowable construction materials are limited to 3D-printed polymer (PLA, PETG, or ABS), wood (balsa, basswood, plywood), paper-based laminates and styrofoam, and piano wire (steel music wire) for tension members only; metal plate, carbon fiber, and prestressed cables are prohibited per the rulebook. The team size is capped at 6 members and the model must be transportable by hand. The model represents a civil structure (bridge, tower, or frame) chosen by the team; this prompt targets a 1 m span pedestrian-style bridge as a canonical example. The bridge must carry a vertical midspan live point load of 100 kg (approximately 981 N) applied statically, while self-weight is counted against the scoring ratio. Load-bearing efficiency (live-load to self-weight ratio) is the main scoring criterion but the pass/fail gates are: (1) the structure must not collapse under the 100 kg midspan load, (2) the midspan downward deflection must not exceed L/400 where L = 1000 mm effective span, giving 2.5 mm, (3) self-weight must be below 5 kg, (4) no single piano-wire tension member may exceed 80% of its rated tensile strength (music wire typical 2000 MPa UTS, so working stress <= 1600 MPa). Structural rationality (logical load path, realistic civil-engineering detailing) is a scoring factor but is not a binary pass/fail. Primary verification is linear static structural FEA (3DP polymer treated as linear elastic, wood as orthotropic, piano wire as beam/truss elements). A linear buckling eigenvalue check of slender compression members is required with minimum load factor 1.5 at the 100 kg load case. Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the full model, a bill of materials in Korean per rulebook tradition (and English mirror), and a report listing self-weight in kg, midspan deflection at 100 kg in mm, max piano-wire stress in MPa, and first buckling load factor.",
+  "short_prompt": "Design a civil-engineering structural model for a university civil-infrastructure benchmark (2026 edition). The canonical target is a 1 m effective-span pedestrian-style bridge. Envelope 1200 x 800 x 600 mm (L x W x H). Allowed materials: 3D-printed polymer (PLA/PETG/ABS), wood (balsa/basswood/plywood), paper laminates, styrofoam, and piano wire (music wire) for tension members only; metal plate, carbon fiber, and prestressed cables prohibited. Self-weight <= 5 kg. Piano-wire tension members limited to 80% of UTS (<= 1600 MPa working stress for 2000 MPa music wire). Slender compression members must pass a linear buckling eigenvalue check, first-mode load factor >= 1.5 at the load.\n\nLoad cases.\n- LC1 midspan live point load: 100 kg (~981 N) applied statically; midspan deflection limit L/400 = 2.5 mm. No collapse.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "University civil-structure model (1 m pedestrian bridge class)",
+    "brief": "Design a 1 m span civil bridge model in 1.2 x 0.8 x 0.6 m envelope using 3DP + wood + piano wire, carries 100 kg midspan, self-weight ≤ 5 kg.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 1200,
+        "W": 800,
+        "H": 600
+      },
+      "effective_span_mm": 1000
+    },
+    "material": {
+      "allowed": [
+        "3DP PLA/PETG/ABS",
+        "balsa/basswood/plywood",
+        "paper laminate",
+        "styrofoam",
+        "piano wire (music wire)"
+      ],
+      "prohibited": [
+        "metal plate",
+        "carbon fiber",
+        "prestressed cable"
+      ],
+      "PLA_properties": {
+        "E_GPa": 3.5,
+        "yield_MPa": 50
+      },
+      "piano_wire_UTS_MPa": 2000
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "midspan_live_load",
+        "magnitude_kg": 100,
+        "magnitude_N": 981,
+        "location": "midspan"
+      }
+    ],
+    "boundary_conditions": {
+      "support_A": "pin",
+      "support_B": "roller"
+    },
+    "objective": {
+      "maximize": "load_to_selfweight_ratio"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "self_weight_kg",
+        "midspan_deflection_mm",
+        "max_piano_wire_stress_MPa",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "self_weight_kg",
+        "limit_kg": 5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection_mm",
+        "limit_mm": 2.5,
+        "derivation": "L/400 at L=1000",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "piano_wire_working_stress_MPa",
+        "limit_MPa": 1600,
+        "derivation": "80% of UTS 2000 MPa",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + truss + shell",
+      "solver_hints": [
+        "OpenSees",
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "civil-model rulebook envelope",
+    "material restriction (3DP + wood + wire)",
+    "midspan live load",
+    "piano-wire tension limit"
+  ]
+}

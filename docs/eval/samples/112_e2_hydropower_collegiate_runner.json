@@ -1,0 +1,200 @@
+{
+  "id": "112_e2_hydropower_collegiate_runner",
+  "source": {
+    "catalog_ref": "E2",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "hydropower_turbomachinery",
+  "part_class": "francis_runner",
+  "full_prompt": "Design a single-piece cast and machined bronze Francis-type micro-hydropower runner for a collegiate hydropower Build-and-Test bench operating at a net head of 5 m and a flow rate of 10 L/s (10 kg/s at 1000 kg/m^3), driving a grid-tied generator at 1500 rpm. The runner must be a monolithic C95400 aluminum bronze casting with no welds, inserts, or bolted blades; all nine curved blades are integral to the shroud and hub. Geometry: the runner outer diameter is 120 mm, the inlet blade height is 22 mm, the outlet diameter is 80 mm, and the axial length from the eye to the hub back face is 90 mm. The central hub bore is 20 mm with a 6 mm x 2.8 mm keyway per ISO 2491 Form A for a stainless 20 mm generator shaft; the bore runs the full 90 mm axial length. The outer shroud must remain inside a 130 mm x 130 mm x 95 mm cylindrical envelope to fit inside the test rig volute. Material properties of C95400 at 20 C: Young's modulus 110 GPa, Poisson's ratio 0.32, density 7450 kg/m^3, yield strength 170 MPa, ultimate tensile strength 515 MPa, fatigue endurance limit 170 MPa at 1e8 cycles. Three independent load cases. Load Case 1 (hydrodynamic torque + pressure): steady-state CFD at 1500 rpm, inlet total head 5 m (49 kPa above atmospheric), outlet static pressure atmospheric, water at 20 C with density 998.2 kg/m^3 and viscosity 1.002e-3 Pa-s; resulting torque on the runner is 3.1 N-m (matching 0.49 kW shaft power at 80% efficiency), distributed as pressure loads on the blade surfaces per the CFD result. Load Case 2 (runaway overspeed): 1.8x rated speed = 2700 rpm, producing 3.24x centrifugal load distribution, with blades and shroud spinning in air only (no hydro torque), a transient event limited to 30 s. Load Case 3 (hydrostatic shutoff): the runner is submerged and stalled with valve closed; pressure differential across the blades is the full 49 kPa gauge inlet pressure with outlet at atmospheric, torque zero. Pass/fail: (R1) maximum von Mises stress must not exceed 85 MPa under LC1 and LC3, derived from yield / 2.0 = 170 / 2.0 for continuous-duty rotating hydraulic machinery (matching IEC 60193 type test safety conventions); (R2) under LC2 runaway, stress must not exceed 113 MPa (yield / 1.5); (R3) first six natural frequencies must not lie within +/-15% of the rated excitation 25 Hz (1500 rpm) or its blade-pass 225 Hz (9 blades x 25 Hz) to avoid resonance; (R4) a linear buckling eigenvalue analysis on the thin outer shroud under LC3 pressure must yield a first-mode load factor of at least 4.0; (R5) mass must not exceed 3.5 kg; (R6) a fluid analysis (steady RANS, k-omega SST, y+ < 1 on blades) must return a hydraulic efficiency (shaft power / (rho * g * H * Q)) of at least 80% at the duty point. Thermal and radiation analyses are not required. Deliver STEP AP242 and Parasolid geometry as a single solid body plus a report of hydraulic efficiency, peak von Mises per load case, first six modal frequencies, and buckling factor.",
+  "short_prompt": "Design a monolithic cast-and-machined C95400 aluminum-bronze 9-blade Francis micro-hydro runner (integral hub + shroud + blades, hub bore 20 mm with ISO 2491 Form A keyway for a stainless generator shaft, no welds or bolted blades) for a collegiate hydropower Build-and-Test bench at a 5 m net head, 10 L/s flow and 1500 rpm driving a grid-tied generator. Mass <= 3.5 kg. Duty SF 2.0 on yield per IEC 60193 conventions; runaway transient SF 1.5. Modal separation: first six natural frequencies must stay > +/-15% away from 25 Hz (1P) and 225 Hz (blade-pass 9x).\n\nEnvelope: 120 mm outer diameter, 80 mm outlet diameter, 90 mm axial length (inside a 130 x 130 x 95 mm cylindrical envelope).\n\nLoad cases.\n- LC1 duty point: 1500 rpm, 3.1 N-m shaft torque, inlet total head 49 kPa, outlet atmospheric, water at 20 C (pressure loads from steady RANS CFD); hydraulic efficiency at the duty point must be >= 80%.\n- LC2 runaway: 2700 rpm (1.8x rated) for 30 s, spinning in air, no hydro torque.\n- LC3 hydrostatic shutoff: 0 rpm, valve closed, 49 kPa differential across the blades with a thin outer shroud buckling check.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis",
+      "fluid_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Bronze Francis micro-hydro runner for collegiate hydropower Build-and-Test bench",
+    "brief": "Monolithic 9-blade C95400 Francis runner at 5 m head, 10 L/s, 1500 rpm driving a grid-tied generator. Pass runaway, hydrostatic, and modal tests.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 120,
+      "outlet_diameter_mm": 80,
+      "axial_length_mm": 90,
+      "blade_count": 9,
+      "inlet_blade_height_mm": 22,
+      "hub_bore_mm": 20,
+      "keyway_standard": "ISO 2491 Form A (6 x 2.8 mm)",
+      "bounding_envelope_mm": {
+        "x": 130,
+        "y": 130,
+        "z": 95
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "C95400 aluminum bronze",
+      "properties": {
+        "youngs_modulus_GPa": 110,
+        "poissons_ratio": 0.32,
+        "density_kg_m3": 7450,
+        "yield_strength_MPa": 170,
+        "ultimate_tensile_strength_MPa": 515,
+        "endurance_limit_MPa_1e8": 170
+      }
+    },
+    "operating_point": {
+      "head_m": 5,
+      "flow_L_s": 10,
+      "speed_rpm": 1500,
+      "fluid": "water 20 C"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "duty_point_hydro",
+        "speed_rpm": 1500,
+        "torque_Nm": 3.1,
+        "inlet_total_head_kPa": 49
+      },
+      {
+        "id": "LC2",
+        "name": "runaway",
+        "speed_rpm": 2700,
+        "duration_s": 30,
+        "hydro_torque": 0
+      },
+      {
+        "id": "LC3",
+        "name": "hydrostatic_shutoff",
+        "speed_rpm": 0,
+        "pressure_kPa": 49
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "hydraulic_efficiency_pct",
+        "max_von_mises_per_case_MPa",
+        "first_six_modal_frequencies_Hz",
+        "first_buckling_load_factor",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 85,
+        "derivation": "yield/2.0 = 170/2.0 (IEC 60193 continuous duty)",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 113,
+        "derivation": "yield/1.5 (transient event)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequency_margin",
+        "limit_pct": 15,
+        "excitations_Hz": [
+          25,
+          225
+        ],
+        "applies_to": [
+          "design"
+        ],
+        "operator": "must_be_outside_+-15%"
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 4.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 3.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "fluid_analysis",
+        "metric": "hydraulic_efficiency",
+        "limit_pct": 80,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) with prism boundary layer for CFD",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS CFX/Mechanical",
+        "OpenFOAM + CalculiX",
+        "Star-CCM+"
+      ],
+      "analysis_types": [
+        "steady RANS",
+        "linear static x3",
+        "modal (free-free and constrained)",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Water temperature is isothermal at 20 C; no heat source.",
+      "radiation_analysis": "Not applicable to submerged runner."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Cavitation NPSH margin",
+      "Erosion from sediment",
+      "Bronze fatigue in corrosive freshwater"
+    ]
+  },
+  "eval_coverage": [
+    "coupled CFD + structural load transfer",
+    "modal resonance avoidance vs. blade-pass frequency",
+    "runaway transient safety factor vs. duty safety factor",
+    "hydrostatic shell buckling"
+  ]
+}

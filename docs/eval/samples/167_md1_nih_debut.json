@@ -1,0 +1,197 @@
+{
+  "id": "167_md1_nih_debut",
+  "source": {
+    "catalog_ref": "MD1",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "medical_device",
+  "part_class": "neonatal_incubator_chassis",
+  "full_prompt": "Design a low-cost neonatal incubator chassis targeting low- and middle-income-country clinical deployment. The device must maintain a neonate thermal environment of 32.0 to 37.0 C +/- 0.5 C within an enclosed 720 mm x 370 mm x 300 mm infant compartment (PMMA canopy on structural chassis) against a worst-case ambient of 20 C, with a target parts cost under $400 per unit. The structural chassis is a single welded carbon steel powder-coated frame 860 mm x 500 mm x 1100 mm tall, supported on four 75 mm lockable casters, and must carry a payload of 5.0 kg (neonate + mattress + bedding) plus an integrated 15 kg heater/humidifier module plus a 1.0 kg O2 sensor array, all operating concurrently. The chassis must simultaneously satisfy these pass/fail criteria: (R1) maximum von Mises stress in the steel frame under 1.0 g vertical plus 0.3 g lateral IEC 60601-1 transport load combination with 21 kg payload must not exceed 167 MPa (yield 250 MPa / SF 1.5 per IEC 60601-1 Clause 9), (R2) chassis top-rail deflection under the full 21 kg payload must not exceed 2 mm to protect the PMMA canopy seal, (R3) thermal steady-state analysis must show that a 100 W convective heater can maintain 35 C +/- 0.5 C inside the 80 L infant compartment against a 20 C ambient, (R4) device tip-over stability angle must be at least 10 degrees per IEC 60601-1 Clause 9.4, and (R5) the chassis must withstand a linear buckling analysis under 4x combined payload with a first-mode load factor of at least 2.0. Thermal analysis is required for R3. Vibration, fluid CFD, and radiation analyses are not required. Deliver a STEP AP242 assembly of the chassis + casters + canopy interface plus a design history file entry listing maximum von Mises stress, top-rail deflection, steady-state compartment temperature with rise time, tip-over stability angle, and first buckling load factor.",
+  "short_prompt": "Design a low-cost neonatal incubator chassis targeting LMIC clinical deployment. The chassis is a welded powder-coated carbon steel frame of roughly 860 x 500 x 1100 mm on four 75 mm lockable casters, enclosing a 720 x 370 x 300 mm infant compartment under a PMMA canopy. It must carry a 5 kg neonate/bedding load plus a 15 kg heater/humidifier module plus a 1 kg O2 sensor array, keeping BOM cost under $400.\n\nDesign to IEC 60601-1 (general medical electrical safety) and IEC 60601-2-19 (incubator thermal performance). Chassis base is seated on the four casters on a rigid floor.\n\nLoad cases.\n- LC1 transport vector: 1.0 g vertical + 0.3 g lateral simultaneously with 21 kg payload.\n- LC2 thermal steady state: maintain 35 C +/- 0.5 C in the ~80 L infant compartment against 20 C ambient with a 100 W convective heater.\n- LC3 tip-over stability: tilt the device per IEC 60601-1 Clause 9.4.\n- LC4 buckling: 4x combined payload (84 kg) on the chassis.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "bill_of_materials_cost_ledger",
+        "reason": "Parts-cost ceiling ($400) is a BOM rollup, not an FEA.",
+        "examples": [
+          "Excel BOM + supplier quotes"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Low-cost neonatal incubator chassis (LMIC)",
+    "brief": "Design a welded steel neonatal incubator chassis (860 x 500 x 1100 mm) with lockable casters, 21 kg payload, 100 W heater maintaining 35 C +/- 0.5 C in 80 L compartment, meeting IEC 60601-1/2-19 and a $400 BOM ceiling.",
+    "geometric_constraints": {
+      "chassis_mm": [
+        860,
+        500,
+        1100
+      ],
+      "infant_compartment_mm": [
+        720,
+        370,
+        300
+      ],
+      "caster_count": 4,
+      "caster_dia_mm": 75
+    },
+    "material": {
+      "frame": "Carbon steel, yield 250 MPa, E 200 GPa, powder-coated",
+      "canopy": "PMMA 6 mm"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "transport_vector",
+        "vertical_g": 1.0,
+        "lateral_g": 0.3,
+        "payload_kg": 21,
+        "application": "mounted on casters"
+      },
+      {
+        "id": "LC2",
+        "name": "thermal_steady_state",
+        "ambient_C": 20,
+        "target_compartment_C": 35,
+        "tolerance_C": 0.5,
+        "heater_W": 100,
+        "compartment_L": 80
+      },
+      {
+        "id": "LC3",
+        "name": "tip_over",
+        "tilt_angle_deg_req": 10
+      },
+      {
+        "id": "LC4",
+        "name": "buckling_4x",
+        "payload_kg": 84
+      }
+    ],
+    "boundary_conditions": {
+      "chassis_base": "four casters on rigid floor",
+      "heater": "internal convective at top of compartment"
+    },
+    "objective": {
+      "primary": "pass IEC 60601-1/2-19",
+      "secondary": "keep BOM cost <= $400"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "top_rail_deflection_mm",
+        "compartment_steady_state_C",
+        "tip_over_stability_angle_deg",
+        "first_buckling_load_factor",
+        "BOM_cost_USD"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 167,
+        "derivation": "yield 250 / 1.5 per IEC 60601-1 Clause 9",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "top_rail_deflection",
+        "limit_mm": 2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "compartment_steady_state_temperature",
+        "limit_C_lower": 34.5,
+        "limit_C_upper": 35.5,
+        "derivation": "IEC 60601-2-19 Clause 201.12.1.108 (35 C +/- 0.5 C)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "tip_over_stability_angle",
+        "limit_deg": 10,
+        "derivation": "IEC 60601-1 Clause 9.4",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam/shell for chassis, solid for casters",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SolidWorks Simulation",
+        "Onshape Simulation"
+      ],
+      "analysis_types": [
+        "linear static",
+        "steady-state thermal",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Transport random vibration is outside the pass/fail scope.",
+      "fluid_analysis": "Compartment heat is lumped; no explicit CFD required.",
+      "radiation_analysis": "Phototherapy is out of scope for the chassis brief."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "IEC 60601-1-2 EMC qualification",
+      "Full HFE (IEC 62366-1) usability validation",
+      "Humidity and oxygen concentration feedback control"
+    ]
+  },
+  "eval_coverage": [
+    "IEC 60601-1 structural + IEC 60601-2-19 thermal stack",
+    "medical device tip-over stability",
+    "buckling margin for transport shock",
+    "BOM cost ceiling as LMIC requirement"
+  ]
+}

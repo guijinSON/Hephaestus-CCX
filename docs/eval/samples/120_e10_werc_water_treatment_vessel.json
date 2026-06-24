@@ -1,0 +1,199 @@
+{
+  "id": "120_e10_werc_water_treatment_vessel",
+  "source": {
+    "catalog_ref": "E10",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "water_treatment",
+  "part_class": "bench_scale_treatment_column",
+  "full_prompt": "Design a monolithic clear cast acrylic (PMMA) bench-scale packed-bed adsorption column for an acrylic adsorption-column benchmark task focused on per- and polyfluoroalkyl substance (PFAS) removal from mine-impacted water at 10 L/min throughput. The column is a single-piece cast-acrylic cylindrical body with integral top and bottom flanges (no multi-part assembly, no adhesives in the pressure boundary), machined to accept sanitary Tri-Clamp end caps that are outside this CAD prompt. Geometry: ID 150 mm, wall thickness 10 mm, overall cylinder length 900 mm including integral top and bottom flanges of 200 mm OD x 15 mm thick with a 12-hole bolt circle on 175 mm PCD (each hole diameter 10 mm), three sampling ports at 225, 450, and 675 mm from the inlet, each port is an integral 1/4-inch NPT female boss 15 mm OD x 18 mm long extending radially from the cylinder. Internal packing volume 15.9 L is filled with granular activated carbon (GAC) pellets (bulk density 450 kg/m^3, porosity 0.42, particle diameter 1.5 mm) but the packing itself is not part of the CAD body. Bounding envelope 220 mm x 220 mm x 930 mm. Material cast acrylic (PMMA) with Young's modulus 3.3 GPa, Poisson's ratio 0.35, density 1180 kg/m^3, yield (tensile) 72 MPa, ultimate 72 MPa (brittle), glass transition 105 C, max operating temperature 70 C. Design basis: operating flow 10 L/min upflow, water at 15 C density 999 kg/m^3 viscosity 1.14e-3 Pa-s; Ergun-equation pressure drop across 600 mm GAC bed estimated 18 kPa at 10 L/min; maximum allowable operating pressure (MAOP) 200 kPa gauge. Three load cases. Load Case 1 (MAOP proof): 300 kPa gauge internal pressure at 20 C (1.5x MAOP, 10-minute hold) with all ports and flanges sealed. Load Case 2 (operating + thermal): 200 kPa gauge internal at 30 C (warm mine water) plus vertical self-weight of column plus 16 kg of water plus 7 kg of wet GAC, top flange fixed vertically. Load Case 3 (impact / backwash surge): internal pressure step from 0 to 250 kPa in 0.5 s during a backwash flow reversal, evaluated quasi-statically. Pass/fail: (R1) under LC1 proof, peak tensile stress anywhere in the acrylic body must not exceed 18 MPa (brittle material safety factor 4.0 on tensile ultimate per ASME BPVC Section X non-metallic appendix guidance conservatively applied to PMMA); (R2) under LC2 operating, peak stress must not exceed 12 MPa (SF 6.0 for long-duration creep life of PMMA over 1000 h at 30 C); (R3) under LC3 backwash surge, peak stress must not exceed 18 MPa; (R4) a CFD analysis of LC2 steady flow must show uniform superficial velocity at the bed face with max/mean ratio at most 1.15 and return a total pressure drop no greater than 25 kPa (leaving headroom over the 18 kPa Ergun estimate); (R5) a linear buckling eigenvalue analysis under -100 kPa gauge (accidental vacuum) must yield a first-mode factor of at least 4.0 (brittle material with higher buckling SF); (R6) column body mass must not exceed 5.5 kg; (R7) the column wall must remain transparent (no geometry feature thicker than 20 mm in any flow-visualization section) to meet the benchmark judge-observation requirement. Vibration, radiation, and thermal analyses beyond LC2 are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic cast-acrylic (PMMA) bench-scale packed-bed adsorption column for a 10 L/min PFAS-removal benchmark on mine-impacted water, single-piece body with integral top and bottom flanges (12-hole x 10 mm on 175 PCD) accepting external sanitary Tri-Clamp end caps (out of scope), and three integral 1/4\"-NPT sampling ports at 225 / 450 / 675 mm from the inlet. Column holds ~15.9 L of GAC pellets (bulk density 450 kg/m^3, dp 1.5 mm, porosity 0.42) but the packing itself is not in the CAD body. Mass <= 5.5 kg. Transparency: no section thicker than 20 mm in flow-visualization zones. PMMA allowables per ASME BPVC Sect. X non-metallic-appendix convention applied conservatively: UTS/4.0 brittle static (18 MPa), UTS/6.0 creep (12 MPa) for 1000 h at 30 C; buckling SF 4.0 on external collapse.\n\nEnvelope: 150 mm ID x 10 mm wall x 900 mm overall, 200 mm OD x 15 mm thick flanges (inside 220 x 220 x 930 mm).\n\nLoad cases.\n- LC1 proof: 300 kPa gauge internal at 20 C (1.5x MAOP) for 10 min, all ports sealed.\n- LC2 operating + gravity: 200 kPa gauge internal at 30 C with column self-weight + 16 kg water + 7 kg wet GAC, top flange fixed vertically.\n- LC3 backwash surge: 0 to 250 kPa internal in 0.5 s during flow reversal (evaluated quasi-statically).\n- Plus a packed-bed CFD on LC2 steady flow (superficial-velocity max/mean <= 1.15, total drop <= 25 kPa) and a vacuum-collapse buckling check at -100 kPa gauge.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "fluid_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Acrylic PFAS adsorption column benchmark",
+    "brief": "Single-piece cast PMMA column 150 ID x 900 L with integral flanges and 3 sample ports; PFAS GAC adsorption at 10 L/min; MAOP 200 kPa.",
+    "geometric_constraints": {
+      "inside_diameter_mm": 150,
+      "wall_thickness_mm": 10,
+      "overall_length_mm": 900,
+      "flange_od_mm": 200,
+      "flange_thickness_mm": 15,
+      "flange_bolt_pattern": {
+        "count": 12,
+        "pcd_mm": 175,
+        "hole_mm": 10
+      },
+      "sampling_ports": {
+        "count": 3,
+        "z_locations_mm": [
+          225,
+          450,
+          675
+        ],
+        "thread": "1/4 NPT"
+      },
+      "bounding_envelope_mm": {
+        "x": 220,
+        "y": 220,
+        "z": 930
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Cast PMMA",
+      "properties": {
+        "youngs_modulus_GPa": 3.3,
+        "poissons_ratio": 0.35,
+        "density_kg_m3": 1180,
+        "tensile_strength_MPa": 72,
+        "max_op_temp_C": 70
+      }
+    },
+    "operating_conditions": {
+      "flow_L_min": 10,
+      "water_C": 15,
+      "MAOP_kPa": 200,
+      "packed_bed_dP_kPa": 18
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof",
+        "internal_kPa": 300,
+        "temp_C": 20,
+        "hold_min": 10
+      },
+      {
+        "id": "LC2",
+        "name": "operating_with_gravity",
+        "internal_kPa": 200,
+        "temp_C": 30,
+        "water_kg": 16,
+        "gac_kg": 7
+      },
+      {
+        "id": "LC3",
+        "name": "backwash_surge",
+        "internal_kPa": 250,
+        "rise_time_s": 0.5
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_tensile_stress_per_case_MPa",
+        "superficial_velocity_ratio",
+        "total_pressure_drop_kPa",
+        "first_buckling_load_factor",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_tensile_stress",
+        "limit_MPa": 18,
+        "derivation": "ultimate/4.0 (PMMA brittle SF)",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_tensile_stress_creep",
+        "limit_MPa": 12,
+        "derivation": "ultimate/6.0 (1000 h creep at 30 C)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "fluid_analysis",
+        "metric": "superficial_velocity_ratio_and_pressure_drop",
+        "limit_compound": {
+          "vel_ratio_max": 1.15,
+          "pressure_drop_kPa": 25
+        },
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 4.0,
+        "applies_to": [
+          "vacuum_100kPa"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 5.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical + Fluent",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3 (brittle stress)",
+        "porous-media CFD",
+        "linear buckling (external)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Benchtop rig with low-flow pumps; no significant dynamic load.",
+      "thermal_analysis": "Near-isothermal, only derate to 30 C for creep.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "PMMA crazing from solvents in mine water",
+      "UV degradation if outdoor",
+      "Clamp-face sealing with Tri-Clamp gaskets"
+    ]
+  },
+  "eval_coverage": [
+    "brittle-material safety factor 4.0 on ultimate",
+    "creep derating for long-duration service",
+    "packed-bed CFD flow uniformity",
+    "vacuum-collapse buckling on transparent wall"
+  ]
+}

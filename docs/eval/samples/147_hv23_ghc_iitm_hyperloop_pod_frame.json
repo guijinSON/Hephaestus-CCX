@@ -1,0 +1,253 @@
+{
+  "id": "147_hv23_ghc_iitm_hyperloop_pod_frame",
+  "source": {
+    "catalog_ref": "HV23 (user-assigned; catalog HV22 Global Hyperloop Competition 2.0 IIT Madras - flagged: user's label noted 'combat robots' but catalog entry is hyperloop-class pod demo)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "hyperloop_pod_structural",
+  "part_class": "hyperloop_pod_primary_chassis_frame",
+  "full_prompt": "Design a monolithic 7020-T6 aluminum primary chassis frame for a Global Hyperloop Competition 2.0 (collegiate-class IIT Madras) 2026 student pod, running on the IIT Madras 422 m hyperloop test track under partial-vacuum (target tube pressure ~100 mbar = 10 kPa absolute) with a linear-induction-motor propulsion system. The chassis frame is the primary structural spine carrying the pod's battery pack (80 kg), LIM reaction plate (25 kg), magnetic-levitation permanent-magnet arrays (2 x 15 kg), vacuum-rated shell (60 kg), and a crew-simulation ballast (0 kg, pod is unmanned for collegiate-class 2.0 per competition rules). The frame is a single billet-machined + FSW-welded (treated as monolithic for this prompt; the two FSW seams modeled as continuous base-metal equivalent) 7020-T6 part. Geometry: ladder-style frame 2200 mm long x 600 mm wide x 120 mm tall; two integral 80 mm x 40 mm x 4 mm wall rectangular-section longerons along the 2200 mm length, spaced 500 mm apart (centerline); five integral 60 mm x 40 mm x 3 mm wall rectangular cross-members at 0 / 550 / 1100 / 1650 / 2200 mm stations. Four integral magnet-array mounting pads on the underside of the two outer longerons at 400 / 800 / 1400 / 1800 mm stations: each pad 100 mm x 80 mm x 8 mm with 4 M10 (11 mm clearance) through-holes on a 70 x 50 mm pattern. Two integral battery-tray mounting flanges on the upper longerons between stations 550-1100 and 1100-1650: each flange 500 mm long x 40 mm wide x 6 mm thick with 6 M8 (9 mm clearance) holes on a 250 mm pitch x 2 rows. One integral LIM reaction-plate mounting pad centered at 1100 mm station: 400 x 200 x 6 mm with 8 M10 through-holes. Overall bounding envelope 2200 x 600 x 120 mm. Material 7020-T6 (E 71 GPa, nu 0.33, density 2780 kg/m^3, yield 290 MPa, UTS 350 MPa, endurance 90 MPa at 5e8 cycles, weldable). Three load cases per hyperloop-class pod collegiate-class 2.0 design practice. Load Case 1 (full propulsion at 0.5g longitudinal accel): pod total accelerated mass ~200 kg x 0.5 x 9.81 = 980 N longitudinal thrust applied at the LIM reaction pad, battery 80 kg + magnets 2 x 15 kg + shell 60 kg distributed as distributed weight loads, 4 magnet-pads constrained as levitation-reaction bearings (vertical + lateral constraint). Load Case 2 (emergency braking at 2g): 3920 N decelerating longitudinal load at the LIM pad + brake skid pads, all masses inertially loaded at 2g forward (brake-direction); same magnet-pad constraints. Load Case 3 (vacuum-pull-down differential + thermal): 10 kPa differential pressure acting on the 1 m^2 bottom-projected area of the pod shell transmitted through the frame as distributed 10 kN upward body load; plus thermal expansion differential 25 C (tube wall 20 C, chassis 45 C after 2 km run) causing 0.3 mm axial growth that is restrained by the LIM-pad bolt pattern. Pass/fail: (R1) under LC1 propulsion accel, peak von Mises must not exceed 145 MPa (yield/2.0); (R2) under LC2 emergency 2g braking, peak stress must not exceed 193 MPa (yield/1.5 transient); (R3) under LC3 vacuum differential + thermal, peak stress must not exceed 193 MPa; (R4) first six natural frequencies (frame + 80 kg battery + 30 kg magnets + 25 kg LIM lumped at their pads) must exceed 25 Hz to decouple from the 5-15 Hz LIM inverter switching ripple and the 3-8 Hz track-joint excitation at up to 100 m/s pod speed on 5 m track-panel spacing; (R5) frame mass must not exceed 35 kg (collegiate-class 2.0 competitive pods target chassis <= 20% of 180 kg total pod mass); (R6) a linear buckling analysis of the longerons under LC2 braking compressive flow (pod braking reacts into longeron-front through inertia load path) must yield a first-mode load factor of at least 3.0; (R7) maximum deflection of the battery-tray mounting flange under LC2 must not exceed 2 mm (preserves battery cell pack alignment to prevent internal busbar stress). Thermal analysis reduced to equivalent thermal growth in LC3; fluid and radiation not required (tube convection negligible at 100 mbar). Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 7020-T6 aluminum primary chassis frame for a collegiate Global Hyperloop Competition 2.0 student pod (IIT Madras 422 m test track at ~10 kPa absolute, LIM propulsion, unmanned). The frame is a single billet-machined part with two FSW seams treated as base-metal equivalent, laid out as a ladder with two 80 x 40 x 4 mm RHS longerons and five 60 x 40 x 3 mm cross-members, four magnet-array mounting pads under the outer longerons, two battery-tray flanges on the upper longerons, and a central LIM reaction-plate pad. Apply yield/2.0 continuous and yield/1.5 transient safety factors.\n\nEnvelope: 2200 x 600 x 120 mm.\n\nLoad cases.\n- LC1 full propulsion at 0.5 g longitudinal: ~200 kg total accelerated mass = 980 N thrust at the LIM pad, payloads distributed (battery 80 kg, magnets 2 x 15 kg, shell 60 kg), magnet pads constrained as levitation bearings.\n- LC2 emergency 2 g braking: 3920 N decel load at LIM + skid pads with all masses inertially loaded at 2 g forward.\n- LC3 vacuum pull-down + thermal: 10 kPa differential on the 1 m^2 bottom projected area (10 kN upward) plus a 25 C thermal gradient restrained at the LIM-pad bolt pattern.\nAlso check first six modes >25 Hz (clear 5-15 Hz inverter ripple and 3-8 Hz track-joint), a linear-buckling factor >=3 under LC2 longeron compression, and battery-tray flange deflection under LC2 below 2 mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate-class IIT Madras hyperloop-class pod primary chassis frame",
+    "brief": "7020-T6 ladder frame 2200x600x120 with 2 longerons + 5 cross-members + magnet/battery/LIM mounting pads.",
+    "geometric_constraints": {
+      "frame_mm": {
+        "l": 2200,
+        "w": 600,
+        "h": 120
+      },
+      "longerons": {
+        "count": 2,
+        "section_mm": [
+          80,
+          40
+        ],
+        "wall_mm": 4,
+        "spacing_mm": 500
+      },
+      "cross_members": {
+        "count": 5,
+        "section_mm": [
+          60,
+          40
+        ],
+        "wall_mm": 3,
+        "stations_mm": [
+          0,
+          550,
+          1100,
+          1650,
+          2200
+        ]
+      },
+      "magnet_pads": {
+        "count": 4,
+        "mm": [
+          100,
+          80,
+          8
+        ],
+        "stations_mm": [
+          400,
+          800,
+          1400,
+          1800
+        ],
+        "bolt_mm": 11,
+        "pattern_mm": [
+          70,
+          50
+        ]
+      },
+      "battery_flanges": {
+        "count": 2,
+        "mm": [
+          500,
+          40,
+          6
+        ],
+        "bolts": 6,
+        "bolt_mm": 9,
+        "pitch_mm": 250
+      },
+      "lim_pad_mm": [
+        400,
+        200,
+        6
+      ],
+      "bounding_envelope_mm": {
+        "x": 2200,
+        "y": 600,
+        "z": 120
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 7020-T6",
+      "properties": {
+        "youngs_modulus_GPa": 71,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2780,
+        "yield_MPa": 290,
+        "ultimate_tensile_strength_MPa": 350,
+        "endurance_5e8_MPa": 90
+      }
+    },
+    "pod_masses_kg": {
+      "battery": 80,
+      "lim_plate": 25,
+      "magnets_total": 30,
+      "shell": 60,
+      "chassis_budget": 35,
+      "pod_total_target": 180
+    },
+    "environment": {
+      "tube_pressure_mbar": 100,
+      "peak_speed_m_s": 100,
+      "track_length_m": 422
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "propulsion_0.5g",
+        "longitudinal_N": 980
+      },
+      {
+        "id": "LC2",
+        "name": "emergency_brake_2g",
+        "longitudinal_N": 3920
+      },
+      {
+        "id": "LC3",
+        "name": "vacuum_plus_thermal",
+        "vacuum_kPa": 10,
+        "delta_T_C": 25
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_six_freqs_Hz",
+        "first_buckling_load_factor",
+        "battery_flange_deflection_mm",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 145,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 193,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "battery_flange_deflection",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "mixed shell (longeron walls) + solid (mounting pads)",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal with lumped subsystem masses",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "100 mbar tube pressure - convection negligible.",
+      "radiation_analysis": "Not dominant for short run times.",
+      "interpretation_flag": "User's HV23 label said 'combat robots (collegiate-class IIT Madras)' but catalog entry is 'Global Hyperloop Competition 2.0'; followed catalog interpretation."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Vacuum shell membrane bond",
+      "LIM inverter thermal",
+      "Track-joint step discontinuity dynamics"
+    ]
+  },
+  "eval_coverage": [
+    "collegiate-class 2.0 propulsion + braking + vacuum triple LC",
+    "LIM inverter frequency decoupling",
+    "battery cell-pack alignment preservation",
+    "pod mass budget 20% chassis target"
+  ]
+}

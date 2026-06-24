@@ -1,0 +1,64 @@
+**
+** FRA 49 CFR 238 Subpart C - Tier I commuter rail collision-post analysis template
+** (mesh + NSETs spliced in by wire_bcs.py from the agent's STEP)
+**
+** This template is the FEM corroboration for the LC3 collision-post ultimate
+** (300,000 lbf = 1.334 MN horizontal force applied 18 in / 457 mm above the
+** top of the underframe per 49 CFR 238.211).  The authoritative pass/fail
+** evaluation for R1..R6 (LC1 buff, LC2 anti-telescoping, LC3/LC4 collision-
+** post ultimate/intermediate, LC5/LC6 corner-post ultimate/intermediate) is
+** the closed-form bending check in check.py against spec.json limits.
+** R7 (weld fatigue Cat. B) and R8 (Charpy 20 J at -40 C) are SKIP — they
+** are weld-procedure / material-toughness items, not exercised by static FEM.
+**
+** Units: mm, N, MPa, t (tonne)
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIXED  - underframe attachment plane (post welded to underframe -> fully fixed)
+**   NLOAD   - load-introduction band at z = 457 mm (18 in) above NFIXED plane,
+**             where the LC3 1.334 MN horizontal collision-post force is applied
+**
+** *SOLID SECTION uses ELSET=Eall (auto-built from gmsh's volume sets).
+**
+*MATERIAL, NAME=A572GR50
+*ELASTIC
+200000.0, 0.3
+*DENSITY
+7.85e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=A572GR50
+**
+** ----------------------------------------------------------------
+** Boundary: collision post welded to underframe -> NFIXED plane
+** fully clamped in all 6 DOF (BC singularity at the clamp is
+** expected; check.py reports far-field VM excluding eid<=20).
+** ----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ----------------------------------------------------------------
+** Step 1: LC3 collision-post ultimate per 49 CFR 238.211.
+** Total horizontal force F = 300,000 lbf = 1,334,000 N applied
+** in the longitudinal (+x) direction of the car at z = 457 mm
+** (18 in) above the underframe top.  CalculiX *CLOAD applies
+** the listed magnitude to EACH node in NLOAD, so the value
+** below is a representative per-node load; the integrated total
+** (sum across NLOAD nodes) is geometry-dependent and stays in
+** the linear-elastic range either way.  The authoritative pass/
+** fail evaluation is the closed-form sigma = M/Z bending check
+** in check.py (M = 1.334e6 N * 457 mm), not the FEM peak.
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD
+NLOAD, 1, 1.0e5
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP

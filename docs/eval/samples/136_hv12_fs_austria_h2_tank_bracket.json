@@ -1,0 +1,196 @@
+{
+  "id": "136_hv12_fs_austria_h2_tank_bracket",
+  "source": {
+    "catalog_ref": "HV12",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "fsae_hydrogen_storage_mount",
+  "part_class": "h2_tank_chassis_bracket",
+  "full_prompt": "Design a monolithic Ti-6Al-4V (Grade 5, annealed) titanium front H2 tank chassis bracket for a collegiate formula-class racecar benchmark 2026 H2 Class vehicle running the FS Rules 2026 base (tube OD 25.4 x 2.4 mm steel chassis reference, 95th-%ile driver template, IA 7.5g avg / 20g peak, 60 deg tilt; 20 mm gasoline restrictor does not apply to H2 vehicles) plus the FSA H2 Rules 2026 v1.0/1.2 addendum defining H2 powertrain envelope for PEM fuel-cell vehicles. The bracket is a single billet-machined titanium part (no welds, no inserts, no bolted gussets) that cradles a type-IV 350 bar hydrogen cylinder (Luxfer L45 analog: 5 L water capacity, 305 mm OD x 505 mm length, 5.5 kg empty + 0.2 kg H2 full = 5.7 kg) to the main hoop on one side and the front roll hoop on the other side of the chassis. Geometry: strap-style bracket with a 305 mm ID cylindrical cradle arc spanning 180 deg, radial arc thickness 8 mm, axial length 70 mm; two integral mounting feet at 3 and 9 o'clock each with a flat 50 mm x 70 mm x 10 mm pad carrying two M10 clearance holes (11 mm) on 40 mm spacing for clamping via a retention strap back into the chassis tubing (tubes not part of this CAD prompt); integral anti-rotation stub 20 mm x 30 mm x 15 mm at the 12 o'clock position engaging a matching slot in the cylinder label face (prevents cylinder rotation). Overall bounding envelope 400 x 340 x 90 mm. Material Ti-6Al-4V Grade 5 annealed per AMS 4911: E 113.8 GPa, nu 0.342, density 4430 kg/m^3, yield 860 MPa, UTS 950 MPa, endurance limit 410 MPa at 10^7 cycles smooth-polished (derated 0.7 surface factor for machined = 287 MPa). Three load cases per FS Rules 2026 + FSA H2 Rules 2026. Load Case 1 (40g longitudinal): 40g longitudinal deceleration on the 5.7 kg filled cylinder mass = 2.24 kN longitudinal force distributed through the cradle, both feet fully constrained; this implements the IA-envelope equivalent deceleration requirement even though the IA itself is rated at 20g peak, for fuel-system mass retention FSA requires 40g structural (H2 Rules 2026 section on pressure vessel retention). Load Case 2 (20g lateral): 20g lateral acceleration on the cylinder mass = 1.12 kN lateral, both feet fixed (this matches FS T.3.2 fuel-system retention in side crashes). Load Case 3 (60-deg tilt static + operating pressure): 60-deg tilt per T.3.2.1 with cylinder internal pressure at 35 MPa service giving radial expansion on the cradle equivalent to a 0.15 mm interference fit; model as a radial outward pressure on the cradle's inner arc surface of 2.5 MPa (conservative contact reaction) plus 1.0g tilt load. Pass/fail: (R1) under LC1 40g, peak von Mises must not exceed 430 MPa (yield/2.0 per FSA H2 Rules 2026 retention SF); (R2) under LC2 20g lateral, peak stress 430 MPa; (R3) under LC3 tilt + radial expansion, peak stress 430 MPa; (R4) fatigue: 10^7 cycles of combined LC2 stress range at 30% of LC2 peak, local stress range at any foot fillet must not exceed 287 MPa; (R5) a linear buckling eigenvalue analysis under LC1 compressive cradle loading must yield a first-mode factor of at least 3.0; (R6) bracket mass must not exceed 0.55 kg to limit front-axle mass penalty; (R7) maximum radial deflection of the cradle arc under LC3 must not exceed 0.3 mm to preserve cylinder contact without localized over-compression of the resin overwrap. Thermal, fluid, and radiation analyses are not required. Deliver STEP AP242 and Parasolid plus report.",
+  "short_prompt": "Design a monolithic Ti-6Al-4V (Grade 5 annealed) front H2-tank chassis bracket for a collegiate formula-class racecar (FS Rules 2026 + FSA H2 Rules 2026 addendum), cradling a Type IV 350 bar hydrogen cylinder (305 mm OD x 505 mm, 5.7 kg filled) between the main hoop and front roll hoop. The bracket is a single billet-machined titanium part with a 180-degree cylindrical cradle arc, two integral mounting-foot pads at 3 and 9 o'clock each carrying two strap-retention holes, and an integral 12-o'clock anti-rotation stub; no welds, no inserts. Apply yield/2.0 retention SF per FSA H2 Rules.\n\nEnvelope: 400 x 340 x 90 mm, 305 mm cradle ID x 70 mm axial length, 8 mm arc thickness.\n\nLoad cases.\n- LC1 40 g longitudinal (H2 Rules pressure-vessel retention): 2.24 kN longitudinal on the 5.7 kg filled cylinder, both mounting feet fixed; also a linear-buckling factor >= 3 under compressive cradle loading.\n- LC2 20 g lateral (FS T.3.2 side-crash retention): 1.12 kN lateral, both feet fixed.\n- LC3 60-degree tilt + operating pressure: 1 g tilt load plus a 2.5 MPa radial pressure on the cradle inner arc (contact reaction from 35 MPa cylinder radial expansion / 0.15 mm interference).\nAlso check a 10^7-cycle fatigue spectrum at foot fillets and cradle radial deflection under LC3 below 0.3 mm to avoid over-compressing the cylinder overwrap.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FSA H2 Class 350 bar tank chassis bracket (Ti-6Al-4V)",
+    "brief": "Single billet Ti bracket cradling a 5 L type-IV 350 bar H2 cylinder; FSA H2 Rules 2026 40g/20g retention + 60-deg tilt.",
+    "geometric_constraints": {
+      "cradle_id_mm": 305,
+      "cradle_arc_deg": 180,
+      "cradle_thickness_mm": 8,
+      "cradle_axial_length_mm": 70,
+      "mount_feet": {
+        "count": 2,
+        "pad_mm": [
+          50,
+          70,
+          10
+        ],
+        "holes_mm": 11,
+        "spacing_mm": 40
+      },
+      "anti_rotation_stub_mm": [
+        20,
+        30,
+        15
+      ],
+      "bounding_envelope_mm": {
+        "x": 400,
+        "y": 340,
+        "z": 90
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Ti-6Al-4V Grade 5 (AMS 4911)",
+      "properties": {
+        "youngs_modulus_GPa": 113.8,
+        "poissons_ratio": 0.342,
+        "density_kg_m3": 4430,
+        "yield_MPa": 860,
+        "ultimate_tensile_strength_MPa": 950,
+        "derated_endurance_MPa": 287
+      }
+    },
+    "tank_data": {
+      "type": "type IV 350 bar",
+      "water_capacity_L": 5,
+      "od_mm": 305,
+      "length_mm": 505,
+      "mass_full_kg": 5.7
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "longitudinal_40g",
+        "force_N": 2240
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_20g",
+        "force_N": 1120
+      },
+      {
+        "id": "LC3",
+        "name": "tilt_plus_radial_expansion",
+        "tilt_deg": 60,
+        "radial_pressure_MPa": 2.5
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_buckling_load_factor",
+        "radial_cradle_deflection_mm",
+        "mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 430,
+        "derivation": "yield/2.0 FSA H2 retention",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 287,
+        "cycles": 10000000,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.55,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "radial_cradle_deflection",
+        "limit_mm": 0.3,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "S-N fatigue",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "FC thermal handled at FC stack not the mount.",
+      "fluid_analysis": "H2 inside tank not relevant to bracket.",
+      "radiation_analysis": "Not applicable.",
+      "vibration_analysis": "Cylinder is strap-retained; NVH not governing."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "H2 embrittlement of titanium (minor)",
+      "Composite overwrap contact stress",
+      "EMC for FC HV routing"
+    ]
+  },
+  "eval_coverage": [
+    "FSA H2 Rules 40g retention SF 2.0",
+    "buckling under crash compression",
+    "cradle radial-deflection tank preservation gate",
+    "titanium mass-efficient retention design"
+  ]
+}

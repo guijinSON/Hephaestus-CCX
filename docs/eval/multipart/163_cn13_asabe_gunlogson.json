@@ -1,0 +1,288 @@
+{
+  "id": "163_cn13_asabe_gunlogson",
+  "source": {
+    "catalog_ref": "CN13",
+    "year": 2026,
+    "tier": "B",
+    "original_sample": "docs/eval/samples/163_cn13_asabe_gunlogson.json",
+    "multipart_basis": "The original sample already specifies body_count=assembly with 'rock + wire cage + anchor pins as sub-bodies'. Multipart decomposition formalizes those three sub-bodies plus the upstream/downstream aprons that prevent scour."
+  },
+  "domain": "agricultural_environmental",
+  "part_class": "farm_check_dam_gabion_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the ASABE CN13 Gunlogson farm check-dam structure for edge-of-field stormwater sediment capture as a multi-part assembly, explicitly modeling the 2.4 m wide x 0.90 m long x 0.45 m tall rock-filled gabion check-dam as the physical collection of the riprap rock fill, the galvanized hardware-cloth gabion cage, steel anchor pins, and upstream/downstream scour aprons. The original prompt already calls out 'deliver STEP AP242 assembly of the gabion check-dam with rock + wire cage + anchor pins as sub-bodies'; this multipart sidecar formalizes that decomposition and adds the apron families.\n\nThe assembly consists of four part families: (A) riprap rock fill, angular stone D50 150 mm filling the gabion volume (2.4 x 0.90 x 0.45 m = 0.972 m^3 of rock); (B) the galvanized hardware-cloth gabion cage, a 2.7 mm galvanized-wire frame forming the 2.4 m wide x 0.90 m long x 0.45 m tall cage around the rock fill with wire tie closures; (C) ASTM A615 Grade 60 16 mm-diameter anchor pins driven into the waterway bottom to tie the gabion to the soil and resist sliding; (D) upstream and downstream scour aprons, two flat layers of riprap or geotextile + riprap that extend 0.60 m upstream and 1.20 m downstream of the dam to prevent undermining.\n\nGeometry inherits the original sample verbatim: dam 2.4 m wide (perpendicular to flow) x 0.90 m long (along flow) x 0.45 m tall, D50 riprap 150 mm, grassed waterway 2% longitudinal slope.\n\nMaterial inherits verbatim: riprap = angular stone D50 150 mm; gabion wire = galvanized hardware cloth, 2.7 mm wire; anchor pins = ASTM A615 Grade 60, 16 mm diameter.\n\nLoads inherit verbatim: LC1 10-year peak discharge 0.85 m^3/s steady-state weir flow over the dam; LC2 sediment + debris static hydrostatic + accumulated sediment thrust.\n\nPass/fail criteria inherit verbatim from the original and apply at the assembly level: (R1) ponded stage behind dam under 0.85 m^3/s <= 0.40 m (grassed waterway bank freeboard); (R2) sediment trapping efficiency over the 10-year storm >= 60% (USDA SEDIMOT Stokes settling); (R3) sliding FoS of gabion against hydrostatic thrust + debris >= 1.5; (R4) overturning FoS about downstream toe >= 2.0; (R5) gabion wire pull-out FoS against tensile tearing of galvanized wire under sediment + debris >= 2.0. Added assembly-level targets under fem_check_policy.assembled_only: anchor-pin pullout DCR and apron-to-gabion interface continuity must be reported; per-part stresses are reported for diagnostic purposes but do not gate pass/fail.\n\nVibration, thermal, fluid CFD, radiation, and buckling analyses are not required; hydraulic load is applied via broad-crested weir equations plus closed-form Stokes settling. Deliver STEP AP242 of the assembly with each body (rock fill volume, wire cage, each anchor pin, upstream apron, downstream apron) as a distinct solid tagged with part_family (A..D) and instance_index, plus a hydrology and stability report with ponded stage, sediment trapping efficiency, sliding FoS, overturning FoS, wire pull-out FoS, assembly mass, and anchor-pin + apron DCR.",
+  "short_prompt": "Design the ASABE CN13 Gunlogson farm check-dam as a multi-part gabion assembly (riprap rock fill, galvanized hardware-cloth cage, 16 mm anchor pins, upstream + downstream scour aprons).\n\nDam 2.4 m wide x 0.90 m long x 0.45 m tall in a 2% grassed waterway; riprap D50 150 mm filling 0.972 m3; cage 2.7 mm galvanized wire; anchor pins ASTM A615 Grade 60 16 mm diameter; upstream apron 0.60 m, downstream apron 1.20 m.\n\nLoad cases: LC1 10-year peak discharge 0.85 m3/s over the dam; LC2 sediment + debris static hydrostatic + accumulated sediment thrust.\n\nPass/fail: ponded stage <= 0.40 m; sediment trapping efficiency >= 60% (USDA SEDIMOT Stokes); sliding FoS >= 1.5; overturning FoS >= 2.0; wire pullout FoS >= 2.0; FEM at assembled level; anchor + apron DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "broad_crested_weir_hydraulics",
+        "reason": "Peak stage and discharge-over-dam are closed-form weir equations (Henderson 1966), not FEA or CFD.",
+        "examples": [
+          "USDA-NRCS EFH Chapter 14",
+          "HEC-RAS weir coefficient"
+        ]
+      },
+      {
+        "tool": "stokes_settling_trapping",
+        "reason": "Sediment trapping efficiency is computed by particle settling velocity over residence time per USDA SEDIMOT.",
+        "examples": [
+          "USDA SEDIMOT III",
+          "Stokes law spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Gabion check-dam for farm stormwater sediment capture (multi-part assembly)",
+    "brief": "Multi-part gabion check-dam: riprap rock fill (A) + galvanized wire cage (B) + 16 mm anchor pins (C) + upstream/downstream scour aprons (D). 2.4 m wide x 0.90 m long x 0.45 m tall in 2% grassed waterway. 10-year 0.85 m^3/s event with >= 60% sediment trapping and stability FoS >= 1.5/2.0/2.0.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "riprap_rock_fill",
+        "role": "angular stone D50 150 mm filling the gabion volume; provides mass and roughness for hydraulic energy dissipation and the bulk sliding/overturning resistance",
+        "count_min": 1,
+        "count_note": "single filled volume; may be modeled as bulk-density solid for STEP + limit-equilibrium analysis",
+        "geometric_constraints": {
+          "volume_m3": 0.972,
+          "D50_mm": 150
+        },
+        "material_hint": "angular stone D50 150 mm",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "galvanized_wire_cage",
+        "role": "2.7 mm galvanized hardware-cloth cage forming the gabion frame; confines the rock fill and carries tensile membrane stress under hydrostatic + debris loading",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_m": [
+            2.4,
+            0.9
+          ],
+          "height_m": 0.45,
+          "wire_mm": 2.7
+        },
+        "material_hint": "galvanized hardware cloth",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "anchor_pin",
+        "role": "ASTM A615 Grade 60 16 mm rebar pin driven into the waterway bottom at the gabion corners; ties the cage to the soil and provides sliding resistance at the base",
+        "count_min": 4,
+        "count_note": "typical detail uses 4-8 corner pins; minimum 4 corners",
+        "geometric_constraints": {
+          "diameter_mm": 16,
+          "embedment_mm": 450
+        },
+        "material_hint": "ASTM A615 Grade 60",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "scour_apron",
+        "role": "upstream and downstream scour apron (flat riprap or geotextile + riprap) extending 0.60 m upstream and 1.20 m downstream of the dam; prevents undermining under the 0.85 m^3/s weir flow",
+        "count_min": 2,
+        "geometric_constraints": {
+          "upstream_length_m": 0.6,
+          "downstream_length_m": 1.2,
+          "width_m": 2.4
+        },
+        "material_hint": "angular stone on geotextile base",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "2.4 m wide x (0.60 + 0.90 + 1.20) = 2.70 m along flow x 0.45 m tall",
+      "coordinate_system": "waterway coordinates: +x along flow direction, +y across waterway, +z up from bottom"
+    },
+    "material": {
+      "riprap": "angular stone D50 150 mm",
+      "gabion_wire": "galvanized hardware cloth, 2.7 mm wire",
+      "anchor_pins": "ASTM A615 Grade 60, 16 mm dia"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "10yr_peak_discharge",
+        "magnitude_m3_s": 0.85,
+        "application": "steady-state overtopping or weir flow"
+      },
+      {
+        "id": "LC2",
+        "name": "sediment_plus_debris_static",
+        "application": "hydrostatic + accumulated sediment thrust"
+      }
+    ],
+    "boundary_conditions": {
+      "dam_base": "set in waterway bottom, passive soil resistance on downstream toe",
+      "cage_to_rock_interface": "confinement contact (IF1)",
+      "cage_to_pin_interface": "pinned tie (IF2)",
+      "cage_to_apron_interface": "overlapping riprap joint (IF3)"
+    },
+    "objective": {
+      "primary": "pass ponded stage + trapping efficiency + stability under assembled_only FEM check",
+      "secondary": "minimize gabion volume"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "ponded_stage_m",
+        "sediment_trapping_efficiency_pct",
+        "sliding_FoS",
+        "overturning_FoS",
+        "wire_pullout_FoS",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "ponded_stage_behind_dam",
+        "limit_m": 0.4,
+        "derivation": "grassed waterway bank freeboard",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "sediment_trapping_efficiency",
+        "limit_pct": 60,
+        "derivation": "USDA SEDIMOT Stokes settling target",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "sliding_FoS",
+        "limit": 1.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "overturning_FoS",
+        "limit": 2.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "wire_pullout_FoS",
+        "limit": 2.0,
+        "derivation": "galvanized wire ultimate vs cage tensile demand",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6-assembly",
+        "type": "assembly_analysis",
+        "metric": "connection_DCR_anchors_and_apron",
+        "limit": 1.0,
+        "derivation": "anchor-pin pullout capacity per NAVFAC DM 7.02 + apron-to-gabion continuity under weir flow",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "rigid-body + shell wire cage",
+      "solver_hints": [
+        "HEC-RAS + hand calc",
+        "PLAXIS 2D"
+      ],
+      "analysis_types": [
+        "weir hydraulics",
+        "limit-equilibrium stability"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "rock fill confined inside the wire cage via bearing contact; transfers hoop/lateral confining stress from rock to wire"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "wire cage tied to each corner anchor pin via wire loops; transfers sliding/uplift reaction into the driven pin"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "gabion face overlaps with the upstream/downstream apron riprap; prevents undermining at the toe"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "D",
+        "C"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "apron anchored at corners with additional rebar pins to resist flood uplift"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Gabion check-dams are physically rock fill confined by a galvanized wire cage with driven anchor pins plus scour aprons; the multipart sidecar formalizes that as four part families.",
+    "speculation_caveats": "Apron dimensions and anchor-pin count are inferred from typical farm check-dam details; the original sample only calls out rock + wire cage + pins without apron dimensions.",
+    "original_sample_preserved_at": "docs/eval/samples/163_cn13_asabe_gunlogson.json"
+  }
+}

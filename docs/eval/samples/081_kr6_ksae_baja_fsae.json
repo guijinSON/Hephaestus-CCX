@@ -1,0 +1,178 @@
+{
+  "id": "081_kr6_ksae_baja_fsae",
+  "source": {
+    "catalog_ref": "KR6",
+    "year": 2025,
+    "tier": "B"
+  },
+  "domain": "automotive_structural",
+  "part_class": "baja_roll_cage",
+  "full_prompt": "Design the roll-cage (space frame) of a single-seat off-road collegiate vehicle. The engine is a commercially available single-cylinder 10 HP (7.46 kW) 4-stroke; the frame must fully enclose the driver within a cage of circular steel tubing. Primary roll-cage members must be AISI 1018 DOM or AISI 4130 Chromoly steel tubing with minimum outside diameter 25.4 mm (1 inch) and minimum wall 3.05 mm (0.120 inch); AISI 4130 permits 1.65 mm (0.065 inch) wall when heat-treated per rulebook. The cage must pass an in-plane side-impact equivalent static load of 5.0 G lateral applied at the side-impact member, a front impact 4.0 G forward load applied at the front-bulkhead tube, a rear impact 4.0 G rearward load, and a roll-over test: the cage must support 6.0 G vertical at the roof node with no plastic yield. The driver template (95th-percentile male torso/helmet) must fit inside the cage with at least 75 mm clearance to all tubes. Suspension attachment points must withstand a 3.5 G bump at the wheel hub (wheel mass approx 8 kg, so 275 N at the hub plus leverage). Primary verification is linear static structural FEA (beam elements for tubes, solid elements at fishmouth joints). A linear buckling eigenvalue check on the cage under the roll-over 6 G case is required with minimum load factor 1.5. Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the frame, a material certificate (tube OD/wall/alloy/heat-treat), and a report listing cage mass in kg, max tube stress per case in MPa, max deflection at driver helmet location in mm, and first buckling load factor.",
+  "short_prompt": "Design the tubular steel space-frame roll-cage of a single-seat collegiate off-road (Baja-class) vehicle, enclosing a 95th-percentile driver with helmet and mounting a single-cylinder 10 HP engine and suspension pickup points. Use AISI 1018 DOM or 4130 chromoly tubing per the SAE Baja rulebook.\n\nEnvelope: cage on the order of 1.5-2 m long x ~1 m wide, built from circular steel tubing with primary members meeting the rulebook minimum OD/wall. Driver template must have 75 mm clearance to all tubes.\n\nLoad cases.\n- LC1 side-impact: 5.0 g lateral at the side-impact member.\n- LC2 front-impact: 4.0 g forward at the front bulkhead.\n- LC3 rear-impact: 4.0 g rearward.\n- LC4 rollover: 6.0 g vertical at the roof node, first buckling load factor >= 1.5.\n- LC5 bump at hub: 3.5 g at an 8 kg wheel (~275 N at the hub plus leverage) at suspension pickup points.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "University off-road vehicle roll-cage",
+    "brief": "Design an off-road single-seat roll-cage from 25.4 mm OD x 3.05 mm wall 1018 DOM (or 4130 w/ 1.65 mm), survives 4-6 G impact/rollover cases.",
+    "geometric_constraints": {
+      "primary_tube_OD_mm": 25.4,
+      "primary_tube_wall_mm_DOM1018": 3.05,
+      "primary_tube_wall_mm_4130_min": 1.65,
+      "driver_template_clearance_mm_min": 75
+    },
+    "material": {
+      "tube_options": [
+        "AISI 1018 DOM",
+        "AISI 4130 Chromoly"
+      ],
+      "1018_DOM": {
+        "yield_MPa": 370,
+        "ultimate_MPa": 440
+      },
+      "4130": {
+        "yield_MPa": 460,
+        "ultimate_MPa": 560
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "side_impact_5g",
+        "magnitude_g": 5.0,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC2",
+        "name": "front_impact_4g",
+        "magnitude_g": 4.0,
+        "direction": "forward"
+      },
+      {
+        "id": "LC3",
+        "name": "rear_impact_4g",
+        "magnitude_g": 4.0,
+        "direction": "rearward"
+      },
+      {
+        "id": "LC4",
+        "name": "rollover_6g",
+        "magnitude_g": 6.0,
+        "direction": "vertical at roof node"
+      },
+      {
+        "id": "LC5",
+        "name": "bump_at_hub",
+        "magnitude_g": 3.5,
+        "description": "8 kg wheel at 3.5 g = 275 N at hub"
+      }
+    ],
+    "boundary_conditions": {
+      "suspension_pickups": "fixed for in-plane impact cases"
+    },
+    "objective": {
+      "minimize": "cage_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "cage_mass_kg",
+        "max_tube_stress_LC1_MPa",
+        "max_tube_stress_LC2_MPa",
+        "max_tube_stress_LC3_MPa",
+        "max_tube_stress_LC4_MPa",
+        "helmet_location_deflection_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "tube_OD_mm",
+        "limit_mm": 25.4,
+        "derivation": "Off-road cage primary tube min",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_tube_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 yield for primary loads",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "helmet_location_deflection_mm",
+        "limit_mm": 25,
+        "derivation": "Driver envelope protection",
+        "applies_to": [
+          "LC1",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor_LC4",
+        "limit": 1.5,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + solid at joints",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x5",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "off-road cage tube dimensional compliance",
+    "side/front/rear impact + rollover",
+    "driver template clearance",
+    "cage buckling"
+  ]
+}

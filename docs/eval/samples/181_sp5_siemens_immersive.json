@@ -1,0 +1,190 @@
+{
+  "id": "181_sp5_siemens_immersive",
+  "source": {
+    "catalog_ref": "SP5",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "micromobility_structural",
+  "part_class": "e_scooter_folding_stem",
+  "full_prompt": "Design a topology-optimized folding stem and steering column for a commuter e-scooter as an open-source micromobility lightweighting benchmark. The stem replaces a baseline 1.8 kg machined 6061-T6 aluminum lock-and-clamp stem on a commuter e-scooter with 110 kg rider + 25 kg scooter mass. The stem is a monolithic part 600 mm tall with a 35 mm diameter steering column OD, a fold pivot at 200 mm up from the deck with a 25 mm pin hole, and a handlebar clamp at the top for a 22.2 mm OD handlebar. Material is 7075-T6 aluminum (yield 503 MPa, E 71.7 GPa, density 2810 kg/m^3). The stem must survive four independent load cases from EN 17128 e-scooter structural: (LC1) vertical rider 1100 N on handlebar ends, (LC2) 500 N lateral on handlebar ends (one-handed dismount scenario), (LC3) 800 N forward braking load at handlebar grip, (LC4) an impact at handlebar grip from a 1 m fall over (equivalent quasi-static 1500 N). Pass/fail criteria: (R1) max von Mises stress under any of LC1-LC4 must not exceed 335 MPa (7075-T6 yield / SF 1.5), (R2) max handlebar-tip displacement under any static load case must not exceed 10 mm, (R3) stem mass must be at least 30% lower than the 1.8 kg baseline, so <= 1.26 kg, (R4) fold-pivot pin-hole bearing stress must not exceed 600 MPa under LC3, and (R5) a linear buckling eigenvalue analysis under LC4 must yield a first-mode load factor of at least 2.0. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 solid body plus a verification report listing max von Mises per load case, handlebar-tip displacement per load case, stem mass, pin-hole bearing stress, and first buckling load factor.",
+  "short_prompt": "Topology-optimize the folding stem and steering column of a commuter e-scooter (110 kg rider + 25 kg scooter), replacing a 1.8 kg machined 6061-T6 baseline. The redesigned monolithic stem is in 7075-T6 aluminum, roughly 600 mm tall with a 35 mm steering-column OD, a 25 mm fold-pivot pin hole at 200 mm above the deck, and a handlebar clamp at the top for a 22.2 mm handlebar. The stem base is clamped to the front column; the handlebar clamp is the load-application region.\n\nLoad cases per EN 17128 (e-scooter structural).\n- LC1 rider vertical: 1100 N on the handlebar ends.\n- LC2 lateral: 500 N on the handlebar ends (one-handed dismount).\n- LC3 forward braking: 800 N at the handlebar grip.\n- LC4 fall-over impact at the grip (equivalent quasi-static 1500 N).\n\nMass target is at least 30% lighter than the 1.8 kg baseline; also check pin-hole bearing stress under LC3 and buckling margin under LC4.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "30% mass reduction target with fold-pivot geometry is delivered by topology optimization around structural FEA.",
+        "examples": [
+          "NX Topology Optimizer",
+          "Altair OptiStruct"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Folding e-scooter stem redesign (lightweighting benchmark)",
+    "brief": "Redesign a 1.8 kg 6061-T6 e-scooter folding stem in 7075-T6 (600 mm tall, 35 mm column OD, fold pivot at 200 mm) to pass EN 17128 load cases with <=1.26 kg and 2x buckling margin.",
+    "geometric_constraints": {
+      "total_height_mm": 600,
+      "column_OD_mm": 35,
+      "fold_pivot_height_mm": 200,
+      "pin_hole_dia_mm": 25,
+      "handlebar_OD_mm": 22.2
+    },
+    "material": {
+      "name": "Aluminum 7075-T6",
+      "yield_MPa": 503,
+      "E_GPa": 71.7,
+      "density_kg_m3": 2810
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "rider_vertical",
+        "magnitude_N": 1100
+      },
+      {
+        "id": "LC2",
+        "name": "lateral",
+        "magnitude_N": 500
+      },
+      {
+        "id": "LC3",
+        "name": "forward_braking",
+        "magnitude_N": 800
+      },
+      {
+        "id": "LC4",
+        "name": "fall_over_impact",
+        "magnitude_N": 1500
+      }
+    ],
+    "boundary_conditions": {
+      "stem_base": "clamped to deck front column",
+      "handlebar_clamp": "load application"
+    },
+    "objective": {
+      "primary": "pass EN 17128 + 2x buckling",
+      "secondary": "minimize mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "handlebar_tip_displacement_per_case_mm",
+        "stem_mass_kg",
+        "pin_hole_bearing_stress_MPa",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 335,
+        "derivation": "7075-T6 yield 503 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "handlebar_tip_displacement",
+        "limit_mm": 10,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "stem_mass",
+        "limit_kg": 1.26,
+        "derivation": "30% lower than 1.8 kg baseline",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "pin_hole_bearing_stress",
+        "limit_MPa": 600,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "NX Topology",
+        "Simcenter 3D",
+        "Ansys Mechanical"
+      ],
+      "analysis_types": [
+        "topology optimization",
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static EN 17128 load cases only.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "No fluid.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fold-pivot wear over cycle life",
+      "EN 17128 full vehicle dynamic stability",
+      "Anodizing / surface coatings"
+    ]
+  },
+  "eval_coverage": [
+    "NX-style topology optimization",
+    "EN 17128 e-scooter load set",
+    "pin-hole bearing stress check",
+    "30% mass reduction vs OEM baseline"
+  ]
+}

@@ -1,0 +1,142 @@
+{
+  "id": "071_jp16_worldskills_japan_cad",
+  "source": {
+    "catalog_ref": "JP16",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "precision_mechanical",
+  "part_class": "gd_and_t_machined_bracket",
+  "full_prompt": "Create a precision machined bracket from a vocational mechanical-drafting CAD brief. The bracket is a representative multi-feature part typical of a vocational CAD problem set: a rectangular body 120 mm x 80 mm x 20 mm with a reamed precision bore of 25 H7 (ISO IT7, bore tolerance +0.021 / 0 mm) on one end and a slot 40 mm x 10 mm with 10 H7 slot width on the other end. The top face carries four counter-bored bolt holes for M8 fasteners; hole-to-hole positional tolerance is 0.05 mm true-position with respect to datums A (bottom face, primary), B (reamed bore axis, secondary), and C (one side face, tertiary). Surface roughness on the reamed bore must be Ra 0.8 um or better; top face Ra 1.6 um; all other machined surfaces Ra 3.2 um. Material is S45C medium-carbon steel (JIS equivalent to AISI 1045), Young's modulus 206 GPa, yield strength 340 MPa. The part will carry a static tensile load of 5 kN applied through the 25 H7 bore pin (bearing pressure on the bore inner surface, 180-degree contact arc) while the four M8 bolt holes are held fully fixed. The maximum von Mises stress under this 5 kN load must stay below 227 MPa (yield/1.5). The CAD model must be a single solid body in STEP AP242 with all GD&T callouts embedded as PMI (product manufacturing information) per ISO 10303-242 AP242 semantic PMI. Scoring is based on dimensional accuracy, tolerance fidelity, and GD&T correctness against the published drawing sheet, which is released post-event. Primary verification is a structural FEA for the 5 kN bore load plus a geometric/tolerance verification step against the target drawing (non-FEA). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 with semantic PMI, a report of achieved bore diameter vs 25 H7 band, true-position error of the 4 bolt-hole pattern, and max von Mises under 5 kN bore load.",
+  "short_prompt": "Create a precision-machined bracket from a vocational mechanical-drafting CAD brief. Deliver a single solid body in STEP AP242 with semantic PMI per ISO 10303-242. Material is S45C medium-carbon steel (JIS; equivalent AISI 1045).\n\nEnvelope: 120 x 80 x 20 mm rectangular body with (a) a reamed 25 H7 (+0.021/0) precision bore on one end, (b) a 40 x 10 mm slot (10 H7 width) on the other end, and (c) four M8 counter-bored top-face bolt holes at 0.05 mm true-position to datums A (bottom), B (bore axis), C (one side). Surface roughness: reamed bore Ra <= 0.8 um; top face Ra <= 1.6 um; other machined surfaces Ra <= 3.2 um.\n\nLoad cases.\n- LC1 bore pin bearing load: 5,000 N through the 25 H7 bore on a 180-degree contact arc, with the four M8 bolt holes fully fixed. Max von Mises must stay below yield / 1.5.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "gd_and_t_tolerance_verification",
+        "reason": "IT7 tolerance band, surface roughness, and true-position checks are geometric tolerance verification, not FEA.",
+        "examples": [
+          "STEP AP242 PMI validator",
+          "CMM inspection"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Vocational CAD precision machined bracket",
+    "brief": "Create a 120 x 80 x 20 mm S45C bracket with 25 H7 bore, 10 H7 slot, 4x M8 holes on 0.05 mm true-position, ISO IT7, Ra 0.8 on bore; survives 5 kN bore load.",
+    "geometric_constraints": {
+      "body_mm": {
+        "L": 120,
+        "W": 80,
+        "H": 20
+      },
+      "bore_fit": "25 H7 (+0.021 / 0)",
+      "slot_fit": "10 H7",
+      "true_position_mm": 0.05,
+      "Ra_bore_um": 0.8,
+      "Ra_top_um": 1.6,
+      "Ra_other_um": 3.2
+    },
+    "material": {
+      "name": "S45C (JIS) / AISI 1045",
+      "properties": {
+        "E_GPa": 206,
+        "yield_MPa": 340
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "bore_pin_load_5kN",
+        "magnitude_N": 5000,
+        "application": "bearing on 25 H7 bore, 180 deg arc"
+      }
+    ],
+    "boundary_conditions": {
+      "M8_bolt_holes": "fully fixed 6 DOF"
+    },
+    "objective": {
+      "primary": "dimensional_and_GDT_fidelity"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242_with_semantic_PMI"
+      ],
+      "report_fields": [
+        "bore_diameter_mm",
+        "true_position_error_mm",
+        "max_vm_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "bore_diameter_within_25_H7",
+        "limit_upper_mm": 25.021,
+        "limit_lower_mm": 25.0,
+        "derivation": "ISO IT7 H7 band",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "true_position_error_mm",
+        "limit_mm": 0.05,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_MPa": 227,
+        "derivation": "yield 340 / SF 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 solid",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not applicable.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "ISO IT7 tolerance band",
+    "true-position GD&T",
+    "surface-roughness callouts",
+    "STEP AP242 semantic PMI embedding"
+  ]
+}

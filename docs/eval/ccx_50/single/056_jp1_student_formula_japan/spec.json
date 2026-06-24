@@ -1,0 +1,186 @@
+{
+  "id": "056_jp1_student_formula_japan",
+  "source": {
+    "catalog_ref": "JP1",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "automotive_structural",
+  "part_class": "chassis_frame_and_impact_attenuator",
+  "full_prompt": "Design the primary structure of a collegiate formula-style racecar, consisting of two monolithic structural sub-assemblies that must be delivered together: (1) the tubular Space Frame chassis including Main Hoop, Front Hoop, Main Hoop Bracing, Side Impact Structure, Front Bulkhead, and Front Bulkhead Support, and (2) a non-crushable Impact Attenuator mounted forward of the Front Bulkhead. The vehicle must comply with the 2025 collegiate formula-style racecar regulations (2nd edition, 2025-02-12). The wheelbase (distance between front and rear axle centerlines) must be at least 1525 mm. The chassis tubular members for Main Hoop, Front Hoop, and Main Hoop Bracing must use steel tubing with outside diameter 25.4 mm and wall thickness 2.4 mm minimum (1.0 inch x 0.095 inch, mild steel, SAE/AISI 1010 or equivalent, minimum yield strength 305 MPa, minimum ultimate tensile strength 365 MPa). A 95th-percentile male driver template (standardized circle-line-circle percentile template representing helmet, shoulders, and hips) must fit entirely inside the chassis with the driver's helmet located no less than 50 mm rearward of a straight line from the top of the Main Hoop to the top of the Front Hoop, and no less than 50 mm rearward of the Main Hoop itself. The Front Bulkhead must be a closed tubular structure located forward of all non-crushable objects and at least 300 mm forward of the foremost component of the driver's feet. The Impact Attenuator must be installed forward of the Front Bulkhead and, when mounted to the Front Bulkhead, must produce an average deceleration not exceeding 20 g and a peak deceleration not exceeding 40 g when impacting a solid non-yielding barrier at a velocity of 7 m/s with a mass of 300 kg (equivalent-vehicle simulation); the corresponding average energy-absorption deceleration target is 7.5 g average (reference impact attenuator test). A vehicle tilt test of 60 degrees must not cause any fluid leakage and the vehicle must not tip over. All chassis and IA analyses shall use quasi-static equivalent loading unless dynamic impact simulation is explicitly performed. Primary verification is structural FEA (linear static for chassis stiffness and rollover-style tilt equivalent, nonlinear explicit dynamics optional for Impact Attenuator crush). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required at this design gate. Deliverables: STEP AP242 assembly of the full frame and the IA, a material certificate listing the tube OD/wall/alloy, and a report listing Main Hoop tube OD and wall thickness in mm, measured wheelbase in mm, 95th-percentile template clearance in mm, IA average deceleration in g, IA peak deceleration in g, and the tilt-test angle at which first tip-over or leakage would occur.",
+  "short_prompt": "Design the primary structure of a collegiate formula-style racecar, delivered as two sub-assemblies: a tubular Space Frame chassis (Main Hoop, Front Hoop, Main Hoop Bracing, Side Impact Structure, Front Bulkhead, and Front Bulkhead Support) and a non-crushable Impact Attenuator mounted forward of the Front Bulkhead. Comply with the 2025 collegiate formula-style racecar regulations (2nd edition, 2025-02-12). A 95th-percentile male driver template must fit with the helmet at least 50 mm rearward of the hoop-top line and of the Main Hoop. Main Hoop / Front Hoop / Main Hoop Bracing tubes: mild steel (SAE/AISI 1010 or equivalent), OD 25.4 mm x wall >= 2.4 mm, Fy >= 305 MPa, Ftu >= 365 MPa. Wheelbase >= 1525 mm; Front Bulkhead >= 300 mm forward of the foremost driver-foot component.\n\nLoad cases.\n- LC1 Impact Attenuator barrier impact: 300 kg equivalent vehicle into a solid non-yielding barrier at 7 m/s; average deceleration <= 20 g, peak <= 40 g (IA target ~7.5 g average).\n- LC2 vehicle tilt test: 60 degrees static tilt with no fluid leakage and no tip-over.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics",
+        "reason": "Impact Attenuator 7 m/s barrier impact is formally a nonlinear transient dynamics problem (LS-DYNA, Abaqus Explicit, Radioss). The equivalent quasi-static energy check is the FEA fallback.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Altair Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate formula-style racecar space frame + impact attenuator",
+    "brief": "Design a rule-compliant tubular space frame plus a front impact attenuator meeting 2025 collegiate formula-style racecar regulations. Driver template, tube sizing, wheelbase, and 7 m/s IA deceleration limits are all binding.",
+    "geometric_constraints": {
+      "wheelbase_mm_min": 1525,
+      "front_bulkhead_to_feet_clearance_mm_min": 300,
+      "driver_template_rearward_of_hoop_line_mm_min": 50,
+      "main_hoop_tube_OD_mm": 25.4,
+      "main_hoop_tube_wall_mm_min": 2.4,
+      "tilt_test_angle_deg": 60
+    },
+    "material": {
+      "name": "Mild steel SAE/AISI 1010 (or equivalent)",
+      "properties": {
+        "yield_strength_MPa_min": 305,
+        "ultimate_tensile_strength_MPa_min": 365
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "IA_barrier_impact",
+        "mass_kg": 300,
+        "velocity_m_s": 7,
+        "description": "300 kg equivalent vehicle into rigid barrier at 7 m/s"
+      },
+      {
+        "id": "LC2",
+        "name": "tilt_test",
+        "angle_deg": 60,
+        "description": "Static tilt; no leakage, no tip-over"
+      }
+    ],
+    "boundary_conditions": {
+      "chassis": "fixed at rear suspension mounts during tilt equivalent",
+      "IA": "mounted to Front Bulkhead as flat plate"
+    },
+    "objective": {
+      "primary": "rule_compliance",
+      "secondary": "minimize chassis mass subject to stiffness targets"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "main_hoop_tube_OD_mm",
+        "main_hoop_tube_wall_mm",
+        "wheelbase_mm",
+        "template_clearance_mm",
+        "IA_avg_decel_g",
+        "IA_peak_decel_g",
+        "tilt_first_failure_angle_deg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "main_hoop_tube_OD_mm",
+        "limit_mm": 25.4,
+        "derivation": "Rulebook T.3.4 primary structure steel tubing minimum",
+        "applies_to": [
+          "chassis"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "main_hoop_tube_wall_mm",
+        "limit_mm": 2.4,
+        "derivation": "Rulebook T.3.4 nominal wall",
+        "applies_to": [
+          "chassis"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "wheelbase_mm",
+        "limit_mm": 1525,
+        "derivation": "Rulebook T.1.2",
+        "applies_to": [
+          "chassis"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "IA_avg_decel_g",
+        "limit_g": 20,
+        "derivation": "Rulebook IA 7.5 g target / 20 g average cap at 7 m/s, 300 kg",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "IA_peak_decel_g",
+        "limit_g": 40,
+        "derivation": "Rulebook peak deceleration cap",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "tilt_first_failure_angle_deg",
+        "limit_deg": 60,
+        "derivation": "Rulebook tilt test 60 deg no leak/tip",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (chassis), shell or solid (IA crush)",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "LS-DYNA",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (chassis)",
+        "explicit dynamics (IA)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not part of chassis/IA rule compliance.",
+      "thermal_analysis": "Not relevant to structural gate.",
+      "fluid_analysis": "Aero package is a separate rule section.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "rule-compliance numeric checks",
+    "tube sizing / driver template clearance",
+    "impact attenuator deceleration gate",
+    "static tilt test equivalent"
+  ]
+}

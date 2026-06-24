@@ -1,0 +1,207 @@
+{
+  "id": "263_a23_baja_sae_roll_cage",
+  "source": {
+    "catalog_ref": "A23",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "student_offroad_vehicle_roll_cage_primary",
+  "full_prompt": "Design the primary roll cage (complete welded tubular space frame) for a student-built single-seat off-road recreational vehicle, compliant with a governing structural-demonstration tech sheet. Primary members (rear roll hoop, overhead member, lateral forward support) shall be 25.4 mm (1 in) OD x 3 mm (0.120 in) wall AISI 1018 DOM steel tubing. Secondary members may be 25.4 mm OD x 0.89 mm (0.035 in) wall. Driver is a 95th percentile male occupant per a standard driver template; minimum helmet clearance to cage surfaces 152 mm (6 in). Wheelbase 1500 mm typical; track 1200 mm. Material: AISI 1018 DOM, E = 200 GPa, yield = 370 MPa (DOM cold-drawn), ultimate = 440 MPa, density = 7850 kg/m^3. Vehicle total mass with driver 300 kg (car 220 kg + driver 80 kg). Load cases from the governing structural-demonstration tech sheet: (R1) Front-impact 4 g: 4 x 300 kg x 9.81 = 11,772 N applied to the front of the rear roll hoop in the longitudinal -X direction; max von Mises in any tube <= yield / 1.15 = 322 MPa. (R2) Side-impact 3 g: 3 x 300 kg x 9.81 = 8,829 N applied laterally at the rear roll hoop top; max von Mises <= 322 MPa. (R3) Rollover vertical 2 g: 2 x 300 kg x 9.81 = 5,886 N applied vertically downward at the overhead members; max von Mises <= 322 MPa. (R4) Rear-impact 3 g: 3 x 300 kg x 9.81 = 8,829 N applied to the rear of the cage in +X direction at bumper height; max von Mises <= 322 MPa. (R5) Combined load case: simultaneous front + rollover = LC1 + LC3; max von Mises <= ultimate / 1.5 = 293 MPa. (R6) Driver-envelope protection: no deflection under any case shall cause the cage surface to enter the driver template envelope (nominally no cage point moves more than 50 mm inward in cockpit cross-section). (R7) Cage mass <= 30 kg. Primary verification: structural FEA (linear static, 5 cases). Vibration, thermal, fluid, radiation, buckling NOT required. Deliverables: STEP AP242 welded frame, weld map, tube schedule, and a report listing cage mass in kg, max von Mises per load case in MPa, max cockpit-envelope intrusion in mm.",
+  "short_prompt": "Design the primary roll cage (welded tubular space frame) for a student-built single-seat off-road recreational vehicle, compliant with the governing structural-demonstration tech sheet. Primary members (rear roll hoop, overhead, lateral forward support) are 25.4 mm OD x 3 mm wall AISI 1018 DOM; secondary members may be 25.4 mm OD x 0.89 mm wall. Vehicle total mass with driver 300 kg (220 kg car + 80 kg driver).\n\nEnvelope: wheelbase 1500 mm, track 1200 mm, driver template is a 95th-percentile male with helmet clearance >= 152 mm (6 in) to all cage surfaces.\n\nLoad cases (inertial loads on 300 kg, applied at the rear roll hoop / bumper height per the tech sheet).\n- LC1 front impact 4 g: 11,772 N in -X direction at the rear roll hoop.\n- LC2 side impact 3 g: 8,829 N lateral at the rear roll hoop top.\n- LC3 rollover vertical 2 g: 5,886 N vertical downward at the overhead members.\n- LC4 rear impact 3 g: 8,829 N in +X direction at bumper height.\n- LC5 combined front + rollover (LC1 + LC3 simultaneous).\n- LC6 driver-envelope protection: no cage point moves more than 50 mm inward into the driver template under any case.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student off-road vehicle primary roll cage",
+    "brief": "1018 DOM 1 in OD x 3 mm wall welded tubular cage. Five static load cases with 322 MPa limit + driver-envelope check.",
+    "geometric_constraints": {
+      "primary_tube_OD_mm": 25.4,
+      "primary_tube_wall_mm": 3.0,
+      "secondary_tube_OD_mm": 25.4,
+      "secondary_tube_wall_mm": 0.89,
+      "wheelbase_mm": 1500,
+      "track_mm": 1200,
+      "helmet_clearance_mm_min": 152,
+      "driver_template": "95th percentile male driver template"
+    },
+    "material": {
+      "name": "AISI 1018 DOM steel",
+      "properties": {
+        "youngs_modulus_GPa": 200,
+        "yield_strength_MPa": 370,
+        "ultimate_tensile_strength_MPa": 440,
+        "density_kg_m3": 7850
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "front_impact_4g",
+        "force_N": 11772,
+        "direction": "-X at rear roll hoop top"
+      },
+      {
+        "id": "LC2",
+        "name": "side_impact_3g",
+        "force_N": 8829,
+        "direction": "+Y at rear roll hoop top"
+      },
+      {
+        "id": "LC3",
+        "name": "rollover_2g",
+        "force_N": 5886,
+        "direction": "-Z on overhead member"
+      },
+      {
+        "id": "LC4",
+        "name": "rear_impact_3g",
+        "force_N": 8829,
+        "direction": "+X at bumper"
+      },
+      {
+        "id": "LC5",
+        "name": "combined_front_rollover",
+        "forces_N": {
+          "X": -11772,
+          "Z": -5886
+        }
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "suspension pickup points fixed",
+      "loads": "point or distributed at cage nodes"
+    },
+    "objective": {
+      "minimize": "cage_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "cage_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa",
+        "max_von_mises_LC5_MPa",
+        "max_driver_envelope_intrusion_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 322,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 322,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 322,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 322,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 293,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "driver_envelope_intrusion",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "cage_mass",
+        "limit_kg": 30,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B32) primary, shell at nodes",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x5 cases)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Cage is quasi-static qualified.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Closed tubular space frame."
+    }
+  },
+  "eval_coverage": [
+    "five-direction static load cases",
+    "combined-load ultimate check",
+    "driver-envelope intrusion constraint"
+  ]
+}

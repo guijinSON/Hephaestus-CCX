@@ -1,0 +1,169 @@
+{
+  "id": "059_jp4_tanegashima_rocket",
+  "source": {
+    "catalog_ref": "JP4",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "model_rocket_airframe",
+  "full_prompt": "Design a model rocket airframe and internal structure for an amateur model-rocket accuracy contest. The rocket uses a commercially available solid motor in impulse class A, B, or C (select one class for the submission; this prompt targets class B: peak thrust 2-5 N, total impulse 2.5-5.0 N*s, typical specific impulse 70 s). The recovery subassembly mass (nose cone + parachute pack + recovery electronics + CanSat bay) must not exceed 500 g. The body tube inner diameter must accommodate a standard 350 ml CanSat form factor (66 mm OD) in its payload bay with at least 1 mm radial clearance; typical body tube ID 68 mm. The vehicle must be aerodynamically stable on the launch rail with a separation between center of gravity (CG) and center of pressure (CP) of at least 1 caliber (one body diameter) and not more than 2.5 calibers, measured with the motor installed. The altitude target for Class B is a pre-declared maximum altitude and the rocket is scored on how closely it achieves this target (accuracy contest). Structural pass/fail: the airframe must survive 20 G axial acceleration during motor burn and 10 G lateral gust loading. Under a 20 G axial quasi-static load applied at the motor mount, the body tube must not buckle and internal bulkheads must not deflect more than 1 mm. The fin root attachment must not fail under a 50 N side force at the tip. Primary verification is structural FEA (linear static) plus a linear buckling eigenvalue check of the body tube under axial thrust load with load factor ≥ 1.5. Aerodynamic stability caliber margin is verified by Barrowman / RASAero-style CP analysis, which is a non-FEA solver. Vibration, thermal, fluid (CFD), and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the airframe assembly, a mass budget, and a report listing recovery subassembly mass in g, CG-CP separation in calibers, body tube buckling load factor at 20 G axial, fin root max stress under 50 N side load in MPa.",
+  "short_prompt": "Design the airframe and internal structure of a Class B amateur model rocket for a model-rocket accuracy contest (peak thrust 2-5 N, total impulse 2.5-5.0 N*s). The body tube ID is ~68 mm to host a 350 ml CanSat (66 mm OD with >= 1 mm radial clearance); recovery subassembly (nose + chute + electronics + CanSat bay) <= 500 g. Static aerodynamic stability margin between 1.0 and 2.5 calibers with motor installed. Body tube under 20 g axial must have a linear buckling load factor >= 1.5.\n\nLoad cases.\n- LC1 motor-burn axial: 20 G.\n- LC2 lateral gust: 10 G.\n- LC3 fin-tip side load: 50 N at the fin tip.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "aerodynamic_CP_CG_analysis",
+        "reason": "Stability margin is computed from Barrowman equations or equivalent (RASAero, OpenRocket) — analytical, not FEA.",
+        "examples": [
+          "OpenRocket",
+          "RASAero II"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Class-B amateur model rocket airframe",
+    "brief": "Design a class-B model rocket airframe that holds a 350 ml CanSat, has 1-2.5 caliber stability, and survives 20 G axial + 10 G lateral.",
+    "geometric_constraints": {
+      "body_tube_ID_mm": 68,
+      "payload_bay_radial_clearance_mm_min": 1,
+      "recovery_mass_g_max": 500
+    },
+    "material": {
+      "typical_airframe": "phenolic or carbon-wrapped cardboard tube",
+      "fin_material": "balsa/plywood or 3D-printed PLA"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "motor_burn_axial",
+        "magnitude_g": 20,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_gust",
+        "magnitude_g": 10,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "fin_tip_side_load",
+        "magnitude_N": 50,
+        "location": "fin tip"
+      }
+    ],
+    "boundary_conditions": {
+      "motor_mount": "fixed during axial burn",
+      "fin_root": "bonded/fastened to body tube"
+    },
+    "objective": {
+      "altitude_accuracy": "meet pre-declared altitude"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "recovery_mass_g",
+        "CG_CP_separation_calibers",
+        "body_tube_buckling_load_factor",
+        "fin_root_max_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "recovery_mass_g",
+        "limit_g": 500,
+        "derivation": "Rulebook recovery subassembly cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "CG_CP_separation_calibers",
+        "limit_lower": 1.0,
+        "limit_upper": 2.5,
+        "derivation": "Aerodynamic stability margin; > 1 caliber minimum, < 2.5 prevents over-stability",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "body_tube_buckling_load_factor_at_20g",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bulkhead_deflection_mm_at_20g",
+        "limit_mm": 1.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "fin_root_max_stress_MPa",
+        "limit_MPa": 25,
+        "derivation": "Balsa along-grain allowable shear / bending",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (tube) + solid (fin)",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not required at this design gate.",
+      "thermal_analysis": "Short burn, no thermal spec in rulebook.",
+      "fluid_analysis": "Drag handled by Barrowman, not CFD.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "airframe buckling under axial burn",
+    "stability caliber",
+    "recovery mass budget",
+    "fin root shear"
+  ]
+}

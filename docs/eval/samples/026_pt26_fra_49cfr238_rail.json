@@ -1,0 +1,226 @@
+{
+  "id": "026_pt26_fra_49cfr238_rail",
+  "source": {
+    "catalog_ref": "PT26",
+    "year": 2024,
+    "tier": "A+"
+  },
+  "domain": "rail_transit",
+  "part_class": "passenger_rail_car_end_beam_corner_post",
+  "full_prompt": "Design the end-beam and collision-post assembly of a Tier I commuter passenger rail car body per 49 CFR 238 Subpart C, meeting the 800,000 lbf buff load, 500,000 lbf vertical anti-telescoping requirement, 10 g collision-post design, and corner-post energy-absorbing design. The assembly spans the full car width 3.05 m (10 ft) and 2.6 m (8.5 ft) height, with two collision posts on the longitudinal centerline axes of the draft gear and two corner posts at the outer corners. Section envelope: end beam 250 x 200 mm box, collision posts 200 x 150 mm x 2.6 m tall, corner posts 150 x 150 mm x 2.6 m tall, all welded from A572 Grade 50 structural steel plate (yield 345 MPa, UTS 450 MPa, Young's modulus 200 GPa, density 7850 kg/m^3, Charpy minimum 20 J at -40 C per FRA guidance). Load cases per 49 CFR 238.203, 238.205, 238.207: LC1 buff load 800,000 lbf (3.56 MN) compressive along the line of the draft gear centers, distributed across the end beam and collision posts, carrier must sustain without permanent deformation; LC2 anti-telescoping vertical 500,000 lbf (2.22 MN) applied at anti-climber; LC3 collision post 300,000 lbf (1.33 MN) ultimate applied 18 inches (457 mm) above the top of the underframe at the collision post, must be sustained without failure; LC4 collision post intermediate 500,000 lbf (2.22 MN) at 30 inches (762 mm) above underframe; LC5 corner post 150,000 lbf (667 kN) ultimate applied 18 inches above underframe; LC6 corner post intermediate 300,000 lbf (1.33 MN) at 30 inches; LC7 fatigue spectrum per APTA PR-CS-S-034-99 revenue-service cycling. Pass/fail per 49 CFR 238.203/205/207 and AAR Manual Standard S-034: (R1) at LC1 buff (800,000 lbf), maximum stress in all primary members must remain below yield 345 MPa with no permanent deformation; (R2) at LC2 anti-telescoping 500,000 lbf, primary structure shall resist without failure - max stress <= UTS = 450 MPa; (R3) at LC3 collision post ultimate 300,000 lbf at 18 in, carrier must resist without failure (max stress <= UTS 450 MPa); (R4) at LC4 intermediate 500,000 lbf at 30 in, max stress <= yield 345 MPa; (R5) at LC5 corner post ultimate 150,000 lbf at 18 in <= UTS 450 MPa; (R6) at LC6 corner post intermediate 300,000 lbf at 30 in <= yield 345 MPa; (R7) fatigue Category B weld detail per AAR S-034 + AWS D15.1 for 300,000 cycles per year over 30-year revenue life; (R8) all weld procedures qualified to AWS D1.1 + FRA minimum impact (Charpy 20 J at -40 C); (R9) car body must not penetrate collision post 18-inch line by more than a defined deformation limit under LC3. Deliverables: STEP AP242 of the end-beam/corner-post weldment with weld callouts; FEA report; fatigue analysis per AAR S-034; weld procedure specifications per AWS D1.1.",
+  "short_prompt": "Design the end-beam and collision-post assembly of a Tier I commuter passenger rail car body per 49 CFR 238 Subpart C, meeting the 800,000 lbf buff load, 500,000 lbf vertical anti-telescoping, 10 g collision-post design, and corner-post energy-absorbing design.\n\nGeometry: assembly spans full car width 3.05 m (10 ft) and 2.6 m (8.5 ft) height; two collision posts on the longitudinal centerline axes of the draft gear; two corner posts at outer corners. Section envelope: end beam 250 x 200 mm box, collision posts 200 x 150 mm x 2.6 m, corner posts 150 x 150 mm x 2.6 m, all welded.\n\nMaterial: A572 Grade 50 plate, Charpy minimum 20 J at -40 C per FRA guidance.\n\nLoad cases per 49 CFR 238.203/205/207.\n- LC1 buff: 800,000 lbf (3.56 MN) compressive along draft-gear centers.\n- LC2 anti-telescoping vertical: 500,000 lbf (2.22 MN) at anti-climber.\n- LC3 collision post ultimate: 300,000 lbf (1.33 MN) at 18 inches (457 mm) above underframe.\n- LC4 collision post intermediate: 500,000 lbf (2.22 MN) at 30 inches (762 mm).\n- LC5 corner post ultimate: 150,000 lbf (667 kN) at 18 inches.\n- LC6 corner post intermediate: 300,000 lbf (1.33 MN) at 30 inches.\n- LC7 fatigue spectrum per APTA PR-CS-S-034-99.\n\nWeld details per AWS D1.1 + AISC 360 Appendix 3 fatigue Category B for 300,000 cycles/year over 30-year revenue life (per AAR S-034). Weld procedures qualified to AWS D1.1 with FRA minimum Charpy 20 J at -40 C.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "weld_fatigue_calculator",
+        "reason": "AWS D1.1 + AAR S-034 Category weld fatigue check is a closed-form S-N based calculation.",
+        "examples": [
+          "Excel worksheet",
+          "AAR manual spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FRA Tier I commuter rail car end-beam + collision/corner post assembly",
+    "brief": "Design the end-beam + collision/corner posts of a Tier I commuter rail car per 49 CFR 238 Subpart C: 800,000 lbf buff, collision post 300,000 lbf, corner post 150,000 lbf, 30-year fatigue life.",
+    "geometric_constraints": {
+      "end_beam": "250 x 200 mm box",
+      "collision_posts": "2 x 200 x 150 mm x 2.6 m tall",
+      "corner_posts": "2 x 150 x 150 mm x 2.6 m tall",
+      "car_width_m": 3.05,
+      "assembly_height_m": 2.6
+    },
+    "material": {
+      "name": "A572 Grade 50",
+      "yield_MPa": 345,
+      "ultimate_MPa": 450,
+      "density_kg_m3": 7850,
+      "charpy_min_J_at_minus40C": 20
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "buff_800kip",
+        "force_kN": 3560
+      },
+      {
+        "id": "LC2",
+        "name": "anti_telescoping_500kip",
+        "force_kN": 2224
+      },
+      {
+        "id": "LC3",
+        "name": "collision_post_ultimate_300kip_18in",
+        "force_kN": 1334,
+        "height_mm": 457
+      },
+      {
+        "id": "LC4",
+        "name": "collision_post_intermediate_500kip_30in",
+        "force_kN": 2224,
+        "height_mm": 762
+      },
+      {
+        "id": "LC5",
+        "name": "corner_post_ultimate_150kip_18in",
+        "force_kN": 667,
+        "height_mm": 457
+      },
+      {
+        "id": "LC6",
+        "name": "corner_post_intermediate_300kip_30in",
+        "force_kN": 1334,
+        "height_mm": 762
+      },
+      {
+        "id": "LC7",
+        "name": "revenue_fatigue_spectrum",
+        "standard": "APTA PR-CS-S-034-99"
+      }
+    ],
+    "boundary_conditions": {
+      "car_body_underframe": "end-beam assembly welded to underframe, considered fixed at underframe"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "fatigue_category_classification",
+        "weld_procedure_spec_AWS",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_buff",
+        "limit_MPa": 345,
+        "derivation": "yield per 49 CFR 238.203",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_anti_telescoping",
+        "limit_MPa": 450,
+        "derivation": "UTS (resist without failure) per 49 CFR 238.205",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_collision_post_ultimate",
+        "limit_MPa": 450,
+        "derivation": "UTS per 49 CFR 238.211",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_collision_post_intermediate",
+        "limit_MPa": 345,
+        "derivation": "yield per 49 CFR 238.211",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_corner_post_ultimate",
+        "limit_MPa": 450,
+        "derivation": "UTS per 49 CFR 238.213",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_corner_post_intermediate",
+        "limit_MPa": 345,
+        "derivation": "yield per 49 CFR 238.213",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "fatigue_weld_detail_category",
+        "limit": "B",
+        "derivation": "AAR S-034 weld category B for 30-year revenue life",
+        "applies_to": [
+          "LC7"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R8",
+        "type": "structural_analysis",
+        "metric": "weld_charpy_at_minus40C",
+        "limit_J": 20,
+        "derivation": "FRA guidance for Tier I cold climate",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "49 CFR 238 Subpart C + APTA PR-CS-S-034-99 + AAR Manual Standard S-034 + AWS D1.1",
+    "recommended_fea_setup": {
+      "element_type": "shell + solid at weld details",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus",
+        "FEMAP / Nastran"
+      ],
+      "analysis_types": [
+        "linear static x6 + weld fatigue S-N check"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static buff + collision + fatigue governs; CFR 238 does not mandate modal for car body ends.",
+      "thermal_analysis": "Thermal-cycle of welded assembly is secondary; Charpy substitutes for low-temperature toughness.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "49 CFR 238 Subpart C specific loads: 800,000 lbf buff (238.203), 500,000 lbf anti-telescoping (238.205), 300,000 lbf collision post (238.211), 150,000 lbf corner post (238.213)."
+  },
+  "eval_coverage": [
+    "federal regulation pass/fail thresholds",
+    "six independent crash/buff load cases",
+    "weld fatigue category design",
+    "low-temp Charpy requirement"
+  ]
+}

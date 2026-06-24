@@ -1,0 +1,431 @@
+{
+  "id": "350_i_eu13_igvc_2026_frame",
+  "source": {
+    "catalog_ref": "I-EU13 (IGVC 2026, Latin America + Canada + Nordic + ESA subsection)",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/350_i_eu13_igvc_2026_frame.json",
+    "multipart_basis": "Design-specific decomposition of the IGVC 2026 AGV: a welded 1018 CR steel chassis plate with side rails, four motor/wheel mounts, a sensor tower for LiDAR/RGB/GPS/IMU, a payload deck, a LIDAR mast, and a battery tray. Reflects the physical build required to satisfy IGVC 2026 rules (E-stop heights, 20 lb payload basket, tow point). No rulebook citations fabricated; all pass/fail thresholds preserved verbatim."
+  },
+  "domain": "ground_vehicle_structural",
+  "part_class": "autonomous_ground_vehicle_frame_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary chassis frame of an IGVC 2026 autonomous ground vehicle per IGVC 2026 Rules. The vehicle must be between 3 and 7 ft long, 2 and 4 ft wide, 3 and 7 ft tall, with ground clearance at least 3 inches, mechanical top speed limited to 5 mph (2.24 m/s) governed, a 20 lb (9.07 kg) payload basket centered in the vehicle, a mandatory mechanical push-button E-stop on the rear between 2 and 4 ft above ground, and a wireless E-stop with minimum 100 ft range. The vehicle rolls on four wheels (differential-drive skid-steer with free castors OR 4-wheel drive) with unsprung wheel masses approximately 3 kg each and a drivetrain comprising two 24 V DC gearmotors (4 kg each) mounted to the frame. Total vehicle dry mass target 70 kg including sensors (2D LiDAR, RGB camera, GPS, IMU), compute (NVIDIA Jetson + automotive 12 V DC-DC), and a 24 V 30 Ah SLA battery pack (22 kg). Frame material: AISI 1018 CR square steel tube 25.4 mm x 25.4 mm x 2 mm wall (E 200 GPa, yield 370 MPa, ultimate 440 MPa, density 7850 kg/m^3), TIG-welded. Frame footprint 900 mm x 600 mm x 600 mm tall. Load cases: (LC1) static 1 g: full 70 kg + 9.07 kg payload reacted through 4 wheel axles (vertical); (LC2) 2 g curb drop: 2 g vertical peak on 70 kg + 9.07 kg payload (IGVC vehicles routinely hop curb edges during outdoor navigation); (LC3) 1 g lateral side-slope: 1 g vertical + 1 g lateral applied at CoM while traversing 15 degree grass slope (IGVC course has slope); (LC4) 0.5 g braking at 5 mph: 0.5 g longitudinal decel + 1 g vertical; (LC5) point-load payload abuse: 500 N vertical point load concentrated at center of payload-basket floor (scrutineer test); (LC6) E-stop impact: 100 N concentrated horizontal load applied at the rear mechanical E-stop button at 1 m above ground (inspector pushes hard); (LC7) tow-point pull: 1 kN applied horizontally at a designated tow point on the front of the frame (IGVC organizers may tow a stuck vehicle off the course). Pass/fail: (R1) max von Mises stress in the frame under LC1-LC5 must remain below 247 MPa (370 / 1.5 yield FoS, stated explicitly in IGVC 2026 Rules Section IX-D-4 deliverable); (R2) under LC6 and LC7, local stress must remain below yield 370 MPa, no permanent deformation; (R3) frame dry mass (tubing only, no wheels/motors/battery) must not exceed 18 kg; (R4) first frame natural frequency must exceed 30 Hz to decouple from drivetrain at 6000 RPM (100 Hz) and LiDAR scan rate (10 Hz); (R5) payload-basket floor deflection under LC5 must remain below 5 mm; (R6) ground clearance must remain at or above 76.2 mm (3 in) under LC2 2 g drop with tire deflection excluded. Thermal, fluid, radiation, buckling analyses not primary. Deliverables: STEP AP242 of frame (welded tube assembly, N tubes as separate bodies), 2D weld-map drawing, FEA per load case, modal, mass budget with component masses.\n\n--- ASSEMBLY RECONFIGURATION ---\nDelivered as a multi-part assembly reflecting the physical IGVC AGV build: a welded 1018 CR chassis plate/ladder frame with two longitudinal side rails and transverse cross members, four motor/wheel mount brackets at the corners, a sensor tower rising 1-2 ft above the frame carrying RGB/IMU/GPS, a payload deck forming the 20 lb payload basket, a discrete LIDAR mast at the top of the sensor tower positioning the 2D scanner, and a battery tray containing the 22 kg SLA pack. The rear E-stop and front tow point are local features on the chassis frame. Interfaces are TIG-welded for chassis plate/side rails/cross members, bolted for motor mounts and sensor tower (to allow service access). Final FEM verification runs on the ASSEMBLED model only; per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case (LC2 2 g curb drop). All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design the primary chassis frame of an IGVC 2026 autonomous ground vehicle per IGVC 2026 Rules.\n\nEnvelope: 3 to 7 ft long, 2 to 4 ft wide, 3 to 7 ft tall; ground clearance at least 3 inches; top speed governed to 5 mph (2.24 m/s); 20 lb (9.07 kg) payload basket centered; rear mechanical push-button E-stop between 2 and 4 ft above ground; wireless E-stop minimum 100 ft range. Frame footprint 900 mm x 600 mm x 600 mm tall. Four wheels (3 kg each), two 24 V DC gearmotors (4 kg each), 24 V 30 Ah SLA battery pack (22 kg); total dry mass target 70 kg.\n\nMaterial: AISI 1018 CR square steel tube 25.4 mm x 25.4 mm x 2 mm wall (yield 370 MPa, ultimate 440 MPa), TIG-welded.\n\nLoad cases: (LC1) static 1 g: 70 kg + 9.07 kg through 4 wheel axles; (LC2) 2 g curb drop on 70 kg + 9.07 kg; (LC3) 1 g side-slope: 1 g vertical + 1 g lateral at CoM on 15 degree slope; (LC4) 0.5 g braking at 5 mph + 1 g vertical; (LC5) 500 N vertical point load at payload-basket floor; (LC6) E-stop impact 100 N horizontal at rear E-stop at 1 m above ground; (LC7) tow-point pull 1 kN horizontal at front.\n\nPass/fail: (R1) LC1-LC5 max vM < 247 MPa (370/1.5 per IGVC 2026 Rules IX-D-4); (R2) LC6/LC7 local stress < yield 370 MPa; (R3) frame dry mass (tubing) <= 18 kg; (R4) first natural frequency > 30 Hz; (R5) LC5 basket floor deflection < 5 mm; (R6) ground clearance >= 76.2 mm (3 in) under LC2.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "IGVC 2026 Autonomous Ground Vehicle Frame (multi-part assembly)",
+    "brief": "AISI 1018 CR welded frame for 70 kg AGV + 20 lb payload, 5 mph cap, IGVC 2026 FoS 1.5 deliverable. Decomposition: chassis plate, 2x side rails, 2-4x motor/wheel mounts, sensor tower, payload deck, LIDAR mast, battery tray. FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "envelope_ft": {
+        "l_min": 3,
+        "l_max": 7,
+        "w_min": 2,
+        "w_max": 4,
+        "h_min": 3,
+        "h_max": 7
+      },
+      "frame_footprint_mm": {
+        "l": 900,
+        "w": 600,
+        "h": 600
+      },
+      "ground_clearance_min_in": 3,
+      "top_speed_mph": 5,
+      "payload_lb": 20,
+      "tube_mm": "25.4x25.4x2",
+      "estop_height_range_ft": [
+        2,
+        4
+      ]
+    },
+    "material": {
+      "name": "AISI 1018 CR steel",
+      "properties": {
+        "E_GPa": 200,
+        "yield_MPa": 370,
+        "ultimate_MPa": 440,
+        "density_kg_m3": 7850
+      }
+    },
+    "vehicle_mass_kg": {
+      "frame_target": 18,
+      "battery": 22,
+      "motors": 8,
+      "wheels": 12,
+      "sensors_compute": 8,
+      "structure_other": 2,
+      "total_dry": 70,
+      "payload": 9.07
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_1g",
+        "magnitude_g": 1
+      },
+      {
+        "id": "LC2",
+        "name": "curb_drop_2g",
+        "magnitude_g": 2
+      },
+      {
+        "id": "LC3",
+        "name": "side_slope_15deg",
+        "vert_g": 1,
+        "lat_g": 1
+      },
+      {
+        "id": "LC4",
+        "name": "braking_0p5g",
+        "longit_g": 0.5,
+        "vert_g": 1
+      },
+      {
+        "id": "LC5",
+        "name": "payload_point_load",
+        "magnitude_N": 500,
+        "application": "center of payload basket floor"
+      },
+      {
+        "id": "LC6",
+        "name": "estop_inspector_push",
+        "magnitude_N": 100,
+        "height_m": 1,
+        "application": "rear E-stop button"
+      },
+      {
+        "id": "LC7",
+        "name": "tow_point_pull",
+        "magnitude_N": 1000,
+        "application": "front tow point horizontal"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "frame_mass_kg",
+        "max_stress_LC1_LC5_MPa",
+        "max_stress_LC6_LC7_MPa",
+        "first_freq_Hz",
+        "payload_floor_deflection_LC5_mm",
+        "ground_clearance_LC2_mm",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "chassis_plate",
+        "role": "welded 1018 CR ladder chassis plate forming the base floor that ties side rails to cross members and supports the battery tray",
+        "count_min": 1,
+        "geometric_constraints": {
+          "footprint_mm": [900, 600],
+          "plate_thickness_mm": 3,
+          "tube_pattern": "perimeter + 3 cross members 25.4x25.4x2 box tubing"
+        },
+        "material_hint": "1018 CR steel 3 mm plate + 25.4x25.4x2 box tubing",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side_rail",
+        "role": "longitudinal side rails running the 900 mm length; carry corner wheel-mount brackets and front tow point / rear E-stop boss",
+        "count_min": 2,
+        "geometric_constraints": {
+          "length_mm": 900,
+          "section_mm": [25.4, 25.4, 2],
+          "per_side": true,
+          "tow_point_feature": "front end plate boss",
+          "estop_boss_height_mm_from_ground": 600
+        },
+        "material_hint": "1018 CR 25.4x25.4x2 tube",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "motor_wheel_mount",
+        "role": "corner motor/wheel bracket carrying 4 kg 24 V gearmotor + 3 kg wheel; reacts LC1/LC2 vertical + LC4 braking",
+        "count_min": 4,
+        "geometric_constraints": {
+          "per_corner": true,
+          "plate_thickness_mm": 5,
+          "bolt_pattern": "4x M6 to side rail + 4x M8 to motor flange",
+          "count_min": 2,
+          "count_max": 4
+        },
+        "material_hint": "1018 CR folded/machined 5 mm plate",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "sensor_tower",
+        "role": "vertical tower rising from chassis plate carrying RGB camera, GPS, IMU, and topped with LIDAR mast; must position LIDAR per IGVC field-of-view rules",
+        "count_min": 1,
+        "geometric_constraints": {
+          "height_mm": 1000,
+          "section_mm": [25.4, 25.4, 2],
+          "tower_base_pattern": "4x M6 to chassis plate",
+          "top_payload_kg": 3
+        },
+        "material_hint": "1018 CR 25.4x25.4x2 tube",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "payload_deck",
+        "role": "mid-height deck forming the 20 lb payload basket floor at vehicle center; reacts LC5 500 N point load within 5 mm",
+        "count_min": 1,
+        "geometric_constraints": {
+          "deck_mm": [300, 300],
+          "plate_thickness_mm": 3,
+          "mount_pattern": "4x M6 to side rails and 1 cross member",
+          "basket_walls_mm": [300, 300, 100]
+        },
+        "material_hint": "1018 CR 3 mm plate + basket perimeter tubing",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "lidar_mount",
+        "role": "top-of-tower LIDAR mast carrying the 2D LIDAR scanner; must keep scan plane level under LC3 side slope",
+        "count_min": 1,
+        "geometric_constraints": {
+          "height_above_tower_base_mm": 1000,
+          "plate_thickness_mm": 5,
+          "bolt_pattern": "4x M5 to sensor tower top"
+        },
+        "material_hint": "1018 CR 5 mm plate or aluminum 6061-T6 5 mm",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "battery_tray",
+        "role": "tray at floor level containing the 22 kg SLA pack; dominates CoM + LC1/LC2 inertia",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_mm": [400, 300, 200],
+          "bolt_pattern": "6x M8 to chassis plate",
+          "retention": "bolted hold-down bar over pack"
+        },
+        "material_hint": "1018 CR folded 2 mm sheet",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "envelope_mm": {
+        "l": 900,
+        "w": 600,
+        "h": 1600
+      },
+      "coordinate_system": "vehicle axes: X longitudinal (front+), Y lateral, Z up; origin at chassis plate centroid on ground plane"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "frame_max_stress_nominal",
+        "limit_MPa": 247,
+        "derivation": "370 / 1.5 yield FoS per IGVC 2026 Rules IX-D-4",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "frame_max_stress_abuse",
+        "limit_MPa": 370,
+        "applies_to": [
+          "LC6",
+          "LC7"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "frame_dry_mass",
+        "limit_kg": 18,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_frame_freq",
+        "limit_Hz": 30,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "payload_floor_deflection",
+        "limit_mm": 5,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "ground_clearance_under_drop",
+        "limit_mm": 76.2,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "type": "structural_analysis",
+        "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces (welded chassis/side-rail/cross-member joints, bolted motor mounts, bolted sensor tower, bolted LIDAR mast, battery tray bolts) <= 1.0 under LC2 curb drop.",
+        "metric": "max_DCR_across_IF1_to_IF7",
+        "threshold": 1.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "scope": "assembled_only",
+        "operator": "<="
+      },
+      {
+        "id": "R_asm2",
+        "type": "structural_analysis",
+        "description": "Sensor tower top (LIDAR mount) lateral displacement under LC3 side-slope must remain below 10 mm to keep the LIDAR scan plane aligned.",
+        "metric": "lidar_mount_lateral_disp_mm",
+        "limit_mm": 10.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "scope": "assembled_only",
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (BEAM188) for tubing; shell for chassis plate and payload basket floor; solid for motor mounts",
+      "mesh_size_mm": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SolidWorks Simulation",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x7)",
+        "modal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "TIG-welded side rails onto perimeter of chassis plate",
+      "load_path": "primary vehicle load path; reacts LC1/LC2 vertical and LC4 braking"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "4x M6 bolted motor-wheel mount into side rail",
+      "load_path": "wheel reaction (LC1/LC2) and motor torque (LC4) from corner into rail"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "4x M6 bolted sensor tower base into chassis plate",
+      "load_path": "sensor inertial load under LC3 side-slope and LC2 drop transferred into chassis; governs R_asm2"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "4x M6 bolts from payload deck into side rails + 1 cross member",
+      "load_path": "LC5 500 N point-load payload reaction into rails (gates R5 deflection)"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "D",
+        "F"
+      ],
+      "mediated_by": "4x M5 bolts from LIDAR mast into sensor tower top",
+      "load_path": "LIDAR inertial reaction + scan-plane alignment"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "6x M8 bolts from battery tray into chassis plate",
+      "load_path": "22 kg battery inertial load (dominant mass) under LC1/LC2/LC3 reacted into chassis"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "B",
+        "tow_point_and_estop"
+      ],
+      "mediated_by": "tow point welded boss at front of each side rail; E-stop boss welded at rear, 600 mm from ground",
+      "load_path": "LC6 E-stop push (100 N) and LC7 tow pull (1 kN) reacted into side rails"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Ground-clearance gate (R6) and modal gate (R4) only exist on the assembled vehicle; LC5 payload deflection (R5) and LC7 tow-point pull require chassis + rails + payload deck + tow-point feature together; sensor tower alignment (R_asm2) only exists on the assembled stack.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "An IGVC AGV by construction couples chassis, drivetrain, battery, sensor tower, LIDAR mast, and payload deck; rules also mandate E-stop and tow-point features that require specific frame members to react them.",
+    "speculation_caveats": "Counts of motor mounts (2-4, depending on 2WD vs 4WD) and cross members reflect typical IGVC practice; no new rulebook thresholds invented.",
+    "original_sample_preserved_at": "docs/eval/samples/350_i_eu13_igvc_2026_frame.json"
+  },
+  "rulebook_citations": {}
+}

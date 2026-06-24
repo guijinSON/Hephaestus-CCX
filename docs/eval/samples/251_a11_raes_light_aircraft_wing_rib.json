@@ -1,0 +1,182 @@
+{
+  "id": "251_a11_raes_light_aircraft_wing_rib",
+  "source": {
+    "catalog_ref": "A11",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "light_aircraft_wing_rib",
+  "full_prompt": "Design a single-part monolithic wing rib for a conceptual-design two-seat STOL light aircraft (MTOM 2000 kg) with CS-23-adjacent load factors. The rib is located at mid-span, airfoil NACA 23012 with chord 1500 mm; overall rib height 180 mm (12% chord). The rib has 3 spar cutouts (two main spars + one auxiliary), 4 lightening holes, a fuel-tank inspection port 100 mm diameter, and 8 skin-attachment tabs around the perimeter on a nominal 180 mm pitch. Mounting interface: rib bolts to front spar via 4x AN4-3A bolts (6.35 mm dia) and to rear spar via 4x AN3-4A bolts (4.76 mm dia). Material: 2024-T3 aluminum sheet 1.6 mm thick, E = 73.1 GPa, yield = 345 MPa, ultimate = 483 MPa, density = 2780 kg/m^3. Load cases (CS-23-adjacent): positive limit load factor n1 = 3.8 g, ultimate = 1.5 x limit = 5.7 g. (R1) Positive ultimate 5.7 g with MTOM 2000 kg: spanwise-distributed lift at the rib station is 1.20 kN/m (elliptical, scaled to limit then ultimate); this produces a shear of 1.8 kN and a bending moment of 2.7 kN*m at the rib. Applied as distributed chordwise pressure on rib webs and transferred through spar cutouts. Max von Mises in rib <= yield = 345 MPa (ultimate factor of safety of 1.5 already built into the ultimate load). (R2) Negative limit 1.5 g inverted with 2000 kg MTOM: rib carries reverse bending; max von Mises <= yield = 345 MPa. (R3) Fuel inspection port boss stress concentration under R1: max stress concentration factor of 3.0 on a 100 mm hole in a 1.6 mm sheet; local max von Mises around port boss <= yield = 345 MPa. (R4) Rib mass <= 250 g. (R5) Linear buckling eigenvalue under ultimate compressive load flow through the rib web >= 1.5. Primary verification: structural FEA (linear static for R1, R2, R3) + linear buckling (R5). Vibration, thermal, fluid, radiation explicitly NOT required at this gate. Deliverables: STEP AP242, materials certificate, and a report listing rib mass in g, max von Mises per load case in MPa, first buckling load factor.",
+  "short_prompt": "Design a single-part monolithic mid-span wing rib for a conceptual two-seat STOL light aircraft (MTOM 2000 kg). The rib is a 1.6 mm 2024-T3 sheet, NACA 23012 airfoil, chord 1500 mm, rib height 180 mm, with three spar cutouts, four lightening holes, a 100 mm fuel-tank inspection port, and eight skin-attachment tabs around the perimeter. It bolts to the front spar via 4x AN4-3A and to the rear spar via 4x AN3-4A.\n\nSized to CS-23-adjacent load factors: positive limit n1 = 3.8 g, ultimate = 1.5 x limit = 5.7 g.\n\nLoad cases.\n- LC1 positive ultimate 5.7 g at MTOM 2000 kg: rib-station spanwise lift ~1.20 kN/m, giving ~1.8 kN shear and ~2.7 kN*m bending at the rib.\n- LC2 negative limit 1.5 g inverted (reverse bending at MTOM).\n- LC3 fuel-port boss stress concentration under LC1 (Kt ~ 3.0 on the 100 mm hole in a 1.6 mm sheet).\n- LC4 linear buckling under ultimate compressive rib-web flow.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Light aircraft wing rib (mid-span, STOL 2000 kg MTOM)",
+    "brief": "2024-T3 1.6 mm sheet rib, NACA 23012 chord 1500 mm. Sized for 3.8 g limit / 5.7 g ultimate on 2000 kg MTOM airframe.",
+    "geometric_constraints": {
+      "airfoil": "NACA 23012",
+      "chord_mm": 1500,
+      "rib_height_mm": 180,
+      "thickness_mm": 1.6,
+      "spar_cutouts": 3,
+      "lightening_holes": 4,
+      "inspection_port_diameter_mm": 100,
+      "skin_attachment_tabs": 8,
+      "front_spar_bolts": {
+        "count": 4,
+        "size": "AN4-3A"
+      },
+      "rear_spar_bolts": {
+        "count": 4,
+        "size": "AN3-4A"
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "2024-T3 aluminum sheet",
+      "properties": {
+        "youngs_modulus_GPa": 73.1,
+        "yield_strength_MPa": 345,
+        "ultimate_tensile_strength_MPa": 483,
+        "density_kg_m3": 2780
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "positive_ultimate_5.7g",
+        "shear_N": 1800,
+        "moment_Nm": 2700
+      },
+      {
+        "id": "LC2",
+        "name": "negative_limit_-1.5g",
+        "shear_N": -474,
+        "moment_Nm": -711
+      },
+      {
+        "id": "LC3",
+        "name": "port_stress_concentration",
+        "parent_case": "LC1"
+      },
+      {
+        "id": "LC4",
+        "name": "buckling_compressive_web",
+        "applied_load": "LC1"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "front and rear spar bolt holes constrained",
+      "loads": "distributed pressure on rib web / concentrated at spar cutouts"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_local_stress_LC3_MPa",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 345,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 345,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_local_stress_at_port",
+        "limit_MPa": 345,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 250,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.5,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order shell (S8R) or shell+solid",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "NASTRAN",
+        "ANSYS",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Aeroelastic and flutter are separate certification gates.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Aero reduced to equivalent pressure.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "CS-23 style positive/negative limit + ultimate",
+    "stress concentration at inspection port",
+    "web buckling"
+  ]
+}

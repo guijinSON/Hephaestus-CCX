@@ -1,0 +1,56 @@
+**
+** NASA-STD-5020B Bolted-Joint Verification — analysis template
+** (mesh + NSETs spliced in by wire_bcs.py from the agent's STEP)
+**
+** This template is the FEM corroboration for plate stresses; the
+** authoritative pass/fail margins (R1..R6) are evaluated in check.py
+** as closed-form NASA-STD-5020B Appendix A equations using spec.json.
+**
+** Units: mm, N, MPa, t (tonne)
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIXED  - lower-plate bottom face (bolted to spacecraft deck)
+**   NLOAD   - upper-plate top face (lumped 40 kg offset-mass loads)
+**
+** *SOLID SECTION uses ELSET=Eall (auto-built from gmsh's volume sets).
+**
+*MATERIAL, NAME=TI64
+*ELASTIC
+113800.0, 0.342
+*DENSITY
+4.43e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=TI64
+**
+** ----------------------------------------------------------------
+** Boundary: pin lower-plate bottom face (deck attach is out of scope)
+** ----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ----------------------------------------------------------------
+** Step 1: Quasi-static ultimate per-bolt load resolved across
+** the upper-plate top face as a uniformly distributed *CLOAD.
+**
+** Bolt-group totals (per spec):
+**   axial pull-out total (4 bolts) = 1.4 * (P_tL_worst + 3*P_tL_other)
+**     ~ 1.4 * (6.25 + 3*2.45) kN = 19.04 kN distributed -> per-node Fz
+**   lateral shear total (4 bolts)  = 1.4 * 4 * 1.0 kN = 5.6 kN -> per-node Fx
+** Forces are *CLOAD-divided across NLOAD nodes (count is geometry-
+** dependent; loads stay in the linear-elastic plate range either way).
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD
+NLOAD, 3, 0.5
+NLOAD, 1, 0.15
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP

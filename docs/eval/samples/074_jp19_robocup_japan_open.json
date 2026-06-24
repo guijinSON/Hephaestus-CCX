@@ -1,0 +1,164 @@
+{
+  "id": "074_jp19_robocup_japan_open",
+  "source": {
+    "catalog_ref": "JP19",
+    "year": 2025,
+    "tier": "B"
+  },
+  "domain": "robotics_structural",
+  "part_class": "rescue_robot_chassis",
+  "full_prompt": "Design the chassis of a Rescue-league robot for an urban-search-and-rescue robotics benchmark. The robot size class is Small (bounding box within 500 mm x 500 mm x 500 mm). Total robot mass must not exceed 20 kg. The chassis must traverse a standard Rescue arena ramp at 45 degrees incline and a stair-step obstacle with step height 150 mm and step depth 250 mm. The robot carries a 5 kg payload (sensor package) on its top deck. Under a 2 g vertical shock (landing off the top of a step) the chassis must not plastically yield, and the top deck must not deflect more than 3 mm. Under a lateral impact of 100 N at the payload CG the chassis must not yield. Flipper arms (if present) must carry the robot's full weight when elevating a wheel; worst-case flipper root stress is evaluated with the full 20 kg weight applied 200 mm out from the flipper hinge. Primary verification is linear static structural FEA for self-weight-on-flipper, 2 g vertical shock, and lateral impact cases. Kinematic reachability of the 45-deg ramp and 150 mm step is computed from CAD (non-FEA). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the chassis + flipper arm, a mass budget, and a report listing total robot mass in kg, max chassis stress per case in MPa, top deck deflection at 2 g in mm, and flipper root stress in MPa.",
+  "short_prompt": "Design the chassis of a Rescue-league robot (Small class) for an urban-search-and-rescue robotics benchmark. Bounding box <= 500 x 500 x 500 mm; total robot mass <= 20 kg. Must traverse a 45-degree Rescue ramp and a 150 mm step (250 mm step depth) - kinematic check from CAD. Carries a 5 kg sensor payload on the top deck.\n\nLoad cases on the chassis.\n- LC1 self-weight 2 g vertical shock (landing off a step): 25 kg x 2 g (~490 N); top-deck deflection <= 3 mm.\n- LC2 lateral impact: 100 N at the payload CG, no plastic yield.\n- LC3 flipper-arm cantilever: the flipper-arm root carries the full 20 kg robot weight applied 200 mm from the hinge (~196 N).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "kinematic_check",
+        "reason": "Ramp traversal and step-climbing are geometric, not FEA.",
+        "examples": [
+          "CAD geometric check"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Rescue-league robot chassis",
+    "brief": "Design a 20 kg, 500 mm-box Rescue robot with flipper arms that climbs 45 deg ramps and 150 mm steps.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 500,
+        "W": 500,
+        "H": 500
+      },
+      "robot_mass_kg_max": 20,
+      "ramp_incline_deg": 45,
+      "step_height_mm": 150,
+      "step_depth_mm": 250
+    },
+    "material": {
+      "typical": "Al extrusion + CFRP plate",
+      "Al6063_T5": {
+        "E_GPa": 68.9,
+        "yield_MPa": 145
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "self_weight_2g_vertical_shock",
+        "magnitude_N": 490,
+        "description": "25 kg total x 2 g"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_100N",
+        "magnitude_N": 100,
+        "location": "payload CG"
+      },
+      {
+        "id": "LC3",
+        "name": "flipper_root_full_weight_offset",
+        "magnitude_N": 196,
+        "description": "20 kg at 200 mm from hinge"
+      }
+    ],
+    "boundary_conditions": {
+      "wheel_contact": "fixed at ground contact",
+      "flipper_hinge": "pin joint"
+    },
+    "objective": {
+      "minimize": "chassis_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "total_mass_kg",
+        "max_stress_LC1_MPa",
+        "max_stress_LC2_MPa",
+        "flipper_root_stress_LC3_MPa",
+        "top_deck_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "total_mass_kg",
+        "limit_kg": 20,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "envelope_max_dim_mm",
+        "limit_mm": 500,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 against yield",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "top_deck_deflection_mm",
+        "limit_mm": 3.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell + solid (hinge)",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static x3"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "envelope + mass caps",
+    "self-weight shock",
+    "flipper arm cantilever",
+    "step/ramp kinematics"
+  ]
+}

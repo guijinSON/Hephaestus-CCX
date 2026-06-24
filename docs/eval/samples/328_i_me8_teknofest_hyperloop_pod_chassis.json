@@ -1,0 +1,205 @@
+{
+  "id": "328_i_me8_teknofest_hyperloop_pod_chassis",
+  "source": {
+    "catalog_ref": "I-ME8 (cross-ref HV23)",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "transport_structural",
+  "part_class": "hyperloop_pod_primary_chassis",
+  "full_prompt": "Design the primary pod chassis of a national aerospace student benchmark Hyperloop Geliştirme pod competing in the Performance track. The pod runs inside a Hyperloop test tube at internal pressure 100 Pa absolute (near-vacuum), tube inner diameter 1.2 m, track length 125 m. Target top speed is 100 km/h (27.8 m/s) in a straight run, with a minimum emergency deceleration capability of 2 g. Pod total wet mass including all subsystems must remain below 150 kg. The chassis is a welded tubular and plate structure made of AISI 4130 chromoly (E 205 GPa, yield 460 MPa, ultimate 560 MPa, density 7850 kg/m^3) for primary tubes, with 6061-T6 aluminum plate bulkheads. Overall chassis envelope: length 2.0 m, width 0.6 m, height 0.5 m (inside tube clearance margin 150 mm). Levitation is achieved by 4 passive magnetic bogies at the four corners; guidance by lateral rail-follower wheels. The chassis must accommodate a battery pack (35 kg, 400 x 250 x 150 mm), a compute/comms module (8 kg), two payload racks (10 kg each), and a regenerative friction brake (15 kg). Load cases: (LC1) static trim at zero speed: 150 kg distributed on the four lev-bogie mounts; (LC2) nominal cruise at 27.8 m/s: lev-bogie vertical reaction 150 kg x 9.81 = 1472 N distributed; lateral guidance-rail reaction peak 300 N per side; (LC3) emergency brake: 2 g longitudinal deceleration on the full 150 kg (2942 N fore-aft) with reaction on the brake-caliper mount; (LC4) cornering/curved-section side load 0.5 g lateral on 150 kg (736 N) at CoM; (LC5) mandatory pod safety factor per the EHW-style hyperloop rulebook: apply FoS of 2.0 over ultimate to every calculated limit load, i.e. verify structure against 2.0 x LC3 and 2.0 x LC4; (LC6) partial vacuum external shell: the pod outer aerodynamic shell (attached to this chassis) sees a differential pressure of up to 100 kPa during venting - flag this as a shell-level case and apply a static pressure of 100 kPa on chassis-skin interface bolts to confirm fastener retention. Pass/fail criteria: (R1) under LC5 factored loads, maximum von Mises stress must remain below 460 MPa yield (direct limit, since FoS 2.0 is already applied in the load case); (R2) chassis dry mass must not exceed 40 kg; (R3) first torsional natural frequency must exceed 30 Hz to avoid coupling with lev-bogie suspension (typical 5-10 Hz); (R4) peak chassis deflection under LC3 emergency brake must remain below 4 mm at the battery-mount rails to preserve battery clamp integrity; (R5) bolt retention under LC6 pressure event must keep fastener preload loss below 10%. Thermal, fluid, radiation, and buckling analyses are not primary pass/fail; fluid is reduced via LC6 static pressure; no thermal gradient imposed in short runs.",
+  "short_prompt": "Design the primary pod chassis of a national aerospace student benchmark Hyperloop Performance-track pod. Tube internal 100 Pa absolute, 1.2 m ID, 125 m track length; top speed 100 km/h (27.8 m/s); emergency decel >= 2 g; total wet mass below 150 kg. Four passive magnetic levitation bogies at the corners, lateral rail-follower guidance.\n\nEnvelope: welded AISI 4130 tubular frame with 6061-T6 aluminum plate bulkheads; chassis envelope 2.0 x 0.6 x 0.5 m (150 mm tube clearance margin); houses a 35 kg battery, 8 kg compute/comms, 2 x 10 kg payload racks, 15 kg regen brake.\n\nFactor regime: per EHW-style rulebook, apply FoS 2.0 over ultimate to every calculated limit load (LC5 applies the 2.0 factor in the load case itself); stay below 460 MPa yield at LC5; dry mass <= 40 kg; first torsional mode > 30 Hz; battery-rail deflection at emergency brake < 4 mm; bolt preload loss under LC6 vacuum-vent pressure < 10%.\n\nLoad cases.\n- Static trim at zero speed: 150 kg distributed over four lev-bogie mounts.\n- Nominal cruise 27.8 m/s: 1472 N vertical distributed + 300 N per side at the guidance-rail.\n- Emergency brake: 2 g longitudinal on 150 kg = 2942 N fore-aft at the brake-caliper mount.\n- Cornering: 0.5 g lateral on 150 kg = 736 N at CoM.\n- Rulebook-factored: 2.0 x LC3 and 2.0 x LC4.\n- Partial vacuum vent: 100 kPa differential on the chassis-skin interface bolts.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark hyperloop-class pod Primary Chassis",
+    "brief": "Welded 4130 + 6061 chassis for 150 kg pod, 100 km/h in 1.2 m tube at 100 Pa, FoS 2.0 per rulebook.",
+    "geometric_constraints": {
+      "envelope_m": {
+        "l": 2.0,
+        "w": 0.6,
+        "h": 0.5
+      },
+      "tube_ID_m": 1.2,
+      "track_length_m": 125,
+      "tube_pressure_Pa_abs": 100,
+      "lev_bogies": 4,
+      "guidance": "lateral rail-follower wheels"
+    },
+    "material": {
+      "primary_tubes": {
+        "name": "AISI 4130 Chromoly",
+        "properties": {
+          "E_GPa": 205,
+          "yield_MPa": 460,
+          "ultimate_MPa": 560,
+          "density_kg_m3": 7850
+        }
+      },
+      "bulkheads": {
+        "name": "Aluminum 6061-T6",
+        "properties": {
+          "E_GPa": 68.9,
+          "yield_MPa": 276,
+          "ultimate_MPa": 310,
+          "density_kg_m3": 2700
+        }
+      }
+    },
+    "mass_budget_kg": {
+      "pod_wet_total_max": 150,
+      "chassis_dry_max": 40,
+      "battery": 35,
+      "compute": 8,
+      "payload_rack_each": 10,
+      "brake": 15
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_trim",
+        "magnitude_N": 1472,
+        "application": "4 lev-bogie mounts"
+      },
+      {
+        "id": "LC2",
+        "name": "cruise",
+        "magnitude_N_lateral": 300,
+        "application": "guidance rails"
+      },
+      {
+        "id": "LC3",
+        "name": "emergency_brake_2g",
+        "magnitude_N": 2942,
+        "application": "brake mount fore-aft"
+      },
+      {
+        "id": "LC4",
+        "name": "cornering_0p5g",
+        "magnitude_N": 736,
+        "application": "CoM lateral"
+      },
+      {
+        "id": "LC5",
+        "name": "factored_2x_LC3_LC4",
+        "factor": 2.0,
+        "application": "FoS per rulebook"
+      },
+      {
+        "id": "LC6",
+        "name": "vacuum_vent_pressure",
+        "magnitude_kPa": 100,
+        "application": "shell-to-chassis bolt interface"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 15,
+      "report_fields": [
+        "chassis_mass_kg",
+        "max_stress_LC5_MPa",
+        "first_torsion_freq_Hz",
+        "battery_rail_deflection_LC3_mm",
+        "bolt_preload_loss_LC6_pct"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 460,
+        "derivation": "yield, with FoS 2.0 already applied in LC5",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "chassis_dry_mass",
+        "limit_kg": 40,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_torsion_mode",
+        "limit_Hz": 30,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "battery_rail_deflection",
+        "limit_mm": 4,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "fastener_preload_loss",
+        "limit_pct": 10,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam/shell hybrid for tubes/bulkheads, solids at weld-rich nodes",
+      "mesh_size_mm": 6,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran"
+      ],
+      "analysis_types": [
+        "linear static (x6)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "national aerospace student benchmark-specific Hyperloop rulebook PDF not surfaced; values cross-referenced with EHW (HV2) conservative gates. Confirm performance-track specific FoS and deceleration targets on fetch.",
+    "exclusions_explained": {
+      "thermal_analysis": "Short run < 10 s; no imposed thermal gradient.",
+      "fluid_analysis": "Partial-vacuum aero reduced to static LC6.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Stress gate bounds tube instability at this scale."
+    }
+  },
+  "eval_coverage": [
+    "hybrid steel/Al frame FEA",
+    "FoS-in-load-case workflow",
+    "emergency-brake deceleration",
+    "modal decoupling from suspension",
+    "vacuum-vent fastener gate"
+  ]
+}

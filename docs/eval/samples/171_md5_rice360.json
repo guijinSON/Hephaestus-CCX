@@ -1,0 +1,195 @@
+{
+  "id": "171_md5_rice360",
+  "source": {
+    "catalog_ref": "MD5",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "medical_device",
+  "part_class": "bubble_cpap_chassis",
+  "full_prompt": "Design a portable bubble CPAP (continuous positive airway pressure) device chassis targeting neonatal respiratory distress syndrome in LMIC clinical settings. The system must deliver continuous positive airway pressure in the 3-8 cmH2O range (294-785 Pa) at a neonatal flow of 5-10 L/min of blended air/oxygen mix, using the classic bubble-CPAP principle where expiratory limb is submerged in a water column to set pressure. The device chassis is a 250 mm x 180 mm x 220 mm polypropylene injection-molded enclosure housing an oil-free diaphragm blower (25 W electrical, 12 L/min max flow), a venturi oxygen blender, a humidifier chamber, and a pressure-relief valve, powered by a 12 VDC supply or a 12 V 5 Ah battery. BOM cost target is under $250 per unit. Pass/fail criteria: (R1) the bubble column must produce a CPAP pressure within +/- 0.5 cmH2O of the target 5 cmH2O at 8 L/min flow per WHO Technical Specification ref WHO/MCA/18.12, (R2) chassis max von Mises stress under a 1 m drop test (equivalent quasi-static 120 N impulse on the enclosure) must not exceed 20 MPa (PP yield 30 / SF 1.5), (R3) humidifier reservoir must maintain inspired gas temperature between 34-37 C with a 50 W heater at ambient 25 C in steady state, (R4) electrical power draw at 8 L/min, 5 cmH2O must not exceed 25 W to keep 5 Ah battery endurance at least 2 hours, and (R5) total device mass must not exceed 2.5 kg for WHO portable-device portability target. Thermal analysis is required for R3. Vibration, fluid CFD, and radiation analyses are not required; bubble-column pressure uses static column hydrostatics. Deliver a STEP AP242 assembly with chassis, blower, humidifier, valves, and battery bay as sub-bodies plus a verification report listing delivered CPAP pressure, chassis stress, humidifier steady-state temperature, electrical draw, and total mass.",
+  "short_prompt": "Design a portable bubble-CPAP chassis for neonatal respiratory distress in LMIC clinical settings. The device delivers 3-8 cmH2O continuous positive airway pressure at 5-10 L/min blended air/O2 using the classic bubble-column pressure-setting scheme, housed in a polypropylene injection-molded enclosure on the order of 250 x 180 x 220 mm containing an oil-free diaphragm blower, venturi O2 blender, heated humidifier, and pressure-relief valve, powered by 12 VDC or a 12 V 5 Ah battery (60 Wh). BOM target under $250/unit.\n\nDesign to the WHO Technical Specification for bubble CPAP (WHO/MCA/18.12). Chassis sits on a table with a grip handle.\n\nLoad cases.\n- LC1 CPAP setpoint: 5 cmH2O +/- 0.5 at 8 L/min (bubble-column hydrostatic).\n- LC2 1 m drop equivalent quasi-static: 120 N on the enclosure.\n- LC3 humidifier thermal steady state: 50 W heater against 25 C ambient, target inspired-gas 34-37 C.\n- LC4 electrical draw endurance: 25 W max continuous draw to reach 2 h on 60 Wh battery.\n\nTotal device mass is a WHO portability constraint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "bubble_column_hydrostatic",
+        "reason": "Bubble-CPAP pressure is the static hydrostatic head of the submerged expiratory limb (rho g h), not FEA.",
+        "examples": [
+          "manual hydrostatic spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Portable bubble CPAP chassis for LMIC neonatal use",
+    "brief": "Design a 250 x 180 x 220 mm PP chassis for a portable bubble CPAP delivering 3-8 cmH2O at 5-10 L/min, under $250 BOM, with 50 W humidifier holding 34-37 C and 25 W max draw for 2 h on 5 Ah battery.",
+    "geometric_constraints": {
+      "chassis_mm": [
+        250,
+        180,
+        220
+      ],
+      "battery_V": 12,
+      "battery_Ah": 5
+    },
+    "material": {
+      "chassis": "Polypropylene, yield 30 MPa, E 1.5 GPa",
+      "humidifier_reservoir": "PP with PTFE wick"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "CPAP_pressure_setpoint",
+        "target_cmH2O": 5,
+        "tolerance_cmH2O": 0.5,
+        "flow_Lpm": 8
+      },
+      {
+        "id": "LC2",
+        "name": "drop_1m_equiv_static",
+        "magnitude_N": 120,
+        "application": "equivalent quasi-static on chassis"
+      },
+      {
+        "id": "LC3",
+        "name": "humidifier_thermal_steady",
+        "ambient_C": 25,
+        "target_C_band": [
+          34,
+          37
+        ],
+        "heater_W": 50
+      },
+      {
+        "id": "LC4",
+        "name": "electrical_draw_endurance",
+        "draw_W": 25,
+        "battery_Wh": 60,
+        "target_endurance_h": 2
+      }
+    ],
+    "boundary_conditions": {
+      "chassis": "placed on table, grip handle on top"
+    },
+    "objective": {
+      "primary": "meet WHO CPAP accuracy + thermal band",
+      "secondary": "minimize BOM cost and mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "CPAP_pressure_at_8Lpm_cmH2O",
+        "chassis_max_von_mises_MPa",
+        "humidifier_steady_state_C",
+        "electrical_draw_W",
+        "total_mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "CPAP_pressure_accuracy",
+        "limit_cmH2O_lower": 4.5,
+        "limit_cmH2O_upper": 5.5,
+        "derivation": "WHO/MCA/18.12 Technical Specification, 5 cmH2O +/- 0.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "chassis_max_von_mises",
+        "limit_MPa": 20,
+        "derivation": "PP yield 30 / 1.5",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "humidifier_inspired_gas_temperature",
+        "limit_C_lower": 34,
+        "limit_C_upper": 37,
+        "derivation": "WHO CPAP heated humidification window",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "electrical_draw_at_setpoint",
+        "limit_W": 25,
+        "derivation": "2 h endurance on 60 Wh battery",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_device_mass",
+        "limit_kg": 2.5,
+        "derivation": "WHO portability target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for chassis, solid for humidifier",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "SolidWorks Simulation",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static drop",
+        "steady-state thermal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Blower vibration out of scope for this chassis brief.",
+      "fluid_analysis": "Bubble-column pressure is hydrostatic; no CFD needed for this brief.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compact enclosure, not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Alarm set (IEC 60601-1-8)",
+      "Full ISO 80601-2-79 neonatal ventilator standard (bubble CPAP is outside scope of that standard)",
+      "Cleaning/disinfection cycle compatibility"
+    ]
+  },
+  "eval_coverage": [
+    "bubble-CPAP hydrostatic column pressure check",
+    "LMIC low-cost + portable medical device envelope",
+    "humidifier steady-state thermal band",
+    "electrical power / battery endurance budget"
+  ]
+}

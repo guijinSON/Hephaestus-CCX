@@ -1,0 +1,206 @@
+{
+  "id": "342_i_eu10_sae_brasil_aerodesign",
+  "source": {
+    "catalog_ref": "I-EU9 (I-LA thread SAE Brasil AeroDesign)",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "aerodesign_wing_spar",
+  "full_prompt": "Design the primary wing spar of a SAE Brasil AeroDesign 2025 Regular class aircraft. Regular class constraints: wingspan b <= 2.5 m, takeoff distance <= 61 m (200 ft), maximum take-off weight (MTOW = empty + payload) optimized to maximize payload score per the SAE Brasil scoring formula. For this design target: wingspan 2.4 m, rectangular planform with chord 0.32 m, NACA 4412 airfoil, empty weight (We) 3.2 kg, payload weight (Wp) 12 kg, giving MTOW 15.2 kg. Cruise speed 16 m/s at sea level ISA (density 1.225 kg/m^3). Takeoff loads drive spar sizing because the full 15.2 kg load is supported at ~ 1.2 g near liftoff with maximum dynamic pressure on the wing. The spar is a rectangular-section hollow box beam running the full span, fabricated from balsa caps + carbon pultruded-rod caps + 1 mm plywood web sandwich, simplified in FEA as a homogeneous transversely isotropic beam with effective E 35 GPa, tensile 400 MPa, compressive 350 MPa, density 650 kg/m^3 (composite average). Spar nominal cross-section 30 mm x 15 mm x 2 mm wall-equivalent. Wing-root joins the fuselage via two M4 steel bolts. Load cases: (LC1) static 1 g trim with elliptical lift distribution across 2.4 m span supporting 15.2 kg (total lift 149 N); (LC2) +2.5 g pull-up at dive speed (limit): total lift 373 N elliptical; (LC3) ultimate 1.5 x LC2 = 3.75 g equivalent, total 559 N - per SAE Brasil structural conservative factor; (LC4) landing hard-impact 3 g on MLG attached to fuselage while wings are in 1 g trim; (LC5) ground gust wingtip 80 N horizontal; (LC6) scoring-weight: SAE Brasil Regular payload scoring is (Wp)^2 / (We) - a design optimization metric; spar must survive the declared MTOW, not scored directly here. Pass/fail: (R1) under LC3 ultimate, max composite stress must remain below 200 MPa (400 / 2.0 FoS) in tension and 175 MPa (350 / 2.0) in compression; (R2) wingtip vertical deflection under LC1 must remain below 2% of half-span (24 mm); (R3) first wing bending natural frequency must exceed 6 Hz to clear servo bandwidth; (R4) spar dry mass must not exceed 0.45 kg to preserve We budget; (R5) root bolt bearing stress under LC3 ultimate must remain below 350 MPa. Thermal, fluid, radiation analyses not required; buckling check captured by compressive stress gate at this slenderness. Deliverables: STEP AP242 of spar, composite cap stack-up (balsa + pultruded rod schedule), FEA for LC1-LC5, modal check, mass report.",
+  "short_prompt": "Design the primary wing spar of a SAE Brasil AeroDesign 2025 Regular-class aircraft. Regular class: span <= 2.5 m, takeoff distance <= 61 m, MTOW optimized via the SAE Brasil scoring formula. Design target: 2.4 m span x 0.32 m chord NACA 4412, empty 3.2 kg + 12 kg payload = 15.2 kg MTOW, cruise 16 m/s at sea level.\n\nEnvelope: rectangular hollow box beam balsa caps + carbon pultruded rods + 1 mm plywood web sandwich; simplified FEA as homogeneous transversely-isotropic beam 30 x 15 mm with 2 mm wall-equivalent; wing root bolted to fuselage with 2 x M4 steel bolts.\n\nFactor regime: SAE Brasil ultimate FoS 2.0 (200 MPa tensile / 175 MPa compressive); wingtip deflection at 1 g trim <= 2% of half-span (24 mm); first wing-bending mode > 6 Hz; spar dry mass <= 0.45 kg; root bolt bearing at ultimate <= 350 MPa.\n\nLoad cases.\n- Static 1 g trim: 149 N elliptical lift over 2.4 m span.\n- +2.5 g pull-up at dive speed (limit): 373 N elliptical lift.\n- Ultimate 1.5 x limit = 3.75 g: 559 N elliptical lift.\n- 3 g hard landing on MLG at the fuselage with wings in 1 g trim.\n- Ground-gust wingtip 80 N horizontal.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "scoring_formula_optimizer",
+        "reason": "SAE Brasil AeroDesign Regular scoring formula (Wp)^2 / (We) is an outer-loop design optimizer that calls the structural FEA to validate each MTOW candidate.",
+        "examples": [
+          "Python optimizer",
+          "XFLR5 + MATLAB"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "SAE Brasil AeroDesign 2025 Regular Class Wing Spar",
+    "brief": "Balsa + pultruded-CF composite box-beam wing spar, 2.4 m span, 15.2 kg MTOW, +2.5 g limit, ultimate 1.5x, SAE Brasil FoS.",
+    "geometric_constraints": {
+      "span_m": 2.4,
+      "chord_m": 0.32,
+      "airfoil": "NACA 4412",
+      "spar_section_mm": {
+        "h": 30,
+        "w": 15,
+        "wall_equiv": 2
+      },
+      "root_bolts": {
+        "count": 2,
+        "size": "M4"
+      }
+    },
+    "material": {
+      "name": "Balsa + pultruded-CFRP caps + plywood web (composite effective)",
+      "properties": {
+        "E_GPa": 35,
+        "tensile_MPa": 400,
+        "compressive_MPa": 350,
+        "density_kg_m3": 650
+      }
+    },
+    "mass_kg": {
+      "empty_We": 3.2,
+      "payload_Wp": 12,
+      "MTOW": 15.2
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_1g",
+        "magnitude_N": 149
+      },
+      {
+        "id": "LC2",
+        "name": "pullup_+2p5g_limit",
+        "magnitude_N": 373
+      },
+      {
+        "id": "LC3",
+        "name": "ultimate_1p5xLC2",
+        "magnitude_N": 559
+      },
+      {
+        "id": "LC4",
+        "name": "hard_landing_3g",
+        "magnitude_g": 3,
+        "application": "MLG on fuselage"
+      },
+      {
+        "id": "LC5",
+        "name": "ground_gust",
+        "magnitude_N": 80,
+        "application": "wingtip horizontal"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "spar_mass_kg",
+        "tensile_stress_LC3_MPa",
+        "compressive_stress_LC3_MPa",
+        "tip_deflection_LC1_mm",
+        "first_bending_freq_Hz",
+        "root_bolt_bearing_LC3_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "tensile_stress_ultimate",
+        "limit_MPa": 200,
+        "derivation": "400 / 2.0 FoS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "compressive_stress_ultimate",
+        "limit_MPa": 175,
+        "derivation": "350 / 2.0 FoS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "wingtip_deflection_1g",
+        "limit_mm": 24,
+        "derivation": "2% of half-span 1200 mm",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_bending_freq",
+        "limit_Hz": 6,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "spar_dry_mass",
+        "limit_kg": 0.45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "root_bolt_bearing_ultimate",
+        "limit_MPa": 350,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam with orthotropic composite properties; TET10 near root bolt region",
+      "mesh_size_mm": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "XFLR5 + Nastran",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "thermal_analysis": "Sea-level sport-model operation.",
+      "fluid_analysis": "Aero reduced to elliptical lift distribution.",
+      "radiation_analysis": "N/A.",
+      "buckling_analysis": "Short span + low slenderness; stress gate bounds."
+    }
+  },
+  "eval_coverage": [
+    "composite wing-spar FEA",
+    "limit + ultimate factor application",
+    "payload scoring outer loop (non-FEA)",
+    "modal + mass gate",
+    "root-bolt bearing"
+  ]
+}

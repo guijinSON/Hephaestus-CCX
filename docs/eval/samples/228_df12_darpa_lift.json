@@ -1,0 +1,174 @@
+{
+  "id": "228_df12_darpa_lift",
+  "source": {
+    "catalog_ref": "DF12",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "vtol_heavy_lift_uas_structural",
+  "part_class": "defense_lift_lifting_yoke",
+  "full_prompt": "Design the primary lifting-arm structural yoke of a VTOL heavy-lift UAS defense-lift benchmark, targeting a payload-to-empty-weight ratio of >= 4.0 with VTOL-only operation. Target configuration: empty weight 100 kg, maximum payload 450 kg (ratio 4.5), MTOW 600 kg (including 50 kg fuel/battery). Lifting yoke is the structural beam that connects the vehicle fuselage to the payload hook via a central load pin at 1.0 m below the vehicle CG. The yoke must transmit 4410 N (450 kg x 9.81 m/s^2) vertical plus dynamic pendulum loads into the fuselage frame. Material: Titanium 6Al-4V STOA (Young's modulus 113.8 GPa, Poisson 0.342, yield 860 MPa, ultimate 950 MPa, density 4430 kg/m^3). Yoke envelope 800 mm width x 300 mm depth x 80 mm thickness, machined from billet with two 80 mm OD top attachment lugs (to fuselage carry-through) and one 50 mm central load pin bore at the bottom (to payload hook). Load cases per heavy-lift trial conditions: (LC1) static hover with max payload: 4410 N vertical on central load pin with top lugs reacted; (LC2) pendulum oscillation: 450 kg payload swinging +/- 20 deg at 0.7 Hz (natural period of 1 m tether), generating horizontal component up to 1560 N in both directions; (LC3) gust arrest: step gust encounter producing 3 g vertical at vehicle = 13,230 N through yoke for 200 ms; (LC4) snatch pick-up: zero-velocity pick-up of a 450 kg payload at zero-to-4 m/s in 500 ms = 3600 N additional dynamic = 8010 N total peak; (LC5) one-hook failure: asymmetric load 4410 N concentrated at one top lug (single-attachment fail-safe case); (LC6) fatigue: 5000 missions x (100 g cycle per mission) = 5x10^5 cycles of 0-4410 N. Pass/fail: (R1) max von Mises across LC1-LC5 <= 633 MPa (ultimate 950 / 1.5); (R2) at limit loads LC1-LC4, max stress <= 748 MPa (yield 860 / 1.15); (R3) pin-bore ovalization under LC1 <= 0.1 mm; (R4) fatigue alternating stress at fillet <= 160 MPa (Ti-6Al-4V Kt=3 endurance at 5x10^5); (R5) yoke mass <= 18 kg (contribution to 100 kg empty); (R6) first lateral bending mode of loaded yoke above 3 Hz (well above 0.7 Hz pendulum to avoid coupling). Deliverables: STEP, FEA per case, fatigue summary, modal, mass report.",
+  "short_prompt": "Design the primary lifting-arm structural yoke of a VTOL heavy-lift UAS, transmitting payload load from a central 50 mm pin bore (payload hook, tether 1.0 m below vehicle CG) up into fuselage carry-through via two 80 mm OD top lugs. Target payload-to-empty-weight ratio >= 4.0 (empty 100 kg, payload 450 kg, MTOW 600 kg). Material class: Ti-6Al-4V STOA. No single governing airworthiness document is called out; design per MIL-HDBK-516C convention with ultimate FoS 1.5 and yield FoS 1.15, plus Ti-6Al-4V Kt=3 fillet fatigue.\n\nEnvelope: yoke on the order of 800 mm wide x 300 mm deep x 80 mm thick.\n\nLoad cases.\n- LC1 static hover at max payload: 4410 N vertical down on the central pin.\n- LC2 pendulum: 450 kg on 1 m tether swinging +/- 20 deg at 0.7 Hz, horizontal component up to 1560 N.\n- LC3 gust arrest: 3 g step gust = 13,230 N through the yoke for 200 ms.\n- LC4 snatch pick-up: zero to 4 m/s in 500 ms adds 3600 N dynamic = 8010 N total peak.\n- LC5 one-hook failure: 4410 N concentrated at a single top lug.\n- LC6 fatigue: 5000 missions x 100 g-cycles = 5e5 cycles of 0-4410 N.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Heavy-lift UAS lifting-arm structural yoke",
+    "brief": "Titanium yoke transmitting 450 kg payload with 4.5x payload-to-weight ratio.",
+    "geometric_constraints": {
+      "yoke_envelope_mm": {
+        "W": 800,
+        "D": 300,
+        "T": 80
+      },
+      "top_lug_od_mm": 80,
+      "pin_bore_mm": 50,
+      "tether_length_m": 1.0
+    },
+    "material": {
+      "name": "Ti-6Al-4V STOA",
+      "youngs_modulus_GPa": 113.8,
+      "poissons_ratio": 0.342,
+      "density_kg_m3": 4430,
+      "yield_strength_MPa": 860,
+      "ultimate_tensile_strength_MPa": 950
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_hover",
+        "F_N": 4410
+      },
+      {
+        "id": "LC2",
+        "name": "pendulum_oscillation",
+        "F_H_N": 1560,
+        "freq_Hz": 0.7
+      },
+      {
+        "id": "LC3",
+        "name": "gust_arrest",
+        "F_N": 13230,
+        "duration_ms": 200
+      },
+      {
+        "id": "LC4",
+        "name": "snatch_pickup",
+        "F_N_peak": 8010
+      },
+      {
+        "id": "LC5",
+        "name": "one_hook_fail",
+        "F_N": 4410,
+        "application": "single top lug"
+      },
+      {
+        "id": "LC6",
+        "name": "fatigue_5e5",
+        "F_N_range": [
+          0,
+          4410
+        ]
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "yoke_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "pin_bore_ovalization_mm",
+        "fillet_alt_stress_MPa",
+        "first_lateral_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 633,
+        "derivation": "ultimate 950 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit",
+        "limit_MPa": 748,
+        "derivation": "yield 860 / 1.15",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "pin_bore_ovalization",
+        "limit_mm": 0.1,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "fillet_alt_stress",
+        "limit_MPa": 160,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "yoke_mass",
+        "limit_kg": 18,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_lateral_mode_of_loaded_yoke",
+        "limit_Hz": 3.0,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

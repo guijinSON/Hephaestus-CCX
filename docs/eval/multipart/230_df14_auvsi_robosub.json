@@ -1,0 +1,305 @@
+{
+  "id": "230_df14_auvsi_robosub",
+  "source": {
+    "catalog_ref": "DF14",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/230_df14_auvsi_robosub.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "auv_structural",
+  "part_class": "auv_pressure_hull_with_internals_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary pressure hull of an autonomous underwater vehicle benchmark as a multi-part sealed assembly consisting of the cylindrical aluminum barrel, a removable forward hemispherical endcap with O-ring flange, an integrated aft hemispherical endcap, the O-ring flange bolt set, and eight wet-mate penetrator bosses (4 M16 connectors + 2 thruster shafts + 1 acoustic transducer + 1 pressure port), operating in a test pool (38 ft / 11.6 m maximum depth). Vehicle displacement ~45 kg, hull diameter 200 mm OD, cylindrical length 500 mm with two hemispherical endcaps (one O-ring flange access, one integrated). Material: 6061-T6 aluminum (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3), wall thickness nominal 6 mm cylinder + 5 mm endcaps, with anti-corrosion hard-anodized coating. Hull hosts 8 penetrators (4 M16 wet-mate connectors + 2 thruster shafts + 1 acoustic transducer + 1 pressure port). Design depth: 11.6 m freshwater + 2x safety factor = 23.2 m equivalent, giving MEOP 228 kPa external gauge. Load cases: (LC1) MEOP 228 kPa external (-0.228 MPa gauge inside cavity); (LC2) proof pressure 1.5 x MEOP = 342 kPa; (LC3) burst 2.5 x MEOP = 570 kPa must not ultimate-fail; (LC4) thruster reaction: 50 N thrust per thruster at two opposing penetrators produces +/- 100 N couple on hull endcaps; (LC5) handling drop: 1 m drop onto hard surface (10 g impulse); (LC6) O-ring flange preload: 8 x M6 bolts at 10 N-m torque = 18 kN total axial clamp on the flange; (LC7) thermal: fresh-water 15 C to tropical pool 30 C swing. Pass/fail per ANSI/AIAA S-080A + ASME BPVC VIII analog: (R1) max von Mises under LC1-LC2 <= 184 MPa (yield 276 / 1.5); (R2) burst LC3 no ultimate failure (stress <= 310 MPa); (R3) linear-buckling eigenvalue of external-pressure-loaded cylinder under LC1 >= 3.0; (R4) hull + endcap dry mass <= 8 kg; (R5) penetrator boss local stress under LC6 <= 184 MPa; (R6) hull first longitudinal mode above 150 Hz. Verification is performed on the assembled barrel + endcaps + flange bolts + penetrator bosses multi-body model with representative bolted + O-ring interface stiffness; per-part stress is reported but does not gate pass/fail. Deliverables: STEP AP242, pressure FEA per case, buckling eigenvalue, thermal FEA, modal, and mass report.",
+  "short_prompt": "Design the primary pressure hull of an autonomous underwater vehicle benchmark operating in a test pool (38 ft / 11.6 m maximum depth).\n\nVehicle displacement ~45 kg, hull diameter 200 mm OD, cylindrical length 500 mm with two hemispherical endcaps. Material 6061-T6 aluminum (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3), wall thickness nominal 6 mm cylinder + 5 mm endcaps, with anti-corrosion hard-anodized coating. Hull hosts 8 penetrators (4 M16 wet-mate connectors + 2 thruster shafts + 1 acoustic transducer + 1 pressure port). Design depth: 11.6 m freshwater + 2x safety factor = 23.2 m equivalent, giving MEOP 228 kPa external gauge.\n\nLoad cases: LC1 MEOP 228 kPa external; LC2 proof pressure 1.5 x MEOP = 342 kPa; LC3 burst 2.5 x MEOP = 570 kPa must not ultimate-fail; LC4 thruster reaction 50 N thrust per thruster producing +/- 100 N couple; LC5 handling drop 1 m onto hard surface (10 g impulse); LC6 O-ring flange preload 8 x M6 bolts at 10 N-m torque = 18 kN total axial clamp; LC7 thermal fresh-water 15 C to tropical pool 30 C swing.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "AUV pressure hull (multi-part sealed assembly)",
+    "brief": "6061-T6 Al pressure hull: cylindrical barrel + removable forward endcap + integrated aft endcap + 8-bolt O-ring flange + 8 penetrator bosses, for 11.6 m test-pool operation.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "cylindrical_barrel",
+        "role": "cylindrical 200 mm OD x 6 mm wall x 500 mm long pressure-carrying barrel",
+        "count_min": 1,
+        "geometric_constraints": {
+          "OD_mm": 200,
+          "wall_mm": 6,
+          "length_mm": 500
+        },
+        "material_hint": "Al 6061-T6 hard anodized",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "forward_endcap_removable",
+        "role": "removable forward hemispherical endcap with O-ring flange",
+        "count_min": 1,
+        "geometric_constraints": {
+          "wall_mm": 5
+        },
+        "material_hint": "Al 6061-T6 hard anodized",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "aft_endcap_integrated",
+        "role": "integrated aft hemispherical endcap",
+        "count_min": 1,
+        "geometric_constraints": {
+          "wall_mm": 5
+        },
+        "material_hint": "Al 6061-T6 hard anodized",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "oring_flange_bolt_set",
+        "role": "eight M6 bolts at 10 N-m torque clamping the forward endcap flange (LC6 preload)",
+        "count_min": 8,
+        "geometric_constraints": {
+          "preload_N_total": 18000
+        },
+        "material_hint": "A4-70 stainless / Ti",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "penetrator_boss",
+        "role": "one of eight bosses on the hull for 4 M16 wet-mate connectors + 2 thruster shafts + 1 acoustic transducer + 1 pressure port",
+        "count_min": 8,
+        "geometric_constraints": {},
+        "material_hint": "Al 6061-T6 machined boss",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "200 mm OD x ~700 mm total length (barrel + 2 hemi endcaps)",
+      "coordinate_system": "+X forward along hull axis; O-ring flange at forward end"
+    },
+    "material": {
+      "name": "Aluminum 6061-T6 hard anodized",
+      "youngs_modulus_GPa": 68.9,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2700,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "MEOP",
+        "P_kPa_external": 228
+      },
+      {
+        "id": "LC2",
+        "name": "proof",
+        "P_kPa": 342
+      },
+      {
+        "id": "LC3",
+        "name": "burst",
+        "P_kPa": 570
+      },
+      {
+        "id": "LC4",
+        "name": "thruster_couple",
+        "F_N": 100
+      },
+      {
+        "id": "LC5",
+        "name": "drop_1m_10g",
+        "g": 10
+      },
+      {
+        "id": "LC6",
+        "name": "flange_preload",
+        "F_N_total_axial": 18000
+      },
+      {
+        "id": "LC7",
+        "name": "thermal",
+        "range_C": [
+          15,
+          30
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "forward endcap sealed to barrel via O-ring flange and 8 bolt preload; aft endcap integrated / welded to barrel; penetrator bosses welded / machined into barrel and endcap walls",
+      "support": "hull suspended / supported at handling fixture in LC1-LC4; drop LC5 idealized impulse"
+    },
+    "objective": "minimize hull dry mass under 8 kg while passing pressure, buckling, flange preload, and modal gates",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "hull_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "burst_margin_MPa",
+        "buckling_eigenvalue",
+        "first_longitudinal_mode_Hz",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "burst_stress",
+        "limit_MPa": 310,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "external_pressure_eigenvalue",
+        "limit": 3.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "hull_dry_mass",
+        "limit_kg": 8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "penetrator_boss_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_longitudinal_mode",
+        "limit_Hz": 150,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC6"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "forward endcap O-ring flange bolted to barrel with 8 x M6 preload"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "welded",
+      "load_path": "aft endcap integrated / welded to barrel"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "O-ring flange bolt set preloading the forward endcap flange"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "penetrator bosses welded / machined into the barrel wall"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "penetrator bosses welded / machined into the forward endcap wall"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "AUV pressure hulls are barrel + endcap + flange-bolt assemblies with penetrator bosses for wet-mate connectors, thrusters, and sensors; MEOP, flange preload, and penetrator gates explicitly cross the sealing and boss interfaces and must be modelled as a multi-body hull.",
+    "speculation_caveats": "Flange bolt count (8) and penetrator boss distribution are speculative; hull material, pressures, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "docs/eval/samples/230_df14_auvsi_robosub.json"
+  }
+}

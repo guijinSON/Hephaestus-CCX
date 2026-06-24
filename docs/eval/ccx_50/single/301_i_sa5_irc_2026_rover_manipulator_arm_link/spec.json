@@ -1,0 +1,213 @@
+{
+  "id": "301_i_sa5_irc_2026_rover_manipulator_arm_link",
+  "source": {
+    "catalog_ref": "I-SA5",
+    "year": 2026,
+    "tier": "A+"
+  },
+  "domain": "space_robotics_structural",
+  "part_class": "manipulator_arm_upper_link",
+  "full_prompt": "Design the upper link of the manipulator arm for an IRC 2026 planetary rover. Per the IRC 2026 Rulebook, the rover + arm mass must not exceed 65 kg, total mass with payload must not exceed 85 kg, and the rover must fit within a 1.5 m x 1.2 m footprint. The manipulator arm is a 6-DOF serial kinematic chain designed to pick and place up to 5 kg at 1.2 m reach (shoulder to tool tip). This spec covers the 'upper link' connecting shoulder pitch joint to elbow pitch joint. Geometry: the link is a straight closed-box aluminium weldment, cross-section 60 mm x 40 mm external with 3 mm walls, length 600 mm between pivot centers. Each end has a reinforced boss to accept a double-row ball bearing of 30 mm OD, 10 mm ID, 9 mm wide (for a D6010Z / equivalent). The shoulder end has a 4-bolt pattern (M5, 30 mm square) for attaching a harmonic drive gearbox flange; the elbow end has an identical 4-bolt pattern. Material: welded 6061-T6 aluminium (Young's 69 GPa, Poisson 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa; assume welded HAZ properties reduced to 138 MPa yield / 165 MPa UTS in a 25 mm band around each weld). Loads: static 5 kg payload at tool tip with arm extended 1.2 m horizontal; gravity on Mars (3.71 m/s^2) for in-mission analysis, but on Earth during test (9.81 m/s^2) for proof. Load cases: LC1 (Earth test at full extension) — 5 kg x 9.81 = 49 N downward at elbow end, plus the weight of the link and all joints beyond, roughly 30 N additional, plus a 4 Nm shoulder reaction moment. With shoulder end fully fixed and elbow end loaded: apply 80 N vertical + 4 Nm bending moment about the strong axis; LC2 (Mars operational) — 19 N vertical + 1.5 Nm (scaled by Mars gravity); LC3 (Emergency stop deceleration) — arm moving at 0.5 m/s tool speed, abrupt stop in 100 ms: apply 2 g inertial load at the tool tip = 100 N at elbow; LC4 (Impact on stow) — 30 g lateral shock during rover landing or hard traverse (rover mass = 65 kg, arm stowed); apply 30 g lateral on the link mass = 30 * 9.81 * 0.8 kg (link mass estimate) at link mid-span; LC5 (Thermal) — Mars day-night cycle: -80 C to +20 C uniform, with both ends fully fixed (captures worst case when rover is parked and thermally cycled). Pass/fail: (R1) max von Mises in base material under LC1, LC3, LC4 < 184 MPa (yield/1.5); (R2) max von Mises in HAZ region under same LCs < 92 MPa (HAZ yield/1.5); (R3) tip deflection under LC1 < 2.5 mm (so tool-tip placement accuracy is preserved); (R4) first-mode linear buckling under LC4 compression >= 3.0; (R5) link mass < 850 g so arm total mass budget of 8 kg is preserved; (R6) under LC5 combined thermal + gravity (Earth), max stress < 184 MPa in base and < 92 MPa in HAZ. Primary verification: linear static structural FEA for LC1-LC4 and thermal-structural coupled for LC5; linear buckling for LC4. Vibration modal, fluid, and radiation analyses are not required (the ionising-radiation budget for a rover skin is addressed in other deliverables, not in this link). Output one STEP AP242 single-body link plus a report listing link mass, max stress in base vs. HAZ per case, tip deflection, buckling factor, and combined thermal stress.",
+  "short_prompt": "Design the upper link of the 6-DOF manipulator arm of an IRC 2026 planetary rover per IRC 2026 Rulebook (rover + arm <= 65 kg, total with payload <= 85 kg, footprint <= 1.5 x 1.2 m). Arm picks/places up to 5 kg at 1.2 m reach; this link connects shoulder-pitch to elbow-pitch.\n\nEnvelope: welded closed-box 6061-T6 aluminum, 60 x 40 mm external x 3 mm walls x 600 mm pin-to-pin; both ends carry 30 mm OD bearing bosses and 4 x M5 harmonic-drive flange patterns on a 30 mm square. HAZ band 25 mm wide around each weld with reduced allowables (138 MPa yield / 165 MPa UTS).\n\nFactor regime: yield FoS 1.5 on base metal, 1.5 on HAZ; linear buckling eigenvalue >= 3.0 on the impact case; tip accuracy <= 2.5 mm under Earth test.\n\nLoad cases.\n- Earth test at full extension: 80 N vertical + 4 N-m bending at the elbow end (includes link + downstream-joint self-weight).\n- Mars operational (3.71 m/s^2): 19 N + 1.5 N-m.\n- Emergency stop: tool-tip at 0.5 m/s decelerating in 100 ms = 100 N lateral at elbow (2 g).\n- Landing / traverse impact: 30 g lateral on the link mass, applied at mid-span.\n- Thermal: Mars day-night -80 C to +20 C uniform, both ends fixed.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "IRC 2026 rover arm upper link",
+    "brief": "Welded 6061-T6 box-section upper arm link, 600 mm pivot-to-pivot, for a 65 kg IRC rover arm lifting 5 kg at 1.2 m reach across Earth test and Mars ops with HAZ weld penalty.",
+    "geometric_constraints": {
+      "length_mm": 600,
+      "section_external_mm": {
+        "h": 60,
+        "w": 40
+      },
+      "wall_mm": 3,
+      "bearing": {
+        "OD_mm": 30,
+        "ID_mm": 10,
+        "width_mm": 9
+      },
+      "end_bolt_pattern_mm": 30,
+      "end_bolt_count": 4,
+      "end_bolt_size": "M5"
+    },
+    "material": {
+      "base": {
+        "name": "6061-T6",
+        "youngs_modulus_GPa": 69,
+        "yield_MPa": 276,
+        "UTS_MPa": 310,
+        "density_kg_m3": 2700
+      },
+      "HAZ": {
+        "yield_MPa": 138,
+        "UTS_MPa": 165,
+        "width_mm": 25
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "Earth_full_ext",
+        "vertical_N": 80,
+        "moment_Nm": 4
+      },
+      {
+        "id": "LC2",
+        "name": "Mars_operational",
+        "vertical_N": 19,
+        "moment_Nm": 1.5
+      },
+      {
+        "id": "LC3",
+        "name": "e_stop",
+        "tip_N": 100
+      },
+      {
+        "id": "LC4",
+        "name": "stow_impact",
+        "shock_g": 30,
+        "link_mass_kg": 0.8
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_cycle",
+        "T_low_C": -80,
+        "T_high_C": 20
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "link_mass_g",
+        "max_stress_base_per_case_MPa",
+        "max_stress_HAZ_per_case_MPa",
+        "tip_deflection_LC1_mm",
+        "buckling_factor_LC4",
+        "thermal_combined_stress_LC5_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_base",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_HAZ",
+        "limit_MPa": 92,
+        "applies_to": [
+          "LC1",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tip_deflection",
+        "limit_mm": 2.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 850,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6a",
+        "type": "thermal_analysis",
+        "metric": "combined_stress_base",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6b",
+        "type": "thermal_analysis",
+        "metric": "combined_stress_HAZ",
+        "limit_MPa": 92,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "thermal-structural (LC5)",
+        "linear buckling (LC4)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Launch vibe not a rover arm concern on IRC (earth-launched by vehicle truck).",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "Out of scope for a structural link; handled in rover skin spec."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fatigue of HAZ",
+      "Cold-weld avoidance in Martian CO2 atmosphere"
+    ]
+  },
+  "eval_coverage": [
+    "welded structure with explicit HAZ penalty zone",
+    "multi-gravity operational spec (Earth proof + Mars ops)",
+    "thermal cycle combined with preload"
+  ]
+}

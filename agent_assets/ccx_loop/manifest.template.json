@@ -1,0 +1,11 @@
+{
+  "bundle": "ccx_loop_native_assets",
+  "version": 1,
+  "skills": [
+    "ccx_cad_repair",
+    "ccx_blueprint_generation"
+  ],
+  "tools": [
+    "render_richview_cli.py"
+  ]
+}

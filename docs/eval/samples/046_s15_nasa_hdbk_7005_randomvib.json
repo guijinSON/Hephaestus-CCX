@@ -1,0 +1,259 @@
+{
+  "id": "046_s15_nasa_hdbk_7005_randomvib",
+  "source": {
+    "catalog_ref": "S15",
+    "year": 2001,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "satellite_equipment_box",
+  "full_prompt": "Design and analyze a small satellite equipment box (avionics enclosure) for random-vibration and shock qualification per NASA-HDBK-7005 (2001), Dynamic Environmental Criteria. The box is a 6U-sized milled aluminum enclosure with an internal stack of 3 PCBs totaling 450 g. The qualification environment drawn from NASA-HDBK-7005 is the General Environmental Verification Standard (GEVS) acoustic/random-vibration envelope used by NASA GSFC for component-level qualification.\n\nGeometry. Enclosure 200 mm x 150 mm x 70 mm, wall thickness 2.0 mm (design variable 1.5-3.0 mm), 6 M4 mounting fasteners at the flange on a 180 mm x 130 mm pattern. Internal PCB stack: 3 boards at 30 mm, 45 mm, 60 mm Z positions, each 180 mm x 130 mm, 1.6 mm FR4, 150 g each. PCBs mount on 4 standoffs per board (M3). Interface to spacecraft is the flange perimeter bolted to a panel.\n\nMaterial. Al 6061-T6 enclosure, E = 68.9 GPa, nu = 0.33, rho = 2700 kg/m^3, Fty = 276 MPa, Ftu = 310 MPa. PCB FR4: E = 22 GPa (in-plane), nu = 0.18, rho = 1850 kg/m^3; treat as lumped mass if simpler.\n\nQualification environment per NASA-HDBK-7005 (GEVS component-level). Random vibration PSD: +6 dB/oct from 20 Hz to 50 Hz (ramp from 0.013 g^2/Hz at 20 Hz to 0.08 g^2/Hz at 50 Hz), plateau 0.08 g^2/Hz from 50 Hz to 800 Hz, -6 dB/oct from 800 Hz to 2000 Hz (ramp from 0.08 to 0.013 g^2/Hz). Total overall = 14.1 Grms (3-axis, 2 min/axis qualification per SMC-S-016). Sine qualification: 0.5 inch DA below 7 Hz, 12.5 g peak from 7 Hz to 100 Hz, 2 oct/min sweep. Shock SRS per NASA-HDBK-7005 Fig 4-type separation shock: 100 Hz = 100 g, 1000 Hz = 2000 g, 10 kHz = 2000 g (plateau), Q = 10.\n\nLoad cases. LC1 (random vibration qualification): full NASA-HDBK-7005 / GEVS PSD applied at the flange interface in each of 3 axes (separately). LC2 (sine qualification): 12.5 g peak swept 7-100 Hz each axis. LC3 (shock SRS): decompose into base acceleration time history or modal SRS application, each axis. LC4 (quasi-static enveloping): 22.5 g (3-sigma of 14.1 Grms / 10 enforcement factor is not quite right; use 3 * 14.1 Grms response amplification at first mode = 42 g if Q = 10 at primary mode; as a bounding quasi-static use 30 g in each axis simultaneously).\n\nPass/fail criteria. (R1) First natural frequency of enclosure flange-constrained with internal lumped masses must be >= 140 Hz (to avoid amplifying the plateau; typical GEVS decoupling gate). (R2) Max 3-sigma random response stress under LC1 in enclosure walls must not exceed Ftu / 1.4 = 221.4 MPa. (R3) Max 3-sigma random response stress in fastener ligament must not exceed Fty / 1.25 = 220.8 MPa. (R4) Sine LC2 peak response stress must not exceed Fty / 1.25 = 220.8 MPa. (R5) Shock LC3 SRS-response max stress must not exceed Ftu / 1.4 = 221.4 MPa at any mode up to 10 kHz. (R6) Quasi-static enveloping LC4 30 g each axis: max stress <= Fty / 1.25 = 220.8 MPa. (R7) Enclosure total mass (empty) <= 800 g.\n\nSolver and analysis expectations. Primary analyses: constrained modal extraction (R1), PSD random response via modal superposition for LC1 (R2, R3), harmonic or sine response for LC2 (R4), SRS decomposition or direct modal SRS for LC3 (R5), linear static for LC4 (R6). TET10 solids for enclosure walls at 2 mm mesh; PCBs as lumped masses coupled via RBE2 to standoffs. Buckling, thermal, fluid, radiation NOT required. This is a vibration-primary brief unlike the structural-primary brackets.\n\nDeliverables. STEP AP242 of enclosure, mass in g, first 10 natural frequencies, 3-sigma random stress per axis per LC1, sine peak stress, shock response stress, and quasi-static max stress per LC4.",
+  "short_prompt": "Design a small satellite equipment enclosure (milled 6061-T6 box with 3 internal PCBs at 150 g each) for component-level qualification per NASA-HDBK-7005 (2001) with GEVS (GSFC-STD-7000) environments.\n\nEnvelope: enclosure ~200 x 150 x 70 mm, wall thickness nominal 2.0 mm (design range 1.5-3.0 mm), 6 M4 mounting fasteners at the flange on a 180 x 130 mm pattern. Three 180 x 130 x 1.6 mm FR4 boards stacked inside on M3 standoffs.\n\nLoad cases.\n- LC1 random-vibration qualification: GEVS PSD (0.013 to 0.08 g^2/Hz ramp 20-50 Hz, 0.08 g^2/Hz plateau 50-800 Hz, ramp down to 0.013 by 2000 Hz), 14.1 Grms overall, 2 min per axis, each of 3 axes.\n- LC2 sine qualification: 12.5 g peak swept 7-100 Hz, 2 oct/min.\n- LC3 separation-shock SRS: 100 g at 100 Hz rising to 2000 g plateau at 1000-10000 Hz, Q = 10.\n- LC4 quasi-static envelope: 30 g in each axis simultaneously.",
+  "verification": {
+    "primary": "vibration_analysis",
+    "secondary": [
+      "structural_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Satellite equipment box random/sine/shock qualification per NASA-HDBK-7005",
+    "brief": "200x150x70 mm Al 6061 enclosure with 3x150g PCBs; GEVS 14.1 Grms random + 12.5 g sine + separation-shock SRS; fn >= 140 Hz flange-constrained.",
+    "geometric_constraints": {
+      "enclosure_mm": {
+        "x": 200,
+        "y": 150,
+        "z": 70
+      },
+      "wall_thickness_mm": {
+        "min": 1.5,
+        "nominal": 2.0,
+        "max": 3.0
+      },
+      "mounting_fasteners": {
+        "count": 6,
+        "size": "M4",
+        "pattern_mm": {
+          "x": 180,
+          "y": 130
+        }
+      },
+      "pcbs": {
+        "count": 3,
+        "dims_mm": {
+          "x": 180,
+          "y": 130,
+          "z": 1.6
+        },
+        "z_positions_mm": [
+          30,
+          45,
+          60
+        ],
+        "mass_g_each": 150
+      }
+    },
+    "material": {
+      "enclosure": {
+        "name": "Al 6061-T6",
+        "E_GPa": 68.9,
+        "nu": 0.33,
+        "Fty_MPa": 276,
+        "Ftu_MPa": 310,
+        "density_kg_m3": 2700
+      },
+      "pcb": {
+        "name": "FR4",
+        "E_GPa": 22,
+        "density_kg_m3": 1850
+      }
+    },
+    "random_psd": {
+      "ramp_up": {
+        "from_Hz": 20,
+        "to_Hz": 50,
+        "rate_dB_oct": 6
+      },
+      "plateau": {
+        "from_Hz": 50,
+        "to_Hz": 800,
+        "g2_Hz": 0.08
+      },
+      "ramp_down": {
+        "from_Hz": 800,
+        "to_Hz": 2000,
+        "rate_dB_oct": -6
+      },
+      "overall_Grms": 14.1,
+      "duration_min_per_axis": 2
+    },
+    "sine_qual": {
+      "peak_g": 12.5,
+      "sweep_Hz": [
+        7,
+        100
+      ],
+      "rate_oct_min": 2,
+      "DA_below_7Hz_in": 0.5
+    },
+    "shock_SRS": {
+      "at_100Hz_g": 100,
+      "at_1000Hz_g": 2000,
+      "plateau_above_Hz": 1000,
+      "Q": 10
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "random_vib_14.1Grms",
+        "axes": 3
+      },
+      {
+        "id": "LC2",
+        "name": "sine_qual",
+        "axes": 3
+      },
+      {
+        "id": "LC3",
+        "name": "shock_SRS"
+      },
+      {
+        "id": "LC4",
+        "name": "qs_envelope_30g_per_axis"
+      }
+    ],
+    "boundary_conditions": {
+      "flange": "fully fixed at 6 M4 bolts"
+    },
+    "objective": {
+      "minimize": "empty_enclosure_mass",
+      "target_g_max": 800
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "NASA-HDBK-7005",
+      "revision": "2001 (with GEVS GSFC-STD-7000 reference)"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency_flange_constrained",
+        "limit_Hz": 140,
+        "derivation": "Decoupling from PSD plateau 50-800 Hz per NASA-HDBK-7005 guidance",
+        "applies_to": [
+          "constrained_modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_wall_stress",
+        "limit_MPa": 221.4,
+        "derivation": "Ftu / 1.4 (NASA-STD-5001B ultimate)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_fastener_ligament_stress",
+        "limit_MPa": 220.8,
+        "derivation": "Fty / 1.25 (NASA-STD-5001B yield)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "sine_peak_stress",
+        "limit_MPa": 220.8,
+        "derivation": "Fty / 1.25",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "shock_SRS_peak_stress",
+        "limit_MPa": 221.4,
+        "derivation": "Ftu / 1.4",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "qs_30g_max_stress",
+        "limit_MPa": 220.8,
+        "derivation": "Fty / 1.25",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "empty_enclosure_mass",
+        "limit_g": 800,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 / shell walls with lumped PCBs",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Nastran random",
+        "ANSYS Harmonic/PSD",
+        "Abaqus Random Response"
+      ],
+      "analysis_types": [
+        "constrained modal",
+        "PSD random",
+        "harmonic sine",
+        "modal SRS",
+        "linear static"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Environment is vibration/shock; thermal out of scope.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "EEE parts derating per component-level vibration stress",
+      "Acoustic response (fairing acoustic field) beyond random-vib envelope",
+      "Interface workmanship vibration sweep"
+    ]
+  },
+  "eval_coverage": [
+    "PSD random response 3-sigma stress",
+    "sine + shock SRS",
+    "flange-constrained modal decoupling",
+    "GEVS/NASA-HDBK-7005 full envelope coverage"
+  ]
+}

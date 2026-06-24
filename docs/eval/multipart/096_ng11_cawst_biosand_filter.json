@@ -1,0 +1,361 @@
+{
+  "id": "096_ng11_cawst_biosand_filter",
+  "source": {
+    "catalog_ref": "NG11",
+    "year": 2022,
+    "tier": "C+",
+    "original_sample": "docs/eval/samples/096_ng11_cawst_biosand_filter.json",
+    "multipart_basis": "Decomposition reflects CAWST biosand filter components: precast concrete housing shell cast with cast-in outlet path, PVC/copper outlet pipe elbow assembly, perforated diffuser plate, concrete lid, internal support ring seating the diffuser, and outlet spout fitting at outlet elevation."
+  },
+  "domain": "humanitarian_wash",
+  "part_class": "household_biosand_filter_concrete_body_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design one representative household concrete biosand filter body compliant with the CAWST Biosand Filter Construction Manual (2022 revision). The filter body is a rectangular concrete box with outer dimensions 305 mm (L) x 305 mm (W) x 900 mm (H), inner cavity 205 mm x 205 mm x 900 mm giving 50 mm wall thickness on all four sides, cast from a 1:2:4 (by volume) ordinary-Portland-cement : sand : aggregate mix with w/c ratio approximately 0.45 and a nominal cube compressive strength of 20 MPa at 28 days. The inside cavity holds (bottom to top): a 50 mm layer of 6-12 mm gravel underdrain around the outlet elbow, a 50 mm layer of 1-6 mm separating gravel, a 500 mm deep layer of fine filter sand (d10 about 0.15-0.20 mm, uniformity coefficient <= 2.5), leaving a supernatant water-column standing-head zone of 50-150 mm (5-15 cm) above the sand surface. The outlet is a 12.7 mm (1/2 in) nominal copper or PVC elbow cast into the wall and rising to an outlet spout at elevation matching the top of the sand bed, so that the standing-head window is defined and the bed is kept saturated between dosings. Design filtration rate is 0.4 m/h (i.e. 0.4 m3 per m2 sand-surface area per hour = 27 mL/min at 205x205 mm area), derived from CAWST operating guidance. Filter must include a concrete lid and a diffuser plate (perforated metal or plastic) installed 50 mm above the top sand level. Deliverable is a CAD model of the concrete filter body including cast-in outlet path and the internal layer labels (not full granular simulation) suitable for (a) linear static structural FEA under hydrostatic + dead load to verify 50 mm wall thickness is adequate, (b) geometric volume check of filter-bed stack-up, (c) Darcy-equivalent hydraulic check of the 0.4 m/h filtration rate against the specified head window. Vibration, thermal, fluid CFD of the full filter (beyond Darcy lookup), radiation, buckling analyses are NOT required.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a multi-part assembly rather than a single solid body. The decomposition comprises (A) concrete housing shell (one-piece precast box with cast-in outlet channel), (B) diffuser plate (perforated metal/plastic seated 50 mm above sand surface), (C) PVC outlet pipe elbow assembly cast into the wall, (D) concrete lid closing the top of the box, (E) internal support ring seating the diffuser plate, (F) outlet spout fitting at outlet elevation. The final FEM verification runs on the ASSEMBLED model only — per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a household concrete biosand filter body as a multi-part assembly (precast concrete housing shell with cast-in outlet channel, perforated diffuser plate, PVC outlet pipe elbow, concrete lid, internal support ring, outlet spout fitting) per the CAWST Biosand Filter Construction Manual (2022).\n\nOuter 305 x 305 x 900 mm; inner cavity 205 x 205 x 900 mm; wall thickness 50 mm; 1:2:4 OPC:sand:aggregate mix at w/c 0.45; minimum fc 20 MPa at 28 days. Internal stack-up: 50 mm underdrain gravel + 50 mm separating gravel + 500 mm sand bed + standing head 50-150 mm; diffuser 50 mm above sand surface. Outlet 12.7 mm copper or PVC.\n\nLoad cases: LC1 hydrostatic + saturated media; LC2 filtration steady at 0.4 m/h. FEM at assembled level; connection DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "darcy_porous_flow_check",
+        "reason": "Filtration rate 0.4 m/h at 5-15 cm head is a Darcy-law lookup / hand calculation, not CFD.",
+        "examples": [
+          "Darcy equation hand calc",
+          "CAWST design spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CAWST concrete biosand filter body (multi-part assembly)",
+    "brief": "Design a 305 x 305 x 900 mm concrete biosand filter with 50 mm walls, 1:2:4 mix, filtration 0.4 m/h, head window 5-15 cm. [Multi-part assembly] concrete_housing_shell (x1), diffuser_plate (x1), outlet_pipe_elbow (x1), concrete_lid (x1), support_ring (x1), outlet_spout_fitting (x1). FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "outer_LxWxH_mm": [
+        305,
+        305,
+        900
+      ],
+      "inner_LxWxH_mm": [
+        205,
+        205,
+        900
+      ],
+      "wall_thickness_mm": 50,
+      "sand_bed_depth_mm": 500,
+      "separating_gravel_mm": 50,
+      "underdrain_gravel_mm": 50,
+      "standing_head_mm_range": [
+        50,
+        150
+      ],
+      "diffuser_offset_above_sand_mm": 50,
+      "outlet_nominal_in": 0.5
+    },
+    "material": {
+      "concrete": {
+        "mix": "1:2:4 OPC:sand:aggregate",
+        "w_c": 0.45,
+        "min_fc_MPa": 20
+      },
+      "filter_sand": {
+        "d10_mm": 0.17,
+        "uniformity_coefficient_max": 2.5
+      },
+      "outlet_pipe": "PVC or copper 12.7 mm"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hydrostatic_plus_media",
+        "application": "saturated sand + gravel + supernatant, gravity load on walls and base"
+      },
+      {
+        "id": "LC2",
+        "name": "filtration_steady",
+        "target_rate_m_h": 0.4,
+        "head_range_mm": [
+          50,
+          150
+        ],
+        "application": "Darcy flow through packed sand"
+      }
+    ],
+    "boundary_conditions": {
+      "base": "founded on flat floor",
+      "walls": "free on exterior, hydrostatic inside"
+    },
+    "objective": {
+      "primary": "pass structural and flow criteria"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "max_wall_tensile_stress_MPa",
+        "max_base_bending_moment_kNm_per_m",
+        "filtration_rate_m_h",
+        "effective_volume_L",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "concrete_housing_shell",
+        "role": "primary structural box enclosing filter media and hydrostatic column",
+        "count_min": 1,
+        "geometric_constraints": {
+          "outer_LxWxH_mm": [
+            305,
+            305,
+            900
+          ],
+          "wall_thickness_mm": 50,
+          "cast_in_outlet_channel_bore_mm": 16
+        },
+        "material_hint": "1:2:4 OPC concrete, fc >= 20 MPa at 28 days, w/c ~0.45",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "diffuser_plate",
+        "role": "perforated plate 50 mm above sand surface that dissipates pour velocity and protects biolayer",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plate_LxW_mm": [
+            200,
+            200
+          ],
+          "thickness_mm": 3,
+          "hole_diameter_mm": 3,
+          "hole_pitch_mm": 10
+        },
+        "material_hint": "perforated galvanized steel or HDPE plastic",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "outlet_pipe_elbow",
+        "role": "cast-in riser + elbow setting standing-head window; draws filtered water from underdrain to outside spout",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_bore_in": 0.5,
+          "outer_diameter_mm": 21,
+          "riser_height_mm": 650,
+          "elbow_turn_deg": 90
+        },
+        "material_hint": "PVC or copper schedule-40 pipe, 12.7 mm nominal",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "concrete_lid",
+        "role": "removable top cover sealing hygiene and housing pour basin",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            305,
+            305
+          ],
+          "thickness_mm": 40,
+          "rim_overlap_mm": 10
+        },
+        "material_hint": "1:2:4 OPC concrete, fc >= 20 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "support_ring",
+        "role": "internal ledge cast into shell walls that seats the diffuser plate",
+        "count_min": 1,
+        "geometric_constraints": {
+          "inner_LxW_mm": [
+            205,
+            205
+          ],
+          "ring_width_mm": 10,
+          "elevation_above_sand_mm": 50
+        },
+        "material_hint": "integrally cast concrete corbel",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "outlet_spout_fitting",
+        "role": "external spout terminating outlet pipe, defines tail-water elevation",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_bore_in": 0.5,
+          "projection_mm": 40,
+          "elevation_above_sand_surface_mm": 50
+        },
+        "material_hint": "PVC or brass compression fitting",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "see original brief",
+      "coordinate_system": "inherit from original"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "wall_thickness_mm",
+        "limit_mm": 50,
+        "derivation": "CAWST biosand filter minimum",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "concrete_mix_ratio",
+        "limit": "1:2:4",
+        "derivation": "CAWST specified mix",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "concrete_min_fc_MPa",
+        "limit_MPa": 20,
+        "derivation": "CAWST mix strength target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "filtration_rate_m_h",
+        "limit_m_h": 0.4,
+        "derivation": "CAWST design filtration rate",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "standing_head_window_mm",
+        "limit_min_mm": 50,
+        "limit_max_mm": 150,
+        "derivation": "CAWST operating head 5-15 cm",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces <= 1.0 under LC1 governing hydrostatic+media case.",
+        "metric": "max DCR across IF1..IFn",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Outlet pipe cast-through interface must remain water-tight: radial contact pressure between C and A >= 10 kPa under LC1.",
+        "metric": "min radial contact pressure",
+        "threshold_kPa": 10,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (walls + base)",
+      "mesh_size_mm_in_critical_regions": 15,
+      "solver_hints": [
+        "SAP2000",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static hydrostatic"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "outlet pipe elbow C is cast into the wall of housing shell A; pipe transfers gravity + outlet back-pressure into concrete via mortar bond"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "support ring E is integrally cast with housing shell A; supports diffuser via monolithic concrete bond"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "E",
+        "B"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "diffuser plate B rests on support ring E, loosely seated with gravity contact"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "concrete lid D rests on top rim of housing shell A with gravity contact and hygiene lip"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "C",
+        "F"
+      ],
+      "mediated_by": "threaded",
+      "load_path": "outlet spout fitting F couples to outlet pipe elbow C via threaded or glued joint"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Cast-in outlet path, removable lid, and loose diffuser create interface conditions that cannot be captured by per-part analysis; assembled model is required.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "CAWST biosand filter is physically assembled from a precast concrete housing, cast-in outlet pipe, removable lid, and loose diffuser plate on an integral support ring — naturally multi-body.",
+    "speculation_caveats": "parts[] counts and interfaces[] reflect the CAWST manual's described components but are speculative for FEA decomposition.",
+    "original_sample_preserved_at": "docs/eval/samples/096_ng11_cawst_biosand_filter.json"
+  }
+}

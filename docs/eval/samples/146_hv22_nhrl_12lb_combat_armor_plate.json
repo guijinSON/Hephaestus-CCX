@@ -1,0 +1,223 @@
+{
+  "id": "146_hv22_nhrl_12lb_combat_armor_plate",
+  "source": {
+    "catalog_ref": "HV22 (user-assigned collegiate combat-robot league; catalog HV21)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "combat_robotics",
+  "part_class": "combat_robot_frontal_armor_plate",
+  "full_prompt": "Design a monolithic UHMW-PE backed titanium (Ti-6Al-4V) frontal armor wedge plate for a National Havoc Robot League (collegiate combat-robot league) 12 lb (5.44 kg) combat robot class entry, per collegiate combat-robot league 2026 rules for weight cap, LiPo max energy, pneumatic pressure cap, and spinner kinetic-energy cap. The armor is the primary frontal impact face intended to survive repeated strikes from opposing vertical and horizontal spinners delivering up to the collegiate combat-robot league 12 lb class spinner-KE envelope cap (approximately 1500 J single-strike via a class-legal weapon at 300 Hz tooth frequency). The armor is a single monolithic 3D-printed Ti-6Al-4V EBM + machined part (no welds, no riveted-on skin; integral wedge face + integral chassis-mounting flange + integral spinner-gap skirt). For this prompt, the UHMW-PE backer is modeled as a distributed elastic-plastic pad boundary condition on the rear face; the designed part is the monolithic titanium plate alone. Geometry: frontal wedge armor face 200 mm wide x 120 mm tall x 4 mm thick, angled at 30 deg forward rake from vertical to deflect spinner bites downward into the arena floor. Two integral chassis-mounting flanges extending rearward from the wedge top-edge: each 30 mm wide x 40 mm long x 4 mm thick with 2 M5 (5.5 mm clearance) bolt holes at 25 mm pitch. Integral spinner-gap skirt extending downward from the wedge bottom-edge: 200 mm wide x 20 mm tall x 4 mm thick angled 20 deg rearward to close the floor gap. Overall bounding envelope 200 x 120 x 70 mm. Material Ti-6Al-4V (EBM annealed grade 5): E 113 GPa, nu 0.32, density 4430 kg/m^3, yield 830 MPa, UTS 900 MPa, elongation 10%, Charpy V-notch 23 J at 20 C, fatigue endurance 510 MPa at 1e7. Three load cases per collegiate combat-robot league 12 lb armor survival practice. Load Case 1 (repeated vertical-spinner strike on wedge face): 12 kN peak contact force applied normal to the wedge face as a 500 microsecond impulse (representing a 12 lb class class-legal vertical-spinner tooth at 150 m/s tip speed, elastic-plastic contact into the UHMW-PE backer), impacts occur 50 times in a 3-minute match; chassis-mounting flanges fixed to a rigid chassis. Load Case 2 (glancing horizontal-spinner bite along the wedge-skirt intersection): 8 kN tangential + 4 kN normal at the wedge-bottom intersection line, representing a horizontal spinner tooth skimming underneath and biting the skirt transition; superposition with the spinner still engaged laterally. Load Case 3 (hammer-saw catastrophic hit on the wedge face flat): 20 kN peak contact concentrated on a 10 mm x 10 mm patch at the wedge face center, representing a close-range hammer or drum-saw strike; this is a fault-case but armor must not fracture through. Pass/fail: (R1) under LC1 repeated vertical-spinner strike, peak von Mises in the titanium must not exceed 415 MPa (yield/2.0 Ti-6Al-4V); (R2) under LC2 glancing horizontal bite, peak stress must not exceed 553 MPa (yield/1.5 transient); (R3) under LC3 hammer catastrophic hit, peak principal stress must not exceed UTS 900 MPa (fault-case allowed plastic deformation, no through-perforation); (R4) fatigue: 50 strikes per match x 10 matches in a tournament = 500 cycles of LC1 spectrum, local stress range at the wedge-flange fillet must remain below 510 MPa endurance (1e7 margin over 500 cycles); (R5) maximum dent depth at the wedge center under LC1 must not exceed 2 mm (to preserve wedge geometry between strikes - measured as out-of-plane permanent deformation); (R6) armor plate + skirt + flanges mass must not exceed 0.65 kg (allocates ~12% of 5.44 kg 12 lb budget to frontal armor, leaving room for drive + weapon + electronics + rest-of-chassis); (R7) first six natural frequencies (armor + chassis-attached boundary) must exceed 300 Hz to decouple from in-chassis LiPo-driven brushless motor noise 50-150 Hz and pneumatic solenoid valve tick 80 Hz (collegiate combat-robot league pneumatic is capped at 250 psi so valve noise is bounded). Thermal, fluid, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic Ti-6Al-4V (EBM + machined) frontal armor wedge plate for a National Havoc Robot League collegiate combat-robot entry in the 12 lb / 5.44 kg class, backed by a UHMW-PE pad modeled as a distributed elastic-plastic boundary condition on the rear face. The titanium part is a single 3D-printed body with a 30-degree forward-raked wedge face, two rearward chassis-mounting flanges with M5 holes, and a 20-degree rearward-angled lower spinner-gap skirt; no welds, no rivets. Apply yield/2.0 continuous and yield/1.5 transient safety factors, with an UTS principal-stress gate on the catastrophic fault case.\n\nEnvelope: 200 x 120 x 70 mm.\n\nLoad cases.\n- LC1 repeated vertical-spinner strike on the wedge face: 12 kN peak contact over 500 us (class-legal tooth at ~150 m/s), 50 strikes/match, chassis flanges fixed.\n- LC2 glancing horizontal-spinner bite at the wedge/skirt intersection: 8 kN tangential + 4 kN normal along the bottom edge, superposed.\n- LC3 hammer-saw hit on wedge face: 20 kN on a 10 x 10 mm patch at the face center (fault case, no through-perforation).\nAlso require permanent dent depth under LC1 below 2 mm, a 500-cycle fatigue margin at flange fillets, and first six modes >300 Hz (decouple 50-150 Hz brushless and 80 Hz pneumatic tick).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "collegiate combat-robot league 12 lb class titanium wedge armor plate",
+    "brief": "Ti-6Al-4V monolithic wedge 200x120x4 with 30 deg rake + chassis flanges + skirt; 12 kN spinner impact survival.",
+    "geometric_constraints": {
+      "wedge_face_mm": {
+        "w": 200,
+        "h": 120,
+        "thickness": 4,
+        "rake_deg": 30
+      },
+      "chassis_flanges": {
+        "count": 2,
+        "mm": {
+          "w": 30,
+          "l": 40,
+          "t": 4
+        },
+        "bolts": 2,
+        "bolt_mm": 5.5,
+        "pitch_mm": 25
+      },
+      "skirt_mm": {
+        "w": 200,
+        "h": 20,
+        "t": 4,
+        "angle_deg": 20
+      },
+      "bounding_envelope_mm": {
+        "x": 200,
+        "y": 120,
+        "z": 70
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Ti-6Al-4V EBM annealed",
+      "properties": {
+        "youngs_modulus_GPa": 113,
+        "poissons_ratio": 0.32,
+        "density_kg_m3": 4430,
+        "yield_MPa": 830,
+        "ultimate_tensile_strength_MPa": 900,
+        "elongation_pct": 10,
+        "charpy_V_J_20C": 23,
+        "endurance_1e7_MPa": 510
+      }
+    },
+    "weight_class": {
+      "class": "NHRL_12lb",
+      "limit_lb": 12,
+      "limit_kg": 5.44
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical_spinner_strike",
+        "force_N": 12000,
+        "duration_us": 500,
+        "strikes": 50
+      },
+      {
+        "id": "LC2",
+        "name": "horizontal_glancing_bite",
+        "tangential_N": 8000,
+        "normal_N": 4000
+      },
+      {
+        "id": "LC3",
+        "name": "hammer_saw_catastrophic",
+        "force_N": 20000,
+        "patch_mm": 10
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "max_principal_stress_MPa",
+        "local_fatigue_stress_range_MPa",
+        "dent_depth_mm",
+        "first_six_freqs_Hz",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 415,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 553,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_principal_stress",
+        "limit_MPa": 900,
+        "derivation": "UTS no_perforation_fault",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 510,
+        "cycles": 500,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "dent_depth",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.65,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 300,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) + UHMW-PE backer contact BC",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus/Explicit for LC1/LC3"
+      ],
+      "analysis_types": [
+        "transient contact impact (LC1, LC2, LC3)",
+        "modal",
+        "low-cycle fatigue"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Short-duration combat, no thermal driver.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Wedge is impact-loaded, not compression-governing."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "UHMW-PE backer bond integrity",
+      "Post-match dent refurbishment",
+      "Pneumatic flipper interaction"
+    ]
+  },
+  "eval_coverage": [
+    "collegiate combat-robot league 12 lb weight budget allocation",
+    "repeated high-KE spinner impact survival",
+    "fault-case hammer no-perforation allowable",
+    "dent-depth geometric preservation"
+  ]
+}

@@ -1,0 +1,198 @@
+{
+  "id": "121_e11_solar_splash_hull_stringer",
+  "source": {
+    "catalog_ref": "E11",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "marine_solar_structural",
+  "part_class": "hull_stringer_mast_step",
+  "full_prompt": "Design a monolithic 6061-T6 aluminum hull stringer / PV mast step for a collegiate solar-electric racing boat benchmark, inside the hull envelope limit of 6.0 m length x 2.4 m beam x 1.5 m above waterline height, using the benchmark 36 V sealed lead-acid propulsion battery and the prescribed PV mount rules with a lanyard tether. The part is a single extruded and machined 6061-T6 body (no welds, no bolted gussets, no bonded composite overlays) that spans 1200 mm fore-aft along the keelson, bonded via structural methacrylate (MMA) to fiberglass hull inner skin (the adhesive joint is outside this CAD prompt; the part itself is monolithic). The stringer cross section is a top-hat 80 mm wide at the flange, 60 mm tall web, 40 mm wide top, wall thickness 5 mm. Integral along the top are two M10 clearance holes (11 mm diameter) on 600 mm spacing for a removable PV mast base plate, and two pairs of M8 holes (9 mm) at 150 mm spacing at each end for rod-end link attachments to a forward thwart. Overall bounding envelope 1200 mm x 80 mm x 60 mm. Material 6061-T6 with E 68.9 GPa, nu 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa; marine fatigue knockdown factor 0.85 per ABYC H-8.3 for saltwater-immersed aluminum gives derated endurance limit ~70 MPa at 10^7 cycles. Operating environment: saltwater splash at 10-30 C, UV exposure from PV array. Three load cases. Load Case 1 (PV mast side load): a 1.6 kN lateral force applied to the aft M10 PV mount hole simulating 15 m/s beam wind on the 2.0 m^2 PV array mast arm (drag + moment resolved to the base), with the stringer bolted to the keelson fully fixed along its length (simulating composite bond). Load Case 2 (slam): a 3.5g vertical downward acceleration distributed on the stringer and the PV mount, equivalent to a 2.5 kN concentrated load at the aft M10 hole, representing a typical slam of a planing solar boat at 25 mph in 0.3 m chop. Load Case 3 (crash-stop / forward tow): a 2.5 kN horizontal aft-to-fore force at one of the rod-end M8 holes, simulating towing recovery after e-stop. Pass/fail: (R1) under LC1 (beam wind), peak von Mises must not exceed 138 MPa (yield / 2.0 per ABYC H-8 allowable for primary aluminum hull structure); (R2) under LC2 slam (short transient), peak stress must not exceed 184 MPa (yield / 1.5); (R3) under LC3 crash-stop, peak stress must not exceed 184 MPa; (R4) fatigue: assuming LC1 represents 10^7 cycles of wave-induced oscillation with a stress range equal to 30% of LC1 peak, the local fatigue stress range at any hole must remain below 70 MPa; (R5) a linear buckling eigenvalue analysis under LC2 (compressive mast loading into stringer) must yield a first-mode factor of at least 3.0; (R6) mass of the stringer shall not exceed 3.2 kg; (R7) first bending natural frequency (with mast base mass 4 kg lumped at the PV mount) must be above 25 Hz to avoid resonance with typical electric-outboard 1-3000 rpm rotating harmonics. Thermal, fluid, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 6061-T6 aluminum hull stringer / PV mast step for a collegiate solar-electric racing boat, spanning 1200 mm fore-aft along the keelson and serving as the bonded mounting base for a removable PV mast and forward rod-end links. The part is a single extruded-and-machined top-hat section, monolithic (no welds, no bolted gussets). Design per ABYC H-8 marine aluminum allowables with the typical yield/2.0 (continuous) and yield/1.5 (transient) safety factors.\n\nEnvelope: overall bounding box on the order of 1200 x 80 x 60 mm.\n\nLoad cases.\n- LC1 PV-mast beam wind: 1.6 kN lateral at the aft PV mount hole (15 m/s beam wind on a 2.0 m^2 PV array), stringer fixed along the bonded length.\n- LC2 slam: 2.5 kN vertical downward at the aft PV mount (3.5 g planing slam).\n- LC3 crash-stop / forward tow: 2.5 kN horizontal fore-aft at one forward rod-end hole.\nAlso check a 10^7-cycle fatigue spectrum derived from LC1 and a modal case with a 4 kg mast base lumped at the PV mount.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "6061-T6 hull stringer / PV mast step for collegiate solar-electric boat benchmark",
+    "brief": "Top-hat aluminum stringer with integral PV mast mount and rod-end attachments; survive beam-wind, slam, and crash-stop loads.",
+    "geometric_constraints": {
+      "stringer_length_mm": 1200,
+      "flange_width_mm": 80,
+      "web_height_mm": 60,
+      "top_width_mm": 40,
+      "wall_thickness_mm": 5,
+      "mast_holes": {
+        "count": 2,
+        "diameter_mm": 11,
+        "spacing_mm": 600
+      },
+      "rod_end_holes": {
+        "count": 4,
+        "diameter_mm": 9,
+        "pair_spacing_mm": 150
+      },
+      "bounding_envelope_mm": {
+        "x": 1200,
+        "y": 80,
+        "z": 60
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "derated_endurance_MPa": 70
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pv_mast_beam_wind",
+        "force_N": 1600,
+        "location": "aft_M10_hole",
+        "direction": "lateral"
+      },
+      {
+        "id": "LC2",
+        "name": "slam_3.5g",
+        "force_N": 2500,
+        "location": "aft_M10_hole",
+        "direction": "vertical"
+      },
+      {
+        "id": "LC3",
+        "name": "crash_stop_tow",
+        "force_N": 2500,
+        "location": "rod_end_M8",
+        "direction": "horizontal"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_buckling_load_factor",
+        "first_bending_freq_with_mast_mass_Hz",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 138,
+        "derivation": "yield/2.0 ABYC H-8",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 70,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 3.2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_bending_natural_frequency_with_mast_mass",
+        "limit_Hz": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) or shell-solid transition",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling (LC2)",
+        "modal with lumped mass"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Below T6 over-aging range.",
+      "fluid_analysis": "Wind loads reduced to equivalent static forces on mast.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Galvanic coupling aluminum-stainless bolt sleeves",
+      "Composite-bond peel stress ABYC H-8.3",
+      "Pb-acid battery-tray seismic tie-down"
+    ]
+  },
+  "eval_coverage": [
+    "ABYC H-8 marine aluminum allowable",
+    "transient safety factor vs. continuous",
+    "lumped-mass modal analysis",
+    "buckling under compressive mast load"
+  ]
+}

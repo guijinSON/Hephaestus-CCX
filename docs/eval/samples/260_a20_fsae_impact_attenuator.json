@@ -1,0 +1,187 @@
+{
+  "id": "260_a20_fsae_impact_attenuator",
+  "source": {
+    "catalog_ref": "A20",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "student_race_vehicle_impact_attenuator",
+  "full_prompt": "Design a single-part monolithic Impact Attenuator (IA) for a student-built open-wheel race vehicle. Per the governing structural demonstration standard, the IA must absorb at least 7350 J of energy when struck by a 300 kg mass at 7 m/s into a solid non-yielding barrier (equivalent impact test); the mean deceleration of the 300 kg test mass must not exceed 20 g, and the peak deceleration must not exceed 40 g. The IA mounts ahead of the Front Bulkhead and must completely cover the bulkhead plate. Geometric constraints: minimum length 200 mm (along the longitudinal axis), minimum height 200 mm, minimum width 100 mm. Rear face (mounting face) of the IA shall be at least as large as the Front Bulkhead opening (typically 200 mm x 100 mm). Anti-intrusion plate (AIP) is a 1.5 mm (0.060 in) steel plate, fully covers the rear of the IA, bolted to the Front Bulkhead with 4x M8 Grade 8.8 bolts on a 150 mm x 80 mm pattern. Material: aluminum honeycomb core (3.1 pcf / 50 kg/m^3) or foam or crushable-tube construction; if honeycomb, cell size 9.5 mm, density 50 kg/m^3, bare compressive crush strength 689 kPa. Test-assembly certificate shall state IA + AIP must together absorb >= 7350 J under the specified impact. Frame tubes (context for the interface only; the IA itself is separately qualified): Front Bulkhead 25.4 mm OD x 2.4 mm wall mild steel. Load/test case: (R1) Dynamic impact 300 kg x 7 m/s into rigid barrier; energy absorption >= 7350 J. (R2) Mean deceleration of 300 kg test mass <= 20 g. (R3) Peak deceleration of 300 kg test mass <= 40 g. (R4) After impact, no penetration of the AIP (no part of the IA may penetrate the plane of the Front Bulkhead by more than 25 mm). (R5) IA mass (core + skin, excluding AIP) <= 3.0 kg. (R6) Quasi-static equivalent check: at 20 g x 300 kg = 58,860 N sustained load, max stress in any Front Bulkhead tube <= yield (305 MPa for 1010 steel). Primary verification: explicit-dynamics FEA OR an equivalent quasi-static energy-absorption FEA with documented equivalence. Vibration, thermal, fluid, radiation, buckling explicitly NOT required. Deliverables: STEP AP242 IA + AIP subassembly, test report or FEA output, and a report listing energy absorbed in J, mean g, peak g, IA mass.",
+  "short_prompt": "Design a single-part monolithic Impact Attenuator (IA) for a student-built open-wheel race vehicle. The IA mounts ahead of the Front Bulkhead and must completely cover the bulkhead plate, with an anti-intrusion plate (1.5 mm / 0.060 in steel, bolted to the Front Bulkhead via 4x M8 Grade 8.8 on a 150 x 80 mm pattern) sandwiched between. Construction may be aluminum honeycomb, foam, or crushable tube; honeycomb option is 9.5 mm cell, 50 kg/m^3, bare crush 689 kPa. Front Bulkhead tubes are 25.4 mm OD x 2.4 mm wall mild steel (context for the interface check only).\n\nEnvelope: IA minimum length 200 mm (longitudinal axis), minimum height 200 mm, minimum width 100 mm; rear (mounting) face at least as large as the Front Bulkhead opening (typically 200 x 100 mm).\n\nLoad cases.\n- LC1 dynamic impact: 300 kg at 7 m/s into a rigid barrier; energy absorbed by IA + AIP together >= 7350 J.\n- LC2 mean deceleration of the 300 kg test mass <= 20 g.\n- LC3 peak deceleration of the 300 kg test mass <= 40 g.\n- LC4 post-impact intrusion: no part of the IA penetrates the Front Bulkhead plane by more than 25 mm.\n- LC5 quasi-static equivalent: 20 g x 300 kg = 58,860 N sustained, bulkhead tube stress check.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics",
+        "reason": "7 m/s barrier impact is formally nonlinear transient dynamics with crushable core material.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Altair Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student race vehicle Impact Attenuator + AIP",
+    "brief": "Absorbs >= 7350 J at 300 kg x 7 m/s, mean g <= 20, peak g <= 40, IA mass <= 3 kg.",
+    "geometric_constraints": {
+      "length_mm_min": 200,
+      "height_mm_min": 200,
+      "width_mm_min": 100,
+      "AIP_thickness_mm": 1.5,
+      "AIP_bolts": {
+        "count": 4,
+        "size": "M8 Grade 8.8",
+        "pattern_mm": "150 x 80"
+      }
+    },
+    "material": {
+      "core": {
+        "name": "Aluminum honeycomb core (3.1 pcf)",
+        "density_kg_m3": 50,
+        "bare_compressive_crush_strength_kPa": 689,
+        "cell_size_mm": 9.5
+      },
+      "AIP": {
+        "name": "Mild steel 1010 / equivalent",
+        "yield_strength_MPa": 305
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "barrier_impact",
+        "mass_kg": 300,
+        "velocity_m_s": 7,
+        "target_energy_J": 7350
+      },
+      {
+        "id": "LC2",
+        "name": "qs_equivalent_20g",
+        "force_N": 58860
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "IA rear face bolted to Front Bulkhead plate",
+      "impact": "300 kg rigid mass travelling at 7 m/s into IA front face"
+    },
+    "objective": {
+      "minimize": "mass",
+      "constraint": "meet all deceleration and energy targets"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "IA_mass_kg",
+        "energy_absorbed_J",
+        "mean_decel_g",
+        "peak_decel_g",
+        "AIP_penetration_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "energy_absorbed",
+        "limit_J": 7350,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mean_decel",
+        "limit_g": 20,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "peak_decel",
+        "limit_g": 40,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "AIP_penetration",
+        "limit_mm": 25,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "IA_mass",
+        "limit_kg": 3.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "FB_tube_max_stress",
+        "limit_MPa": 305,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid hex / honeycomb microstructure OR homogenized crushable foam",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "LS-DYNA",
+        "Abaqus Explicit",
+        "Radioss"
+      ],
+      "analysis_types": [
+        "nonlinear explicit dynamics",
+        "quasi-static equivalent"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "IA certification is single-impact energy absorption.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "IA is designed to crush by plastic collapse, not elastic buckling."
+    }
+  },
+  "eval_coverage": [
+    "energy-absorption pass/fail",
+    "mean and peak deceleration limits",
+    "AIP penetration cap"
+  ]
+}

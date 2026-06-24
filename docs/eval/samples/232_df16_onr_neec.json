@@ -1,0 +1,175 @@
+{
+  "id": "232_df16_onr_neec",
+  "source": {
+    "catalog_ref": "DF16",
+    "year": 2026,
+    "tier": "C"
+  },
+  "domain": "naval_structural",
+  "part_class": "ship_bulkhead_panel",
+  "full_prompt": "Design a transverse watertight bulkhead panel representative of a naval-engineering research benchmark for a 30-meter aluminum high-speed patrol craft, sized per ABS Rules for Building and Classing High-Speed Craft (Part 3). Panel outer dimensions 2.2 m height x 2.8 m width, mounted between two longitudinal bulkheads and the hull plating on each side, 4.0 m above the design waterline. Material: marine-grade AL 5083-H116 (Young's modulus 70.3 GPa, Poisson 0.33, yield 228 MPa, ultimate 317 MPa, density 2660 kg/m^3). Plate thickness 6 mm with vertical stiffeners on 600 mm pitch, TB-section flat-bar 6 mm x 75 mm. Load cases: (LC1) hydrostatic head at flooding case: 4 m water column = 40 kPa on panel; (LC2) slamming pressure per ABS HSC Part 3: 60 kPa (at panel station 4 m above WL) applied as dynamic-equivalent static; (LC3) naval grade-B shock equivalent 10 g vertical + 6 g athwartship simultaneous (MIL-S-901D analog representation); (LC4) fire-safety deformation limit: panel must survive compartment fire with thermal gradient 100 C across panel for 30 minutes without exceeding 0.5% elastic strain; (LC5) fatigue: 10^7 cycles of +/- 10 kPa wave-induced pressure at 0.1 Hz; (LC6) anti-shrapnel load: 50 kN point load on a 100 mm x 100 mm patch simulating blast fragment. Pass/fail: (R1) max von Mises panel + stiffeners under LC1-LC3 <= 152 MPa (yield 228 / 1.5); (R2) panel mid-span out-of-plane deflection under LC2 <= panel_width / 200 = 14 mm; (R3) shock LC3 no yield, first natural mode of panel above 30 Hz; (R4) fatigue alternating stress at stiffener toe welds <= 40 MPa (BS 7608 Class F at 1e7 cycles); (R5) panel mass <= 180 kg; (R6) linear buckling eigenvalue for panel under in-plane compression from deck loads >= 3.0. Deliverables: STEP, FEA per case, fatigue summary, buckling eigenvalue, modal, and mass report.",
+  "short_prompt": "Design a transverse watertight bulkhead panel for a 30-meter aluminum high-speed patrol craft, mounted 4.0 m above the design waterline between two longitudinal bulkheads and the hull plating. Material class: marine-grade AL 5083-H116. Qualify per ABS Rules for Building and Classing High-Speed Craft (Part 3) for hydrostatic / slamming, BS 7608 Class F for stiffener-toe weld fatigue, and a MIL-S-901D grade-B shock analog.\n\nEnvelope: panel 2.2 m H x 2.8 m W, plate 6 mm with vertical TB-section stiffeners (6 x 75 mm) on 600 mm pitch.\n\nLoad cases.\n- LC1 hydrostatic flooding: 4 m water column = 40 kPa.\n- LC2 slamming per ABS HSC: 60 kPa applied dynamic-equivalent static.\n- LC3 grade-B shock: 10 g vertical + 6 g athwartship simultaneous.\n- LC4 compartment fire: 100 C through-panel gradient for 30 min, limited to 0.5% elastic strain.\n- LC5 wave fatigue: 1e7 cycles of +/- 10 kPa at 0.1 Hz.\n- LC6 anti-shrapnel: 50 kN on a 100 x 100 mm patch.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Naval research aluminum ship bulkhead panel",
+    "brief": "5083-H116 bulkhead for 30 m HSC patrol craft per ABS HSC Part 3.",
+    "geometric_constraints": {
+      "panel_m": {
+        "H": 2.2,
+        "W": 2.8
+      },
+      "plate_mm": 6,
+      "stiffener_pitch_mm": 600,
+      "stiffener_TB_mm": {
+        "web": 6,
+        "depth": 75
+      },
+      "height_above_WL_m": 4
+    },
+    "material": {
+      "name": "AL 5083-H116",
+      "youngs_modulus_GPa": 70.3,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2660,
+      "yield_strength_MPa": 228,
+      "ultimate_tensile_strength_MPa": 317
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hydrostatic_flood",
+        "P_kPa": 40
+      },
+      {
+        "id": "LC2",
+        "name": "slamming",
+        "P_kPa": 60
+      },
+      {
+        "id": "LC3",
+        "name": "naval_grade_B_shock",
+        "g_vert": 10,
+        "g_athw": 6
+      },
+      {
+        "id": "LC4",
+        "name": "fire",
+        "delta_T_C": 100,
+        "duration_min": 30
+      },
+      {
+        "id": "LC5",
+        "name": "wave_fatigue",
+        "P_kPa_alt": 10,
+        "freq_Hz": 0.1,
+        "cycles": 10000000.0
+      },
+      {
+        "id": "LC6",
+        "name": "shrapnel",
+        "F_N": 50000,
+        "footprint_mm": [
+          100,
+          100
+        ]
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "panel_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "mid_span_deflection_mm",
+        "first_panel_mode_Hz",
+        "weld_alt_stress_MPa",
+        "buckling_eigenvalue"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 152,
+        "derivation": "5083 yield 228 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mid_span_deflection",
+        "limit_mm": 14,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_panel_mode",
+        "limit_Hz": 30,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "weld_alt_stress",
+        "limit_MPa": 40,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "panel_mass",
+        "limit_kg": 180,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "panel_in_plane_buckling_eigenvalue",
+        "limit": 3.0,
+        "applies_to": [
+          "deck-load in-plane"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "Naval-engineering research benchmark has no fixed annual rulebook; numerics anchored to ABS HSC Part 3 + grade-B shock analogs."
+  }
+}

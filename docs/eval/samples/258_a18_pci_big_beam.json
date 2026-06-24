@@ -1,0 +1,194 @@
+{
+  "id": "258_a18_pci_big_beam",
+  "source": {
+    "catalog_ref": "A18",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "civil_structural",
+  "part_class": "prestressed_concrete_beam",
+  "full_prompt": "Design a prestressed concrete beam for a collegiate precast-prestressed concrete beam design challenge. The beam shall be a single monolithic prestressed/precast concrete member with an overall length of 7.0 m; clear span 6.10 m (20 ft) center-to-center of supports with 450 mm overhangs on each end. Cross section: rectangular or I-section within a 305 mm (12 in) maximum depth and 305 mm maximum width bounding box. Concrete: normal-weight f'c = 55 MPa (8 ksi) at transfer day 1, 70 MPa (10 ksi) at 28 days; density 2400 kg/m^3; Young's modulus 4700 sqrt(f'c) = 39,340 MPa at 28 days. Prestressing: 7-wire low-relaxation strand 12.7 mm (0.5 in) diameter, ultimate strength 1860 MPa, modulus 196 GPa; initial prestress 0.75 f_pu = 1395 MPa. Mild steel: Grade 60 (fy = 414 MPa). Load cases: (R1) Third-point loading per ASTM C78 arrangement: applied factored live load >= 32 kip (142.3 kN) total (two-point loads of 16 kip each at the third-points) without structural failure. Safety: flexural capacity Mn shall provide a factored resistance phi Mn >= applied ultimate moment Mu under 1.2 DL + 1.6 x 32 kip LL; phi = 0.90. (R2) First cracking load >= 20 kip (89 kN) total (two 10 kip point loads at third points) - no visible cracking up to 20 kip service load. (R3) Midspan deflection at 20 kip service load <= span/360 = 6100 / 360 = 17 mm. (R4) Midspan deflection at 32 kip factored load <= span/180 = 34 mm AND the beam shall continue to take load past 32 kip with a ductility ratio (peak load / first-yield load) >= 1.5. (R5) Self-weight: beam mass per unit length to be computed and reported (scoring includes self-weight). Concrete material cost scored separately. (R6) Shear capacity phi Vn >= factored shear demand Vu under 1.6 x 32 kip loading with phi = 0.75; required shear capacity >= 142.3 kN. Primary verification: nonlinear structural FEA with concrete damaged plasticity or fiber-section beam model (for cracking and ductility), plus classical section analysis for pre-design. Vibration, thermal, fluid, radiation, buckling explicitly NOT required. Deliverables: STEP AP242 of beam geometry + rebar + strand layout, mix design, and a report listing beam mass per m, first cracking load in kN, ultimate flexural capacity in kN, midspan deflection at 20 kip and 32 kip in mm, ductility ratio.",
+  "short_prompt": "Design a precast prestressed concrete beam for a collegiate Big Beam-type challenge. The beam is a single monolithic member with 7.0 m overall length and 6.10 m (20 ft) clear span between supports (450 mm overhang at each end), tested in third-point loading per ASTM C78 arrangement. Concrete is normal-weight f'c = 55 MPa at day 1 (transfer) and 70 MPa at 28 days; prestress uses 12.7 mm 7-wire low-relaxation strand (f_pu 1860 MPa, modulus 196 GPa) tensioned to 0.75 f_pu = 1395 MPa; mild steel is Grade 60 (fy = 414 MPa). Load factors 1.2 DL + 1.6 LL for strength, phi = 0.90 flexure, phi = 0.75 shear.\n\nEnvelope: cross section rectangular or I-shaped within a 305 x 305 mm (12 x 12 in) bounding box.\n\nLoad cases.\n- LC1 ultimate flexure: factored third-point loading of 32 kip (142.3 kN) total (16 kip per point); phi Mn must cover Mu under 1.2 DL + 1.6 x 32 kip LL.\n- LC2 first cracking: 20 kip (89 kN) service load (10 kip per point) with no visible cracking.\n- LC3 service deflection: midspan deflection at 20 kip <= span/360 = 17 mm; at 32 kip <= span/180 = 34 mm; post-32-kip ductility ratio (peak / first-yield) >= 1.5.\n- LC4 shear: phi Vn >= factored 1.6 x 32 kip shear = 142.3 kN.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "nonlinear_reinforced_concrete_analysis",
+        "reason": "R2 (cracking load) and R4 (ductility ratio) require nonlinear concrete + rebar material modeling (concrete damaged plasticity or fiber-section).",
+        "examples": [
+          "Abaqus CDP",
+          "ANSYS Menetrey-Willam",
+          "OpenSees fiber"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Prestressed precast concrete beam (collegiate design challenge)",
+    "brief": "7 m precast prestressed concrete beam, >= 32 kip factored capacity, no cracking to 20 kip, deflection limits at service and ultimate.",
+    "geometric_constraints": {
+      "overall_length_m": 7.0,
+      "clear_span_m": 6.1,
+      "overhang_each_end_mm": 450,
+      "cross_section_max_depth_mm": 305,
+      "cross_section_max_width_mm": 305,
+      "strand_diameter_mm": 12.7
+    },
+    "material": {
+      "concrete": {
+        "name": "Normal-weight concrete",
+        "fc_transfer_MPa": 55,
+        "fc_28d_MPa": 70,
+        "E_28d_MPa": 39340,
+        "density_kg_m3": 2400
+      },
+      "strand": {
+        "name": "7-wire low-relaxation",
+        "f_pu_MPa": 1860,
+        "initial_stress_MPa": 1395
+      },
+      "mild_steel": {
+        "grade": "Grade 60",
+        "fy_MPa": 414
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "factored_LL_32kip",
+        "total_force_N": 142300,
+        "arrangement": "third-point, two equal 16 kip loads"
+      },
+      {
+        "id": "LC2",
+        "name": "service_LL_20kip_no_crack",
+        "total_force_N": 89000
+      },
+      {
+        "id": "LC3",
+        "name": "ductility_past_ultimate",
+        "target_ductility_ratio": 1.5
+      }
+    ],
+    "boundary_conditions": {
+      "supports": "pin at one end, roller at other on 6.1 m clear span with 450 mm overhangs"
+    },
+    "objective": {
+      "minimize": "mass_and_material_cost"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "beam_mass_per_m_kg",
+        "first_cracking_load_kN",
+        "ultimate_flexural_capacity_kN",
+        "midspan_deflection_20kip_mm",
+        "midspan_deflection_32kip_mm",
+        "ductility_ratio"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "factored_flexural_capacity",
+        "limit_kN": 142.3,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "first_cracking_load",
+        "limit_kN": 89,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection",
+        "limit_mm": 17,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4a",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection",
+        "limit_mm": 34,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4b",
+        "type": "structural_analysis",
+        "metric": "ductility_ratio",
+        "limit": 1.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "factored_shear_capacity",
+        "limit_kN": 142.3,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "nonlinear concrete solid with embedded rebar (fiber section beam OK)",
+      "mesh_size_mm_in_critical_regions": 25,
+      "solver_hints": [
+        "Abaqus CDP",
+        "ANSYS",
+        "OpenSees"
+      ],
+      "analysis_types": [
+        "nonlinear static pushover",
+        "section analysis"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static capacity test.",
+      "thermal_analysis": "Not applicable at this gate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Beam is flexure controlled."
+    }
+  },
+  "eval_coverage": [
+    "prestressed flexural capacity",
+    "first-cracking service check",
+    "service + ultimate deflection limits",
+    "ductility ratio from nonlinear pushover"
+  ]
+}

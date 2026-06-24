@@ -1,0 +1,196 @@
+{
+  "id": "160_cn10_sme_metallic",
+  "source": {
+    "catalog_ref": "CN10",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "mining_structural",
+  "part_class": "sag_mill_trunnion_pedestal",
+  "full_prompt": "Design a reinforced concrete trunnion bearing pedestal for the feed-end of a 10.4 m diameter x 5.2 m long gearless semi-autogenous grinding (SAG) mill supporting a hard-rock copper flowsheet at 60,000 t per day throughput. The feed-end pedestal is a single reinforced concrete block 5.0 m long x 4.0 m wide x 3.0 m tall poured in normal-weight concrete fc' 34.5 MPa with ASTM A615 Grade 60 rebar. The pedestal supports half of the 1,250 t operating mass of the charged mill (charged with 40% ball filling by volume plus ore), giving a vertical static reaction of 6,130 kN at the feed-end bearing plus a horizontal reaction of 1,550 kN from drive torque transmitted through the mill shell at a drive power of 12.5 MW driving the mill at 9.5 rpm (0.158 Hz). Loads: (LC1) 6,130 kN vertical static bearing reaction, (LC2) 1,550 kN horizontal torque reaction, (LC3) a dynamic amplitude of 400 kN vertical and 200 kN horizontal at 0.158 Hz from charge cascading, (LC4) a seismic lateral equivalent of 0.15 g on the full mill mass. Pass/fail criteria: (R1) peak soil bearing pressure must not exceed 500 kPa at the foundation-soil interface, (R2) ACI 318-19 rebar DCR must remain at or below 1.0 under factored combinations, (R3) pedestal top velocity at 0.158 Hz must remain below 10 mm/s rms per DIN 4150-3 Class II, (R4) the first natural frequency of the pedestal-soil system must be at least 3 Hz to clear the 0.158 Hz forcing frequency by a factor of 10, and (R5) maximum tilt of the bearing seat under static loads must not exceed 0.5 mm/m to protect the trunnion bearing alignment. Thermal, fluid, and radiation analyses are not required. Vibration analysis is required because LC3 is a harmonic load. Deliver a STEP AP242 solid body of the pedestal with rebar cage sub-bodies plus a foundation report listing bearing pressure, rebar DCR, vibration velocity, first natural frequency, and static tilt.",
+  "short_prompt": "Design a reinforced concrete trunnion bearing pedestal for the feed-end of a 10.4 m diameter x 5.2 m long gearless SAG mill (hard-rock copper, 60000 t/day, 1250 t operating mass charged with 40% ball filling, 12.5 MW drive, 9.5 rpm = 0.158 Hz). The pedestal is a 5.0 m long x 4.0 m wide x 3.0 m tall normal-weight concrete block (f'c 34.5 MPa, ASTM A615 Grade 60 rebar). Design per ACI 318-19 with DIN 4150-3 Class II vibration limits. Vibration analysis is required because LC3 is harmonic.\n\nLoad cases.\n- LC1 vertical static: 6130 kN bearing reaction at the feed-end.\n- LC2 horizontal static torque: 1550 kN from drive torque transmitted through the mill shell.\n- LC3 charge-cascading harmonic: 400 kN vertical + 200 kN horizontal at 0.158 Hz.\n- LC4 seismic: 0.15 g lateral equivalent on the full mill mass.\nPeak soil bearing pressure under factored combinations <= 500 kPa, rebar DCR <= 1.0, pedestal-top velocity at 0.158 Hz <= 10 mm/s rms, first pedestal-soil natural frequency >= 3 Hz (10x clearance of 0.158 Hz), and bearing-seat tilt under static loads <= 0.5 mm/m.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "mill_charge_dynamics_model",
+        "reason": "Charge cascading force amplitudes on SAG mill trunnions are derived from mill-charge ballistic models (Morrell/Powell), not from structural FEA.",
+        "examples": [
+          "Morrell SMC charge model",
+          "JKSimMet mill simulation"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "10.4 m SAG mill feed-end trunnion pedestal",
+    "brief": "Design a 5.0 x 4.0 x 3.0 m RC pedestal for the feed-end trunnion of a 10.4 m x 5.2 m SAG mill processing 60,000 t/d copper ore, carrying 6.13 MN vertical, 1.55 MN horizontal, and 0.158 Hz charge dynamics, meeting bearing, ACI, vibration, and alignment limits.",
+    "geometric_constraints": {
+      "pedestal_length_m": 5.0,
+      "pedestal_width_m": 4.0,
+      "pedestal_depth_m": 3.0,
+      "mill_diameter_m": 10.4,
+      "mill_length_m": 5.2
+    },
+    "material": {
+      "concrete": {
+        "fc_prime_MPa": 34.5
+      },
+      "rebar": "ASTM A615 Grade 60"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_bearing_vertical",
+        "magnitude_kN": 6130,
+        "application": "centered on bearing seat"
+      },
+      {
+        "id": "LC2",
+        "name": "drive_torque_horizontal",
+        "magnitude_kN": 1550,
+        "application": "horizontal at bearing seat"
+      },
+      {
+        "id": "LC3",
+        "name": "charge_cascading_dynamic",
+        "vertical_amplitude_kN": 400,
+        "horizontal_amplitude_kN": 200,
+        "frequency_Hz": 0.158,
+        "application": "harmonic at bearing seat"
+      },
+      {
+        "id": "LC4",
+        "name": "seismic_ELF",
+        "acceleration_g": 0.15,
+        "mill_mass_t": 1250,
+        "application": "lateral on mill CG"
+      }
+    ],
+    "boundary_conditions": {
+      "soil": "Winkler bed with subgrade modulus 60 MPa per hard-rock site"
+    },
+    "objective": {
+      "primary": "pass all static + dynamic limits",
+      "secondary": "minimize concrete volume"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "peak_bearing_pressure_kPa",
+        "max_rebar_DCR",
+        "pedestal_velocity_mm_s",
+        "first_natural_frequency_Hz",
+        "bearing_tilt_mm_per_m"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "peak_soil_bearing_pressure",
+        "limit_kPa": 500,
+        "applies_to": [
+          "LC1",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_rebar_DCR",
+        "limit": 1.0,
+        "derivation": "ACI 318-19",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "pedestal_top_velocity_rms",
+        "limit_mm_s": 10,
+        "derivation": "DIN 4150-3 Class II",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 3.0,
+        "derivation": "separation ratio 10 from 0.158 Hz forcing",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "bearing_seat_tilt",
+        "limit_mm_per_m": 0.5,
+        "derivation": "trunnion bearing alignment tolerance",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid concrete with embedded rebar, Winkler soil",
+      "mesh_size_mm_in_critical_regions": 200,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SAP2000"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "harmonic response"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Not a thermal-critical foundation.",
+      "fluid_analysis": "Mill charge dynamics supplied as force amplitudes.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compact block; buckling not critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Gearless motor drive (GMD) electromagnetic harmonic content",
+      "Trunnion bearing hydrodynamic film behaviour",
+      "Geotechnical liquefaction under seismic"
+    ]
+  },
+  "eval_coverage": [
+    "mining mill machine foundation structural + vibration stack",
+    "ACI 318-19 combined with DIN 4150-3",
+    "resonance separation at 0.158 Hz",
+    "bearing seat alignment tilt pass/fail"
+  ]
+}

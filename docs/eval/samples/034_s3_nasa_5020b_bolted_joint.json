@@ -1,0 +1,199 @@
+{
+  "id": "034_s3_nasa_5020b_bolted_joint",
+  "source": {
+    "catalog_ref": "S3",
+    "year": 2021,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "bolted_joint_bracket",
+  "full_prompt": "Design a titanium bolted-lap-joint bracket pair that connects a 40 kg payload simulator to a spacecraft secondary structure using four MJ8x1.25 A286 (UNS S66286) fasteners installed with preload-indicating washers. The governing standard is NASA-STD-5020B (2021). The design must satisfy the preload-and-separation requirements of NASA-STD-5020B Section 6 and Appendix A, including the preload uncertainty factors and margin-of-safety equations.\n\nGeometry. Two Ti-6Al-4V plate brackets, each 100 mm x 60 mm x 8 mm, stacked with a 0.1 mm pre-compression gasket pattern. Four through-clearance holes 9.0 mm (clearance fit for MJ8) on a 70 mm x 40 mm rectangular pattern. The lower bracket bolts to the spacecraft deck with a separate fastener set that is out of scope; only the four MJ8 bolts between the two plates are judged. The external load is applied at the center of the upper plate's top face as a lumped 40 kg mass offset 150 mm above the joint plane, creating both direct tension and bending moment on the bolt group.\n\nMaterials. Plates: Ti-6Al-4V (Grade 5), E = 113.8 GPa, nu = 0.342, rho = 4430 kg/m^3, Fty = 860 MPa, Ftu = 950 MPa. Bolts: A286 MJ8x1.25, E_bolt = 201 GPa, specified min ultimate tensile load = 42.5 kN (per NASA-STD-5020B table for MJ8 A286 fasteners at rated strength), tensile yield 34.7 kN; running torque and prevailing torque per NAS1283 nut. Effective friction coefficient under head mu_b = 0.14 nominal, thread mu_t = 0.14 nominal. Joint interface friction coefficient mu_j = 0.2 (conservative aluminum-on-titanium equivalent value for this brief).\n\nPreload. Target nominal preload P_pld_nom = 18 kN per bolt (approximately 52% of bolt yield load — within the 35-65% range NASA-STD-5020B considers nominal). Preload variation: use Gamma = 0.25 (preload uncertainty factor for torque-controlled installation with run-down torque measurement, per NASA-STD-5020B Appendix A defaults). Maximum preload P_pld_max = P_pld_nom * (1 + Gamma) = 22.5 kN. Minimum preload P_pld_min = P_pld_nom * (1 - Gamma) - preload loss = 18 * 0.75 - 0.5 = 13.0 kN (assume 0.5 kN loss from embedment plus CTE effects; the brief may assume 0 CTE loss if isothermal).\n\nExternal load. Limit tensile load per bolt from the 40 kg offset mass under a 10 g lateral quasi-static launch event plus a 20 g axial case, combined conservatively: axial pull-out per bolt P_tL = 2.45 kN, bending-induced additional pull-out on the worst bolt P_bL = 3.8 kN (derived from M = 40*9.81*10*0.15 = 588.6 N*m resolved across the 4-bolt group at 35 mm lever arm / 4). Ultimate tensile load per bolt P_tU = 1.4 * (P_tL + P_bL) = 1.4 * 6.25 = 8.75 kN. Limit shear per bolt P_sL = 1.0 kN, ultimate shear P_sU = 1.4 kN.\n\nPass/fail criteria per NASA-STD-5020B. (R1) Separation margin MS_sep = P_pld_min / (n * P_tL_with_SF) - 1 >= 0, where n is the loading-plane factor (n = 0.5 for a compact hard joint, per 5020B Appendix A) and the SF on separation is 1.2. Numerically: P_pld_min / (0.5 * 1.2 * 6.25) = 13.0 / 3.75 = 3.47, so MS_sep = 2.47, pass. (R2) Slip margin MS_slip = (mu_j * n_f * P_pld_min) / (SF_slip * P_sL) - 1 >= 0, with mu_j = 0.2, n_f = 1 friction plane, SF_slip = 1.2: (0.2 * 1 * 13.0) / (1.2 * 1.0) = 2.17, MS_slip = 1.17, pass. (R3) Bolt ultimate tensile margin: allowable = 42.5 kN, applied = P_pld_max + Phi * P_tU where Phi is the joint stiffness ratio assumed 0.15 for this bolted steel/Ti joint: 22.5 + 0.15 * 8.75 = 23.8 kN. MS_U = 42.5 / 23.8 - 1 = 0.79, pass. (R4) Bolt yield margin: allowable = 34.7 kN at ultimate SF 1.0 against yield on tensile only; 22.5 + 0.15 * 6.25 * 1.25 = 23.7 kN; MS_Y = 34.7 / 23.7 - 1 = 0.46, pass. (R5) Plate bearing stress under ultimate shear must not exceed 1.5 * Ftu of titanium = 1425 MPa, computed as P_sU / (d_bolt * t_plate) = 1400 / (8 * 8) = 21.9 MPa; trivially pass. (R6) Two threads past the nut per 5020B Section 6.1.2 engagement requirement (geometric check).\n\nSolver and analysis expectations. Primary verification is a closed-form NASA-STD-5020B hand calculation of R1-R6 with all six equations traced. A supporting linear-static FEM with pretensioned bolt elements (for example ANSYS PRETS179 or Nastran CBUSH with preload) is recommended but not mandatory. Buckling, modal, thermal, fluid, and radiation analyses are explicitly not required for this bolted-joint problem.\n\nDeliverables. STEP AP242 of the two-plate joint, a margin table listing MS_sep, MS_slip, MS_U, MS_Y, bearing MS, and the thread engagement geometric check.",
+  "short_prompt": "Design a titanium bolted-lap-joint bracket pair that connects a 40 kg payload simulator to a spacecraft secondary structure using four MJ8x1.25 A286 (UNS S66286) fasteners installed with preload-indicating washers. Design per NASA-STD-5020B (2021) preload-and-separation requirements (Section 6, Appendix A).\n\nGeometry: two Ti-6Al-4V plates, each 100 x 60 x 8 mm, stacked with a 0.1 mm pre-compression gasket pattern. Four 9.0 mm through-clearance holes on a 70 x 40 mm rectangular pattern. External load: a 40 kg lumped mass offset 150 mm above the joint plane applied at the center of the upper plate's top face.\n\nMaterials. Plates: Ti-6Al-4V Grade 5. Bolts: A286 MJ8x1.25, specified min ultimate tensile 42.5 kN, tensile yield 34.7 kN. Head friction mu_b = 0.14, thread mu_t = 0.14, interface mu_j = 0.2.\n\nPreload: nominal P_pld_nom = 18 kN per bolt (~52% of yield); preload uncertainty Gamma = 0.25 (torque-controlled install per NASA-STD-5020B Appendix A). P_pld_max = 22.5 kN; P_pld_min = 13.0 kN after 0.5 kN embedment loss.\n\nExternal load cases.\n- Axial pull-out per bolt P_tL = 2.45 kN (limit).\n- Worst-bolt bending-induced pull-out P_bL = 3.8 kN (M = 588.6 N*m across the 4-bolt group at 35 mm lever).\n- Ultimate per bolt P_tU = 1.4 x (P_tL + P_bL) = 8.75 kN.\n- Limit shear P_sL = 1.0 kN; ultimate shear P_sU = 1.4 kN.\n\nMargin checks: MS_sep with n = 0.5 and SF 1.2; MS_slip with SF 1.2; bolt ultimate and yield MS with joint stiffness Phi = 0.15; plate bearing <= 1.5 * Ftu = 1425 MPa; two threads past the nut per 5020B Section 6.1.2.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "closed_form_fastener_analysis",
+        "reason": "NASA-STD-5020B margins are closed-form equations in Appendix A; FEM is supporting, not primary.",
+        "examples": [
+          "hand calc",
+          "MathCAD",
+          "BoltCalc"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Four-bolt titanium bolted joint certified to NASA-STD-5020B",
+    "brief": "Four MJ8 A286 bolts through two Ti-6Al-4V plates carrying a 40 kg offset mass under 10 g lateral / 20 g axial launch; certify all six NASA-STD-5020B margins.",
+    "geometric_constraints": {
+      "plate_mm": {
+        "x": 100,
+        "y": 60,
+        "z": 8
+      },
+      "bolt_holes": {
+        "count": 4,
+        "diameter_mm": 9.0,
+        "pattern_mm": {
+          "x": 70,
+          "y": 40
+        },
+        "size": "MJ8x1.25"
+      },
+      "offset_mass_lever_arm_mm": 150
+    },
+    "material": {
+      "plate": {
+        "name": "Ti-6Al-4V",
+        "E_GPa": 113.8,
+        "nu": 0.342,
+        "Fty_MPa": 860,
+        "Ftu_MPa": 950
+      },
+      "bolt": {
+        "name": "A286 MJ8x1.25",
+        "E_GPa": 201,
+        "min_ultimate_kN": 42.5,
+        "yield_kN": 34.7
+      }
+    },
+    "preload": {
+      "nominal_kN": 18,
+      "gamma_uncertainty": 0.25,
+      "max_kN": 22.5,
+      "min_kN": 13.0,
+      "embedment_loss_kN": 0.5
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "axial_20g_plus_lateral_10g",
+        "per_bolt_tensile_limit_kN": 6.25,
+        "per_bolt_shear_limit_kN": 1.0,
+        "source": "40 kg offset mass 150 mm above joint"
+      }
+    ],
+    "boundary_conditions": {
+      "lower_plate": "bolted to spacecraft deck (out of scope)"
+    },
+    "objective": {
+      "minimize": "margin_headroom_utilization",
+      "target": "all six margins >= 0"
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "NASA-STD-5020B",
+      "revision": "2021"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "separation_margin_MS_sep",
+        "limit": 0.0,
+        "derivation": "MS_sep = P_pld_min / (n * SF_sep * P_tL) - 1; n=0.5, SF_sep=1.2 per NASA-STD-5020B Appendix A",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "slip_margin_MS_slip",
+        "limit": 0.0,
+        "derivation": "MS_slip = mu_j * n_f * P_pld_min / (SF_slip * P_sL) - 1; mu_j=0.2, SF_slip=1.2",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "bolt_ultimate_tensile_margin_MS_U",
+        "limit": 0.0,
+        "derivation": "P_allow_U / (P_pld_max + Phi * P_tU) - 1; Phi=0.15 joint stiffness ratio",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bolt_yield_margin_MS_Y",
+        "limit": 0.0,
+        "derivation": "P_allow_Y / (P_pld_max + Phi * P_tU_yieldSF) - 1",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "plate_bearing_stress",
+        "limit_MPa": 1425,
+        "derivation": "1.5 * Ftu_Ti = 1.5 * 950",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "thread_engagement_past_nut",
+        "limit_threads": 2,
+        "derivation": "NASA-STD-5020B Section 6.1.2",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "N/A (closed-form) or pretensioned bolt elements if FEM used",
+      "solver_hints": [
+        "hand calc",
+        "ANSYS PRETS179",
+        "Nastran CBUSH with preload"
+      ],
+      "analysis_types": [
+        "closed-form margin equations"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Dynamic environment reduced to quasi-static limit loads.",
+      "thermal_analysis": "Isothermal assumption; CTE preload loss is a scalar input.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not applicable for a tension-dominated bolted joint."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fastener-specific fatigue (Goodman / Haigh)",
+      "Locking feature verification",
+      "Installation torque scatter testing per NASA-STD-5020B Section 5"
+    ]
+  },
+  "eval_coverage": [
+    "six independent NASA-STD-5020B margin equations",
+    "preload-uncertainty-factor-driven min/max preload reasoning",
+    "joint stiffness ratio Phi assumption",
+    "thread engagement geometric check"
+  ]
+}

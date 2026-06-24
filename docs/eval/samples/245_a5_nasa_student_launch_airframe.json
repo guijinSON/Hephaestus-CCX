@@ -1,0 +1,176 @@
+{
+  "id": "245_a5_nasa_student_launch_airframe",
+  "source": {
+    "catalog_ref": "A5",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "airframe_coupler_bulkhead",
+  "full_prompt": "Design a single-part monolithic airframe coupler bulkhead for a two-stage-recovery student sounding rocket flying to a declared apogee in the 4,000 to 6,000 ft range. The bulkhead is a disc with integral shoulder coupler tube that joins two body-tube sections (outer diameter 152.4 mm / 6 in, inner diameter 149.4 mm / 5.88 in) and anchors the main parachute harness via a single forged U-bolt through the disc center. Disc thickness to be sized; integral coupler shoulder length 152.4 mm (6 in); coupler outer diameter 149.4 mm to slide inside the body tube; central U-bolt hole 12.7 mm (1/2 in) on centerline; 8x M4 radial screw holes on a 144 mm PCD for shear-pin fastening to the body tube. Material: 6061-T6 aluminum (E = 68.9 GPa, yield = 276 MPa, ultimate = 310 MPa, density = 2700 kg/m^3). Load cases derived from two-section recovery with upper section mass 4.5 kg and lower (booster) section mass 7.5 kg, mission peak altitude 6,000 ft. (R1) Parachute-opening shock at main deployment: shock load applied at the U-bolt in the axial direction equal to 4 x (upper section weight x load factor) with an opening-shock load factor of 8 g on the upper section, giving 4.5 kg x 8 g x 4 = 1413 N axial at the U-bolt; max von Mises <= yield / 1.5 = 184 MPa. (R2) Descent constraint: main canopy shall open such that the section descends within <=90 s total descent time; landing kinetic energy per independent section <= 75 ft-lbf (101.7 J); the bulkhead must survive the resulting landing-impact load of upper section mass times descent velocity (computed from 75 ft-lbf limit: v_max = sqrt(2*101.7/4.5) = 6.72 m/s); a 1.5x dynamic amplification factor applied as a 30 g equivalent static landing load at the U-bolt = 4.5 kg x 30 g = 1324 N; max von Mises <= yield / 1.5 = 184 MPa. (R3) Shear-pin interface: the 8 M4 shear pins shall fail in shear at separation event (nominal shear force 500 N per pin at event) without yielding the bulkhead around the holes; local bearing stress <= yield / 1.25 = 221 MPa. (R4) Mass of the bulkhead <= 300 g. (R5) Redundant recovery: bulkhead shall accept a secondary attachment point (second U-bolt hole offset 30 mm from center) and carry LC1 entirely through the secondary path with the same stress limit <= 184 MPa. Primary verification structural FEA (linear static, 4 independent load cases). Vibration, thermal, fluid, and radiation analyses explicitly NOT required. Deliverables: STEP AP242 monolithic part, a report listing mass in g, max von Mises per load case in MPa, and redundant-load-path check.",
+  "short_prompt": "Design a single-part monolithic coupler bulkhead for a two-stage-recovery student sounding rocket (4,000-6,000 ft apogee class). The bulkhead is a 6061-T6 disc with integral coupler shoulder that joins two 6 in (152.4 mm OD / 149.4 mm ID) body-tube sections, anchors the main parachute harness through a central U-bolt, accepts 8 radial M4 shear pins on a 144 mm PCD, and includes a secondary (redundant) U-bolt hole offset 30 mm from center. Upper section mass 4.5 kg, lower (booster) section 7.5 kg.\n\nEnvelope: disc OD 149.4 mm (sliding fit), integral coupler shoulder length 152.4 mm, central 12.7 mm U-bolt hole.\n\nLoad cases.\n- LC1 main-parachute opening shock: 1413 N axial tension at the primary U-bolt (upper-section mass x 8 g opening shock x 4).\n- LC2 landing impact: 1324 N (30 g equivalent) at the U-bolt, landing kinetic energy capped at 75 ft-lbf (101.7 J) per section, descent time <= 90 s.\n- LC3 shear-pin interface: 500 N per pin on the eight M4 holes at separation, no yielding around the hole.\n- LC4 redundant path: LC1 reacted entirely through the secondary U-bolt hole.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Sounding rocket airframe coupler bulkhead",
+    "brief": "6061-T6 monolithic coupler bulkhead for 6 in (152 mm) airframe; sizes U-bolt, shear pins, and redundant attachment; passes parachute-opening shock and 75 ft-lbf landing KE.",
+    "geometric_constraints": {
+      "airframe_outer_diameter_mm": 152.4,
+      "airframe_inner_diameter_mm": 149.4,
+      "coupler_shoulder_length_mm": 152.4,
+      "center_u_bolt_hole_diameter_mm": 12.7,
+      "secondary_u_bolt_offset_mm": 30,
+      "shear_pin_count": 8,
+      "shear_pin_diameter_mm": 4,
+      "shear_pin_PCD_mm": 144,
+      "monolithic": true
+    },
+    "material": {
+      "name": "6061-T6 aluminum",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "parachute_opening_shock",
+        "force_N": 1413,
+        "direction": "axial at U-bolt"
+      },
+      {
+        "id": "LC2",
+        "name": "landing_impact",
+        "force_N": 1324,
+        "direction": "axial at U-bolt"
+      },
+      {
+        "id": "LC3",
+        "name": "shear_pin_separation",
+        "force_per_pin_N": 500,
+        "direction": "radial on pin holes"
+      },
+      {
+        "id": "LC4",
+        "name": "redundant_path",
+        "force_N": 1413,
+        "direction": "axial at secondary U-bolt only"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "coupler shoulder outer surface bonded to body-tube inner wall",
+      "loads": "axial tension at U-bolt; radial bearing on pin holes"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_bearing_LC3_MPa",
+        "max_von_mises_LC4_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_bearing_stress_around_pin_holes",
+        "limit_MPa": 221,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 300,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<=",
+        "note": "redundant load path"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x4 load cases)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Pressure + recovery loads are the gate; ascent dynamics not required for bulkhead.",
+      "thermal_analysis": "No aerothermal heating at Mach <= 1.",
+      "fluid_analysis": "Aerodynamic loads reduced to axial.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Bulkhead is a disc in tension dominated loading."
+    }
+  },
+  "eval_coverage": [
+    "multi-scenario static (opening shock + landing + pin shear + redundant)",
+    "redundant load path requirement",
+    "recovery-derived load factors"
+  ]
+}

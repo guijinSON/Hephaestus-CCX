@@ -1,0 +1,229 @@
+{
+  "id": "022_pt22_boeing_patent_engine_mount",
+  "source": {
+    "catalog_ref": "PT22",
+    "year": 2017,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "engine_thrust_link_bracket",
+  "needs_patent_fetch": true,
+  "full_prompt": "Design an Inconel 718 engine-mount thrust-link bracket in the spirit of a canonical engine-mount-bracket patent (US9796464B2-style), transferring forward thrust and side loads from a turbofan engine into the pylon primary structure. Envelope: 280 x 180 x 120 mm. Interfaces: engine-side spherical bearing pocket of 35 mm diameter (for a Corrotect-plated spherical bearing); pylon-side fastener grid of 8 bolts (NAS-1351 5/16 inch = 7.94 mm) on a 2x4 rectangular pattern with 40 mm transverse pitch and 50 mm longitudinal pitch; an additional redundant load-path interface (required by CS-25.571 fail-safe) with 2 secondary HI-LOK pins on the bracket body. Material: Inconel 718 per AMS 5663 (precipitation hardened, yield 1034 MPa, UTS 1275 MPa, Young's modulus 200 GPa, density 8190 kg/m^3, elongation 12%). Load cases (magnitudes flagged as placeholder pending patent fetch): LC1 forward thrust limit 45 kN along thrust axis; LC2 side load limit 15 kN (yaw gust); LC3 vertical (maneuver/gust) 12 kN; LC4 combined thrust + side 0.75x each (33.75 + 11.25 kN); LC5 ultimate 1.5 x LC1 = 67.5 kN; LC6 fail-safe case at 1.0x limit with primary load path cut (remaining redundant path must carry the load without catastrophic failure). Pass/fail per CS-25.571 + FAR 25.571 + CS-E engine integration: (R1) max von Mises at limit (LC1-4) <= yield = 1034 MPa (no permanent deformation); (R2) max von Mises at ultimate LC5 <= UTS = 1275 MPa; (R3) fail-safe LC6: with primary path cut, remaining structure max von Mises <= yield / 1.0 = 1034 MPa at limit, with a fail-safe SF 1.0 (inspect-before-next-flight criterion per CS-25.571 Amendment 18); (R4) max displacement at engine-side spherical bearing under LC1 <= 0.2 mm (thrust alignment requirement); (R5) fatigue life at 1 x 10^6 cycles of cyclic thrust (0 to 45 kN) must demonstrate a no-crack-growth damage-tolerance margin; this is tracked as a post-FEA closed-form damage-tolerance check (S-N curve, Inconel 718 HCF fatigue limit ~700 MPa), not detailed FEA; (R6) mass reduction vs solid-billet baseline >= 25% (optimization target typical for Inconel thrust-link parts). Deliverables: STEP AP242 single body; FEA report with per-case stress, fail-safe stress, and spherical-bearing deflection; fatigue summary referencing Inconel 718 S-N data; CS-25.571 compliance sheet showing fail-safe redundancy feature.",
+  "short_prompt": "Design an Inconel 718 engine-mount thrust-link bracket in the spirit of a canonical engine-mount-bracket patent (US9796464B2-style), transferring forward thrust and side loads from a turbofan engine into the pylon primary structure.\n\nEnvelope: 280 x 180 x 120 mm. Engine-side: spherical-bearing pocket 35 mm diameter (for a Corrotect-plated spherical bearing). Pylon-side: eight NAS-1351 5/16 inch (7.94 mm) bolts on a 2x4 grid with 40 mm transverse and 50 mm longitudinal pitch. Redundant fail-safe load path: two secondary HI-LOK pins on the bracket body.\n\nMaterial: Inconel 718 per AMS 5663, precipitation hardened.\n\nDesign per CS-25.571 + FAR 25.571 + CS-E engine integration, including a CS-25.571 Amendment 18 fail-safe SF 1.0 (inspect-before-next-flight).\n\nLoad cases (placeholders pending patent fetch).\n- LC1 forward thrust limit 45 kN along thrust axis.\n- LC2 side load limit 15 kN (yaw gust).\n- LC3 vertical (maneuver/gust) 12 kN.\n- LC4 combined thrust + side at 0.75x each (33.75 + 11.25 kN).\n- LC5 ultimate 1.5 x LC1 = 67.5 kN.\n- LC6 fail-safe: 1.0x limit with the primary load path cut.\n\nAdditional gates: displacement at engine-side spherical bearing under LC1 <= 0.2 mm; fatigue life at 1e6 cycles of cyclic thrust (0 to 45 kN, Inconel 718 HCF fatigue limit ~700 MPa); mass reduction >= 25% vs solid-billet baseline.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "fatigue_damage_tolerance_calculator",
+        "reason": "S-N curve + Miner's rule for fatigue life is a post-FEA closed-form step.",
+        "examples": [
+          "nCode DesignLife",
+          "FE-SAFE"
+        ]
+      },
+      {
+        "tool": "fail_safe_load_path_analysis",
+        "reason": "Redundant load path analysis is a structural scheme review, not FEA physics per se.",
+        "examples": [
+          "manual review against CS-25.571 AMC"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Inconel 718 engine thrust-link bracket with fail-safe path (engine-mount-bracket patent US9796464B2 style)",
+    "brief": "Design a 280x180x120 mm Inconel 718 engine-mount bracket with redundant load path, passing CS-25.571 fail-safe + CS-25.305 limit/ultimate at 45 kN thrust limit.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 280,
+        "y": 180,
+        "z": 120
+      },
+      "engine_interface": {
+        "bearing_pocket_dia_mm": 35,
+        "plating": "Corrotect"
+      },
+      "pylon_interface": {
+        "primary_bolts": 8,
+        "fastener": "NAS-1351 5/16 inch",
+        "pattern_mm": {
+          "transverse": 40,
+          "longitudinal": 50
+        }
+      },
+      "redundant_interface": {
+        "secondary_pins": 2,
+        "family": "HI-LOK"
+      }
+    },
+    "material": {
+      "name": "Inconel 718 per AMS 5663",
+      "yield_MPa": 1034,
+      "ultimate_MPa": 1275,
+      "youngs_modulus_GPa": 200,
+      "density_kg_m3": 8190
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "thrust_limit",
+        "force_N": 45000,
+        "note": "placeholder pending patent fetch"
+      },
+      {
+        "id": "LC2",
+        "name": "side_limit",
+        "force_N": 15000
+      },
+      {
+        "id": "LC3",
+        "name": "vertical_limit",
+        "force_N": 12000
+      },
+      {
+        "id": "LC4",
+        "name": "combined_75pct",
+        "thrust_N": 33750,
+        "side_N": 11250
+      },
+      {
+        "id": "LC5",
+        "name": "ultimate_1.5x",
+        "force_N": 67500
+      },
+      {
+        "id": "LC6",
+        "name": "fail_safe_primary_cut",
+        "force_N": 45000,
+        "note": "remaining path carries load"
+      }
+    ],
+    "boundary_conditions": {
+      "pylon_interface": "8 bolts fully fixed (or 6 if primary path cut in LC6)",
+      "engine_interface": "bearing load at spherical bearing"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "failsafe_max_von_mises_MPa",
+        "bearing_deflection_mm",
+        "mass_g",
+        "fatigue_life_cycles",
+        "cs_25_571_compliance"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_limit",
+        "limit_MPa": 1034,
+        "derivation": "yield per CS-25.305",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_ultimate",
+        "limit_MPa": 1275,
+        "derivation": "UTS per CS-25.305 ultimate",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "failsafe_max_von_mises",
+        "limit_MPa": 1034,
+        "derivation": "CS-25.571 fail-safe at 1.0x limit after primary-path cut",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "spherical_bearing_deflection",
+        "limit_mm": 0.2,
+        "derivation": "thrust alignment requirement",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "fatigue_life_at_cyclic_thrust",
+        "limit_cycles": 1000000,
+        "derivation": "S-N curve Inconel 718 HCF limit ~700 MPa + Miner's rule",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass_reduction_vs_billet_baseline",
+        "limit_pct": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "CS-25.305 + CS-25.571 + FAR 25.571 + AMS 5663 + CS-E engine integration",
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Nastran",
+        "Abaqus",
+        "Ansys Mechanical"
+      ],
+      "analysis_types": [
+        "linear static limit + ultimate + fail-safe + fatigue post-proc"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static limit/ultimate governs; engine-resonance is a separate brief.",
+      "thermal_analysis": "Ambient up to engine nacelle; max case ~200 C is below Inconel 718 degradation.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "patent_fetch": "Thrust/side/vertical limit loads are plausible engine-thrust-link placeholders; patent US9796464B2 text must be fetched for actual claim numbers.",
+    "numeric_source": "Inconel 718 AMS 5663 allowables; CS-25.571 fail-safe framework."
+  },
+  "eval_coverage": [
+    "fail-safe redundancy load path",
+    "fatigue post-FEA check",
+    "multi-case envelope",
+    "Inconel 718 engine-mount material"
+  ]
+}

@@ -1,0 +1,506 @@
+{
+  "id": "034_s3_nasa_5020b_bolted_joint",
+  "source": {
+    "catalog_ref": "S3",
+    "year": 2021,
+    "tier": "A+",
+    "original_sample": "docs/eval/samples/034_s3_nasa_5020b_bolted_joint.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "bolted_joint_bracket",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a titanium bolted-lap-joint bracket pair that connects a 40 kg payload simulator to a spacecraft secondary structure, delivered as a multi-part assembly because the joint itself is defined by the interaction of the two plates, four fasteners, and four nuts. The assembly consists of (A) two Ti-6Al-4V plate brackets stacked face-to-face, (B) four MJ8x1.25 A286 bolts in clearance holes, and (C) four A286 locking nuts with preload-indicating washers. The governing standard is NASA-STD-5020B (2021). The design must satisfy the preload-and-separation requirements of NASA-STD-5020B Section 6 and Appendix A, including the preload uncertainty factors and margin-of-safety equations.\n\nGeometry. Two Ti-6Al-4V plate brackets, each 100 mm x 60 mm x 8 mm, stacked with a 0.1 mm pre-compression gasket pattern. Four through-clearance holes 9.0 mm (clearance fit for MJ8) on a 70 mm x 40 mm rectangular pattern. The lower bracket bolts to the spacecraft deck with a separate fastener set that is out of scope; only the four MJ8 bolts between the two plates are judged. The external load is applied at the center of the upper plate's top face as a lumped 40 kg mass offset 150 mm above the joint plane, creating both direct tension and bending moment on the bolt group.\n\nMaterials. Plates: Ti-6Al-4V (Grade 5), E = 113.8 GPa, nu = 0.342, rho = 4430 kg/m^3, Fty = 860 MPa, Ftu = 950 MPa. Bolts: A286 MJ8x1.25, E_bolt = 201 GPa, specified min ultimate tensile load = 42.5 kN, tensile yield 34.7 kN; running torque and prevailing torque per NAS1283 nut. Effective friction coefficient under head mu_b = 0.14 nominal, thread mu_t = 0.14 nominal. Joint interface friction coefficient mu_j = 0.2.\n\nPreload. Target nominal preload P_pld_nom = 18 kN per bolt. Gamma = 0.25. P_pld_max = 22.5 kN. P_pld_min = 13.0 kN.\n\nExternal load. Limit tensile per bolt P_tL = 2.45 kN, bending-induced additional pull-out on worst bolt P_bL = 3.8 kN. Ultimate tensile per bolt P_tU = 8.75 kN. Limit shear P_sL = 1.0 kN, ultimate shear P_sU = 1.4 kN.\n\nPass/fail criteria per NASA-STD-5020B. (R1) Separation margin MS_sep = P_pld_min / (n * P_tL_with_SF) - 1 >= 0. (R2) Slip margin MS_slip = (mu_j * n_f * P_pld_min) / (SF_slip * P_sL) - 1 >= 0. (R3) Bolt ultimate tensile margin: allowable 42.5 kN vs applied P_pld_max + Phi * P_tU (Phi = 0.15). (R4) Bolt yield margin: allowable 34.7 kN. (R5) Plate bearing stress under ultimate shear must not exceed 1.5 * Ftu of titanium = 1425 MPa. (R6) Two threads past the nut per 5020B Section 6.1.2 engagement requirement.\n\nAssembly policy. The margin equations of NASA-STD-5020B reference preload, external load, plate stiffness and bolt stiffness simultaneously; they cannot be evaluated on plates alone or bolts alone. FEM or closed-form analysis therefore operates on the assembled joint.\n\nSolver and analysis expectations. Primary verification is a closed-form NASA-STD-5020B hand calculation of R1-R6 with all six equations traced on the full assembly. A supporting linear-static FEM with pretensioned bolt elements (for example ANSYS PRETS179 or Nastran CBUSH with preload) is recommended but not mandatory. Buckling, modal, thermal, fluid, and radiation analyses are explicitly not required.\n\nDeliverables. STEP AP242 of the two-plate joint with all bolts and nuts as distinct bodies, a margin table listing MS_sep, MS_slip, MS_U, MS_Y, bearing MS, and the thread engagement geometric check.",
+  "short_prompt": "Design a titanium bolted-lap-joint bracket pair connecting a 40 kg payload simulator to spacecraft secondary structure, delivered as a multi-part assembly (two plates + four bolts + four nuts/washers). Two Ti-6Al-4V plate brackets (each 100 x 60 x 8 mm; Fty = 860 MPa, Ftu = 950 MPa, E = 113.8 GPa, rho = 4430 kg/m^3) are stacked face-to-face with 9.0 mm clearance holes on a 70 x 40 mm pattern, joined by four MJ8x1.25 A286 bolts (E_bolt = 201 GPa, specified min ultimate 42.5 kN, tensile yield 34.7 kN) with A286 locking nuts. Friction mu_b = mu_t = 0.14, mu_j = 0.2. Governing standard NASA-STD-5020B (2021).\n\nPreload. P_pld_nom = 18 kN per bolt; gamma = 0.25; P_pld_max = 22.5 kN, P_pld_min = 13.0 kN.\n\nExternal load applied at the upper plate top, with the 40 kg mass offset 150 mm above the joint plane: per-bolt P_tL = 2.45 kN, bending-worst P_bL = 3.8 kN; P_tU = 8.75 kN; P_sL = 1.0 kN, P_sU = 1.4 kN.\n\nPass limits per NASA-STD-5020B: MS_sep >= 0, MS_slip >= 0; bolt ultimate allowable 42.5 kN vs P_pld_max + Phi*P_tU (Phi = 0.15); yield allowable 34.7 kN; bearing <= 1.5 * 950 = 1425 MPa; two threads past the nut per 5020B 6.1.2.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "closed_form_fastener_analysis",
+        "reason": "NASA-STD-5020B margins are closed-form equations in Appendix A; FEM is supporting, not primary.",
+        "examples": [
+          "hand calc",
+          "MathCAD",
+          "BoltCalc"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Four-bolt titanium bolted joint assembly certified to NASA-STD-5020B",
+    "brief": "Two Ti plates + 4 MJ8 A286 bolts + 4 locking nuts carrying a 40 kg offset mass under 10 g lateral / 20 g axial launch; certify all six NASA-STD-5020B margins.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "titanium_plate_bracket",
+        "role": "load-bearing plate; upper plate receives external lumped mass, lower plate interfaces with spacecraft deck",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plate_mm": {
+            "x": 100,
+            "y": 60,
+            "z": 8
+          },
+          "bolt_hole_diameter_mm": 9.0,
+          "hole_pattern_mm": {
+            "x": 70,
+            "y": 40
+          }
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "MJ8_A286_bolt",
+        "role": "preload-carrying fastener clamping the two plates",
+        "count_min": 4,
+        "geometric_constraints": {
+          "size": "MJ8x1.25",
+          "material": "A286 (UNS S66286)",
+          "min_ultimate_kN": 42.5,
+          "yield_kN": 34.7
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "A286_locking_nut",
+        "role": "locking nut with preload-indicating washer completing the clamp load path",
+        "count_min": 4,
+        "geometric_constraints": {
+          "thread": "MJ8x1.25 matching B",
+          "standard": "NAS1283 equivalent"
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "stacked_plate_thickness_mm": 16.1,
+      "fastener_count": 4,
+      "offset_mass_lever_arm_mm": 150
+    },
+    "material": {
+      "plate": {
+        "name": "Ti-6Al-4V",
+        "E_GPa": 113.8,
+        "nu": 0.342,
+        "Fty_MPa": 860,
+        "Ftu_MPa": 950
+      },
+      "bolt": {
+        "name": "A286 MJ8x1.25",
+        "E_GPa": 201,
+        "min_ultimate_kN": 42.5,
+        "yield_kN": 34.7
+      }
+    },
+    "preload": {
+      "nominal_kN": 18,
+      "gamma_uncertainty": 0.25,
+      "max_kN": 22.5,
+      "min_kN": 13.0,
+      "embedment_loss_kN": 0.5
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "axial_20g_plus_lateral_10g",
+        "per_bolt_tensile_limit_kN": 6.25,
+        "per_bolt_shear_limit_kN": 1.0,
+        "source": "40 kg offset mass 150 mm above joint"
+      }
+    ],
+    "boundary_conditions": {
+      "lower_plate": "bolted to spacecraft deck (out of scope)"
+    },
+    "objective": {
+      "minimize": "margin_headroom_utilization",
+      "target": "all six margins >= 0"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (2 plates + 4 bolts + 4 nuts)",
+      "body_metadata": [
+        "part_family (A|B|C)",
+        "instance_index"
+      ],
+      "report_fields": [
+        "MS_sep",
+        "MS_slip",
+        "MS_U",
+        "MS_Y",
+        "plate_bearing_MS",
+        "thread_engagement_threads_past_nut"
+      ]
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "NASA-STD-5020B",
+      "revision": "2021"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "separation_margin_MS_sep",
+        "limit": 0.0,
+        "derivation": "MS_sep = P_pld_min / (n * SF_sep * P_tL) - 1; n=0.5, SF_sep=1.2 per NASA-STD-5020B Appendix A",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "slip_margin_MS_slip",
+        "limit": 0.0,
+        "derivation": "MS_slip = mu_j * n_f * P_pld_min / (SF_slip * P_sL) - 1; mu_j=0.2, SF_slip=1.2",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "bolt_ultimate_tensile_margin_MS_U",
+        "limit": 0.0,
+        "derivation": "P_allow_U / (P_pld_max + Phi * P_tU) - 1; Phi=0.15",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bolt_yield_margin_MS_Y",
+        "limit": 0.0,
+        "derivation": "P_allow_Y / (P_pld_max + Phi * P_tU_yieldSF) - 1",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "plate_bearing_stress",
+        "limit_MPa": 1425,
+        "derivation": "1.5 * Ftu_Ti = 1.5 * 950",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "thread_engagement_past_nut",
+        "limit_threads": 2,
+        "derivation": "NASA-STD-5020B Section 6.1.2",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "N/A (closed-form primary) or pretensioned bolt elements with contact between plates if FEM used",
+      "solver_hints": [
+        "hand calc",
+        "ANSYS PRETS179",
+        "Nastran CBUSH with preload"
+      ],
+      "analysis_types": [
+        "closed-form margin equations on full joint assembly"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A upper plate faying surface",
+        "A lower plate faying surface"
+      ],
+      "mediated_by": "B bolt preload through A-plate through-holes, clamped by C nut",
+      "load_path": "preload-driven clamp friction + bolt tension on bending worst-case"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B MJ8 bolt",
+        "C A286 nut"
+      ],
+      "mediated_by": "MJ8x1.25 thread engagement",
+      "load_path": "tension from preload + external + bending contribution Phi*P_tU"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A lower plate outer face",
+        "spacecraft deck (external)"
+      ],
+      "mediated_by": "separate fastener set (out of scope)",
+      "load_path": "global reaction (boundary condition)"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "NASA-STD-5020B margins couple preload, plate stiffness, bolt stiffness, and external load through Phi and n; the margins have no meaning for a plate or bolt evaluated in isolation."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "A bolted joint is defined by the interaction of plates, bolts, and nuts. The NASA-STD-5020B margin equations explicitly use joint stiffness ratio Phi and loading-plane factor n that only exist at assembly level.",
+    "exclusions_explained": {
+      "vibration_analysis": "Dynamic environment reduced to quasi-static limit loads.",
+      "thermal_analysis": "Isothermal assumption; CTE preload loss is a scalar input.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not applicable for a tension-dominated bolted joint."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fastener-specific fatigue (Goodman / Haigh)",
+      "Locking feature verification",
+      "Installation torque scatter testing per NASA-STD-5020B Section 5"
+    ]
+  },
+  "eval_coverage": [
+    "six independent NASA-STD-5020B margin equations at assembly level",
+    "preload-uncertainty-factor-driven min/max preload reasoning",
+    "joint stiffness ratio Phi assumption",
+    "thread engagement geometric check"
+  ],
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "separation_margin_MS_sep",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "slip_margin_MS_slip",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "bolt_ultimate_tensile_margin_MS_U",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "bolt_yield_margin_MS_Y",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "plate_bearing_stress",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_005",
+      "requirement_id": "R6",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "generated_static_step:geometry",
+      "metric": "thread_engagement_past_nut",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_006",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

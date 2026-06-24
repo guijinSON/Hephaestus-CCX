@@ -1,0 +1,487 @@
+{
+  "id": "208_oc8_ekka_farm_innovation",
+  "source": {
+    "catalog_ref": "OC8",
+    "year": 2026,
+    "tier": "C",
+    "original_sample": "docs/eval/samples/208_oc8_ekka_farm_innovation.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "ag_implement_structural",
+  "part_class": "welded_cattle_crush_chute_gate_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary load-bearing gate of a cattle handling crush chute as a welded / bolted multi-part SHS assembly for an agricultural implement benchmark, sized for a 1000 kg Bos taurus beef steer. The gate must swing from a hinge post, latch against a strike plate, and contain lateral and forward-back thrusting of the contained animal without exceeding the static and fatigue strength allowables of AS 5532 (Livestock-handling equipment). The gate is fabricated from 50 x 50 x 3.0 mm galvanized AS/NZS 3679.1 Grade 300 steel square hollow section (SHS) members and consists of a hinge-side vertical post, a latch-side vertical post, horizontal top and bottom rails, intermediate horizontal/mid-height rails that form the animal-contact region, diagonal corner braces, hinge hardware welded to the hinge post, and latch hardware welded to the latch post. Material: hot-dipped galvanized AS/NZS 3679.1 Grade 300 steel SHS 50 x 50 x 3.0 mm (Young's modulus 200 GPa, Poisson 0.30, yield 300 MPa, ultimate 440 MPa, density 7850 kg/m^3). Gate outer dimensions: 1.8 m height x 2.2 m length (swing direction). Load cases per AS 5532 default: (LC1) lateral animal push: 3500 N uniformly applied along the mid-height 0.5 m portion of the gate, hinge and latch both pinned; (LC2) forward lunge impact: 5000 N dynamic at the latch end, applied over 150 ms dwell, modeled quasi-statically; (LC3) operator load: 1000 N vertical on the top rail at mid-span representing a stockperson leaning over; (LC4) fatigue: 10,000 cycles of 2000 N lateral at mid-height, representing lifetime handling. Pass/fail: under LC1-LC3 max von Mises must remain below 200 MPa (300 / 1.5 yield FoS), latch-end lateral deflection must remain below 50 mm under LC1, and under LC4 alternating stress at welded joints must remain below the AS 4100 fatigue limit for category 80 of 36 MPa at 1e7 cycles scaled to 1e4 by Miner accumulation. Gate mass should remain below 45 kg for single-person operation. Verification is performed on the assembled welded / bolted model; per-part stress is reported but does not gate pass/fail. Deliverables: STEP with all members, FEA per case on assembly, fatigue summary, and mass report.",
+  "short_prompt": "Design the primary load-bearing gate of a cattle handling crush chute as a welded / bolted multi-part SHS assembly sized for a 1000 kg Bos taurus beef steer, to AS 5532.\n\nThe gate is 50 x 50 x 3.0 mm galvanized AS/NZS 3679.1 Grade 300 steel SHS (E 200 GPa, Poisson 0.30, yield 300 MPa, ultimate 440 MPa, density 7850 kg/m^3). Gate outer dimensions 1.8 m height x 2.2 m length (swing direction).\n\nLoad cases per AS 5532.\n- LC1 lateral animal push: 3500 N uniform along the mid-height 0.5 m portion.\n- LC2 forward lunge: 5000 N dynamic at the latch end over 150 ms dwell, modeled quasi-statically.\n- LC3 operator: 1000 N vertical on top rail mid-span.\n- LC4 fatigue: 10,000 cycles of 2000 N lateral at mid-height.\n\nGate mass below 45 kg for single-person operation.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Cattle crush chute gate (multi-part welded assembly)",
+    "brief": "50x50x3 SHS welded gate: hinge post, latch post, top/bottom/mid rails, diagonal braces, hinge hardware, and latch hardware, for a 1000 kg steer per AS 5532.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "hinge_side_vertical_post",
+        "role": "vertical SHS post on the hinge side of the gate",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 1800,
+          "SHS_mm": "50x50x3.0"
+        },
+        "material_hint": "galvanized Grade 300 SHS",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "latch_side_vertical_post",
+        "role": "vertical SHS post on the latch side of the gate",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 1800,
+          "SHS_mm": "50x50x3.0"
+        },
+        "material_hint": "galvanized Grade 300 SHS",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "horizontal_rail",
+        "role": "top, bottom, and mid-height horizontal rails forming the animal-contact surface",
+        "count_min": 4,
+        "geometric_constraints": {
+          "length_mm": 2200,
+          "SHS_mm": "50x50x3.0"
+        },
+        "material_hint": "galvanized Grade 300 SHS",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "diagonal_brace",
+        "role": "corner / K diagonal brace stiffening the gate against racking",
+        "count_min": 2,
+        "geometric_constraints": {
+          "SHS_mm": "50x50x3.0"
+        },
+        "material_hint": "galvanized Grade 300 SHS",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "hinge_hardware",
+        "role": "hinge plate / pin assembly welded to the hinge post reacting swing",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "galvanized steel plate + pin",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "latch_hardware",
+        "role": "latch bracket + striker welded / bolted on the latch post",
+        "count_min": 1,
+        "geometric_constraints": {},
+        "material_hint": "galvanized steel plate",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "2200 mm (swing) x 1800 mm (H) x 50 mm (tube depth)",
+      "coordinate_system": "X along swing direction from hinge to latch, Y vertical, Z normal to gate plane"
+    },
+    "material": {
+      "name": "AS/NZS 3679.1 Grade 300 steel",
+      "youngs_modulus_GPa": 200,
+      "poissons_ratio": 0.3,
+      "density_kg_m3": 7850,
+      "yield_strength_MPa": 300,
+      "ultimate_tensile_strength_MPa": 440
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "lateral_animal_push",
+        "F_N": 3500,
+        "distribution": "UDL over 0.5 m at mid-height"
+      },
+      {
+        "id": "LC2",
+        "name": "forward_lunge",
+        "F_N": 5000,
+        "application": "latch end"
+      },
+      {
+        "id": "LC3",
+        "name": "operator_lean",
+        "F_N": 1000,
+        "application": "top rail mid-span"
+      },
+      {
+        "id": "LC4",
+        "name": "fatigue",
+        "F_N": 2000,
+        "cycles": 10000,
+        "application": "mid-height"
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "SHS members joined by fillet welds at each T/L joint; hinge hardware welded to hinge post; latch hardware welded/bolted to latch post; fastener and weld stiffness representative of Grade 300 fabrication",
+      "support": "hinge-side pinned, latch-side pinned during LC1-LC4"
+    },
+    "objective": "minimize gate mass while meeting AS 5532 and AS 4100 fatigue criteria",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "gate_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "latch_end_deflection_mm",
+        "weld_alt_stress_MPa",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 200,
+        "derivation": "yield 300 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "latch_end_lateral_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "weld_alternating_stress_miner_scaled",
+        "limit_MPa": 36,
+        "derivation": "AS 4100 Cat 80 fatigue",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "gate_mass",
+        "limit_kg": 45,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[5].count_min"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "welded",
+      "load_path": "rail shear into hinge post via fillet welds at T-joints"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "welded",
+      "load_path": "rail shear into latch post via fillet welds at T-joints"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "welded",
+      "load_path": "diagonal brace into rails / posts"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "hinge reaction into hinge post"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "B",
+        "F"
+      ],
+      "mediated_by": "welded",
+      "load_path": "latch reaction into latch post"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The gate is a welded SHS frame of vertical posts, horizontal rails, and diagonal braces with hinge and latch hardware; the fatigue gate explicitly calls out welded joints, requiring a multi-part model.",
+    "speculation_caveats": "Part-family counts (number of horizontal rails, diagonals) are speculative; materials, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "docs/eval/samples/208_oc8_ekka_farm_innovation.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R_ASM1"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[5].count_min"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "max_von_mises_stress",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "latch_end_lateral_deflection",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_OTHER",
+      "solver": "calculix",
+      "analysis_card": "*DYNAMIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC4"
+      ],
+      "deck_step": "generated_dynamic_step",
+      "metric": "weld_alternating_stress_miner_scaled",
+      "metric_source": "dynamic/static response block",
+      "outputs": [
+        "model.dat: dynamic displacement response"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "gate_mass",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_ASM1_004",
+      "requirement_id": "R_ASM1",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "assembly_interface_connection_DCR",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_005",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

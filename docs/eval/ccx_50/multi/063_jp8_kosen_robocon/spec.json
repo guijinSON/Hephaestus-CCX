@@ -1,0 +1,448 @@
+{
+  "id": "063_jp8_kosen_robocon",
+  "source": {
+    "catalog_ref": "JP8",
+    "year": 2025,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/063_jp8_kosen_robocon.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "robotics_structural",
+  "part_class": "robot_frame_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the frame assembly of a 2025 technical-college student-robotics competition robot, delivered as a multi-part assembly because a robot frame of this class is by construction a built-up extrusion + sheet structure composed of a base frame, vertical uprights, a payload deck, a top cross-brace, and wheel mounts. The self-weight + payload shock, top horizontal impact, payload-deck deflection, and tilt stability pass/fail all reference the assembled frame geometry.\n\nThe robot must fit within an approximate 1 m^3 starting envelope (1000 mm x 1000 mm x 1000 mm). The per-team combined mass of all robots must be in the range 20-25 kg; this design targets a single robot of mass 22 kg. Pneumatic actuators, if used, must not exceed a gauge pressure of 0.5 MPa (500 kPa). Field obstacles include stair-like steps and ramps defined by the 2025 rulebook field CAD; the robot must be able to traverse at least a 50 mm step and a 15-degree incline.\n\nAssembly layout. (A) Base frame: rectangular extrusion base serving as primary lower load path. (B) Upright: vertical extrusion columns rising from base to top (>= 4 for rectangular layout). (C) Payload deck: horizontal sheet/extrusion deck supporting the 30 kg payload case; its mid-span deflection under 2.5 g is a pass/fail metric. (D) Top cross-brace: transverse brace at the top reacting the 150 N horizontal impact. (E) Wheel mount: bolted/bonded plate carrying wheel axles at the base (>= 3 for 3/4-wheel layouts).\n\nThe frame must carry self-weight plus a 30 kg payload-carrying case (total 52 kg) under 2.5 g vertical equivalent shock with no permanent yield. The frame must also survive a 150 N horizontal impact applied at the top of the robot without visible deformation. Under the 2.5 g self-weight + payload case, the maximum deflection of the payload deck must not exceed 5 mm. The robot must satisfy a static tilt test of 30 degrees in any direction without tipping.\n\nAssembly policy. Mass cap (R1) is a whole-frame sum. Payload-deck deflection (R2) is a function of deck sheet + upright restraint. Yield under self-weight + payload and under top horizontal impact (R3) depends on base + upright + cross-brace + deck coupling. Tilt-to-tip (R4) is a whole-robot kinematic property from assembled CG and wheel track. No part evaluated alone has meaningful pass/fail.\n\nSolver and analysis expectations. Primary: linear static structural FEA for the two main load cases. The pneumatic pressure cap is a component-cert check. Traversal over the 50 mm step and 15-degree incline is a kinematic check combining wheel size, ground clearance, and CG, performed with CAD geometry (non-FEA). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required.\n\nDeliverables: STEP AP242 of the robot frame, a mass budget, and a report listing robot mass in kg, max von Mises stress per case in MPa, max payload deck deflection in mm, and tilt-to-tip angle in deg.",
+  "short_prompt": "Design the frame assembly of a 2025 technical-college student-robotics competition robot, delivered as a built-up extrusion + sheet multi-part assembly: base frame + >= 4 uprights + payload deck + top cross-brace + >= 3 wheel mounts. Starting envelope ~1 m^3 (1000 x 1000 x 1000 mm). Per-team combined robot mass 20-25 kg (this design targets 22 kg). Pneumatics <= 0.5 MPa (500 kPa). Must traverse a 50 mm step and a 15-degree incline per 2025 rulebook field CAD.\n\nLoad cases.\n- LC1 self-weight + payload: 22 kg frame + 30 kg payload case = 52 kg under 2.5 g vertical, no permanent yield.\n- LC2 top horizontal impact: 150 N at the top of the robot, no visible deformation.\n- LC3 payload-deck deflection under LC1 <= 5 mm.\n- LC4 static tilt test: 30 degrees in any direction without tipping.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "kinematic_check",
+        "reason": "Step and ramp traversal are CAD geometry checks, not FEA.",
+        "examples": [
+          "CAD + analytical wheel kinematics"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Technical-college student robot frame as multi-part assembly",
+    "brief": "22 kg robot frame fitting 1 m^3: base frame + uprights + payload deck + top cross-brace + wheel mounts; pneumatic <= 0.5 MPa, 50 mm step + 15 deg incline traversal, 30 deg tilt stable.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "base_frame",
+        "role": "rectangular extrusion base forming lower load path",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "aluminum extrusion"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "upright",
+        "role": "vertical extrusion columns",
+        "count_min": 4,
+        "geometric_constraints": {
+          "material": "aluminum extrusion"
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "payload_deck",
+        "role": "horizontal deck supporting the 30 kg payload case; deflection is pass/fail",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "aluminum sheet or extrusion"
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "top_cross_brace",
+        "role": "transverse brace at top reacting horizontal impact",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "aluminum extrusion"
+        }
+      },
+      {
+        "part_id": "E",
+        "name": "wheel_mount",
+        "role": "bolted plate carrying wheel axles at base",
+        "count_min": 3,
+        "geometric_constraints": {
+          "material": "aluminum sheet or machined"
+        }
+      }
+    ],
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 1000,
+        "W": 1000,
+        "H": 1000
+      },
+      "single_robot_mass_kg": 22,
+      "combined_team_mass_kg_range": [
+        20,
+        25
+      ],
+      "pneumatic_MPa_max": 0.5,
+      "step_traverse_mm_min": 50,
+      "incline_deg_min": 15
+    },
+    "material": {
+      "typical": "aluminum extrusion + sheet",
+      "AL6063_T5_properties": {
+        "E_GPa": 68.9,
+        "yield_MPa": 145
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "self_weight_plus_payload_2p5g",
+        "magnitude_N": 1275,
+        "description": "(22+30) kg x 2.5 g vertical"
+      },
+      {
+        "id": "LC2",
+        "name": "top_horizontal_impact",
+        "magnitude_N": 150,
+        "description": "horizontal force at top of robot"
+      },
+      {
+        "id": "LC3",
+        "name": "tilt_test",
+        "angle_deg": 30
+      }
+    ],
+    "boundary_conditions": {
+      "wheels": "fixed vertical reactions",
+      "payload_deck": "carries payload centered"
+    },
+    "objective": {
+      "minimize": "frame_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (base + uprights + payload deck + top brace + wheel mounts)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E)"
+      ],
+      "report_fields": [
+        "robot_mass_kg",
+        "max_vm_stress_LC1_MPa",
+        "max_vm_stress_LC2_MPa",
+        "payload_deck_deflection_mm",
+        "tilt_to_tip_deg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "robot_mass_kg",
+        "limit_kg": 25,
+        "derivation": "Team combined mass cap",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "payload_deck_deflection_mm",
+        "limit_mm": 5.0,
+        "derivation": "Operational stiffness target",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 against yield",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "tilt_to_tip_deg",
+        "limit_deg": 30,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static x2"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A base_frame",
+        "B upright"
+      ],
+      "mediated_by": "bolted extrusion corner bracket",
+      "load_path": "vertical load path from base into uprights"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B upright",
+        "C payload_deck"
+      ],
+      "mediated_by": "bolted t-slot mount",
+      "load_path": "payload inertia reacted from deck into uprights - conditions R2 deck deflection"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B upright",
+        "D top_cross_brace"
+      ],
+      "mediated_by": "bolted corner bracket",
+      "load_path": "top horizontal impact reacted from cross-brace into uprights into base"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A base_frame",
+        "E wheel_mount"
+      ],
+      "mediated_by": "bolted plate joint",
+      "load_path": "wheel contact reactions at base; conditions tilt geometry"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Mass cap, payload-deck deflection, self-weight + payload yield, top-impact yield, and tilt-to-tip all couple base + upright + deck + cross-brace + wheel-mount families. No part evaluated alone has meaningful pass/fail."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "A student-robotics robot frame is intrinsically a built-up extrusion + sheet assembly; payload-deck stiffness, top-impact yield, and tilt all reference assembled geometry.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "envelope + mass cap on assembly",
+    "payload deck stiffness at B-C interface",
+    "horizontal top impact via top-brace to base path",
+    "step/ramp traversal kinematics from assembled CG + wheels"
+  ],
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "robot_mass_kg",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "payload_deck_deflection_mm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2",
+      "metric": "max_vm_stress_MPa",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "tilt_to_tip_deg",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_004",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

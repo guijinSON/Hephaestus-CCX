@@ -1,0 +1,114 @@
+**
+** AIChE Chem-E-Car pressurized reservoir - submission-agnostic template
+** (mesh + NSETs + SINNER surface spliced in by wire_bcs.py)
+**
+** Spec: 115_e5_chem_e_car_pressurized_reservoir
+**   Monolithic Al 6061-T6 cylindrical reservoir with integral hemi caps.
+**   Cylinder ID 100, wall t=3.0, L_cyl=180, hemi-cap R_inner=50.
+**   MAOP 689 kPa; benchmark SF >= 2.0.
+**
+** Units: mm, N, MPa, t (tonne), s     (consistent CalculiX SI-mm)
+**   pressure 1 MPa = 1 N/mm^2 ; density 2700 kg/m^3 = 2.7e-9 tonne/mm^3
+**
+** Required NSETs (provided via meta.json `selectors`):
+**   NSEED1  - one node near the -X dome apex; pins UX/UY/UZ (3 DOF)
+**   NSEED2  - one node near the +X dome apex; pins UY/UZ    (2 DOF)
+**   NSEED3  - one node near +Y top of mid-cylinder; pins UZ (1 DOF)
+**   NINNER  - all inner-surface nodes (information / *NODE PRINT only)
+**
+** Required SURFACE (provided via meta.json `pressure_surfaces`):
+**   SINNER  - element-face surface on the wetted inner wall; *DSLOAD
+**             references it for the three pressure load cases. CCX
+**             requires *SURFACE TYPE=ELEMENT for solid-element pressure
+**             loads (TYPE=NODE only valid for cyclic-symm/contact).
+**
+** *SOLID SECTION uses ELSET=Eall (auto-built by wire_bcs.py from gmsh's
+** C3D{4,10}* volume sets).
+**
+** Three-pin BC suppresses the 6 rigid-body DOF without imposing any net
+** external reaction. The internal pressure load is self-equilibrated, so
+** the supports carry only numerical noise; the resulting biaxial wall
+** stress field is the correct membrane response.
+**
+** (mesh.inp already provides the *HEADING; do not redeclare here.)
+**
+** ---- Material: Aluminum 6061-T6 ----
+*MATERIAL, NAME=AL6061T6
+*ELASTIC
+68900., 0.33
+*DENSITY
+2.7e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=AL6061T6
+**
+** ---- Three-pin rigid-body suppression (active for all 4 STEPs) ----
+*BOUNDARY
+NSEED1, 1, 3, 0.0
+NSEED2, 2, 3, 0.0
+NSEED3, 3, 3, 0.0
+**
+** ============================================================
+** STEP 1 - LC1 Proof pressure  P_int = 1.034 MPa (1.5 x MAOP)
+** R1: peak vM <= 138 MPa  (yield/2.0, benchmark SF >= 2)
+** ============================================================
+*STEP
+*STATIC
+*DSLOAD
+SINNER, P, -1.034
+*NODE FILE
+U
+*EL FILE
+S
+*NODE PRINT, NSET=NINNER
+U
+*EL PRINT, ELSET=Eall
+S
+*END STEP
+**
+** ============================================================
+** STEP 2 - LC2 Operating  P_int = 0.689 MPa (MAOP)
+** R2: peak vM <= 92 MPa   (yield/3.0, ASME VIII Div.1 UG-23)
+** ============================================================
+*STEP
+*STATIC
+*DSLOAD
+SINNER, P, -0.689
+*NODE FILE
+U
+*EL FILE
+S
+*EL PRINT, ELSET=Eall
+S
+*END STEP
+**
+** ============================================================
+** STEP 3 - LC3 Thermal overpressure  P_int = 0.900 MPa @ 50 C
+** R5: peak vM <= 183 MPa  (yield-at-50C / 1.5 derate)
+** Temperature derate is captured in the allowable, not in the
+** elastic stiffness (E variation < 5% at 50 C).
+** ============================================================
+*STEP
+*STATIC
+*DSLOAD
+SINNER, P, -0.900
+*NODE FILE
+U
+*EL FILE
+S
+*EL PRINT, ELSET=Eall
+S
+*END STEP
+**
+** ============================================================
+** STEP 4 - *FREQUENCY  (R3: first 5 nat. freqs >= 250 Hz)
+** Three-pin BCs remain so the lowest 6 modes are *not* the rigid-body
+** zeros; with 3 pins constraining 6 DOF the mode shapes are clean
+** elastic deformations. (Free-free would also work but produces 6
+** spurious near-zero RB modes that complicate post-processing.)
+** ============================================================
+*STEP
+*FREQUENCY, STORAGE=YES
+5
+*NODE FILE
+U
+*END STEP

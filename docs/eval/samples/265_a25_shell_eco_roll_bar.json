@@ -1,0 +1,191 @@
+{
+  "id": "265_a25_shell_eco_roll_bar",
+  "source": {
+    "catalog_ref": "A25",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "ultra_efficient_urban_concept_roll_bar",
+  "full_prompt": "Design the roll bar (primary rollover structure) for a student-built ultra-efficient urban-concept vehicle, compliant with a governing structural-demonstration rulebook (2026 edition). The driver sits upright; the roll bar must exceed the driver's helmet top by at least 50 mm with helmet on. Vehicle kerb mass including driver = 200 kg; the roll bar is anchored to the chassis at two rear-mount points and two forward-mount points (4-point mount). Material: 4130 chromoly steel tubing, primary members 25.4 mm (1 in) OD x 2.0 mm wall. E = 205 GPa, yield = 460 MPa, ultimate = 670 MPa, density = 7850 kg/m^3. Geometric constraints: roll bar height above floor 1200 mm (clearing a 1150 mm helmet + driver sitting height); width 700 mm outside-outside; depth (fore-aft at top) 400 mm. Mounted to chassis via four M10 Grade 8.8 bolts. Load cases from the governing rollover-structure article: (R1) Vertical load: 700 N applied at any point on the upper surface of the roll bar at any angle within 15 deg of vertical; max von Mises in tube <= yield / 1.15 = 400 MPa; deflection at application point <= 5 cm (50 mm) to maintain helmet clearance. (R2) Lateral load: 300 N applied horizontally at any point on the upper surface; max deflection <= 25 mm; max von Mises <= 400 MPa. (R3) Longitudinal load: 300 N applied horizontally from the front; same limits as R2. (R4) Combined: 700 N vertical simultaneous with 300 N lateral; max von Mises <= ultimate / 1.5 = 447 MPa. (R5) Roll bar mass <= 3.0 kg. (R6) Bulkhead / fuel-cell separation: the roll bar shall not intrude into the fuel-cell compartment (if H2-powered) under any case; this is a no-intrusion geometric check rather than a stress check. Primary verification: structural FEA (linear static, 4 cases). Vibration, thermal, fluid, radiation, buckling NOT required. Deliverables: STEP AP242 welded roll bar, weld map, and a report listing mass in kg, max deflection per case in mm, max von Mises per case in MPa.",
+  "short_prompt": "Design the primary rollover structure (roll bar) for a student-built ultra-efficient urban-concept vehicle, compliant with the governing structural-demonstration rulebook (2026 edition). Driver sits upright; the roll bar must clear the helmet top by >= 50 mm with helmet on. Kerb mass with driver = 200 kg. Primary members are 25.4 mm OD x 2.0 mm wall 4130 chromoly tubing, anchored to the chassis at 4 bolts (M10 Grade 8.8).\n\nEnvelope: roll-bar height above floor 1200 mm, outside-outside width 700 mm, fore-aft top depth 400 mm.\n\nLoad cases (from the rulebook's rollover-structure article).\n- LC1 vertical 700 N at any point on the upper surface within 15 deg of vertical; load-point deflection <= 50 mm.\n- LC2 lateral 300 N horizontal at any point on the upper surface; deflection <= 25 mm.\n- LC3 longitudinal 300 N horizontal from the front; deflection <= 25 mm.\n- LC4 combined: 700 N vertical + 300 N lateral simultaneous (ultimate-load case).\n- LC5 no-intrusion geometric check into the fuel-cell compartment (if H2-powered) under any case.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Ultra-efficient urban-concept vehicle roll bar",
+    "brief": "4130 roll bar with helmet clearance >=50 mm; 700 N vertical + 300 N lat/long load cases per the governing rollover-structure article.",
+    "geometric_constraints": {
+      "height_above_floor_mm": 1200,
+      "width_mm": 700,
+      "depth_mm": 400,
+      "tube_OD_mm": 25.4,
+      "tube_wall_mm": 2.0,
+      "helmet_clearance_mm_min": 50,
+      "mount_bolts": {
+        "count": 4,
+        "size": "M10"
+      }
+    },
+    "material": {
+      "name": "AISI 4130 normalized",
+      "properties": {
+        "youngs_modulus_GPa": 205,
+        "yield_strength_MPa": 460,
+        "ultimate_tensile_strength_MPa": 670,
+        "density_kg_m3": 7850
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical_700N",
+        "force_N": 700,
+        "angle_range_deg": 15,
+        "deflection_limit_mm": 50
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_300N",
+        "force_N": 300,
+        "deflection_limit_mm": 25
+      },
+      {
+        "id": "LC3",
+        "name": "longitudinal_300N",
+        "force_N": 300,
+        "deflection_limit_mm": 25
+      },
+      {
+        "id": "LC4",
+        "name": "combined_vertical_lateral",
+        "forces_N": {
+          "vertical": 700,
+          "lateral": 300
+        }
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "four M10 bolt holes fully fixed",
+      "loads": "point loads at tube apex per the governing rollover-structure article"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_kg",
+        "max_deflection_LC1_mm",
+        "max_deflection_LC2_mm",
+        "max_deflection_LC3_mm",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_deflection",
+        "limit_mm": 25,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_deflection",
+        "limit_mm": 25,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 447,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 3.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B32) or shell",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x4 cases)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static per the governing rollover-structure article.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Closed frame."
+    }
+  },
+  "eval_coverage": [
+    "combined deflection + stress pass/fail",
+    "three-direction rollover loads",
+    "ultimate combined case"
+  ]
+}

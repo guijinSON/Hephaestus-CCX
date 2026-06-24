@@ -1,0 +1,205 @@
+{
+  "id": "264_a24_baja_india_hv_enclosure",
+  "source": {
+    "catalog_ref": "A24",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "student_offroad_ev_hv_battery_enclosure",
+  "full_prompt": "Design the HV battery enclosure for a student-built electric off-road recreational vehicle. Per a governing structural-demonstration rulebook, the electric variant carries a high-voltage tractive battery (nominal 72 V, capacity 60 Ah => 4.3 kWh, total pack mass 35 kg) sealed inside a structural enclosure rated IP67, mounted behind the driver inside the cage. Enclosure shall be a welded monolithic aluminum 6082-T6 box, E = 70 GPa, yield = 250 MPa, ultimate = 290 MPa, density = 2700 kg/m^3. Overall bounding box 500 mm (X) x 300 mm (Y) x 250 mm (Z), wall thickness to be sized. Mounting: 6x M8 Grade 8.8 bolts through frame brackets. Load cases (electric-variant subset of standard off-road chassis load factors): (R1) Front impact 4 g applied to the full 35 kg pack: 4 x 35 x 9.81 = 1,374 N +X direction into the cells; max von Mises in enclosure walls <= yield / 1.25 = 200 MPa. (R2) Side impact 3 g: 3 x 35 x 9.81 = 1,030 N +Y; max von Mises <= 200 MPa. (R3) Rollover 2 g vertical + roof crush: 2 x 35 x 9.81 = 687 N vertical; max von Mises <= 200 MPa. (R4) IP67 qualification requires a gasket-sealed lid: the bolted lid interface must maintain compression on an EPDM gasket (nominal 5 mm initial thickness, compression 25%, E_gasket 5 MPa) across all load cases; lid-to-box edge gap <= 0.1 mm under worst-case inertial loading. (R5) Enclosure mass (excluding cells) <= 7 kg. (R6) Rear-impact 3 g: 3 x 35 x 9.81 = 1,030 N -X; max von Mises <= 200 MPa. (R7) First modal frequency >= 40 Hz. (R8) Tractive-system nominal voltage <= 96 V DC (electric-variant rule). Primary verification: structural FEA (linear static x4 cases) + gasket contact FEA for R4 + modal for R7. Vibration secondary via R7. Thermal, fluid, radiation explicitly NOT required. Deliverables: STEP AP242 welded enclosure (single FEA body), weld map, gasket spec, and a report listing enclosure mass in kg, max von Mises per load case, max lid gap in mm, first modal frequency in Hz.",
+  "short_prompt": "Design the HV battery enclosure for a student-built electric off-road recreational vehicle compliant with the governing structural-demonstration rulebook for the electric variant. The enclosure is a welded monolithic aluminum 6082-T6 box rated IP67, housing a 72 V / 60 Ah (~4.3 kWh) tractive battery (pack mass 35 kg). Tractive-system nominal voltage <= 96 V DC. Mounting is 6 x M8 Grade 8.8 bolts through frame brackets; lid uses a 5 mm EPDM gasket at 25% compression.\n\nEnvelope: outer bounding 500 x 300 x 250 mm (X x Y x Z).\n\nLoad cases (inertial loads on the full 35 kg pack).\n- LC1 front impact 4 g: 1,374 N in +X.\n- LC2 side impact 3 g: 1,030 N in +Y.\n- LC3 rollover 2 g vertical: 687 N vertical.\n- LC4 rear impact 3 g: 1,030 N in -X.\n- LC5 IP67 gasket compression: under worst-case inertial load, lid-to-box edge gap <= 0.1 mm.\n- LC6 modal: first frequency >= 40 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student off-road EV high-voltage battery enclosure",
+    "brief": "6082-T6 welded battery box for 35 kg HV pack, IP67 sealed, survives 4/3/2/3 g triaxial loads.",
+    "geometric_constraints": {
+      "outer_bounding_box_mm": "500 x 300 x 250",
+      "mount_bolts": {
+        "count": 6,
+        "size": "M8 Grade 8.8"
+      },
+      "pack_mass_kg": 35,
+      "gasket_thickness_mm": 5,
+      "gasket_compression_pct": 25,
+      "ip_rating": "IP67"
+    },
+    "material": {
+      "name": "Al 6082-T6 welded",
+      "properties": {
+        "youngs_modulus_GPa": 70,
+        "yield_strength_MPa": 250,
+        "ultimate_tensile_strength_MPa": 290,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "front_4g",
+        "force_N": 1374,
+        "direction": "+X"
+      },
+      {
+        "id": "LC2",
+        "name": "side_3g",
+        "force_N": 1030,
+        "direction": "+Y"
+      },
+      {
+        "id": "LC3",
+        "name": "rollover_2g",
+        "force_N": 687,
+        "direction": "-Z"
+      },
+      {
+        "id": "LC4",
+        "name": "rear_3g",
+        "force_N": 1030,
+        "direction": "-X"
+      },
+      {
+        "id": "LC5",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "six M8 bolt bosses fixed",
+      "internal_mass": "35 kg lumped and tied to cell-mount interior"
+    },
+    "objective": {
+      "minimize": "enclosure_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "enclosure_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa",
+        "max_lid_gap_mm",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 200,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 200,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 200,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "lid_gap",
+        "limit_mm": 0.1,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "enclosure_mass",
+        "limit_kg": 7,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 200,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 40,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid (gasket contact)",
+      "mesh_size_mm_in_critical_regions": 4,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "contact",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Pack thermal management is a separate EV gate.",
+      "fluid_analysis": "IP67 qualification is a physical test, gap-based FEA is proxy.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not driving."
+    }
+  },
+  "eval_coverage": [
+    "triaxial inertial load envelope",
+    "IP67 gasket gap check",
+    "HV tractive voltage compliance"
+  ]
+}

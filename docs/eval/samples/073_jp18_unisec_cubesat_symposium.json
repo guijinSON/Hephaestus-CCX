@@ -1,0 +1,178 @@
+{
+  "id": "073_jp18_unisec_cubesat_symposium",
+  "source": {
+    "catalog_ref": "JP18",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cubesat_1u_structure",
+  "full_prompt": "Design the primary structure of a 1U CubeSat compliant with the Cal Poly CubeSat Design Specification (CDS) Rev. 14. The CubeSat must fit inside a 100.0 mm x 100.0 mm x 113.5 mm envelope (accounting for standoff rails and access port allowances per CDS). Total mass must not exceed 1.33 kg (1U CDS limit). The four +Z rails must protrude 6.5 mm above the +Z face and act as the deployer rail contact surface; the rails must be anodized hard-anodize type III to prevent cold welding with the P-POD/ISIPOD deployer. Material is typically Al 6061-T6 or Al 7075-T7351 for the primary structure. Launch environment for a typical ride-share is random vibration 14.1 Grms (NASA GEVS, 20-2000 Hz) and a quasi-static limit load of 25 g in each axis. The first natural frequency of the assembled CubeSat must be above 100 Hz to decouple from the deployer during launch vibration. Stress allowables per NASA-STD-5001B: yield FoS 2.0 (higher for CubeSats because the structure doubles as the primary load path and has minimal test coverage), ultimate FoS 2.6. Primary verification is structural FEA (linear static at 25 g triaxial) plus modal analysis for first frequency and random-vibration harmonic response for 3-sigma stress evaluation. Vibration is a primary gate. Thermal, fluid, and radiation analyses are explicitly NOT required at this structural gate. Deliverables: STEP AP242 of the 1U structure, a mass budget, and a report listing total mass in g, first modal frequency in Hz, max stress at 25 g in MPa with FoS, and 3-sigma random vib stress in MPa.",
+  "short_prompt": "Design the primary structure of a 1U CubeSat compliant with Cal Poly CubeSat Design Specification (CDS) Rev.14. Envelope 100.0 x 100.0 x 113.5 mm; total mass <= 1.33 kg. The four +Z rails must protrude 6.5 mm above the +Z face and be Type III hard-anodized (cold-weld prevention in the P-POD/ISIPOD deployer). Primary material typically Al 6061-T6 or Al 7075-T7351. Stress allowables per NASA-STD-5001B with the CubeSat-conservative yield FoS 2.0 and ultimate FoS 2.6. First natural frequency >= 100 Hz (deployer decoupling).\n\nLoad cases.\n- LC1 quasi-static 25 g X.\n- LC2 quasi-static 25 g Y.\n- LC3 quasi-static 25 g Z.\n- LC4 random vibration 14.1 Grms over 20-2000 Hz (NASA GEVS qualification spectrum).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CDS-compliant 1U CubeSat structure",
+    "brief": "Design a 1U CubeSat (100 x 100 x 113.5 mm, ≤ 1.33 kg) per Cal Poly CDS Rev.14, survives 14.1 Grms + 25 g triaxial, first mode ≥ 100 Hz.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "X": 100.0,
+        "Y": 100.0,
+        "Z": 113.5
+      },
+      "rail_protrusion_plusZ_mm": 6.5,
+      "total_mass_kg_max": 1.33,
+      "rail_anodize": "Type III hard anodize"
+    },
+    "material": {
+      "typical": "Al 6061-T6 or Al 7075-T7351",
+      "Al7075_T7351": {
+        "E_GPa": 71.7,
+        "yield_MPa": 435
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "qs_25g_X",
+        "magnitude_g": 25,
+        "direction": "X"
+      },
+      {
+        "id": "LC2",
+        "name": "qs_25g_Y",
+        "magnitude_g": 25,
+        "direction": "Y"
+      },
+      {
+        "id": "LC3",
+        "name": "qs_25g_Z",
+        "magnitude_g": 25,
+        "direction": "Z"
+      },
+      {
+        "id": "LC4",
+        "name": "random_vib",
+        "Grms": 14.1,
+        "band_Hz": [
+          20,
+          2000
+        ]
+      }
+    ],
+    "boundary_conditions": {
+      "rails": "fixed along deployer contact surfaces"
+    },
+    "objective": {
+      "minimize": "structural_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "total_mass_g",
+        "first_modal_frequency_Hz",
+        "max_qs_stress_MPa",
+        "three_sigma_random_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "total_mass_kg",
+        "limit_kg": 1.33,
+        "derivation": "CDS 1U mass cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_qs_stress_MPa",
+        "limit_fraction_of_yield": 0.5,
+        "derivation": "CubeSat conservative yield FoS 2.0",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency_Hz",
+        "limit_Hz": 100,
+        "derivation": "Deployer decoupling",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "three_sigma_random_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "Random-vib 3-sigma yield FoS 1.5",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "rail_protrusion_plusZ_mm",
+        "limit_mm": 6.5,
+        "derivation": "CDS rail standoff",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal",
+        "random vibration"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Separate thermal gate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not in structural gate."
+    }
+  },
+  "eval_coverage": [
+    "CDS 1U envelope + mass",
+    "triaxial quasi-static + random vib",
+    "first mode decoupling",
+    "rail anodize spec"
+  ]
+}

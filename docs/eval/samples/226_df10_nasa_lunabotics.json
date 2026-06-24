@@ -1,0 +1,179 @@
+{
+  "id": "226_df10_nasa_lunabotics",
+  "source": {
+    "catalog_ref": "DF10",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "regolith_excavation_robotic_structural",
+  "part_class": "lunabotics_chassis_and_excavation_arm_mount",
+  "full_prompt": "Design the chassis and excavation-arm mount of a regolith mining robot benchmark, compliant with a 2026 guidebook draft. Robot stowed envelope must fit within 1.5 m length x 0.75 m width x 0.75 m height at the start of the mission; total robot mass must not exceed 80 kg. Operational arena is a 7.38 m x 3.88 m lunar-analog regolith bin filled with BP-1 simulant (bulk density ~1500 kg/m^3, angle of internal friction 45 deg). Robot must autonomously traverse the arena, excavate >= 15 kg of BP-1 in a 15-minute mission, and deposit it into a collection bin. Chassis material: 6061-T6 aluminum extrusion + plate (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3). Excavation arm mount is the bolted interface plate where the active digging mechanism attaches; it must transmit the BP-1 digging reaction load into the chassis without bending the chassis out of kinematic alignment. Load cases: (LC1) BP-1 digging reaction: 500 N horizontal opposing motion + 300 N vertical downforce at the excavation arm tool tip, moment arm 0.4 m from arm-mount bolt pattern - total 680 N at mount with 260 N-m moment; (LC2) 15-minute duty cycle: 100 digging strokes per mission at 1 per 9 s, alternating loading between 0 and full LC1 at 0.11 Hz, 100 cycles; (LC3) traverse impact: 2 g vertical on one wheel crossing a BP-1 berm; (LC4) regolith-laden return: 15 kg BP-1 mass distributed on deposit hopper plus 80 kg robot at 1 g; (LC5) tip/tilt: 15 deg side slope with full regolith load; (LC6) dust-seal test: 5 kPa differential across bearing seals with BP-1 particulate loading. Pass/fail: (R1) max von Mises in chassis and mount <= 184 MPa (yield 276 / 1.5) across LC1-LC5; (R2) arm-mount bolt pattern distortion under LC1 <= 0.3 mm to preserve excavation kinematic accuracy; (R3) under LC2 fatigue, alternating stress at mount fillets <= 55 MPa (aluminum Kt=3 endurance at 10^5 cycles scaled by Miner); (R4) total robot mass <= 80 kg; (R5) stowed envelope compliance 1.5 x 0.75 x 0.75 m verified geometrically; (R6) first chassis torsional mode above 15 Hz. Deliverables: STEP, FEA per case, fatigue, modal, mass and envelope report.",
+  "short_prompt": "Design the chassis and excavation-arm mount of a regolith mining robot operating in a 7.38 x 3.88 m BP-1 simulant bin (bulk density ~1500 kg/m^3, phi ~45 deg), autonomously excavating >= 15 kg of BP-1 in a 15-minute mission. Material class: 6061-T6 aluminum extrusion + plate. No external structural standard is named; design to a 1.5 FoS on yield, with aluminum Kt=3 fatigue scaling at the arm-mount fillets.\n\nEnvelope: stowed 1.5 x 0.75 x 0.75 m, total robot mass <= 80 kg.\n\nLoad cases.\n- LC1 BP-1 digging: 500 N horizontal opposing motion + 300 N down at the tool tip, 0.4 m arm giving 680 N at the mount + 260 N-m moment.\n- LC2 duty cycle: 100 digging strokes per mission at ~0.11 Hz, alternating between 0 and full LC1.\n- LC3 berm traverse: 2 g vertical on one wheel crossing a BP-1 berm.\n- LC4 regolith-laden return: 80 kg robot + 15 kg BP-1 on the deposit hopper at 1 g.\n- LC5 side slope: 15 deg (0.26 g lateral) with full regolith load.\n- LC6 dust-seal: 5 kPa differential across bearing seals with BP-1 loading.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Regolith mining robot chassis + excavation arm mount",
+    "brief": "80 kg, 1.5 x 0.75 x 0.75 m stowed BP-1 mining robot with 500 N digging reaction.",
+    "geometric_constraints": {
+      "stowed_envelope_m": {
+        "L": 1.5,
+        "W": 0.75,
+        "H": 0.75
+      },
+      "total_mass_kg_max": 80,
+      "arena_m": {
+        "L": 7.38,
+        "W": 3.88
+      },
+      "BP1_bulk_density_kg_m3": 1500,
+      "BP1_phi_deg": 45
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "youngs_modulus_GPa": 68.9,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2700,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "digging_reaction",
+        "F_H_N": 500,
+        "F_V_N": 300,
+        "moment_Nm": 260,
+        "arm_length_m": 0.4
+      },
+      {
+        "id": "LC2",
+        "name": "duty_cycle_100",
+        "amplitude_N": 680,
+        "freq_Hz": 0.11,
+        "cycles": 100
+      },
+      {
+        "id": "LC3",
+        "name": "berm_2g",
+        "g": 2
+      },
+      {
+        "id": "LC4",
+        "name": "regolith_laden",
+        "BP1_mass_kg": 15,
+        "robot_mass_kg": 80
+      },
+      {
+        "id": "LC5",
+        "name": "15deg_side_slope",
+        "g_lateral": 0.26
+      },
+      {
+        "id": "LC6",
+        "name": "dust_seal_test",
+        "dp_kPa": 5
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "total_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "bolt_pattern_distortion_mm",
+        "fatigue_alt_stress_MPa",
+        "first_torsional_mode_Hz",
+        "stowed_envelope_compliance"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "arm_mount_bolt_pattern_distortion",
+        "limit_mm": 0.3,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "fatigue_alt_stress_at_fillet",
+        "limit_MPa": 55,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_robot_mass",
+        "limit_kg": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "stowed_envelope",
+        "limit_m": {
+          "L": 1.5,
+          "W": 0.75,
+          "H": 0.75
+        },
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 15,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

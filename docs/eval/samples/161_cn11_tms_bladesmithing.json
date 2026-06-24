@@ -1,0 +1,186 @@
+{
+  "id": "161_cn11_tms_bladesmithing",
+  "source": {
+    "catalog_ref": "CN11",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "materials_metallurgy",
+  "part_class": "historic_era_blade",
+  "full_prompt": "Design a single historic-era dagger blade. The blade must be a single monolithic piece of medium-carbon tool steel (1084 with composition 0.84 C, 0.70 Mn, 0.20 Si by weight) heat-treated to a hardness of 58 +/- 2 HRC via quench-and-temper, with a total blade length of 250 mm, maximum blade width 40 mm at the ricasso, tip-to-point distance 200 mm from the ricasso, central fuller reducing wall thickness from 5 mm at the spine to 4 mm at the fuller floor, and a primary bevel grind at 20 degrees per side yielding a sharpened edge apex angle of 40 degrees. The blade must be heat-treated per an authentic historic-era procedure (normalize, austenitize at 815 C, water-quench, temper twice at 200 C), and the entry must include a metallurgy poster 24 in x 36 in at 150 ppi or higher. The blade must simultaneously pass: (R1) a lateral flex test in which the blade is clamped at the ricasso and the tip is deflected 30 mm laterally with no permanent set greater than 3 mm residual after release, which requires yield strength above 1400 MPa at 58 HRC, (R2) an edge chipping test of 10 consecutive chops into a 20 mm pine block with no visible chip greater than 0.5 mm on the edge, (R3) a tip point load of 150 N perpendicular to the tip with no permanent bending greater than 1 mm, (R4) a linear buckling eigenvalue under a 500 N compressive tip-thrust load must yield a first-mode load factor of at least 2.5, and (R5) the blade must have zero cracks visible under 10x magnification after heat treatment. Thermal analysis is required only for the heat-treatment process window, not as a pass/fail. Vibration, fluid, and radiation analyses are not required. Deliver a STEP AP242 solid body of the blade plus a metallurgy poster at 24 x 36 in, 150 ppi, and a mechanical report listing lateral flex residual, edge chip extent, tip load residual, and first buckling load factor.",
+  "short_prompt": "Design a single historic-era dagger blade: a monolithic medium-carbon tool steel (1084) blade, 250 mm long, ~40 mm wide at the ricasso, with a central fuller and a 20-degree primary bevel per side, heat-treated to ~58 HRC via an authentic quench-and-temper procedure.\n\nRicasso is fully fixed in the grip/clamp. Load cases.\n- LC1 lateral flex: clamp ricasso and deflect tip 30 mm laterally.\n- LC2 edge chipping: 10 consecutive chops into a 20 mm pine block.\n- LC3 tip point load: 150 N perpendicular to the tip.\n- LC4 tip-thrust buckling: 500 N axial compression along the blade.\n\nAlso verify the blade is crack-free at 10x after heat treatment.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "heat_treatment_CCT_curve",
+        "reason": "Austenitize/quench/temper schedule and 58 HRC target are read from 1084 CCT and tempering curves, not FEA.",
+        "examples": [
+          "ASM Heat Treater's Guide 1084",
+          "JMatPro"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Historic-era 1084 dagger blade, 58 HRC",
+    "brief": "Design a 250 mm 1084 dagger heat-treated to 58 HRC with 20-deg primary bevel, central fuller, passing lateral flex, edge chip, tip load, and buckling tests.",
+    "geometric_constraints": {
+      "total_blade_length_mm": 250,
+      "max_blade_width_mm": 40,
+      "tip_length_mm": 200,
+      "spine_thickness_mm": 5,
+      "fuller_floor_thickness_mm": 4,
+      "bevel_angle_deg_per_side": 20
+    },
+    "material": {
+      "name": "1084 carbon steel",
+      "composition_wt_pct": {
+        "C": 0.84,
+        "Mn": 0.7,
+        "Si": 0.2
+      },
+      "heat_treatment": "normalize, austenitize 815 C, water quench, temper 2x at 200 C",
+      "target_hardness_HRC": 58
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "lateral_flex",
+        "tip_deflection_mm": 30,
+        "application": "clamp ricasso, deflect tip"
+      },
+      {
+        "id": "LC2",
+        "name": "edge_chipping",
+        "count": 10,
+        "application": "chops into 20 mm pine block"
+      },
+      {
+        "id": "LC3",
+        "name": "tip_point_load",
+        "magnitude_N": 150,
+        "application": "perpendicular to tip"
+      },
+      {
+        "id": "LC4",
+        "name": "tip_thrust_buckling",
+        "magnitude_N": 500,
+        "application": "axial compression along blade"
+      }
+    ],
+    "boundary_conditions": {
+      "ricasso": "fully fixed in the grip/clamp"
+    },
+    "objective": {
+      "primary": "pass all mechanical tests",
+      "secondary": "maintain 58 +/- 2 HRC metallurgy"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "lateral_flex_residual_mm",
+        "max_edge_chip_mm",
+        "tip_load_residual_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "lateral_flex_residual",
+        "limit_mm": 3,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_edge_chip",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tip_load_residual",
+        "limit_mm": 1,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "post_HT_crack_count_at_10x",
+        "limit": 0,
+        "derivation": "safety-driven pass/fail",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "nonlinear static with plasticity",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Mechanical tests are quasi-static.",
+      "fluid_analysis": "No fluid interaction.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Residual stress from water quench",
+      "Grain size and retained austenite measurement",
+      "Edge retention cycle life"
+    ]
+  },
+  "eval_coverage": [
+    "historic-era heat-treatment-constrained metallurgy",
+    "three blade-specific mechanical pass/fail tests",
+    "buckling under tip thrust",
+    "safety-driven no-crack check"
+  ]
+}

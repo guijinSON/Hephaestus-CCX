@@ -1,0 +1,235 @@
+{
+  "id": "023_pt23_siemens_gamesa_patent_wind_bracket",
+  "source": {
+    "catalog_ref": "PT23",
+    "year": 2018,
+    "tier": "A"
+  },
+  "domain": "wind_energy",
+  "part_class": "wind_turbine_main_bearing_bracket",
+  "needs_patent_fetch": true,
+  "full_prompt": "Design a cast steel main-bearing support bracket for a direct-drive wind turbine nacelle, in the spirit of a canonical wind-turbine main-bearing-bracket patent (EP3339652A1-style), for a canonical 6 MW-class onshore turbine. Envelope: 1,200 x 800 x 600 mm (large cast part). Interfaces: bearing-side circular seat of 900 mm diameter with 24 M48 class 10.9 bolts on a 850 mm bolt circle (standard main-bearing interface); machine-frame-side mounting pattern of 16 M42 class 10.9 bolts on a 1,000 x 500 mm rectangular pattern. Material: cast steel GS-42CrMo4 (EN 10293) with yield 550 MPa, UTS 700 MPa, Young's modulus 210 GPa, density 7850 kg/m^3, Charpy impact at -20 C >= 27 J. Load cases derived from wind turbine main-bearing loading per IEC 61400-1 Ed.4 + DNVGL-ST-0361: LC1 DLC 1.2 normal operation fatigue-equivalent radial load 800 kN + axial 250 kN + tilting moment 1,500 kN*m (representative 6 MW-class hub loads); LC2 DLC 6.1 50-year extreme wind idling: radial 1,800 kN + axial 500 kN + tilting 3,500 kN*m; LC3 DLC 6.2 extreme with grid loss: radial 2,100 kN + axial 600 kN + tilting 4,000 kN*m; LC4 bolt preload only (24 x M48 10.9 at 4,400 N*m tightening = 590 kN preload per bolt per VDI 2230). Pass/fail per IEC 61400-1 + DNVGL-ST-0361: (R1) max von Mises at DLC 1.2 fatigue load <= yield / 1.5 = 367 MPa (partial safety factor gamma_M = 1.5 normal operation + gamma_F = 1.0); (R2) max von Mises at DLC 6.1/6.2 extreme <= yield / 1.1 = 500 MPa (partial safety factors for extreme conditions); (R3) max von Mises at ultimate (= 1.35 x DLC 6.2) <= UTS / 1.25 = 560 MPa; (R4) bearing-seat out-of-roundness under LC2 <= 0.1 mm (bearing clearance / life requirement); (R5) bolt F_B_max <= 0.9 x yield = F_p x 0.9 per VDI 2230 at LC4; (R6) fatigue life >= 20 years at DLC 1.2 equivalent spectrum (DEL analysis) using GS-42CrMo4 S-N curve per EN 13906 or EN 1993-1-9 Category 140; (R7) mass <= 5,500 kg (typical for this class of main-bearing bracket) with >=10% mass reduction vs a thick-plate welded baseline of equivalent stiffness. Deliverables: STEP AP242 casting drawing pack (casting tolerance ISO 8062 CT10); FEA + fatigue report.",
+  "short_prompt": "Design a cast steel main-bearing support bracket for a direct-drive wind turbine nacelle in the spirit of a canonical main-bearing-bracket patent (EP3339652A1-style), for a 6 MW-class onshore turbine.\n\nEnvelope: 1,200 x 800 x 600 mm (large cast part). Bearing-side: circular seat of 900 mm diameter with 24 M48 class 10.9 bolts on an 850 mm bolt circle. Machine-frame-side: 16 M42 class 10.9 bolts on a 1,000 x 500 mm rectangular pattern.\n\nMaterial: cast steel GS-42CrMo4 (EN 10293), Charpy impact at -20 C >= 27 J. Casting tolerance ISO 8062 CT10.\n\nDesign per IEC 61400-1 Ed.4 + DNVGL-ST-0361 with partial safety factor gamma_M = 1.5 normal and gamma_F = 1.0; extreme gamma_M = 1.1; ultimate factor 1.35 x DLC 6.2 against UTS / 1.25.\n\nLoad cases.\n- LC1 DLC 1.2 normal fatigue-equivalent: radial 800 kN + axial 250 kN + tilting 1,500 kN*m.\n- LC2 DLC 6.1 50-year extreme idling: radial 1,800 kN + axial 500 kN + tilting 3,500 kN*m.\n- LC3 DLC 6.2 extreme + grid loss: radial 2,100 kN + axial 600 kN + tilting 4,000 kN*m.\n- LC4 bolt preload only: 24 x M48 10.9 at 4,400 N*m = 590 kN preload per bolt (VDI 2230).\n\nAdditional gates: bearing-seat out-of-roundness under LC2 <= 0.1 mm; fatigue life >= 20 years per EN 1993-1-9 Category 140; mass <= 5,500 kg with >= 10% mass reduction vs thick-plate welded baseline.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "wind_turbine_dlc_loads_extractor",
+        "reason": "Design load cases from aeroelastic simulation (OpenFAST / Bladed) are upstream inputs, not part of this FEA step.",
+        "examples": [
+          "OpenFAST",
+          "DNV Bladed"
+        ]
+      },
+      {
+        "tool": "fatigue_damage_equivalent_load",
+        "reason": "DEL computation is a closed-form Palmgren-Miner step.",
+        "examples": [
+          "nCode DesignLife",
+          "rainflow counting script"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Cast GS-42CrMo4 main-bearing bracket for 6 MW-class wind turbine (wind-turbine main-bearing-bracket patent EP3339652A1 style)",
+    "brief": "Design a 1200x800x600 mm cast steel main-bearing support bracket; pass IEC 61400-1 DLC fatigue + extreme cases, VDI 2230 bolt preload, and 20-year fatigue life.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 1200,
+        "y": 800,
+        "z": 600
+      },
+      "bearing_interface": {
+        "seat_dia_mm": 900,
+        "bolts": 24,
+        "thread": "M48",
+        "grade": "10.9",
+        "bolt_circle_mm": 850
+      },
+      "frame_interface": {
+        "bolts": 16,
+        "thread": "M42",
+        "grade": "10.9",
+        "pattern_mm": {
+          "x": 1000,
+          "y": 500
+        }
+      },
+      "casting_tolerance": "ISO 8062 CT10"
+    },
+    "material": {
+      "name": "GS-42CrMo4 cast steel per EN 10293",
+      "yield_MPa": 550,
+      "ultimate_MPa": 700,
+      "youngs_modulus_GPa": 210,
+      "density_kg_m3": 7850,
+      "charpy_at_minus20C_J": 27
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "DLC_1.2_fatigue",
+        "radial_kN": 800,
+        "axial_kN": 250,
+        "tilt_kNm": 1500
+      },
+      {
+        "id": "LC2",
+        "name": "DLC_6.1_extreme_idle",
+        "radial_kN": 1800,
+        "axial_kN": 500,
+        "tilt_kNm": 3500
+      },
+      {
+        "id": "LC3",
+        "name": "DLC_6.2_extreme_grid_loss",
+        "radial_kN": 2100,
+        "axial_kN": 600,
+        "tilt_kNm": 4000
+      },
+      {
+        "id": "LC4",
+        "name": "bolt_preload",
+        "bolt_torque_Nm": 4400,
+        "bolt_preload_kN_per_bolt": 590
+      }
+    ],
+    "boundary_conditions": {
+      "frame_interface": "16 M42 bolts fully constrained",
+      "bearing_interface": "24 M48 preloaded + bearing reaction"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "max_von_mises_per_DLC_MPa",
+        "bearing_seat_out_of_roundness_mm",
+        "bolt_F_B_max_kN",
+        "fatigue_life_years",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_DLC_1.2",
+        "limit_MPa": 367,
+        "derivation": "yield / 1.5 (gamma_M 1.5 normal operation, IEC 61400-1 + DNVGL-ST-0361)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_DLC_6",
+        "limit_MPa": 500,
+        "derivation": "yield / 1.1 (extreme partial SF)",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_ultimate",
+        "limit_MPa": 560,
+        "derivation": "UTS / 1.25",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<=",
+        "note": "LC3 magnitude multiplied by 1.35 for ultimate check"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bearing_seat_out_of_roundness",
+        "limit_mm": 0.1,
+        "derivation": "bearing clearance + life req",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "bolt_F_B_max",
+        "limit_ratio_to_yield": 0.9,
+        "derivation": "VDI 2230 utilization limit",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "fatigue_life_at_DLC_1.2",
+        "limit_years": 20,
+        "derivation": "EN 1993-1-9 detail category 140 + GS-42CrMo4 S-N",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 5500,
+        "secondary": ">=10% reduction vs thick-plate welded baseline",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "IEC 61400-1 Ed.4 + DNVGL-ST-0361 + VDI 2230 + EN 1993-1-9 + EN 10293",
+    "recommended_fea_setup": {
+      "element_type": "TET10 or HEX20",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus",
+        "FEMAP / Nastran"
+      ],
+      "analysis_types": [
+        "linear static x3 DLC + bolt preload + fatigue DEL"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Dynamic behavior is handled at the global turbine aeroelastic model level, not the bracket.",
+      "thermal_analysis": "Ambient operation envelope only.",
+      "fluid_analysis": "Aero loads already reduced to hub loads.",
+      "radiation_analysis": "N/A."
+    },
+    "patent_fetch": "Specific EP3339652A1 claim loads are placeholders; hub load magnitudes chosen for 6 MW class. needs_patent_fetch = true at root.",
+    "numeric_source": "IEC 61400-1 Ed.4 partial SF framework + representative 6 MW hub load envelope."
+  },
+  "eval_coverage": [
+    "wind turbine DLC-based loading",
+    "fatigue DEL + 20-year life target",
+    "large cast component geometry + bolt preload",
+    "bearing seat distortion constraint"
+  ]
+}

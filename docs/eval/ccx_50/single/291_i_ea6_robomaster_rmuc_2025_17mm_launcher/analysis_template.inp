@@ -1,0 +1,109 @@
+**
+** RoboMaster RMUC 2025 17 mm Launcher - analysis template
+** (mesh + NSETs spliced in by wire_bcs.py from the agent's STEP)
+**
+** Authoritative pass/fail (R1..R7) lives in check.py:
+**   - R1, R5         : peak vM in housing from this FEM (LC1, LC4)
+**   - R4             : LC1+LC3 superposition vM from this FEM
+**   - R2, R3         : closed-form centrifugal (rim sigma, radial growth)
+**   - R6             : closed-form mass from cadquery STEP geometry
+**   - R7             : closed-form thermal expansion of barrel ID
+**
+** Units: mm, N, MPa, t (tonne) -- consistent with gmsh-meshed STEP in mm.
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIXED  : 4 turret-yoke bolt corners on housing-bottom face
+**   NLOAD   : barrel-end (bore-axis +x) face nodes for the 1 kN recoil
+**
+** Required ELSET:
+**   Eall    : auto-built by wire_bcs.py from gmsh's C3D* volume sets.
+**             Below we alias HOUSING := Eall so the spec-named ELSET
+**             carries the 6061-T6 properties.
+**
+*ELSET, ELSET=HOUSING
+Eall
+**
+** ----------------------------------------------------------------
+** Material: 6061-T6 aluminium (housing)
+** E=69 GPa = 69000 MPa, nu=0.33, rho=2700 kg/m^3 = 2.7e-9 t/mm^3
+** alpha=2.36e-5 1/K, k=167 W/(m*K), cp=896 J/(kg*K)
+** ----------------------------------------------------------------
+*MATERIAL, NAME=AL6061T6
+*ELASTIC
+69000.0, 0.33
+*DENSITY
+2.7e-9
+*EXPANSION, ZERO=293.15
+2.36e-5
+**
+*SOLID SECTION, ELSET=HOUSING, MATERIAL=AL6061T6
+**
+** Initial (reference) temperature
+*INITIAL CONDITIONS, TYPE=TEMPERATURE
+Nall, 293.15
+**
+** ----------------------------------------------------------------
+** Boundary: clamp the 4 turret-bolt corner nodes
+** ----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ================================================================
+** STEP 1: LC1 - Shot reaction (1 kN bore-axis recoil)
+** Total 1000 N along -x distributed across NLOAD nodes (CalculiX
+** *CLOAD with NSET divides the value across each member node).
+** ================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD
+NLOAD, 1, -1000.0
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=Nall
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP
+**
+** ================================================================
+** STEP 3: LC3 - Barrel heat soak (+40 K thermal step)
+** Uniform temperature rise applied as a static thermal-structural
+** load with the housing bolt pattern still clamped.
+** ================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*TEMPERATURE
+Nall, 333.15
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=Nall
+U, NT
+*NODE FILE
+U, NT
+*EL FILE
+S
+*END STEP
+**
+** ================================================================
+** STEP 4: LC4 - Turret crash (20 g lateral)
+** Lateral body force: 20 * 9810 mm/s^2 = 196200 mm/s^2 in +y on
+** the entire model (housing + flywheel disc both react inertially).
+** ================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*DLOAD
+Eall, GRAV, 196200.0, 0.0, 1.0, 0.0
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=Nall
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP

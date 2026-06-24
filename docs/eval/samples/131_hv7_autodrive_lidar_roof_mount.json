@@ -1,0 +1,226 @@
+{
+  "id": "131_hv7_autodrive_lidar_roof_mount",
+  "source": {
+    "catalog_ref": "HV7",
+    "year": 2026,
+    "tier": "B"
+  },
+  "domain": "autonomous_vehicle_sensor_mount",
+  "part_class": "roof_lidar_bracket",
+  "full_prompt": "Design a monolithic AlSi10Mg laser-powder-bed-fusion aluminum roof-mount bracket for a 360 degree mechanical LiDAR (e.g., Velodyne VLS-128 Alpha Prime, 13.5 kg, 165.5 mm OD x 145.5 mm tall) on a 2024 Chevrolet Blazer EV platform for the SAE AutoDrive Challenge II Year 4 PoC Level-4 autonomous vehicle demo. The bracket is a single 3D-printed part (no bolted subassemblies; the LiDAR and vehicle attach interfaces are integral bosses). Geometry: base flange 220 mm x 180 mm x 8 mm seats on the existing Blazer EV roof rack rail interface, with four M10 (11 mm clearance) holes on a 150 mm x 100 mm rectangular pattern matching the Blazer OEM rail pattern. Vertical riser 150 mm tall with topology-optimizable cross-section 80 mm x 80 mm nominal, 6 mm wall, ramping to a 180 mm diameter top flange 12 mm thick carrying the LiDAR mount: eight M8 (9 mm clearance) on a 160 mm bolt circle matching VLS-128 bottom pattern, plus a central 50 mm pass-through for the LiDAR data cable harness. Vertical offset from base flange plane to LiDAR mount plane 150 mm. Overall bounding envelope 220 x 200 x 170 mm. Material AlSi10Mg as-printed + T6: E 75 GPa, Poisson's ratio 0.33, density 2670 kg/m^3, yield 250 MPa, UTS 430 MPa at 20 C, endurance limit 97 MPa at 5e6 cycles per Renishaw / EOS material datasheet for LPBF AlSi10Mg. Environment: SAE J1455 Class III vibration (on-road automotive), -40 C to +85 C operating, outdoor rain/salt spray. Three load cases. Load Case 1 (road durability SAE J1455): 20-2000 Hz random vibration at 0.5 g_rms combined with LiDAR self-weight 13.5 kg; evaluate as 3 g sine peak at worst-case resonance plus static weight. Load Case 2 (highway side wind): at 130 km/h (36.1 m/s) vehicle speed, 0.62 kPa dynamic pressure on the 0.024 m^2 LiDAR projected frontal area produces 14.9 N drag + 30 N-m moment about the bracket base (150 mm moment arm); gust factor 2.0 per SAE J1455 gives 60 N-m moment design load. Load Case 3 (crash): 20g longitudinal deceleration on LiDAR mass = 2.65 kN horizontal pulse (200 ms half-sine) at the LiDAR CG 95 mm above the top flange (total moment arm 245 mm = 0.245 m), producing 650 N-m moment at the base. Pass/fail: (R1) under LC1 vibration, peak von Mises must not exceed 83 MPa (yield/3.0 to guarantee infinite life given 5e6 cycle exposure over vehicle life); (R2) under LC2 wind, peak stress must not exceed 125 MPa (yield/2.0 nominal road durability); (R3) under LC3 crash, peak stress 167 MPa (yield/1.5 transient); (R4) first six natural frequencies of the bracket + LiDAR (13.5 kg lumped at centroid 245 mm above base) must exceed 80 Hz to keep the LiDAR outside the SAE J1455 0-80 Hz vibration peak band; (R5) maximum tip displacement at the LiDAR mount plane under LC2 wind must not exceed 0.5 mm (keeps LiDAR boresight within point-cloud accuracy budget); (R6) mass must not exceed 1.5 kg as an additive-manufactured topology-optimized target (baseline bulk block = 220x200x170x2670e-9 = 19.9 kg, so target represents a 92% mass reduction via AM topology optimization); (R7) part must be self-supporting printable in a 45-degree overhang rule (AM constraint, checked by build-orientation angular rule). Thermal and radiation analyses are not required; fluid analysis reduced to equivalent static wind pressure. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic AlSi10Mg LPBF additively manufactured roof-mount bracket for a 360-degree mechanical LiDAR (e.g., Velodyne VLS-128, 13.5 kg) on a 2024 Chevrolet Blazer EV for the SAE AutoDrive Challenge II Year 4 Level-4 demonstrator. The bracket is a single 3D-printed part with an integral rear-rail base flange, a topology-optimizable vertical riser, and a top flange carrying the LiDAR bolt circle with a central cable pass-through. Design per SAE J1455 Class III vibration (-40 C to +85 C, outdoor), with the usual yield/2.0 durability and yield/1.5 transient safety factors and yield/3.0 on the vibration case for infinite-life intent.\n\nEnvelope: 220 x 200 x 170 mm with 150 mm vertical offset from base to LiDAR mount.\n\nLoad cases.\n- LC1 road durability (SAE J1455): 20-2000 Hz random at 0.5 g_rms, evaluate as 3 g sine peak at worst-case resonance plus 13.5 kg static weight.\n- LC2 highway side wind: 60 N-m design moment at the bracket base (130 km/h, 0.024 m^2 projected, gust factor 2.0 on 150 mm arm).\n- LC3 crash: 20 g longitudinal on the LiDAR mass = 2.65 kN at CG 245 mm above base -> 650 N-m at the base.\nAlso include a 45-degree self-supporting-printability constraint.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "Mass target R6 (1.5 kg, 92% mass reduction vs bulk block) is practically unreachable without topology optimization outer loop calling the structural FEA.",
+        "examples": [
+          "Altair OptiStruct",
+          "nTopology",
+          "Ansys Mechanical Topology Optimization"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "AM AlSi10Mg LiDAR roof mount for AutoDrive Challenge II",
+    "brief": "LPBF AlSi10Mg roof-rail mount for VLS-128 (13.5 kg) on Chevy Blazer EV; SAE J1455 Class III; 80 Hz modal floor; topology-optimized 1.5 kg.",
+    "geometric_constraints": {
+      "base_flange_mm": {
+        "w": 220,
+        "h": 180,
+        "t": 8
+      },
+      "base_bolt_pattern_mm": {
+        "holes": 4,
+        "diameter_mm": 11,
+        "pattern_mm": [
+          150,
+          100
+        ]
+      },
+      "riser_mm": {
+        "nominal_section": [
+          80,
+          80
+        ],
+        "wall_mm": 6,
+        "height_mm": 150
+      },
+      "top_flange_mm": {
+        "od": 180,
+        "thickness": 12,
+        "bolts": 8,
+        "bcd_mm": 160,
+        "hole_mm": 9,
+        "cable_bore_mm": 50
+      },
+      "bounding_envelope_mm": {
+        "x": 220,
+        "y": 200,
+        "z": 170
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "LPBF AlSi10Mg + T6",
+      "properties": {
+        "youngs_modulus_GPa": 75,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2670,
+        "yield_MPa": 250,
+        "ultimate_tensile_strength_MPa": 430,
+        "endurance_5e6_MPa": 97
+      }
+    },
+    "lidar": {
+      "model_ref": "VLS-128 class",
+      "mass_kg": 13.5,
+      "frontal_area_m2": 0.024,
+      "cg_above_top_flange_mm": 95
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "J1455_vibration",
+        "band_Hz": [
+          20,
+          2000
+        ],
+        "grms": 0.5
+      },
+      {
+        "id": "LC2",
+        "name": "side_wind_130kmh",
+        "moment_Nm": 60
+      },
+      {
+        "id": "LC3",
+        "name": "crash_20g",
+        "moment_Nm": 650
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_six_freqs_Hz",
+        "tip_wind_displacement_mm",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 83,
+        "derivation": "yield/3.0 infinite-life vibration",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 125,
+        "derivation": "yield/2.0 road durability",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 167,
+        "derivation": "yield/1.5 crash transient",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "tip_displacement",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal with lumped LiDAR mass",
+        "random-vibration PSD"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "LiDAR thermal handled by sensor itself; bracket below T6 overage.",
+      "fluid_analysis": "Wind treated as equivalent static.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not a buckling-critical geometry at these loads."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Boresight calibration target integration",
+      "Water-ingress IP67 gasket interface",
+      "EMI at cable pass-through"
+    ]
+  },
+  "eval_coverage": [
+    "SAE J1455 infinite-life vibration stress allowable",
+    "LiDAR boresight displacement at road-wind load",
+    "multi-SF differentiation vibration/wind/crash",
+    "AM topology optimization outer loop"
+  ]
+}

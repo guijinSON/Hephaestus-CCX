@@ -1,0 +1,217 @@
+{
+  "id": "257_a17_eeri_seismic_tower",
+  "source": {
+    "catalog_ref": "A17",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "civil_structural",
+  "part_class": "seismic_balsa_tower",
+  "full_prompt": "Design a single monolithic balsa-wood tower structure for a seismic shake-table design challenge. The structure must be constructed only from balsa wood and rubber cement (no fasteners, metal joints, or non-balsa members), must fit within a rectangular plan area of 600 mm x 600 mm, and must be a minimum of 1500 mm tall and a maximum of 1650 mm tall. The tower supports a lumped 4.5 kg roof mass (sandbag simulator) and must survive prescribed shake-table ground motion time histories (scaled El Centro 1940 NS, PGA = 0.35 g; and scaled Northridge Sylmar NS, PGA = 0.60 g; each played for 30 s). Material: balsa wood, E = 3.5 GPa (longitudinal grain), density = 160 kg/m^3, compressive strength parallel to grain = 14 MPa, tensile strength parallel to grain = 20 MPa, shear strength = 2.0 MPa. Geometric constraints: base footprint <= 600 mm x 600 mm; height between 1500 and 1650 mm; uniform story height 300 mm creates 5-6 stories typical; no diagonal bracing may exit the 600 x 600 footprint. Load cases: (R1) Roof-mass static: 4.5 kg x 9.81 = 44 N vertical distributed across 4 roof joints; max compressive stress in base columns <= compressive strength / 2.0 = 7 MPa. (R2) El Centro scaled to PGA 0.35 g response-spectrum analysis applied at the base; peak roof acceleration <= 1.5 g; peak base-column axial stress <= 7 MPa; peak inter-story drift <= 0.02 x story height = 6 mm. (R3) Northridge Sylmar scaled to PGA 0.60 g; peak roof acceleration <= 2.5 g; peak base-column axial stress <= compressive strength / 1.5 = 9.3 MPa; peak inter-story drift <= 0.025 x story height = 7.5 mm. (R4) Total tower mass (scoring: structural efficiency) <= 250 g. (R5) Fundamental modal frequency hard-mounted at base shall be > 3 Hz (avoid resonance with El Centro dominant band 1-2 Hz). Primary verification: structural FEA linear static + response-spectrum or time-history dynamic analysis. Vibration (modal) secondary via R5. Thermal, fluid, radiation, buckling explicitly NOT required. Deliverables: STEP AP242 (or equivalent balsa-member assembly idealization), member schedule, and a report listing mass in g, peak roof acceleration per earthquake in g, max column stress in MPa, max inter-story drift in mm, first modal frequency in Hz.",
+  "short_prompt": "Design a monolithic balsa-wood tower for a seismic shake-table design challenge. Materials restricted to balsa wood and rubber cement (no fasteners, no metal, no non-balsa members). The tower supports a 4.5 kg lumped roof mass (sandbag simulator) and must survive prescribed shake-table motions: scaled El Centro 1940 NS at PGA 0.35 g and scaled Northridge Sylmar NS at PGA 0.60 g, each played for 30 s. Typical 5-6 stories at 300 mm story height; no diagonal bracing may exit the footprint.\n\nEnvelope: base footprint <= 600 x 600 mm, height 1500-1650 mm.\n\nLoad cases.\n- LC1 static roof mass: 4.5 kg (44 N) distributed across 4 roof joints.\n- LC2 El Centro scaled to 0.35 g PGA: peak roof acceleration <= 1.5 g, peak inter-story drift <= 0.02 x story height = 6 mm.\n- LC3 Northridge Sylmar scaled to 0.60 g PGA: peak roof acceleration <= 2.5 g, peak inter-story drift <= 0.025 x story height = 7.5 mm.\n- LC4 modal: fundamental frequency > 3 Hz (out of the 1-2 Hz El Centro dominant band).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "response_spectrum_or_time_history_analysis",
+        "reason": "Seismic pass/fail is a dynamics problem; RS analysis or explicit time-integration is required beyond linear static.",
+        "examples": [
+          "SAP2000",
+          "ETABS",
+          "OpenSees",
+          "ANSYS Transient Structural"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Seismic design balsa tower",
+    "brief": "Balsa-only tower, 1500-1650 mm tall, 600 x 600 footprint, supports 4.5 kg roof and survives El Centro 0.35 g + Northridge 0.60 g.",
+    "geometric_constraints": {
+      "footprint_mm": "600 x 600",
+      "height_mm_min": 1500,
+      "height_mm_max": 1650,
+      "story_height_mm": 300,
+      "roof_mass_kg": 4.5,
+      "material_restriction": "balsa + rubber cement only"
+    },
+    "material": {
+      "name": "Balsa wood (longitudinal grain)",
+      "properties": {
+        "youngs_modulus_GPa": 3.5,
+        "density_kg_m3": 160,
+        "compressive_strength_parallel_MPa": 14,
+        "tensile_strength_parallel_MPa": 20,
+        "shear_strength_MPa": 2.0
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "roof_static",
+        "roof_mass_kg": 4.5
+      },
+      {
+        "id": "LC2",
+        "name": "el_centro_0.35g",
+        "record": "El Centro 1940 NS",
+        "PGA_g": 0.35,
+        "duration_s": 30
+      },
+      {
+        "id": "LC3",
+        "name": "northridge_0.60g",
+        "record": "Northridge Sylmar NS",
+        "PGA_g": 0.6,
+        "duration_s": 30
+      },
+      {
+        "id": "LC4",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "base fixed to shake table",
+      "loads": "base acceleration time history"
+    },
+    "objective": {
+      "minimize": "mass",
+      "secondary": "max peak roof acceleration"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "peak_roof_accel_LC2_g",
+        "peak_roof_accel_LC3_g",
+        "max_column_stress_MPa",
+        "max_inter_story_drift_mm",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_column_compressive_stress",
+        "limit_MPa": 7,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "peak_roof_acceleration",
+        "limit_g": 1.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "structural_analysis",
+        "metric": "max_inter_story_drift",
+        "limit_mm": 6,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3a",
+        "type": "structural_analysis",
+        "metric": "peak_roof_acceleration",
+        "limit_g": 2.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3b",
+        "type": "structural_analysis",
+        "metric": "max_column_compressive_stress",
+        "limit_MPa": 9.3,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3c",
+        "type": "structural_analysis",
+        "metric": "max_inter_story_drift",
+        "limit_mm": 7.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 250,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 3,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B31)",
+      "mesh_size_mm_in_critical_regions": 30,
+      "solver_hints": [
+        "SAP2000",
+        "OpenSees",
+        "ETABS"
+      ],
+      "analysis_types": [
+        "modal",
+        "response spectrum or linear time-history"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Member sizing is stress and drift driven."
+    }
+  },
+  "eval_coverage": [
+    "response-spectrum / time-history dynamics",
+    "multi-earthquake pass/fail",
+    "inter-story drift limits",
+    "structural efficiency scoring (mass floor)"
+  ]
+}

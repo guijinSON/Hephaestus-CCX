@@ -1,0 +1,216 @@
+{
+  "id": "268_a28_bwsc_monocoque",
+  "source": {
+    "catalog_ref": "A28",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "solar_vehicle_carbon_monocoque",
+  "full_prompt": "Design the passenger-cell carbon-fiber monocoque for a 2025 Bridgestone World Solar Challenge Cruiser Class vehicle, compliant with international solar-car benchmark 2025 Regulations v1.0. Vehicle gross mass with 2 occupants and battery 500 kg. Solar array area <= 6 m^2. Battery energy <= 11 MJ (3.056 kWh). Monocoque is a carbon/epoxy prepreg sandwich laminate with Nomex honeycomb core; outer skin [45 / 0 / -45 / 90]s laid up as 0.25 mm plies, core thickness 20 mm, inner skin [45 / 0 / -45 / 90]s. Material: carbon/epoxy T700S/epoxy (E1 = 135 GPa, E2 = 10 GPa, strength L = 1500 MPa, T = 50 MPa, density 1600 kg/m^3); Nomex honeycomb core density 48 kg/m^3, out-of-plane compressive strength 2.4 MPa, out-of-plane shear strength 1.2 MPa. Monocoque bounding 2500 mm (length) x 1600 mm (width) x 1100 mm (height). Integral 2-point anchor pads for roll bar stubs, 4 seat belt anchorages per seat. Crashworthiness / international solar-car benchmark 2025 required load cases: (R1) Rollover: vehicle shall support 1.0 x vehicle mass x g = 1.0 x 500 x 9.81 = 4,905 N applied at the top of the roll bar stubs (the monocoque transfers this into the A-pillar/roof structure); max laminate Tsai-Wu index <= 1.0 and core shear stress <= 1.2 MPa. (R2) Side impact: 3 g lateral applied at seat belt anchor heights on both seats, 3 x 500 x 9.81 = 14,715 N total distributed 50/50 to the two seats; max Tsai-Wu index <= 1.0. (R3) Frontal: 10 g forward applied to the full 500 kg at the front-bulkhead plane, 49,050 N; max Tsai-Wu <= 1.0; peak deceleration at occupant centerline <= 25 g (not a monocoque stress check but a crash simulation output). (R4) Occupant-belt loads per FMVSS 210 analog: 13.5 kN pulled on upper lap belt and 13.5 kN pulled on shoulder belt simultaneously at each seat; max Tsai-Wu at anchor interface <= 1.0. (R5) Monocoque mass <= 50 kg. (R6) First modal frequency hard-mounted at 4 chassis mount points >= 30 Hz. Primary verification: laminate-composite structural FEA (linear static for R1, R2, R4; explicit dynamics recommended for R3). Secondary: modal for R6. Thermal, fluid, radiation NOT required. Deliverables: STEP AP242 outer mold-line + laminate schedule, and a report listing monocoque mass in kg, max Tsai-Wu per load case, core shear stress in MPa, first modal frequency in Hz.",
+  "short_prompt": "Design the passenger-cell carbon/epoxy sandwich monocoque for a 2025 Bridgestone World Solar Challenge Cruiser Class vehicle, compliant with the international solar-car benchmark 2025 Regulations v1.0. Monocoque carries 2 occupants + battery (gross 500 kg); solar array area <= 6 m^2; battery energy <= 11 MJ (3.056 kWh). Outer and inner skins are T700S carbon/epoxy quasi-isotropic laminates around a Nomex honeycomb core; integral 2-point anchor pads for roll-bar stubs and 4 seatbelt anchorages per seat.\n\nEnvelope: bounding 2500 x 1600 x 1100 mm (length x width x height).\n\nLoad cases.\n- LC1 rollover: 1.0 x vehicle mass x g = 4,905 N at the top of the roll-bar stubs (fed into the A-pillar/roof); core shear check.\n- LC2 side impact: 3 g lateral x 500 kg = 14,715 N total split 50/50 between the two seatbelt anchor heights.\n- LC3 frontal: 10 g forward x 500 kg = 49,050 N at the front-bulkhead plane; peak decel at occupant centerline <= 25 g.\n- LC4 belt loads (FMVSS 210 analog): 13.5 kN on the upper lap belt and 13.5 kN on the shoulder belt simultaneously at each seat.\n- LC5 modal: hard-mounted at 4 chassis mount points, first frequency >= 30 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics",
+        "reason": "Frontal 10 g crash sim for occupant-decel (R3) is an explicit dynamics problem.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Radioss"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "international solar-car benchmark 2025 Cruiser Class carbon monocoque",
+    "brief": "CFRP/Nomex sandwich passenger cell, 500 kg GVM. Passes rollover, side, frontal, and belt-anchor load cases.",
+    "geometric_constraints": {
+      "bounding_box_mm": "2500 x 1600 x 1100",
+      "outer_skin_layup": "[45/0/-45/90]s",
+      "inner_skin_layup": "[45/0/-45/90]s",
+      "ply_thickness_mm": 0.25,
+      "core_thickness_mm": 20,
+      "occupants": 2
+    },
+    "material": {
+      "skin": {
+        "name": "T700S carbon/epoxy",
+        "E1_GPa": 135,
+        "E2_GPa": 10,
+        "long_strength_MPa": 1500,
+        "trans_strength_MPa": 50,
+        "density_kg_m3": 1600
+      },
+      "core": {
+        "name": "Nomex honeycomb",
+        "density_kg_m3": 48,
+        "out_of_plane_compressive_strength_MPa": 2.4,
+        "out_of_plane_shear_strength_MPa": 1.2
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "rollover_1g",
+        "force_N": 4905,
+        "direction": "-Z at roll bar stubs"
+      },
+      {
+        "id": "LC2",
+        "name": "side_impact_3g",
+        "force_N": 14715,
+        "direction": "+Y at belt anchors"
+      },
+      {
+        "id": "LC3",
+        "name": "frontal_10g",
+        "force_N": 49050,
+        "direction": "-X at front bulkhead"
+      },
+      {
+        "id": "LC4",
+        "name": "belt_loads_FMVSS_210",
+        "lap_belt_N": 13500,
+        "shoulder_belt_N": 13500
+      },
+      {
+        "id": "LC5",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "4 chassis mount points fixed",
+      "loads": "point or distributed at belt anchors, roll bar stubs"
+    },
+    "objective": {
+      "minimize": "monocoque_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "monocoque_mass_kg",
+        "tsai_wu_LC1",
+        "tsai_wu_LC2",
+        "tsai_wu_LC3",
+        "tsai_wu_LC4",
+        "max_core_shear_stress_MPa",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_max_index",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_core_shear_stress",
+        "limit_MPa": 1.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_max_index",
+        "limit": 1.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_max_index",
+        "limit": 1.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_max_index",
+        "limit": 1.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "monocoque_mass",
+        "limit_kg": 50,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 30,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "laminated shell with honeycomb sandwich",
+      "mesh_size_mm_in_critical_regions": 15,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard / Explicit"
+      ],
+      "analysis_types": [
+        "linear static (R1, R2, R4)",
+        "explicit dynamics (R3)",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Cabin and array thermal separate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Sandwich panel skins evaluated via Tsai-Wu."
+    }
+  },
+  "eval_coverage": [
+    "CFRP sandwich monocoque under four structural load cases",
+    "explicit-dynamics frontal crash coupling",
+    "modal floor"
+  ]
+}

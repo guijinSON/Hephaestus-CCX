@@ -1,0 +1,203 @@
+{
+  "id": "113_e3_mecc_wave_energy_heave_plate",
+  "source": {
+    "catalog_ref": "E3",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "marine_energy_structural",
+  "part_class": "wave_energy_heave_plate",
+  "full_prompt": "Design a monolithic 316L stainless steel heave plate for a point-absorber wave energy converter entered into a collegiate marine energy scaled tank-test demonstration at a 1:20 Froude scale representing a full-scale 500 kW device, producing a tank-scale prototype of 0.5 m mean diameter. The heave plate is a single circular disk with radial stiffening ribs, attached at its center to a 25 mm stainless spar-shaft by a single 25 mm clearance bore (no welds, no bolted ribs, one solid body). Outer diameter 500 mm, disk thickness 10 mm, eight radial triangular ribs each 80 mm long x 20 mm tall x 6 mm thick extending from the hub to 80% radius on the lower face only, central hub bore 25 mm running the full 30 mm hub thickness. Bounding envelope 500 mm x 500 mm x 50 mm cylindrical. Material 316L stainless steel with Young's modulus 193 GPa, Poisson's ratio 0.30, density 8000 kg/m^3, yield strength 205 MPa, ultimate tensile strength 515 MPa, endurance limit 240 MPa (rotating bending, seawater Reverse-R = -1 derated by 0.7 for marine environment to 168 MPa). Environment: seawater at 15 C, density 1025 kg/m^3, salinity 35 PSU. Three load cases. Load Case 1 (cyclic heave): sinusoidal pressure load on the bottom face peaking at +/-15 kPa at 0.5 Hz for 3.6e6 cycles over a 2-week tank campaign, representing the hydrodynamic added-mass reaction (Ca ~ 1.0) of water accelerated by the plate in heave with amplitude 0.2 m and period 2.0 s, with the hub bore fixed to the spar. Load Case 2 (slam event): an impulsive 80 kPa downward pressure on the bottom face for 50 ms corresponding to a slam-induced 3g plate-normal acceleration per IEC-TS 62600-2 survivability guidance. Load Case 3 (mooring snatch): a lateral 2.5 kN point load at the disk rim transmitted from a tangled mooring line, with hub fixed. Pass/fail: (R1) under LC1 peak pressure, maximum von Mises stress must not exceed 68 MPa, derived from endurance/2.47 safety factor (168/2.47) to guarantee infinite life at the 3.6e6 cycle target; (R2) under LC2 slam, maximum von Mises stress must not exceed 137 MPa (yield/1.5 per IEC-TS 62600-2 ultimate limit state); (R3) under LC3 mooring snatch, maximum von Mises stress must not exceed 137 MPa; (R4) first three natural frequencies in submerged (added mass) configuration must stay above 2.0 Hz (4x the 0.5 Hz wave excitation); (R5) a steady-state CFD run with the plate oscillating at amplitude 0.2 m and 0.5 Hz in seawater must return a heave added-mass coefficient Ca of at least 0.9, the test-rig design target; (R6) a linear buckling eigenvalue analysis under LC2 must yield a first-mode factor of at least 2.5; (R7) total mass must not exceed 16 kg. Thermal and radiation analyses are not required. Deliver STEP AP242 geometry as a single solid body plus a report.",
+  "short_prompt": "Design a monolithic 316L stainless-steel heave plate for a 1:20 Froude-scale tank-test prototype of a 500 kW point-absorber wave-energy converter (collegiate marine-energy demonstration). The disk has eight integral radial triangular stiffening ribs on the lower face only and attaches through a central hub bore to a 25 mm stainless spar-shaft; single solid body, no welds. Environment is seawater at 15 C (density 1025 kg/m^3). Mass <= 16 kg. Safety factors per IEC-TS 62600-2: ULS yield/1.5 for slam and mooring events, FLS using the marine-derated endurance limit (168 MPa) with SF 2.47 for infinite life at 3.6e6 cycles, buckling SF 2.5. First three submerged natural frequencies must stay >= 2.0 Hz (4x the 0.5 Hz wave excitation); target heave added-mass coefficient Ca >= 0.9.\n\nEnvelope: 500 mm OD x 10 mm thick disk, 8 radial ribs each 80 x 20 x 6 mm, 25 mm hub bore through a 30 mm hub (disk fits in 500 mm diameter x 50 mm tall cylinder).\n\nLoad cases.\n- LC1 cyclic heave: +/-15 kPa sinusoidal pressure on the bottom face at 0.5 Hz for 3.6e6 cycles (added-mass Ca ~ 1.0 at 0.2 m amplitude, 2.0 s period).\n- LC2 slam: 80 kPa downward pressure on the bottom face for 50 ms (3 g plate-normal).\n- LC3 mooring snatch: 2.5 kN lateral point load at the disk rim (hub fixed).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "1:20 Froude-scale WEC heave plate for collegiate marine energy tank test",
+    "brief": "316L stainless heave plate with 8 radial ribs, 0.5 m OD, attached to a 25 mm spar. Survive fatigue + slam + mooring snatch while delivering Ca >= 0.9.",
+    "geometric_constraints": {
+      "disk_outer_diameter_mm": 500,
+      "disk_thickness_mm": 10,
+      "rib_count": 8,
+      "rib_length_mm": 80,
+      "rib_height_mm": 20,
+      "rib_thickness_mm": 6,
+      "hub_bore_mm": 25,
+      "hub_thickness_mm": 30,
+      "bounding_envelope_mm": {
+        "diameter": 500,
+        "height": 50
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "316L stainless steel",
+      "properties": {
+        "youngs_modulus_GPa": 193,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 8000,
+        "yield_strength_MPa": 205,
+        "ultimate_tensile_strength_MPa": 515,
+        "derated_endurance_limit_MPa": 168
+      }
+    },
+    "environment": {
+      "fluid": "seawater",
+      "temperature_C": 15,
+      "density_kg_m3": 1025,
+      "salinity_PSU": 35
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "cyclic_heave",
+        "pressure_kPa_peak": 15,
+        "frequency_Hz": 0.5,
+        "cycles": 3600000
+      },
+      {
+        "id": "LC2",
+        "name": "slam",
+        "pressure_kPa": 80,
+        "duration_ms": 50
+      },
+      {
+        "id": "LC3",
+        "name": "mooring_snatch",
+        "point_load_N": 2500,
+        "location": "disk rim"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_three_submerged_frequencies_Hz",
+        "heave_added_mass_Ca",
+        "first_buckling_load_factor",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 68,
+        "derivation": "derated_endurance/2.47 = 168/2.47",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 137,
+        "derivation": "yield/1.5 (IEC-TS 62600-2 ULS)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 137,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_three_submerged_natural_frequencies",
+        "limit_Hz": 2.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "fluid_analysis",
+        "metric": "heave_added_mass_coefficient_Ca",
+        "limit": 0.9,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 16,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral with prism BL for CFD",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical + Fluent",
+        "OpenFOAM + CalculiX"
+      ],
+      "analysis_types": [
+        "transient dynamic (LC1 cyclic)",
+        "linear static (LC2, LC3)",
+        "modal with added mass",
+        "oscillating-CFD for Ca",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Near-isothermal seawater tank; no thermal gradient.",
+      "radiation_analysis": "Submerged component."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Crevice corrosion at hub-shaft interface",
+      "Biofouling added mass drift",
+      "Froude-number scaling fidelity"
+    ]
+  },
+  "eval_coverage": [
+    "IEC-TS 62600-2 ULS and FLS safety factors",
+    "submerged modal analysis with added mass",
+    "oscillating CFD extraction of Ca",
+    "fatigue-limited endurance sizing"
+  ]
+}

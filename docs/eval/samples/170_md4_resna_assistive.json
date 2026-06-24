@@ -1,0 +1,197 @@
+{
+  "id": "170_md4_resna_assistive",
+  "source": {
+    "catalog_ref": "MD4",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "medical_assistive",
+  "part_class": "sit_to_stand_transfer_aid",
+  "full_prompt": "Design a single-user pivot-style sit-to-stand transfer aid compliant with ISO 10535:2021 hoists for transfer of disabled persons. The device supports transfers of a 190 kg (419 lb) rated user between a bed and a wheelchair with assistance from one caregiver; a 4x static safety factor per ISO 10535 Clause 5.3 means it must structurally sustain a rated load of 760 kg (7.46 kN). The device is a welded aluminum 6061-T6 frame (yield 276 MPa, ultimate 310 MPa, E 69 GPa, density 2700 kg/m^3) 1200 mm tall x 650 mm wide x 900 mm deep on four 125 mm lockable casters, with a knee support pad, foot plate, lift handle at 1050 mm from the floor, and a rotating central column that pivots the user through 90 degrees. The device must simultaneously satisfy: (R1) maximum von Mises stress in the aluminum frame under a 7.46 kN vertical rated static load applied at the user handle must not exceed 138 MPa (yield 276 / 2.0), (R2) maximum von Mises stress under the fatigue cyclic load of 2200 N applied 5000 cycles per ISO 10535 must not exceed 110 MPa (endurance limit target), (R3) device tip-over stability angle with a 190 kg user at the handle must be at least 10 degrees per ISO 10535 Clause 5.5, (R4) caregiver handle force to pivot the 190 kg user through 90 degrees must not exceed 120 N per ISO 10535 ergonomic guideline, and (R5) a linear buckling analysis of the central column under 2x rated load (1520 kg, 14.9 kN) must yield a first-mode load factor of at least 2.0. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly of the transfer aid with frame, column, handle, foot plate, and casters as sub-bodies plus a verification report listing max von Mises, fatigue stress, tip stability angle, caregiver handle force, and first buckling load factor.",
+  "short_prompt": "Design a single-user pivot-style sit-to-stand transfer aid for transfers between a bed and a wheelchair with one caregiver, rated to a 190 kg user. The device is a welded 6061-T6 aluminum frame, roughly 1200 mm tall x 650 mm wide x 900 mm deep on four 125 mm lockable casters, with a knee support, foot plate, lift handle at 1050 mm, and a rotating central column that swings the user through 90 degrees.\n\nDesign to ISO 10535:2021 (hoists for transfer of disabled persons), which imposes a 4x static safety factor on rated load. Base sits on the four casters on a rigid floor.\n\nLoad cases.\n- LC1 static 4x rated: 7460 N vertical at the user handle.\n- LC2 cyclic fatigue: 2200 N at the handle for 5000 cycles per ISO 10535.\n- LC3 tip stability: tilt the device with a 190 kg user at the handle.\n- LC4 caregiver pivot: handle force to pivot 190 kg through 90 degrees.\n- LC5 column buckling: 2x rated load (14.9 kN) on the central column.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "fatigue_cycle_SN_check",
+        "reason": "5000-cycle fatigue per ISO 10535 is a closed-form S-N check (Al 6061 endurance 97 MPa), not an FEA category.",
+        "examples": [
+          "nCode DesignLife for post",
+          "manual S-N spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ISO 10535 sit-to-stand transfer aid, 190 kg user",
+    "brief": "Design an Al 6061-T6 sit-to-stand pivot transfer aid (1200 x 650 x 900 mm) for 190 kg user with 4x SF static load, 5000-cycle fatigue, >=10 deg tip stability, 120 N caregiver force, and 2x column buckling margin per ISO 10535:2021.",
+    "geometric_constraints": {
+      "frame_dims_mm": [
+        1200,
+        650,
+        900
+      ],
+      "caster_count": 4,
+      "caster_dia_mm": 125,
+      "handle_height_mm": 1050
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "yield_MPa": 276,
+      "ultimate_MPa": 310,
+      "E_GPa": 69
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_rated_4x",
+        "magnitude_N": 7460,
+        "application": "vertical at user handle"
+      },
+      {
+        "id": "LC2",
+        "name": "fatigue_5000_cycles",
+        "magnitude_N": 2200,
+        "cycles": 5000
+      },
+      {
+        "id": "LC3",
+        "name": "tip_stability",
+        "user_kg": 190,
+        "target_min_angle_deg": 10
+      },
+      {
+        "id": "LC4",
+        "name": "caregiver_pivot",
+        "target_force_limit_N": 120,
+        "user_kg": 190
+      },
+      {
+        "id": "LC5",
+        "name": "buckling_2x_rated",
+        "magnitude_N": 14900
+      }
+    ],
+    "boundary_conditions": {
+      "chassis_base": "four casters on rigid floor",
+      "handle": "single point user load"
+    },
+    "objective": {
+      "primary": "pass ISO 10535:2021",
+      "secondary": "minimize frame mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "fatigue_stress_MPa",
+        "tip_stability_angle_deg",
+        "caregiver_force_N",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_4x_rated",
+        "limit_MPa": 138,
+        "derivation": "yield 276 / 2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "fatigue_stress_5000_cycles",
+        "limit_MPa": 110,
+        "derivation": "Al 6061 finite-life stress at 5000 cycles per IIW S-N",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tip_stability_angle",
+        "limit_deg": 10,
+        "derivation": "ISO 10535 Clause 5.5",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "caregiver_pivot_force",
+        "limit_N": 120,
+        "derivation": "ISO 10535 ergonomic guideline",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam/shell for frame, solid for column",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling",
+        "cyclic fatigue post"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Indoor transfer device; no harmonic loads.",
+      "thermal_analysis": "Indoor ambient only.",
+      "fluid_analysis": "No fluid.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "ISO 10535 functional testing with mannequin",
+      "Biocompat of contact pads (ISO 10993)",
+      "Caregiver usability (IEC 62366-1)"
+    ]
+  },
+  "eval_coverage": [
+    "ISO 10535:2021 4x static + cyclic fatigue stack",
+    "ramp stability tip-over",
+    "caregiver ergonomic force limit",
+    "column buckling at 2x rated"
+  ]
+}

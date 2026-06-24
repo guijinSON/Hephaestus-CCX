@@ -1,0 +1,764 @@
+{
+  "id": "091_ng6_iso7176_8_wheelchair_frame",
+  "source": {
+    "catalog_ref": "NG6",
+    "year": 2014,
+    "tier": "A",
+    "original_sample": "docs/eval/samples/091_ng6_iso7176_8_wheelchair_frame.json",
+    "multipart_basis": "Decomposition inferred from ISO 7176-8 test-relevant sub-assemblies (side frames, cross members, seat rails, backrest uprights, armrest mounts, footrest brackets, caster forks, rear axle plates, push-rim handles, welded gussets) as required to realize the static/impact/fatigue load paths described in the original brief. Rulebook citations inherited verbatim from the original sample; no new citations added."
+  },
+  "domain": "medical_devices",
+  "part_class": "manual_wheelchair_frame_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design one representative manual rigid-frame adult wheelchair frame (cross-tube or rigid-fold, depending on design choice) compliant with ISO 7176-8:2014 (static, impact, and fatigue strength) for a nominal occupant mass of 100 kg (ISO wheelchair test dummy). The frame must be a single welded or bolted tubular aluminum assembly (typical 6061-T6 aluminum, 25-32 mm OD seat tubes, 1.5-2.5 mm wall), supporting a 450 mm wide x 400 mm deep seat, 4 wheels (two 610 mm / 24 inch rear drive wheels + two 200 mm / 8 inch front casters), armrests, footrest(s), and a backrest, total assembly mass target <= 15 kg. The frame must pass three independent ISO 7176-8 evaluations: (A) STATIC: 1.25 times the nominal downward seat load (i.e. 1.25 * 100 kg * 9.81 m/s^2 = 1226 N) applied through the seat dummy test plate; 1.25 x nominal on backrest, armrest, and footrest per the clause-specific static pad locations; permanent deformation must not exceed the clause limits and the frame must not fracture. (B) IMPACT: 6666 equivalent curb-drop impacts from 50 mm height per the double-drum / curb-drop rig with the 100 kg dummy installed; no fracture or loss of function (ISO 7176-8 curb-drop cycle count). (C) FATIGUE: 200,000 cycles on the two-drum fatigue machine with 100 kg dummy at the prescribed drum geometry; no fracture or loss of function. Target material is 6061-T6 aluminum alloy (yield 276 MPa, UTS 310 MPa, E = 68.9 GPa, density 2700 kg/m3). Deliverable is a single CAD assembly of the frame (tubes + welded gussets + wheel/axle mounts + caster forks + seat/back + armrest + footrest) suitable for linear-static structural FEA under ISO 7176-8 clause-specific static loads, explicit-dynamics curb-drop impact, and fatigue life evaluation to 200000 + 6666 cycles. Vibration, thermal, fluid, radiation, buckling analyses are NOT required. Explicit-dynamics impact solver and fatigue solver are mandatory non-FEA-static solvers.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a multi-part welded/bolted tubular assembly rather than a single solid body. The decomposition follows the load-path architecture demanded by ISO 7176-8 static, curb-drop impact, and two-drum fatigue tests: two main side frame tubes (P1) carry seat and occupant load to the rear axle plates (P8) and caster forks (P7); two transverse cross members (P2) stiffen the frame laterally and provide the curb-drop impact load path; two seat pan rails (P3) distribute seat-dummy 1226 N load into the side frames; two backrest uprights (P4) tie into the rear of the side frames and react the backrest clause static load; two armrest mounts (P5) and two footrest brackets (P6) react the armrest/footrest 1.25x static pads; two caster forks (P7) and two rear axle plates (P8) transmit wheel reactions and curb-drop impact; two push-rim attachment bosses (P9) on the rear axle plates transfer hand-rim load; welded gussets (P10) reinforce the four high-moment tube-to-tube joints where curb-drop impact and fatigue stress concentrate; and a fastener family (P11) of M6-M8 stainless bolts secures bolted joints (quick-release wheels, armrests, footrests). The final FEM verification runs on the ASSEMBLED model only - per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) at the welded gusset-to-tube joints and at bolted armrest/footrest/wheel interfaces must be <= 1.0 under the governing ISO 7176-8 static and curb-drop cases. All inherited load magnitudes (1226 N seat, 50 mm drop, 6666 curb-drop cycles, 200000 two-drum cycles), material properties (6061-T6 Al, 276 MPa yield), and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a manual wheelchair frame as a multi-part welded-tube assembly per ISO 7176-8:2014 static, impact, and fatigue tests. Occupant mass 100 kg; total frame mass <= 15 kg; frame tubing Al 6061-T6 yield 276 MPa.\n\nLoad cases: LC1 static load 1226 N at the seat per ISO 7176-8; LC2 50 mm drop impact; LC3 fatigue 200000 cycles at the main frame joints and 6666 cycles at the caster fork.\n\nPass/fail: no yield under LC1/LC2; fatigue life satisfies LC3 cycle counts; FEM at assembled level; weld and pivot DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics_impact_solver",
+        "reason": "Curb-drop 50 mm impact from 6666 drops requires transient dynamics with large-displacement contact (not linear static FEA).",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus/Explicit"
+        ]
+      },
+      {
+        "tool": "fatigue_life_solver",
+        "reason": "200000-cycle double-drum fatigue cannot be evaluated with a single static FEA run.",
+        "examples": [
+          "fe-safe",
+          "nCode DesignLife"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Adult manual wheelchair frame qualified to ISO 7176-8 (multi-part welded tubular assembly)",
+    "brief": "Design a rigid manual wheelchair frame for a 100 kg ISO test dummy passing static (1.25 x nominal), impact (6666 x 50 mm drops), and fatigue (200000 double-drum cycles) per ISO 7176-8. [Multi-part assembly] side frame tubes (x2), cross members (x2), seat pan rails (x2), backrest uprights (x2), armrest mounts (x2), footrest brackets (x2), caster forks (x2), rear axle plates (x2), push-rim bosses (x2), welded gussets (x4), fastener family (x16). FEM verification at assembled level only; welded and bolted joint DCR <= 1.0 under governing static + curb-drop cases.",
+    "geometric_constraints": {
+      "seat_width_mm": 450,
+      "seat_depth_mm": 400,
+      "rear_wheel_diameter_mm": 610,
+      "front_caster_diameter_mm": 200,
+      "frame_tube_OD_mm_range": [
+        25,
+        32
+      ],
+      "frame_tube_wall_mm_range": [
+        1.5,
+        2.5
+      ]
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "E_GPa": 68.9,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310,
+      "density_kg_m3": 2700
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "static_seat_1.25x",
+        "magnitude_N": 1226,
+        "derivation": "1.25 * 100 kg * 9.81 m/s^2",
+        "application": "ISO 7176-8 seat static test pad"
+      },
+      {
+        "id": "LC2",
+        "name": "static_backrest_1.25x",
+        "application": "per ISO 7176-8 backrest clause"
+      },
+      {
+        "id": "LC3",
+        "name": "static_armrest_footrest_1.25x",
+        "application": "per ISO 7176-8 armrest / footrest clauses"
+      },
+      {
+        "id": "LC4",
+        "name": "curb_drop_50mm",
+        "drop_height_mm": 50,
+        "dummy_kg": 100,
+        "cycles": 6666,
+        "application": "ISO 7176-8 curb-drop fatigue"
+      },
+      {
+        "id": "LC5",
+        "name": "double_drum_fatigue",
+        "dummy_kg": 100,
+        "cycles": 200000,
+        "application": "ISO 7176-8 two-drum fatigue rig"
+      }
+    ],
+    "boundary_conditions": {
+      "wheel_contacts": "rear wheel and caster contact points provide vertical + tangential reaction",
+      "static_tests": "hard floor under wheels; loads applied via ISO 7176-8 test pads"
+    },
+    "objective": {
+      "primary": "pass all ISO 7176-8 tests",
+      "secondary": "total frame assembly mass <= 15 kg"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "frame_mass_kg",
+        "max_static_von_mises_MPa",
+        "impact_max_plastic_strain",
+        "fatigue_life_double_drum_cycles",
+        "fatigue_life_curb_drop_cycles",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "P1",
+        "name": "main side frame tube",
+        "role": "left/right longitudinal spine carrying seat, backrest, and rear-axle loads to caster forks and rear axle plates; primary bending member under LC1 and curb-drop LC4",
+        "count_min": 2,
+        "geometric_constraints": {
+          "tube_OD_mm": 28,
+          "wall_mm": 2.0,
+          "length_mm_range": [
+            700,
+            900
+          ],
+          "cross_section": "round seamless tube"
+        },
+        "material_hint": "6061-T6 aluminum, drawn tube",
+        "speculation": true
+      },
+      {
+        "part_id": "P2",
+        "name": "transverse cross member",
+        "role": "lateral stiffener between left/right side frames; carries curb-drop torsional reaction and maintains 450 mm seat-width alignment under LC4",
+        "count_min": 2,
+        "geometric_constraints": {
+          "tube_OD_mm": 25,
+          "wall_mm": 1.5,
+          "length_mm": 450,
+          "cross_section": "round seamless tube"
+        },
+        "material_hint": "6061-T6 aluminum",
+        "speculation": true
+      },
+      {
+        "part_id": "P3",
+        "name": "seat pan rail",
+        "role": "left/right under-seat rail that distributes the 1226 N ISO seat-pad static load (LC1) into the side frame tubes",
+        "count_min": 2,
+        "geometric_constraints": {
+          "tube_OD_mm": 22,
+          "wall_mm": 1.5,
+          "length_mm": 400
+        },
+        "material_hint": "6061-T6 aluminum",
+        "speculation": true
+      },
+      {
+        "part_id": "P4",
+        "name": "backrest upright",
+        "role": "left/right rear upright rising from side frame tubes to backrest height; reacts ISO 7176-8 backrest static pad load (LC2)",
+        "count_min": 2,
+        "geometric_constraints": {
+          "tube_OD_mm": 25,
+          "wall_mm": 1.5,
+          "height_mm_range": [
+            400,
+            500
+          ]
+        },
+        "material_hint": "6061-T6 aluminum",
+        "speculation": true
+      },
+      {
+        "part_id": "P5",
+        "name": "armrest mount bracket",
+        "role": "left/right bolted bracket clamping to backrest upright and side frame, carrying armrest 1.25x static pad load (LC3)",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plate_thickness_mm": 4.0,
+          "bolt_pattern_mm": "2x M6 on 40 mm pitch",
+          "form": "folded aluminum bracket"
+        },
+        "material_hint": "6061-T6 aluminum plate",
+        "speculation": true
+      },
+      {
+        "part_id": "P6",
+        "name": "footrest bracket",
+        "role": "left/right forward bracket welded/bolted to front of side frame; carries footrest 1.25x static pad load (LC3)",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plate_thickness_mm": 5.0,
+          "offset_from_side_frame_mm": 60,
+          "form": "welded L-bracket with cross-hole for footrest tube"
+        },
+        "material_hint": "6061-T6 aluminum plate",
+        "speculation": true
+      },
+      {
+        "part_id": "P7",
+        "name": "caster fork",
+        "role": "front wheel fork holding 200 mm caster; transmits front-wheel reaction and absorbs 50 mm curb-drop impact (LC4)",
+        "count_min": 2,
+        "geometric_constraints": {
+          "fork_material_thickness_mm": 4.0,
+          "caster_wheel_mount_diameter_mm": 12,
+          "form": "double-arm forged/machined fork"
+        },
+        "material_hint": "6061-T6 aluminum forging",
+        "speculation": true
+      },
+      {
+        "part_id": "P8",
+        "name": "rear axle plate",
+        "role": "left/right machined plate welded to rear of side frame; mounts 12 mm quick-release axle of 610 mm rear drive wheel; governs LC4 curb-drop and LC5 two-drum fatigue load path",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plate_thickness_mm": 6.0,
+          "axle_bore_mm": 12.7,
+          "mounting_hole_count": 4
+        },
+        "material_hint": "6061-T6 aluminum plate",
+        "speculation": true
+      },
+      {
+        "part_id": "P9",
+        "name": "push-rim attachment boss",
+        "role": "threaded boss on rear axle plate carrying push-rim standoff; transmits hand-rim propulsion load into axle plate",
+        "count_min": 2,
+        "geometric_constraints": {
+          "boss_OD_mm": 14,
+          "thread": "M6",
+          "standoff_length_mm": 25
+        },
+        "material_hint": "6061-T6 aluminum turning",
+        "speculation": true
+      },
+      {
+        "part_id": "P10",
+        "name": "welded gusset",
+        "role": "triangular reinforcement at high-moment tube-to-tube joints (side-frame-to-backrest-upright, side-frame-to-cross-member); critical for curb-drop and two-drum fatigue life",
+        "count_min": 4,
+        "geometric_constraints": {
+          "plate_thickness_mm": 3.0,
+          "leg_length_mm": 50,
+          "form": "triangular welded gusset"
+        },
+        "material_hint": "6061-T6 aluminum plate (post-weld T6 re-temper)",
+        "speculation": true
+      },
+      {
+        "part_id": "P11",
+        "name": "fastener family",
+        "role": "M6-M8 stainless socket-head cap screws and nylock nuts for bolted interfaces (armrest, footrest, quick-release rear axle retention plate, push-rim standoff)",
+        "count_min": 16,
+        "geometric_constraints": {
+          "thread_range": "M6 to M8",
+          "grade": "A2-70 or A4-80 stainless",
+          "length_range_mm": [
+            16,
+            40
+          ]
+        },
+        "material_hint": "A2-70 austenitic stainless steel",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox_mm": [
+        1050,
+        650,
+        900
+      ],
+      "seat_plane_height_mm": 480,
+      "coordinate_system": "origin at ground-projection of rear axle centerline midpoint; +X forward, +Z up"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "static_load_factor_on_nominal",
+        "limit": 1.25,
+        "derivation": "ISO 7176-8 clause 8 static tests",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_static",
+        "limit_MPa": 276,
+        "derivation": "yield of 6061-T6; no permanent deformation beyond ISO 7176-8 clause limits",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "curb_drop_cycles_no_fracture",
+        "limit": 6666,
+        "derivation": "ISO 7176-8 curb-drop test",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "double_drum_cycles_no_fracture",
+        "limit": 200000,
+        "derivation": "ISO 7176-8 two-drum fatigue test",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "frame_assembly_mass_kg",
+        "limit_kg": 15,
+        "derivation": "practical manual-chair mass target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection demand-to-capacity ratio (DCR) across all welded gusset joints (IF1, IF5) and bolted interfaces (IF2, IF3, IF4, IF6) <= 1.0 under the governing ISO 7176-8 static (LC1-LC3) and curb-drop (LC4) cases.",
+        "metric": "max DCR across IF1..IF6",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Assembled-frame static deflection at the seat-pad center under LC1 (1226 N) shall not exceed 10 mm, ensuring the ISO 7176-8 permanent-deformation clause is not violated after load removal.",
+        "metric": "seat_center_deflection_mm under LC1",
+        "threshold": 10.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[5].geometric_constraints",
+          "prompt.parts[6].count_min",
+          "prompt.parts[6].geometric_constraints",
+          "prompt.parts[7].count_min",
+          "prompt.parts[7].geometric_constraints",
+          "prompt.parts[8].count_min",
+          "prompt.parts[8].geometric_constraints",
+          "prompt.parts[9].count_min",
+          "prompt.parts[9].geometric_constraints",
+          "prompt.parts[10].count_min",
+          "prompt.parts[10].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell for tubes, solid for welded gussets, rigid dummy",
+      "solver_hints": [
+        "Abaqus",
+        "LS-DYNA",
+        "nCode DesignLife"
+      ],
+      "analysis_types": [
+        "linear static",
+        "explicit-dynamics impact",
+        "fatigue life"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "P1",
+        "P2"
+      ],
+      "mediated_by": "TIG-welded tube-to-tube joint with gusset P10 reinforcement",
+      "load_path": "Cross member P2 transfers curb-drop lateral and torsional reaction into side frame tubes P1; gusset P10 distributes moment concentration"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "P1",
+        "P3"
+      ],
+      "mediated_by": "TIG-welded saddle joint (seat rail to side frame)",
+      "load_path": "Seat pan rail P3 funnels LC1 seat 1226 N load into side frame tube P1 via welded saddle"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "P1",
+        "P4"
+      ],
+      "mediated_by": "TIG-welded lap joint with gusset P10",
+      "load_path": "Backrest upright P4 transfers LC2 backrest static load into rear of side frame tube P1"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "P4",
+        "P5"
+      ],
+      "mediated_by": "bolted (2x M6) via fastener family P11",
+      "load_path": "Armrest mount P5 transfers LC3 armrest 1.25x static load into backrest upright P4 through M6 bolted joint"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "P1",
+        "P6"
+      ],
+      "mediated_by": "TIG-welded L-bracket joint",
+      "load_path": "Footrest bracket P6 transfers LC3 footrest 1.25x static load into front of side frame tube P1"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "P1",
+        "P7"
+      ],
+      "mediated_by": "TIG-welded head-tube to side-frame joint",
+      "load_path": "Caster fork P7 transmits front-wheel vertical reaction and curb-drop impact (LC4) into front of side frame tube P1"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "P1",
+        "P8"
+      ],
+      "mediated_by": "TIG-welded plate-to-tube joint",
+      "load_path": "Rear axle plate P8 transmits 610 mm drive-wheel reaction, curb-drop impact (LC4), and two-drum fatigue cycles (LC5) into rear of side frame tube P1"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "P8",
+        "P9"
+      ],
+      "mediated_by": "threaded M6 boss (welded or bolted)",
+      "load_path": "Push-rim attachment boss P9 transmits hand-rim propulsion load into rear axle plate P8"
+    },
+    {
+      "id": "IF9",
+      "between": [
+        "P8",
+        "P11"
+      ],
+      "mediated_by": "quick-release axle retention via fastener family P11",
+      "load_path": "Quick-release axle retained by rear axle plate P8 with M8 hardware from fastener family P11"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "ISO 7176-8 static, curb-drop impact, and two-drum fatigue tests are defined on the complete wheelchair assembly on a test floor with the ISO test dummy; per-part stress is reported for diagnostic purposes but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A manual wheelchair frame is inherently a welded/bolted tubular assembly of >15 load-bearing members (side frames, cross members, seat rails, uprights, brackets, forks, axle plates, gussets, fasteners). Single-solid representation would misstate welded-joint stress concentration and hide the curb-drop/fatigue-critical gusseted interfaces.",
+    "speculation_caveats": "parts[] counts (e.g., 4 welded gussets, 16 fasteners) and specific tube ODs/wall thicknesses are speculation within the 25-32 mm OD / 1.5-2.5 mm wall range stated by the original brief; ISO 7176-8 does not prescribe member count.",
+    "original_sample_preserved_at": "docs/eval/samples/091_ng6_iso7176_8_wheelchair_frame.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R_asm1",
+      "R_asm2"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[5].geometric_constraints",
+      "prompt.parts[6].count_min",
+      "prompt.parts[6].geometric_constraints",
+      "prompt.parts[7].count_min",
+      "prompt.parts[7].geometric_constraints",
+      "prompt.parts[8].count_min",
+      "prompt.parts[8].geometric_constraints",
+      "prompt.parts[9].count_min",
+      "prompt.parts[9].geometric_constraints",
+      "prompt.parts[10].count_min",
+      "prompt.parts[10].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "static_load_factor_on_nominal",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "max_von_mises_stress_static",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC4",
+      "metric": "curb_drop_cycles_no_fracture",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_OTHER",
+      "solver": "calculix",
+      "analysis_card": "*DYNAMIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC5"
+      ],
+      "deck_step": "generated_dynamic_step",
+      "metric": "double_drum_cycles_no_fracture",
+      "metric_source": "dynamic/static response block",
+      "outputs": [
+        "model.dat: dynamic displacement response"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "frame_assembly_mass_kg",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_005",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "max DCR across IF1..IF6",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm2_006",
+      "requirement_id": "R_asm2",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "seat_center_deflection_mm under LC1",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_007",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

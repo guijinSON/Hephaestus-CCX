@@ -1,0 +1,207 @@
+{
+  "id": "010_pt10_wurth_fastener_handbook",
+  "source": {
+    "catalog_ref": "PT10",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "industrial_machinery",
+  "part_class": "bolted_flange_joint",
+  "full_prompt": "Design a machined steel circular flange joint clamped by eight M12 property class 10.9 bolts (per a standard industrial fastener handbook, 2024), transmitting a combined axial and bending service load while respecting VDI 2230 preload limits and ISO 898-1 proof/ultimate values. The joint consists of two mating circular flanges, outer diameter 200 mm, inner bore 80 mm, flange thickness 20 mm each, fabricated from S355 structural steel (yield 355 MPa, UTS 510 MPa, Young's modulus 210 GPa, density 7850 kg/m^3). Eight M12 x 1.75 class 10.9 bolts are arranged on a 160 mm bolt circle (22.5 deg pitch). Catalog values for M12 property class 10.9 bolts (industrial fastener handbook): proof load F_p = 59.5 kN, minimum tensile (ultimate) load F_ult = 85.3 kN, yield load F_y ~= 76.8 kN, recommended tightening torque dry mu_th = 0.14 / mu_K = 0.14 = 117 N*m (industrial fastener handbook, M12 10.9), recommended preload F_M = 50.1 kN at 90% yield with friction coeff 0.14 (VDI 2230 Table A1). Service load cases: LC1 pure axial tension on the assembly 200 kN through the bore centerline (shared among bolts); LC2 pure bending moment about a flange diameter 8 kN*m (generates max tensile bolt load on one side, compressive on the other); LC3 combined axial 150 kN + bending 6 kN*m + transverse shear 30 kN across the joint plane. Pass/fail per VDI 2230 + ISO 898-1: (R1) maximum individual bolt total load F_B_max = F_M + F_SA (preload plus additional operating load after joint stiffness distribution) must be <= 0.9 * F_y = 69.1 kN (VDI 2230 limit on bolt utilization 90% yield); (R2) minimum bolt load F_B_min > 0 (no joint gapping, no loss of preload) under all LC; (R3) joint-face surface pressure p_B must remain <= 0.8 * yield of S355 = 284 MPa (no plastic indentation under washer); (R4) flange face max von Mises under combined LC3 <= 355 / 1.5 = 237 MPa (SF 1.5 on yield, general machine steel); (R5) flange separation gap at outermost bolt radius under LC2 max moment <= 0 (no gapping -> water/gas-tight constraint); (R6) bolt shank max combined stress (tensile + shear, von Mises) <= F_y / A_stress = 76.8e3 / 84.3 mm^2 = 912 MPa under LC3 (class 10.9 yield allowable). Deliverables: STEP AP242 assembly with two flanges, bolt envelopes (eight), and washers; report with per-bolt max and min bolt load, max surface pressure under bolt head, flange max von Mises, gap at extreme bolt under max moment, and bolt shank combined stress.",
+  "short_prompt": "Design a machined steel circular flange joint clamped by eight M12 property class 10.9 bolts (per a 2024 industrial fastener handbook) transmitting combined axial and bending service load while respecting VDI 2230 preload limits and ISO 898-1 proof/ultimate values.\n\nGeometry: two mating circular flanges, OD 200 mm, inner bore 80 mm, each 20 mm thick, S355 structural steel. Eight M12 x 1.75 class 10.9 bolts on a 160 mm bolt circle (22.5 deg pitch).\n\nFastener catalog values (M12 class 10.9): proof F_p = 59.5 kN, ultimate F_ult = 85.3 kN, yield F_y ~= 76.8 kN, tightening torque 117 N*m with mu_th = mu_K = 0.14, recommended preload F_M = 50.1 kN at 90% yield (VDI 2230 Table A1).\n\nLoad cases.\n- LC1 pure axial tension on the assembly: 200 kN through the bore centerline.\n- LC2 pure bending: 8 kN*m about a flange diameter.\n- LC3 combined: axial 150 kN + bending 6 kN*m + transverse shear 30 kN across the joint plane.\n\nPass criteria per VDI 2230 + ISO 898-1 include bolt utilization <= 0.9 * F_y = 69.1 kN, no joint gapping under any LC, joint-face surface pressure <= 0.8 * S355 yield = 284 MPa, flange combined von Mises under LC3 <= 237 MPa, and no gapping at the outermost bolt radius under LC2.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "vdi2230_calculator",
+        "reason": "VDI 2230 Part 1 closed-form bolted-joint analysis covering preload, joint stiffness, and additional load is a spreadsheet.",
+        "examples": [
+          "MDESIGN Bolts",
+          "VDI 2230 spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Eight-bolt M12 10.9 steel circular flange joint per industrial fastener handbook",
+    "brief": "Design a 200 mm OD circular flange joint with 8 x M12 class 10.9 bolts; survive 200 kN axial + 8 kNm bending without joint gap or bolt yield, per VDI 2230 preload tables and the industrial fastener handbook.",
+    "geometric_constraints": {
+      "flange": {
+        "OD_mm": 200,
+        "ID_mm": 80,
+        "thickness_mm": 20,
+        "quantity": 2
+      },
+      "bolt_circle_mm": 160,
+      "bolts": {
+        "count": 8,
+        "thread": "M12 x 1.75",
+        "class": "10.9"
+      }
+    },
+    "material": {
+      "flange": {
+        "name": "S355",
+        "yield_MPa": 355,
+        "ultimate_MPa": 510
+      },
+      "bolt": {
+        "class": "10.9",
+        "proof_load_kN": 59.5,
+        "yield_load_kN": 76.8,
+        "ultimate_load_kN": 85.3,
+        "stress_area_mm2": 84.3,
+        "recommended_preload_kN": 50.1,
+        "tightening_torque_Nm": 117
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "axial_only",
+        "axial_kN": 200
+      },
+      {
+        "id": "LC2",
+        "name": "bending_only",
+        "moment_kNm": 8
+      },
+      {
+        "id": "LC3",
+        "name": "combined",
+        "axial_kN": 150,
+        "moment_kNm": 6,
+        "shear_kN": 30
+      }
+    ],
+    "boundary_conditions": {
+      "one_flange_outer_ring": "fully fixed",
+      "other_flange_outer_ring": "service loads applied"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "bolt_F_B_max_kN",
+        "bolt_F_B_min_kN",
+        "surface_pressure_under_head_MPa",
+        "flange_max_von_mises_MPa",
+        "max_gap_at_outer_bolt_mm",
+        "bolt_shank_combined_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "bolt_F_B_max",
+        "limit_kN": 69.1,
+        "derivation": "0.9 * yield load = 0.9 * 76.8 per VDI 2230 utilization limit",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "bolt_F_B_min",
+        "limit_kN": 0,
+        "derivation": "no joint gapping / preload loss",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": ">"
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "surface_pressure_under_bolt_head",
+        "limit_MPa": 284,
+        "derivation": "0.8 * yield_flange = 0.8 * 355 per VDI 2230 p_G",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "flange_max_von_mises",
+        "limit_MPa": 237,
+        "derivation": "yield / 1.5 = 355 / 1.5",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "joint_gap_at_outer_bolt_under_max_moment",
+        "limit_mm": 0,
+        "derivation": "no separation (tight joint)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "bolt_shank_combined_stress",
+        "limit_MPa": 912,
+        "derivation": "F_y / A_stress = 76800 / 84.3 per ISO 898-1 class 10.9",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "ISO 898-1 + VDI 2230 Part 1 + industrial fastener handbook (2024)",
+    "recommended_fea_setup": {
+      "element_type": "solid + pretensioned bolt elements",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "FEMAP / NX Nastran"
+      ],
+      "analysis_types": [
+        "nonlinear static with bolt preload + contact"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static flange qualification; vibration loosening check is a separate brief.",
+      "thermal_analysis": "Isothermal.",
+      "fluid_analysis": "Sealing is a qualitative constraint via gap check, no CFD.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "industrial fastener handbook (2024) tables for M12 class 10.9 (proof 59.5 kN, yield 76.8 kN, UTS 85.3 kN, torque dry 117 Nm); VDI 2230 Table A1 preload 50.1 kN at mu=0.14."
+  },
+  "eval_coverage": [
+    "catalog-driven bolted flange joint design",
+    "VDI 2230 preload + joint stiffness",
+    "gap check under pure bending",
+    "bolt combined-stress check"
+  ]
+}

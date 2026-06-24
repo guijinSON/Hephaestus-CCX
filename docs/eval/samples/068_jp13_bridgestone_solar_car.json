@@ -1,0 +1,172 @@
+{
+  "id": "068_jp13_bridgestone_solar_car",
+  "source": {
+    "catalog_ref": "JP13",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "automotive_structural",
+  "part_class": "solar_car_chassis_and_array",
+  "full_prompt": "Design the chassis and solar-array support structure of a single-seat solar race car for a student-division solar-car race benchmark. The overall body envelope must not exceed 5000 mm length x 2000 mm width x 1600 mm height. The solar-array total area (projected) must not exceed 8 m^2. The battery energy storage must not exceed the student-division battery cap (nominally 5 kWh lithium-ion for the student class; use 5 kWh as the design target). The vehicle must have four wheels, a fully enclosed driver cell, and a roll bar extending at least 50 mm above the driver's helmet when seated. The chassis must carry a 75 kg driver mass at 2.5 g vertical (187.5 kg equivalent seat-pan load) with safety factor 1.5 against yield. The roll bar must resist a static lateral load of 1.5 times vehicle gross mass (assume 250 kg gross, so 3.75 kN lateral) applied at the top of the roll bar with no plastic yield. The solar-array support must carry the 8 m^2 array against a lateral aerodynamic pressure of 1.0 kPa (representing crosswind at track speed) without more than 5 mm deflection at the array edge; this is a stiffness gate. Under a frontal 10 g deceleration equivalent (crash proxy), the driver cell must not intrude. Primary verification is linear static structural FEA for each of the four load cases. Vibration, thermal, fluid, and radiation analyses are explicitly NOT required at this structural design gate (electrical/PV and thermal management are separate). Deliverables: STEP AP242 of the chassis + array support, a mass budget, and a report listing vehicle dry mass in kg, solar-array projected area in m^2, max chassis stress per case in MPa, and array-edge deflection under crosswind in mm.",
+  "short_prompt": "Design the chassis and solar-array support of a single-seat solar race car for a student-division benchmark. Body envelope <= 5000 x 2000 x 1600 mm (L x W x H). Projected solar-array area <= 8 m^2. Battery <= 5 kWh lithium-ion. Four wheels, fully enclosed driver cell, roll bar extending >= 50 mm above the seated driver's helmet. Safety factor 1.5 on yield for LC1-LC2; no driver-cell intrusion in LC4.\n\nLoad cases (quasi-static equivalents).\n- LC1 driver vertical 2.5 g: 75 kg x 2.5 g on the seat pan (~1,839 N).\n- LC2 roll-bar lateral: 1.5 x 250 kg gross (~3,750 N) at the top of the roll bar with no plastic yield.\n- LC3 array crosswind: uniform 1.0 kPa over the 8 m^2 array; array-edge deflection <= 5 mm (stiffness gate).\n- LC4 front-impact equivalent: 10 g forward on the 250 kg gross system (~24,525 N) with no driver-cell intrusion.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Single-seat solar race car chassis and array",
+    "brief": "Design a solar car chassis in 5 x 2 x 1.6 m envelope with 8 m^2 array and 5 kWh battery, survives 2.5 g driver, roll bar lateral, crosswind on array, 10 g frontal crash.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 5000,
+        "W": 2000,
+        "H": 1600
+      },
+      "solar_array_area_m2_max": 8.0,
+      "battery_kWh_max": 5,
+      "wheels": 4,
+      "roll_bar_above_helmet_mm_min": 50
+    },
+    "material": {
+      "typical_chassis": "CFRP monocoque with Al 6061-T6 sub-frame",
+      "CFRP": {
+        "E_GPa": 70,
+        "tensile_MPa": 600
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "driver_2p5g_vertical",
+        "magnitude_N": 1839,
+        "description": "75 kg x 2.5 g"
+      },
+      {
+        "id": "LC2",
+        "name": "roll_bar_lateral_1p5x",
+        "magnitude_N": 3750,
+        "description": "1.5 x 250 kg"
+      },
+      {
+        "id": "LC3",
+        "name": "array_crosswind",
+        "magnitude_kPa": 1.0,
+        "description": "1 kPa over 8 m^2"
+      },
+      {
+        "id": "LC4",
+        "name": "frontal_10g",
+        "magnitude_N": 24525,
+        "description": "250 kg x 10 g forward"
+      }
+    ],
+    "boundary_conditions": {
+      "wheel_contact": "fixed vertical + longitudinal reactions"
+    },
+    "objective": {
+      "minimize": "vehicle_dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "dry_mass_kg",
+        "solar_array_area_m2",
+        "max_chassis_stress_LC1_MPa",
+        "max_roll_bar_stress_LC2_MPa",
+        "array_edge_deflection_LC3_mm",
+        "max_chassis_stress_LC4_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "dimensional_compliance",
+        "metric": "envelope_compliance",
+        "derivation": "5 x 2 x 1.6 m",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "solar_array_area_m2",
+        "limit_m2": 8.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_chassis_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 against yield",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "array_edge_deflection_mm",
+        "limit_mm": 5.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "driver_cell_intrusion_mm",
+        "limit_mm": 0,
+        "derivation": "No intrusion under 10 g frontal crash equivalent",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + beam",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static x4"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "PV thermal is separate.",
+      "fluid_analysis": "Crosswind reduced to pressure load.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "envelope + array area + battery cap",
+    "driver vertical + roll bar lateral",
+    "crosswind on array stiffness",
+    "frontal crash no-intrusion"
+  ]
+}

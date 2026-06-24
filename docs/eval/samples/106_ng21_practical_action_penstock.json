@@ -1,0 +1,199 @@
+{
+  "id": "106_ng21_practical_action_penstock",
+  "source": {
+    "catalog_ref": "NG21",
+    "year": 2022,
+    "tier": "B"
+  },
+  "domain": "humanitarian_energy",
+  "part_class": "micro_hydro_penstock_segment_and_saddle",
+  "full_prompt": "Design one representative mild-steel penstock pipe segment + concrete saddle support for a 10 kW village-scale micro-hydropower scheme per Practical Action's Micro-hydro Design Manual and Technical Brief series. The scheme has a gross head of 60 m, design flow 0.05 m3/s, and a penstock diameter of 200 mm OD mild-steel pipe (spiral-welded, wall thickness 4 mm, grade ASTM A53 Gr B, yield 240 MPa) with a single inline saddle support. Design internal pressure is the static head 60 m = 588 kPa plus a 30 percent surge/water-hammer allowance per Practical Action guidance giving 765 kPa design pressure. The penstock segment under evaluation is 6.0 m long between two saddle supports, with the governing saddle being a mass-concrete block 600 mm x 600 mm x 500 mm embedded in the slope, bearing the pipe with a curved steel cradle lined with rubber. The saddle must resist: (a) vertical dead + water weight of the 6 m pipe segment, approximately m_pipe = rho_steel * V_steel + rho_water * V_water = 7850 * pi * (0.2^2-0.192^2)/4 * 6 + 1000 * pi * 0.192^2/4 * 6 = 116 + 174 = 290 kg, giving 2850 N per saddle, (b) horizontal friction force along pipe axis from thermal expansion = mu_friction * normal = 0.3 * 2850 = 855 N, (c) at bends the thrust from internal pressure (this saddle is nominally at a straight run; bend thrust handled by separate thrust block out of scope). For ropeway ancillary: a single 6x19 galvanized steel carrier cable with safety factor >= 5 per Practical Action ropeway brief is referenced but kept as an out-of-scope secondary artifact. Deliverable is a CAD assembly of one 6 m penstock pipe segment + one saddle support (concrete block + steel cradle + rubber liner) suitable for linear static structural FEA under (a) 765 kPa internal pressure (hoop + longitudinal), (b) vertical saddle reaction 2850 N with realistic bearing footprint, (c) axial friction 855 N. Vibration, thermal, fluid CFD, radiation analyses NOT required. Water hammer is handled as the static 30 percent surge factor; detailed transient fluid simulation is optional.",
+  "short_prompt": "Design a 6 m mild-steel penstock pipe segment + concrete saddle support for a 10 kW village-scale micro-hydropower scheme (gross head 60 m, design flow 0.05 m^3/s), per Practical Action's Micro-hydro Design Manual and Technical Brief series. Internal design pressure uses the 30% surge allowance over the 60 m static head. Pipe is ASTM A53 Gr B spiral-welded (yield 240 MPa); saddle is mass-concrete (fc >= 20 MPa) with a rubber-lined steel cradle founded on rock/soil. Allowable pipe hoop stress 0.5 x fy = 120 MPa; saddle-sliding SF 1.5; ground-bearing allowable 200 kPa.\n\nEnvelope: 200 mm OD x 4 mm wall penstock pipe, 6.0 m between saddles; saddle concrete block 600 x 600 x 500 mm.\n\nLoad cases.\n- LC1 internal pressure with surge: 765 kPa (60 m head x 1.3 surge factor) inside the pipe.\n- LC2 saddle vertical reaction: 2850 N (dead weight of a 6 m water-filled pipe segment) at the saddle bearing.\n- LC3 thermal-expansion friction: 855 N axial (0.3 x 2850 N) at the saddle interface.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "water_hammer_transient_hydraulic",
+        "reason": "Optional 1D method-of-characteristics transient hydraulic simulation can be run to refine the 30% surge factor; not a CAE FEA.",
+        "examples": [
+          "Allievi",
+          "Bentley HAMMER",
+          "hand calc per Joukowsky"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Micro-hydro penstock + saddle for 10 kW village scheme",
+    "brief": "Design a 6 m segment of 200 mm OD mild-steel penstock + concrete saddle for 60 m head and 765 kPa design pressure per Practical Action.",
+    "geometric_constraints": {
+      "penstock_OD_mm": 200,
+      "penstock_wall_mm": 4,
+      "segment_length_m": 6,
+      "saddle_concrete_block_mm": [
+        600,
+        600,
+        500
+      ],
+      "gross_head_m": 60,
+      "design_flow_m3_s": 0.05
+    },
+    "material": {
+      "penstock": {
+        "grade": "ASTM A53 Gr B mild steel",
+        "yield_strength_MPa": 240,
+        "ultimate_tensile_strength_MPa": 415,
+        "E_GPa": 200
+      },
+      "saddle_block": {
+        "concrete_min_fc_MPa": 20
+      },
+      "rubber_liner": "general-purpose 60 shore A"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "internal_pressure_with_surge",
+        "magnitude_kPa": 765,
+        "derivation": "60 m head x 1.3 surge factor",
+        "application": "internal pressure"
+      },
+      {
+        "id": "LC2",
+        "name": "saddle_vertical_reaction",
+        "magnitude_N": 2850,
+        "application": "vertical bearing at saddle"
+      },
+      {
+        "id": "LC3",
+        "name": "thermal_expansion_friction",
+        "magnitude_N": 855,
+        "application": "axial friction at saddle interface"
+      }
+    ],
+    "boundary_conditions": {
+      "saddle_block": "founded on rock/soil bearing",
+      "pipe_ends": "continuous to adjacent segments (symmetric)"
+    },
+    "objective": {
+      "primary": "pass all criteria"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "pipe_hoop_stress_MPa",
+        "pipe_longitudinal_stress_MPa",
+        "pipe_DC_ratio",
+        "saddle_bearing_pressure_kPa",
+        "saddle_sliding_SF"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "design_internal_pressure_kPa",
+        "limit_kPa": 765,
+        "derivation": "gross head + 30% surge per Practical Action",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "pipe_hoop_stress_MPa",
+        "limit_MPa": 120,
+        "derivation": "0.5 * fy allowable for penstock pipe (conservative)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "saddle_bearing_pressure_kPa",
+        "limit_kPa": 200,
+        "derivation": "typical soil allowable bearing for compacted fill / weathered rock",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "saddle_sliding_safety_factor",
+        "limit": 1.5,
+        "derivation": "gravity saddle stability SF",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "ropeway_cable_safety_factor_ref",
+        "limit": 5.0,
+        "derivation": "Practical Action ropeway brief (cross-referenced, not analyzed in this sample)",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">=",
+        "note": "Documented for traceability; ropeway is a separate artifact."
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (pipe) + solid (saddle block, cradle)",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static internal pressure + saddle reaction + friction"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not required.",
+      "thermal_analysis": "Thermal expansion captured as friction LC3 only.",
+      "fluid_analysis": "Surge handled as 30% static; transient optional.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "External-pressure buckling not governing at 60 m head; long-span pipe buckling handled by saddle spacing."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Thrust block at bend (separate artifact)",
+      "Forebay / trash rack",
+      "Turbine-penstock flange design",
+      "Ropeway full analysis (separate NG21 sample)"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "pressure-pipe structural FEA with surge factor",
+    "saddle bearing + sliding stability",
+    "humanitarian village-scale energy scope",
+    "multi-load case (pressure + vertical + axial friction)",
+    "ropeway cable SF 5 cross-referenced"
+  ]
+}

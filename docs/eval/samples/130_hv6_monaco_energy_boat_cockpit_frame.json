@@ -1,0 +1,217 @@
+{
+  "id": "130_hv6_monaco_energy_boat_cockpit_frame",
+  "source": {
+    "catalog_ref": "HV6",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "marine_racing_structural",
+  "part_class": "catamaran_cockpit_crossbeam",
+  "full_prompt": "Design a monolithic 6082-T6 marine-grade aluminum crossbeam for the student-designed cockpit of a collegiate energy-class electric catamaran benchmark using one-design catamaran hulls, respecting the benchmark rules: fossil-fuel ban, <=10 kWh stored energy budget, one-design catamaran hulls with a 2.0 m beam center-to-center between the two hulls. The crossbeam spans the two hulls, carries the helm, the driver seat, the 10 kWh battery pack, and the tiller-arm steering linkage; it is a single machined-and-extruded billet body (no welds, no bolted gussets). Geometry: straight tubular crossbeam 2000 mm long, 120 mm x 100 mm rectangular hollow section with 6 mm wall thickness, ends terminating in 300 mm x 200 mm flanged mounting pads (15 mm thick) each with six M10 (11 mm clearance) holes for bonding / bolting to the hull's deck inserts. Two integral top-facing mounting feet near the center (600 mm apart) for the battery tray: each foot 150 mm x 80 mm x 12 mm with four M10 threaded inserts (but keep as through-holes 11 mm for this CAD prompt). One integral forward-facing yoke for the helm pedestal: 80 mm OD x 200 mm long stub at the beam center with a cross-hole 14 mm diameter. Bounding envelope 2050 mm x 200 mm x 120 mm. Material 6082-T6 marine alloy with E 70 GPa, Poisson's ratio 0.33, density 2700 kg/m^3, yield 250 MPa, UTS 295 MPa, derated marine endurance limit 65 MPa at 10^7 cycles (ABYC H-8 marine aluminum fatigue class). Three load cases. Load Case 1 (cruise + chop): 1.5g vertical distributed on the beam = self weight + 140 kg (driver + helm + 90 kg battery) x 1.5 = 2.1 kN distributed; lateral 0.3g at all masses = 420 N lateral; both hull-mounting flanges fully fixed. Load Case 2 (asymmetric wave hit): one hull lifts clear, producing a pure bending moment at the captive hull pad of 2800 N-m (140 kg * 2g * 1.0 m offset from hull centerline), opposite flange free; evaluate as cantilever moment. Load Case 3 (crash stop from 15 knots): longitudinal 1.5 kN forward inertia on each battery foot (driver + battery + helm mass decelerating 10 m/s in 0.5 s = 2.0 m/s^2 x 140 kg = 280 N, amplified by 5x structural dynamic factor to 1.5 kN) applied rearward, both hull flanges fixed. Pass/fail: (R1) under LC1 cruise, peak von Mises must not exceed 125 MPa (yield/2.0 ABYC H-8 marine allowable); (R2) under LC2 asymmetric wave (highly dynamic), peak stress must not exceed 167 MPa (yield/1.5 transient); (R3) under LC3 crash stop, peak stress 167 MPa; (R4) fatigue: a 10^6 cycle wave spectrum with stress range 40% of LC1 peak, local stress range at any flange fillet or battery-foot transition must remain below 65 MPa; (R5) a linear buckling eigenvalue analysis under LC2 (cantilever compression on the top face) must yield a first-mode factor of at least 3.0; (R6) crossbeam mass must not exceed 18 kg to preserve boat displacement margin (limit derived from one-design hull displacement reserve); (R7) first two bending natural frequencies must exceed 15 Hz to avoid dominant wave-encounter frequencies 0.5-5 Hz and pump/motor excitation 8-12 Hz at cruise. Thermal, fluid, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 6082-T6 marine-grade aluminum crossbeam for a collegiate electric catamaran (energy class, one-design hulls, <=10 kWh energy budget, 2.0 m hull-to-hull beam). The crossbeam is a single machined-and-extruded billet, 2000 mm long with a 120 x 100 x 6 mm RHS, end flange pads bolting to hull deck inserts, two integral battery-tray feet on top, and a forward helm-pedestal yoke at the center. Apply ABYC H-8 marine-aluminum allowables (yield/2.0 continuous, yield/1.5 transient).\n\nEnvelope: ~2050 x 200 x 120 mm.\n\nLoad cases.\n- LC1 cruise + chop: 1.5 g vertical distributed (self-weight + 140 kg driver/helm/battery = 2.1 kN) plus 0.3 g lateral = 420 N, both hull flanges fixed.\n- LC2 asymmetric wave hit: one hull lifts clear, producing a 2800 N-m cantilever moment at the captive flange (140 kg * 2 g * 1.0 m offset).\n- LC3 crash stop from 15 knots: 1.5 kN longitudinal at each battery foot, both hull flanges fixed.\nAlso check a 10^6-cycle wave-spectrum fatigue against ABYC H-8 marine-aluminum endurance, first-mode buckling under LC2 cantilever compression, and first two bending modes above 15 Hz (wave-encounter 0.5-5 Hz, pump/motor 8-12 Hz).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Collegiate energy-class electric catamaran cockpit crossbeam benchmark",
+    "brief": "Single-billet 6082-T6 crossbeam 2.0 m long with integral hull pads, battery feet, and helm yoke; ABYC H-8 marine SF.",
+    "geometric_constraints": {
+      "length_mm": 2000,
+      "section_mm": {
+        "w": 120,
+        "h": 100,
+        "wall": 6
+      },
+      "hull_pads_mm": {
+        "count": 2,
+        "w": 300,
+        "h": 200,
+        "thickness": 15,
+        "bolts": 6,
+        "hole_mm": 11
+      },
+      "battery_feet": {
+        "count": 2,
+        "pitch_mm": 600,
+        "foot_mm": {
+          "w": 150,
+          "h": 80,
+          "thickness": 12
+        },
+        "holes_mm": 11
+      },
+      "helm_yoke_mm": {
+        "od": 80,
+        "length": 200,
+        "cross_hole_mm": 14
+      },
+      "bounding_envelope_mm": {
+        "x": 2050,
+        "y": 200,
+        "z": 120
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 6082-T6 marine",
+      "properties": {
+        "youngs_modulus_GPa": 70,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_MPa": 250,
+        "ultimate_tensile_strength_MPa": 295,
+        "derated_endurance_MPa": 65
+      }
+    },
+    "payload": {
+      "driver_kg": 80,
+      "helm_kg": 20,
+      "battery_kg": 90,
+      "energy_budget_kWh_max": 10
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "cruise_plus_chop_1.5g",
+        "vertical_N": 2100,
+        "lateral_N": 420
+      },
+      {
+        "id": "LC2",
+        "name": "asymmetric_wave_hit",
+        "moment_Nm": 2800,
+        "location": "captive_hull_pad"
+      },
+      {
+        "id": "LC3",
+        "name": "crash_stop",
+        "force_N_per_foot": 1500,
+        "direction": "forward"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_buckling_load_factor",
+        "first_two_freqs_Hz",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 125,
+        "derivation": "yield/2.0 ABYC H-8",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 167,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 65,
+        "cycles": 1000000,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 18,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_two_bending_frequencies",
+        "limit_Hz": 15,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order shell+solid hybrid",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling",
+        "modal",
+        "S-N fatigue"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient marine.",
+      "fluid_analysis": "Slamming loads reduced to equivalent static load per LC2.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Galvanic isolation at hull inserts",
+      "Battery crash-retention per ABYC E-11 EV supplement",
+      "EMC for electric drivetrain"
+    ]
+  },
+  "eval_coverage": [
+    "ABYC H-8 marine allowable",
+    "cantilever asymmetric wave load",
+    "wave-encounter frequency avoidance",
+    "energy-budget-limited payload mass"
+  ]
+}

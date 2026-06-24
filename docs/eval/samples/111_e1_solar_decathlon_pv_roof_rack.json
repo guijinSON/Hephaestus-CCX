@@ -1,0 +1,193 @@
+{
+  "id": "111_e1_solar_decathlon_pv_roof_rack",
+  "source": {
+    "catalog_ref": "E1",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "building_energy_structural",
+  "part_class": "rooftop_pv_racking_bracket",
+  "full_prompt": "Design a single-piece aluminum rooftop rail-attachment bracket (a standoff L-foot) that fastens a rigid photovoltaic module rail to a wood-framed residential roof for a collegiate residential PV benchmark zero-energy house targeting a HERS index of 0 and ASHRAE 90.1-2022, 189.1-2020, 62.1-2022, and 55-2023 compliance. The bracket is a monolithic extruded and machined 6061-T6 aluminum part (no welds, no bonded joints, no composite stacks) whose base is a 90 mm x 90 mm x 6 mm flange sitting flat on the roof deck over an EPDM butyl flashing, fastened to the 38 mm x 89 mm (2x4) SPF roof rafter by two 5/16-inch (7.94 mm) hex lag screws on a 64 mm spacing with 25 mm minimum edge distance. The vertical leg is 75 mm tall and carries a single M8 clearance hole (9 mm diameter) at 60 mm above the base to attach the PV module rail with a stainless T-bolt. The entire part must fit within a 100 mm x 100 mm x 90 mm bounding envelope and have a mass no greater than 0.25 kg. The material is 6061-T6 aluminum with Young's modulus 68.9 GPa, Poisson's ratio 0.33, density 2700 kg/m^3, yield strength 276 MPa, and ultimate tensile strength 310 MPa; the installed operating temperature range is -30 C to +85 C. Three load cases must be independently survived at the PV rail attachment hole with the two lag-screw holes fully constrained in all six degrees of freedom. Load Case 1 is a 2.1 kN ASCE 7-22 Chapter 29 component-and-cladding wind uplift applied normal to the roof plane corresponding to a 180 km/h (50 m/s) design wind at 10 m height with a pressure coefficient envelope of -2.5. Load Case 2 is a 1.6 kN snow down-load per ASCE 7-22 Chapter 7 representing a 2.5 kPa ground snow load on a 1.7 m x 1.0 m PV module (about 350 mm on-center rail support span). Load Case 3 is a 0.9 kN in-plane shear from seismic drag plus thermal rail expansion (ASHRAE 90.1 roof-deck temperature swing 100 C times 23.6e-6 /C times 4 m rail length constrained between two feet) applied parallel to the roof deck. Pass/fail: (R1) maximum von Mises stress must not exceed 165 MPa under any load case, derived from yield / 1.67 = 276 / 1.67 to match the ASCE 7-22 allowable-stress-design safety factor for aluminum; (R2) maximum deflection at the rail attachment hole must not exceed 2.0 mm under any load case, ensuring PV panel glass is not over-stressed; (R3) a linear buckling eigenvalue analysis under Load Case 2 (compressive down-load) must produce a first-mode load factor of at least 3.0 since snow is a sustained service load; (R4) a steady-state thermal analysis at 85 C ambient with 1000 W/m^2 solar irradiance on the top face and free convection h=10 W/m^2-K must show a peak bracket temperature below 95 C to prevent T6 over-aging; (R5) the bracket mass must not exceed 0.25 kg. Vibration, fluid, and radiation analyses are not required. Deliver STEP AP242 geometry as a single solid body with a mass and stress summary.",
+  "short_prompt": "Design a monolithic extruded / machined 6061-T6 aluminum rooftop standoff L-foot bracket that mounts a PV module rail to a wood-framed residential roof for a collegiate residential PV zero-energy-house benchmark (ASHRAE 90.1-2022 / 189.1-2020 / 62.1-2022 / 55-2023 compliance). The base flange lags through an EPDM butyl flashing into a 38 x 89 mm (2x4) SPF rafter with two 5/16-inch hex lag screws; the vertical leg carries an M8 clearance hole for a stainless T-bolt to the PV rail. Single solid body, no welds, no composite stacks. Mass <= 0.25 kg. Load cases are evaluated at the rail hole with both lag-screw holes fully fixed. Design factors follow ASCE 7-22: ASD aluminum SF 1.67 on yield (derived allowable) and buckling SF 3.0 under sustained snow load.\n\nEnvelope: base 90 x 90 x 6 mm flange, 75 mm vertical leg, overall within 100 x 100 x 90 mm.\n\nLoad cases.\n- LC1 wind uplift: 2.1 kN roof-normal upward (ASCE 7-22 Ch.29 C&C at 50 m/s / 180 km/h, cp env -2.5).\n- LC2 snow down-load: 1.6 kN roof-normal downward (ASCE 7-22 Ch.7, 2.5 kPa ground snow on a 1.7 m^2 module at ~350 mm on-center).\n- LC3 thermal shear: 0.9 kN in-plane roof-parallel (seismic drag + thermal rail expansion over 4 m at 100 C swing).\n- Plus a steady-state thermal with 85 C ambient, 1000 W/m^2 solar irradiance on the top face and h = 10 W/m^2-K convection (cap bracket peak temperature at 95 C to avoid T6 over-aging).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Rooftop PV racking L-foot bracket for collegiate residential PV benchmark zero-energy house",
+    "brief": "Monolithic 6061-T6 L-foot standoff attaching a PV module rail to a 2x4 SPF rafter; must pass ASCE 7-22 wind uplift, snow down-load, and thermal-drag loads while meeting collegiate residential PV benchmark ZE-house envelope targets.",
+    "geometric_constraints": {
+      "base_flange_mm": {
+        "x": 90,
+        "y": 90,
+        "thickness": 6
+      },
+      "vertical_leg_height_mm": 75,
+      "rail_hole_diameter_mm": 9,
+      "rail_hole_height_mm": 60,
+      "lag_screw_pattern": {
+        "count": 2,
+        "diameter_mm": 7.94,
+        "spacing_mm": 64,
+        "min_edge_mm": 25
+      },
+      "bounding_envelope_mm": {
+        "x": 100,
+        "y": 100,
+        "z": 90
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_strength_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "wind_uplift",
+        "magnitude_N": 2100,
+        "direction": "normal to roof plane (upward)",
+        "basis": "ASCE 7-22 Ch.29 C&C, 50 m/s design wind"
+      },
+      {
+        "id": "LC2",
+        "name": "snow_down",
+        "magnitude_N": 1600,
+        "direction": "roof-normal (downward)",
+        "basis": "ASCE 7-22 Ch.7, 2.5 kPa ground snow, 1.7 m^2 module"
+      },
+      {
+        "id": "LC3",
+        "name": "thermal_shear",
+        "magnitude_N": 900,
+        "direction": "in-plane roof-parallel",
+        "basis": "seismic drag + thermal rail expansion"
+      }
+    ],
+    "thermal_boundary_conditions": {
+      "ambient_C": 85,
+      "solar_irradiance_W_m2": 1000,
+      "convection_coefficient_W_m2_K": 10
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "max_deflection_per_case_mm",
+        "first_buckling_load_factor",
+        "peak_steady_state_temp_C"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 165,
+        "derivation": "yield_strength / 1.67 = 276 / 1.67 (ASCE 7-22 ASD aluminum SF)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_deflection_at_rail_hole",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "peak_steady_state_temperature",
+        "limit_C": 95,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling (LC2)",
+        "steady-state thermal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not a dynamic load application for rooftop PV foot.",
+      "fluid_analysis": "Wind loads are reduced to ASCE 7-22 equivalent static pressures.",
+      "radiation_analysis": "Captured inside the steady-state thermal boundary condition."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Fastener pull-out in 2x4 rafter per NDS",
+      "Galvanic corrosion at SS bolt interface",
+      "Ice-dam accumulation load"
+    ]
+  },
+  "eval_coverage": [
+    "code-prescribed ASCE 7 wind + snow load cases",
+    "aluminum ASD safety factor 1.67",
+    "combined structural + thermal + buckling multi-physics",
+    "monolithic bracket with mass target"
+  ]
+}

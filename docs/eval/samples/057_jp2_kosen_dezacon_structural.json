@@ -1,0 +1,141 @@
+{
+  "id": "057_jp2_kosen_dezacon_structural",
+  "source": {
+    "catalog_ref": "JP2",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "civil_structural",
+  "part_class": "bridge_model",
+  "full_prompt": "Design a single-span bridge model for a collegiate structural-design competition. The bridge must span 1200 mm between two simple supports and carry a concentrated vertical point load of 40 kg (approximately 392 N) applied at midspan. The allowable materials are limited to balsa wood, lightweight paperboard, and adhesives consistent with the governing rulebook; metal rods, carbon fiber, and synthetic structural laminates are prohibited. The self-weight of the entire bridge structure, including deck, trusses, and connections, must not exceed 1.6 kg. Under the 40 kg midspan point load applied statically, the downward midspan deflection must not exceed L/300 where L = 1200 mm, giving a deflection limit of 4.0 mm. The objective and scoring is based on the ratio of maximum sustained load to self-weight, so optimizing the load-carrying efficiency is implicit; however, the pass/fail gates are the deflection and self-weight limits at the 40 kg reference load. The bridge must present a clear deck of at least 1000 mm long and must provide at least 150 mm clear height under the deck for a reference clearance envelope. Supports are simple supports (pin at one end, roller at the other) 1200 mm apart. Primary verification is linear static structural FEA treating the balsa/paper as linear elastic orthotropic (balsa along-grain E approx 3.4 GPa, density approx 160 kg/m^3). Buckling of slender compression members is a significant failure mode and must be checked by a linear buckling eigenvalue analysis with a minimum load factor of 1.5 at the 40 kg load case. Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 geometry, a bill of materials listing total mass of each material class, and a report listing total self-weight in grams, midspan deflection at 40 kg in mm, and the first buckling load factor.",
+  "short_prompt": "Design a single-span bridge model for a collegiate structural-design competition. The bridge spans 1200 mm between simple supports (pin + roller) and must present a clear deck of at least 1000 mm and at least 150 mm clear height under the deck. Allowed materials: balsa, lightweight paperboard, and adhesives per the governing rulebook; metals, carbon fiber, and synthetic structural laminates are prohibited. Self-weight cap 1.6 kg; slender compression members must satisfy a linear buckling load factor >= 1.5 at the reference load. Scoring is load-to-self-weight ratio; pass/fail is the deflection + self-weight gates.\n\nLoad cases.\n- LC1 midspan point load: 40 kg (~392 N) applied statically at midspan; deflection limit at this load is L/300 = 4.0 mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "1200 mm balsa bridge model",
+    "brief": "Design a 1.2 m span balsa/paper bridge that carries a 40 kg midspan point load with deflection under L/300 and self-weight under 1.6 kg.",
+    "geometric_constraints": {
+      "span_mm": 1200,
+      "deck_length_mm_min": 1000,
+      "under_deck_clearance_mm_min": 150,
+      "support_condition": "simply supported (pin + roller)"
+    },
+    "material": {
+      "allowed": [
+        "balsa wood",
+        "lightweight paperboard",
+        "adhesive"
+      ],
+      "prohibited": [
+        "metal rods",
+        "carbon fiber",
+        "synthetic structural laminate"
+      ],
+      "balsa_properties_along_grain": {
+        "E_GPa": 3.4,
+        "density_kg_m3": 160
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "midspan_point_load",
+        "magnitude_kg": 40,
+        "magnitude_N": 392,
+        "location": "midspan, top of deck"
+      }
+    ],
+    "boundary_conditions": {
+      "support_A": "pin",
+      "support_B": "roller",
+      "support_spacing_mm": 1200
+    },
+    "objective": {
+      "maximize": "load_to_selfweight_ratio"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "self_weight_g",
+        "midspan_deflection_mm_at_40kg",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "self_weight",
+        "limit_kg": 1.6,
+        "derivation": "Rulebook self-weight cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection",
+        "limit_mm": 4.0,
+        "derivation": "L/300 = 1200/300 = 4.0 mm",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.5,
+        "derivation": "slender compression chord buckling safety",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static competition loading.",
+      "thermal_analysis": "Indoor competition, no thermal gradient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "span + point-load bridge FEA",
+    "self-weight budget",
+    "L/300 deflection check",
+    "buckling of slender members"
+  ]
+}

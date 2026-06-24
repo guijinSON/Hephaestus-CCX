@@ -1,0 +1,166 @@
+{
+  "id": "259_a19_ibbc_basswood_bridge",
+  "source": {
+    "catalog_ref": "A19",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "civil_structural",
+  "part_class": "basswood_bridge_miniature",
+  "full_prompt": "Design a single-piece basswood miniature bridge for a structural efficiency (load-to-mass) design challenge. The bridge must be made from basswood (Tilia spp.) only, with cyanoacrylate adhesive. The bridge mass must not exceed 25.0 g. Overall geometric envelope: length 35.0 cm, width <= 8.0 cm, total height <= 15.0 cm, with a clear roadbed span of 30.0 cm across a 4.0 cm vertical abutment drop. The bridge bears a central load plate attached by a removable eye-bolt through the deck at the mid-span. Material: basswood, E_longitudinal = 10 GPa, compressive strength parallel to grain = 30 MPa, tensile strength parallel to grain = 60 MPa, shear strength = 4.0 MPa, density = 400 kg/m^3. Load case: a single vertical downward load is applied at mid-span through the eye-bolt and ramped until failure. Scoring: structural efficiency = load_at_failure / bridge_mass (so design target is both high failure load and low mass). Hard targets for pass/fail: (R1) Mass <= 25.0 g. (R2) Must survive a service-load check of 50 N applied at mid-span without visible cracking or fiber tear-out; max stress in any member <= compressive strength / 2.0 = 15 MPa (buckling check included). (R3) Ultimate failure load at mid-span (predicted from FEA with basswood strengths) >= 400 N; structural efficiency (failure load / bridge mass) target >= 16,000 (N/kg) equivalent to 16 N per gram. (R4) Midspan deflection at 50 N service load <= L/200 = 300 / 200 = 1.5 mm. (R5) Linear buckling eigenvalue of slender compression members at 50 N service load >= 3.0 to rule out premature Euler buckling. Primary verification: linear static + linear buckling FEA (beam or solid), plus a Tsai-Hill-like check for wood (no standard allowables in FEA, apply compressive / tensile strengths separately). Vibration, thermal, fluid, radiation NOT required. Deliverables: STEP AP242 (or member schedule and geometry), and a report listing bridge mass in g, predicted failure load in N, efficiency ratio, midspan deflection at 50 N, first buckling factor.",
+  "short_prompt": "Design a basswood miniature bridge for a structural-efficiency (load-to-mass) design challenge. Materials restricted to basswood and cyanoacrylate adhesive. Central load is a vertical downward force applied at mid-span through a removable eye-bolt in the deck, ramped until failure; scoring is failure load divided by bridge mass.\n\nEnvelope: length 35.0 cm, width <= 8.0 cm, height <= 15.0 cm, clear roadbed span 30.0 cm across a 4.0 cm vertical abutment drop; bridge mass <= 25.0 g.\n\nLoad cases.\n- LC1 service check: 50 N at mid-span with no visible cracking or fiber tear-out; mid-span deflection <= L/200 = 1.5 mm.\n- LC2 ultimate: predicted failure load at mid-span >= 400 N; target structural efficiency >= 16,000 N/kg (16 N per gram).\n- LC3 linear buckling: slender compression members at the 50 N service load, eigenvalue >= 3.0 to rule out premature Euler buckling.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Basswood miniature bridge (structural efficiency challenge)",
+    "brief": "Basswood-only miniature bridge, 300 mm clear span, mass <= 25 g, aim for failure load >= 400 N.",
+    "geometric_constraints": {
+      "envelope_length_mm": 350,
+      "envelope_width_mm_max": 80,
+      "envelope_height_mm_max": 150,
+      "clear_span_mm": 300,
+      "abutment_drop_mm": 40,
+      "material_restriction": "basswood + cyanoacrylate only",
+      "mass_g_max": 25
+    },
+    "material": {
+      "name": "Basswood (Tilia)",
+      "properties": {
+        "E_longitudinal_GPa": 10,
+        "compressive_strength_parallel_MPa": 30,
+        "tensile_strength_parallel_MPa": 60,
+        "shear_strength_MPa": 4.0,
+        "density_kg_m3": 400
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "service_50N",
+        "force_N": 50,
+        "direction": "vertical down at midspan"
+      },
+      {
+        "id": "LC2",
+        "name": "ultimate_predicted",
+        "target_failure_load_N": 400
+      },
+      {
+        "id": "LC3",
+        "name": "buckling_at_service",
+        "applied_load": "LC1"
+      }
+    ],
+    "boundary_conditions": {
+      "supports": "pin and roller on the two abutments separated by 300 mm",
+      "loads": "concentrated midspan"
+    },
+    "objective": {
+      "maximize": "failure_load_over_mass",
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "bridge_mass_g",
+        "predicted_failure_load_N",
+        "efficiency_N_per_kg",
+        "midspan_deflection_50N_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "bridge_mass",
+        "limit_g": 25,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_member_stress_at_service",
+        "limit_MPa": 15,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "predicted_failure_load",
+        "limit_N": 400,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection",
+        "limit_mm": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B31) + shell or solid for deck",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SAP2000"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static capacity test.",
+      "thermal_analysis": "Indoor ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "strict mass cap + efficiency maximization",
+    "buckling of slender compression members",
+    "deflection serviceability"
+  ]
+}

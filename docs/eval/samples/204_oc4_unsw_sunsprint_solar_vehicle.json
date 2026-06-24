@@ -1,0 +1,158 @@
+{
+  "id": "204_oc4_unsw_sunsprint_solar_vehicle",
+  "source": {
+    "catalog_ref": "OC3",
+    "year": 2025,
+    "tier": "B"
+  },
+  "domain": "solar_vehicle_structural",
+  "part_class": "model_solar_car_chassis",
+  "full_prompt": "Design the monocoque chassis of an Open-class model-solar-car benchmark. The complete car including wheels and PV array must fit within a rectangular envelope of 650 mm length x 320 mm width, with no explicit height limit but total mass target of 1.2 kg maximum for competitive performance. The top surface of the chassis must present a flat mounting area of at least 180 mm x 260 mm for an eight-cell silicon PV array. Material is carbon-fiber/epoxy composite laminate (quasi-isotropic layup, E1 = E2 = 50 GPa effective, Poisson ratio 0.30, density 1550 kg/m^3, tensile strength 600 MPa, compressive strength 450 MPa) with a skin thickness of 0.8 mm and a foam core (Rohacell 51IG, density 52 kg/m^3, shear strength 0.8 MPa) of thickness 6 mm between skins. Four wheels are mounted at axle bosses located 60 mm inboard of each corner; the front axle is steerable and the rear is a fixed dead axle. Load cases for pass/fail: (LC1) static 4x safety factor on mass load: apply 4 g vertical downward body load to the full car; (LC2) cornering: 1.5 g lateral at the PV pad centroid while the outer two wheels are pinned, representing figure-8 corner entry at ~3 m/s on the 100 m course; (LC3) PV array preload: 5 N uniform download across the 180 x 260 mm array footprint representing the light-box test platen plus array mass; (LC4) drop test: 0.3 m vertical drop onto a flat surface landing on all four wheels, modeled as a 10 g impulse on the axle bosses. Pass/fail: under LC1-LC3 static, maximum von Mises stress in either composite skin must remain below 400 MPa, core shear must remain below 0.53 MPa (0.8 / 1.5), PV-pad out-of-plane deflection must remain below 2 mm, and first torsional mode must exceed 60 Hz. Under LC4 drop, no failure of skin or core is permitted (peak stress limits of LC1 scaled by 2x kept). Deliverables: STEP + composite layup table, FEA report per case, modal and drop summary, and mass report.",
+  "short_prompt": "Design the monocoque chassis of an Open-class model-solar car. The chassis is a sandwich composite with CFRP skins and a Rohacell foam core, hosting four wheels (front steerable, rear dead axle) and providing a flat top pad for an 8-cell silicon PV array.\n\nNo external standard is cited; design to a 1.5 FoS on skin tensile/compressive strength and on core shear.\n\nEnvelope: 650 mm x 320 mm planform, PV pad at least 260 x 180 mm, target mass <= 1.2 kg.\n\nLoad cases.\n- LC1 4 g static: 4 g vertical body load on the full car.\n- LC2 cornering: 1.5 g lateral at the PV-pad centroid with the outer two wheels pinned.\n- LC3 light-box platen: 5 N uniform down across the 260 x 180 mm PV pad.\n- LC4 drop: 0.3 m vertical drop on all four wheels, modeled as a 10 g impulse at the axle bosses.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Open-class model solar car chassis",
+    "brief": "Sandwich composite monocoque chassis for a 650 x 320 mm model solar car.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 650,
+        "W": 320
+      },
+      "pv_pad_mm": {
+        "L": 260,
+        "W": 180
+      },
+      "target_mass_kg_max": 1.2
+    },
+    "material": {
+      "skins": {
+        "name": "CFRP quasi-isotropic",
+        "E_GPa": 50,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 1550,
+        "skin_thickness_mm": 0.8,
+        "tensile_strength_MPa": 600,
+        "compressive_strength_MPa": 450
+      },
+      "core": {
+        "name": "Rohacell 51IG foam",
+        "thickness_mm": 6,
+        "density_kg_m3": 52,
+        "shear_strength_MPa": 0.8
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "4g_static",
+        "application": "full car body load"
+      },
+      {
+        "id": "LC2",
+        "name": "cornering_1_5g_lateral",
+        "application": "PV-pad centroid, outer wheels pinned"
+      },
+      {
+        "id": "LC3",
+        "name": "light_box_platen",
+        "magnitude_N": 5,
+        "application": "PV pad footprint"
+      },
+      {
+        "id": "LC4",
+        "name": "drop_0_3m",
+        "magnitude_g": 10,
+        "application": "axle bosses"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "mass_g",
+        "max_skin_stress_MPa",
+        "max_core_shear_MPa",
+        "pv_pad_deflection_mm",
+        "first_torsional_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_skin_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_core_shear_stress",
+        "limit_MPa": 0.53,
+        "derivation": "0.8 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "pv_pad_out_of_plane_deflection",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 60,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "peak_skin_stress_under_drop",
+        "limit_MPa": 800,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

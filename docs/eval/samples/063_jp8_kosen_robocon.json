@@ -1,0 +1,168 @@
+{
+  "id": "063_jp8_kosen_robocon",
+  "source": {
+    "catalog_ref": "JP8",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "robotics_structural",
+  "part_class": "robot_frame_assembly",
+  "full_prompt": "Design the frame assembly of a 2025 technical-college student-robotics competition robot. The robot must fit within an approximate 1 m^3 starting envelope (1000 mm x 1000 mm x 1000 mm). The per-team combined mass of all robots must be in the range 20-25 kg; this design targets a single robot of mass 22 kg. Pneumatic actuators, if used, must not exceed a gauge pressure of 0.5 MPa (500 kPa). Field obstacles include stair-like steps and ramps defined by the 2025 rulebook field CAD; the robot must be able to traverse at least a 50 mm step and a 15-degree incline. The frame must carry self-weight plus a 30 kg payload-carrying case (total 52 kg) under 2.5 g vertical equivalent shock with no permanent yield. The frame must also survive a 150 N horizontal impact applied at the top of the robot without visible deformation. Under the 2.5 g self-weight + payload case, the maximum deflection of the payload deck must not exceed 5 mm. The robot must satisfy a static tilt test of 30 degrees in any direction without tipping. Primary verification is linear static structural FEA for the two main load cases. The pneumatic pressure cap is a component-cert check. Traversal over the 50 mm step and 15-degree incline is a kinematic check combining wheel size, ground clearance, and CG, performed with CAD geometry (non-FEA). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the robot frame, a mass budget, and a report listing robot mass in kg, max von Mises stress per case in MPa, max payload deck deflection in mm, and tilt-to-tip angle in deg.",
+  "short_prompt": "Design the frame assembly of a 2025 technical-college student-robotics competition robot. Starting envelope ~1000 x 1000 x 1000 mm. Single-robot mass 22 kg (team combined 20-25 kg). Pneumatic actuators <= 0.5 MPa gauge (component-cert check). The robot must traverse a >= 50 mm step and a >= 15-degree incline (kinematic check) and remain stable on a 30-degree static tilt in any direction.\n\nLoad cases on the frame.\n- LC1 self-weight plus 30 kg payload at 2.5 g vertical shock: (22+30) kg x 2.5 g (~1,275 N); payload-deck deflection <= 5 mm.\n- LC2 top-of-robot horizontal impact: 150 N with no visible deformation.\n- LC3 static tilt: 30 degrees without tipping.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "kinematic_check",
+        "reason": "Step and ramp traversal are CAD geometry checks, not FEA.",
+        "examples": [
+          "CAD + analytical wheel kinematics"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Technical-college student robot frame",
+    "brief": "Design a 22 kg robot frame fitting 1 m^3, pneumatic ≤ 0.5 MPa, traverses 50 mm step and 15 deg incline, tilts to 30 deg stable.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 1000,
+        "W": 1000,
+        "H": 1000
+      },
+      "single_robot_mass_kg": 22,
+      "combined_team_mass_kg_range": [
+        20,
+        25
+      ],
+      "pneumatic_MPa_max": 0.5,
+      "step_traverse_mm_min": 50,
+      "incline_deg_min": 15
+    },
+    "material": {
+      "typical": "aluminum extrusion + sheet",
+      "AL6063_T5_properties": {
+        "E_GPa": 68.9,
+        "yield_MPa": 145
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "self_weight_plus_payload_2p5g",
+        "magnitude_N": 1275,
+        "description": "(22+30) kg x 2.5 g vertical"
+      },
+      {
+        "id": "LC2",
+        "name": "top_horizontal_impact",
+        "magnitude_N": 150,
+        "description": "horizontal force at top of robot"
+      },
+      {
+        "id": "LC3",
+        "name": "tilt_test",
+        "angle_deg": 30
+      }
+    ],
+    "boundary_conditions": {
+      "wheels": "fixed vertical reactions",
+      "payload_deck": "carries payload centered"
+    },
+    "objective": {
+      "minimize": "frame_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "robot_mass_kg",
+        "max_vm_stress_LC1_MPa",
+        "max_vm_stress_LC2_MPa",
+        "payload_deck_deflection_mm",
+        "tilt_to_tip_deg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "robot_mass_kg",
+        "limit_kg": 25,
+        "derivation": "Team combined mass cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "payload_deck_deflection_mm",
+        "limit_mm": 5.0,
+        "derivation": "Operational stiffness target",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 against yield",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "tilt_to_tip_deg",
+        "limit_deg": 30,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static x2"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "envelope + mass cap",
+    "payload deck stiffness",
+    "horizontal top impact",
+    "step/ramp traversal kinematics"
+  ]
+}

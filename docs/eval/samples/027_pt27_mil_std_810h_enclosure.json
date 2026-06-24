@@ -1,0 +1,239 @@
+{
+  "id": "027_pt27_mil_std_810h_enclosure",
+  "source": {
+    "catalog_ref": "PT27",
+    "year": 2019,
+    "tier": "A"
+  },
+  "domain": "defense_electronics",
+  "part_class": "vibration_qualified_electronics_enclosure",
+  "full_prompt": "Design a machined 6061-T6 aluminum housing for a 3 kg electronics payload (single-board computer + power supply) to pass MIL-STD-810H Method 514.8 Procedure I vibration and Method 516.8 Procedure I shock in a ground-vehicle transit environment, plus Method 501.6 high-temperature storage 71 C and Method 502.6 low-temperature operation -40 C. Envelope: 200 x 150 x 80 mm internal; external up to 220 x 170 x 100 mm including flange. Interfaces: four M6 clearance holes on 190 x 140 mm rectangular footprint for mounting to ground-vehicle rack; one D38999 Series III 19-11 connector cutout on the short face; removable lid with 10 x M4 captive screws and EPDM gasket for IP67 sealing. Material: aluminum 6061-T6 (yield 276 MPa, UTS 310 MPa, Young's modulus 68.9 GPa, density 2700 kg/m^3, CTE 23.6e-6/K). Load cases per MIL-STD-810H: LC1 Method 514.8 Annex D Cat 20 ground-vehicle common carrier PSD: 0.04 g^2/Hz at 5-10 Hz, ramp down -6 dB/oct to 500 Hz, 0.001 g^2/Hz flat to 2000 Hz, total ~2.2 g RMS (typical common-carrier value); LC2 Method 516.8 Procedure I functional shock: 20 g peak sawtooth 11 ms (FSOP); LC3 Method 516.8 Procedure V crash hazard: 40 g peak 11 ms; LC4 Method 501.6 high-temperature 71 C storage 4 hours; LC5 Method 502.6 low-temperature -40 C 4 hours operation; LC6 random vibration durability test 12 hours per axis at LC1 PSD (accelerated life). Pass/fail: (R1) random vibration 3-sigma von Mises under LC1 PSD <= yield / 1.5 = 184 MPa (safety factor 1.5 on yield for non-primary DoD structure); (R2) shock LC2 peak von Mises <= UTS / 1.25 = 248 MPa; (R3) shock LC3 crash-hazard peak <= UTS = 310 MPa (no rupture); (R4) lid sealing gasket compression retention under LC1 vibration + LC4/LC5 thermal cycling: gasket seat gap variation <= 0.2 mm (IP67 retention); (R5) first natural mode >= 200 Hz (standard avoidance of ground-vehicle input energy band 5-200 Hz); (R6) thermal-induced stress at delta-T 111 K (from -40 to 71 C) <= 184 MPa; (R7) mass <= 1.8 kg. Deliverables: STEP AP242 + IGES; FEA with PSD random, transient shock, thermal-structural; modal analysis; gasket compression verification.",
+  "short_prompt": "Design a machined 6061-T6 aluminum housing for a 3 kg electronics payload (single-board computer + power supply) to pass MIL-STD-810H Method 514.8 Procedure I vibration and Method 516.8 Procedure I shock in a ground-vehicle transit environment, plus Method 501.6 high-temperature storage 71 C and Method 502.6 low-temperature operation -40 C.\n\nEnvelope: 200 x 150 x 80 mm internal; external up to 220 x 170 x 100 mm including flange. Interfaces: four M6 clearance holes on 190 x 140 mm to the vehicle rack; one D38999 Series III 19-11 connector cutout on the short face; removable lid with 10 x M4 captive screws and EPDM gasket for IP67.\n\nMaterial: 6061-T6.\n\nLoad cases per MIL-STD-810H.\n- LC1 Method 514.8 Annex D Cat 20 ground-vehicle common-carrier PSD: 0.04 g^2/Hz at 5-10 Hz, ramp down -6 dB/oct to 500 Hz, 0.001 g^2/Hz flat to 2000 Hz, total ~2.2 g RMS.\n- LC2 Method 516.8 Procedure I functional shock: 20 g peak sawtooth 11 ms.\n- LC3 Method 516.8 Procedure V crash hazard: 40 g peak 11 ms.\n- LC4 Method 501.6 high-temperature 71 C storage 4 hours.\n- LC5 Method 502.6 low-temperature -40 C 4 hours operation.\n- LC6 random vibration durability: 12 hours per axis at LC1 PSD.\n\nGates include first natural mode >= 200 Hz; IP67 gasket seat-gap variation <= 0.2 mm; thermal-induced stress at delta-T 111 K bounded by yield-derived allowable; mass <= 1.8 kg.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ip67_ingress_test",
+        "reason": "IP67 is a physical ingress test, not simulated.",
+        "examples": [
+          "IEC 60529 submersion test"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "6061-T6 MIL-STD-810H vibration/shock/thermal qualified electronics enclosure",
+    "brief": "Design a 220x170x100 mm 6061-T6 enclosure for a 3 kg payload passing MIL-STD-810H Methods 514.8, 516.8, 501.6, 502.6.",
+    "geometric_constraints": {
+      "envelope_external_mm": {
+        "x": 220,
+        "y": 170,
+        "z": 100
+      },
+      "envelope_internal_mm": {
+        "x": 200,
+        "y": 150,
+        "z": 80
+      },
+      "mount_holes": {
+        "count": 4,
+        "thread": "M6_clearance",
+        "pattern_mm": {
+          "x": 190,
+          "y": 140
+        }
+      },
+      "connector": "D38999 Series III 19-11 cutout",
+      "lid_screws": {
+        "count": 10,
+        "thread": "M4"
+      },
+      "gasket": "EPDM",
+      "ip_rating": "IP67"
+    },
+    "material": {
+      "name": "6061-T6",
+      "yield_MPa": 276,
+      "ultimate_MPa": 310,
+      "youngs_modulus_GPa": 68.9,
+      "density_kg_m3": 2700,
+      "alpha_thermal_per_K": 2.36e-05
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "random_PSD_Cat20",
+        "grms": 2.2,
+        "band_Hz": [
+          5,
+          2000
+        ]
+      },
+      {
+        "id": "LC2",
+        "name": "functional_shock_20g",
+        "peak_g": 20,
+        "duration_ms": 11
+      },
+      {
+        "id": "LC3",
+        "name": "crash_hazard_40g",
+        "peak_g": 40,
+        "duration_ms": 11
+      },
+      {
+        "id": "LC4",
+        "name": "high_temp_storage",
+        "temp_C": 71
+      },
+      {
+        "id": "LC5",
+        "name": "low_temp_operation",
+        "temp_C": -40
+      },
+      {
+        "id": "LC6",
+        "name": "vib_durability_12h_per_axis",
+        "grms": 2.2,
+        "duration_h": 12
+      }
+    ],
+    "boundary_conditions": {
+      "mount_holes": "4 M6 fully constrained at rack",
+      "payload": "3 kg lumped at CG inside"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "IGES"
+      ],
+      "report_fields": [
+        "random_3sigma_MPa",
+        "shock_peak_MPa_LC2",
+        "shock_peak_MPa_LC3",
+        "first_mode_Hz",
+        "thermal_stress_MPa",
+        "gasket_gap_variation_mm",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_von_mises",
+        "limit_MPa": 184,
+        "derivation": "yield / 1.5 = 276 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "shock_peak_von_mises_functional",
+        "limit_MPa": 248,
+        "derivation": "UTS / 1.25",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "shock_peak_von_mises_crash",
+        "limit_MPa": 310,
+        "derivation": "UTS (no rupture)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "gasket_seat_gap_variation",
+        "limit_mm": 0.2,
+        "derivation": "IP67 retention across vibration + thermal cycling",
+        "applies_to": [
+          "LC1",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 200,
+        "derivation": "avoid ground-vehicle energy band 5-200 Hz",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "thermal_analysis",
+        "metric": "thermal_induced_von_mises",
+        "limit_MPa": 184,
+        "derivation": "yield / 1.5 at delta-T 111 K",
+        "applies_to": [
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "MIL-STD-810H Methods 514.8, 516.8, 501.6, 502.6 + MIL-DTL-38999 (connector) + IEC 60529 IP67",
+    "recommended_fea_setup": {
+      "element_type": "shell + solid at bosses",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus Standard + Explicit",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "modal + random PSD + transient shock + thermal-structural"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "IP67 verified physically; gasket model approximates sealing.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "MIL-STD-810H Method 514.8 Annex D Cat 20 ground-vehicle PSD; Method 516.8 Procedures I and V shock pulses; Methods 501.6 / 502.6 temperature limits."
+  },
+  "eval_coverage": [
+    "multi-method environmental qualification",
+    "random PSD + transient shock + thermal trifecta",
+    "modal frequency floor",
+    "IP67 gasket retention"
+  ]
+}

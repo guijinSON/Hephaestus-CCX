@@ -1,0 +1,247 @@
+{
+  "id": "002_pt2_ge_bracket_benchmark_clones",
+  "source": {
+    "catalog_ref": "PT2",
+    "year": 2015,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "monolithic_bracket",
+  "full_prompt": "Design a single-part, monolithic titanium mounting bracket that connects a jet engine casing to an external accessory and reproduces the vendor-published reference FEM for the aerospace mounting-bracket benchmark. This is a regression benchmark: the target is not merely to pass, but to reproduce within 5% the published reference stress and displacement values that commercial FEA vendors publish for this exact reference problem. The bracket must fit a bounding envelope of 203 x 152 x 102 mm (8 x 6 x 4 inches). The top face is a planar flange with four 12.7 mm diameter bolt holes arranged on a 76.2 x 76.2 mm rectangular pattern; the bottom carries a single 25.4 mm diameter pin hole whose axis is horizontal and perpendicular to the engine axis, located 120 mm below the flange mating face. The bracket is monolithic, with no fasteners, inserts, welded joints, or bonded joints. The material is Ti-6Al-4V Grade 5 annealed, with Young's modulus 113.8 GPa, Poisson's ratio 0.342, density 4430 kg/m^3, yield strength 860 MPa, and ultimate tensile strength 950 MPa, evaluated at 20 C. Four independent static load cases are applied as bearing pressure on the pin hole inner surface while the four top-flange bolt holes are fully constrained in all six degrees of freedom: LC1 vertical upward 35,586 N (8,000 lbf); LC2 horizontal along the engine axis 37,810 N (8,500 lbf); LC3 off-axis 42,258 N (9,500 lbf) at 42 degrees from vertical tilted toward the engine axis; LC4 pure torque 5,650 N*m about the pin axis. Pass/fail criteria: (R1) max von Mises stress <= 633 MPa (ultimate / 1.5 per CS-25); (R2) max von Mises stress <= 748 MPa (yield / 1.15); (R3) max displacement at the pin hole center <= 1.0 mm; (R4) final part mass <= 1.0 kg and at least 40% lighter than a bulk-block baseline; (R5) first linear-buckling eigenvalue under LC3 >= 2.0. Additional benchmark-specific reference criterion: (R6) reproduce the vendor-published peak von Mises for LC3 within +/- 5% of the reference value (approximately 600 MPa), as a correctness check for the structural solver configuration. Meshes must use second-order TET10 or HEX20 elements with characteristic size <= 3 mm in the web and fillet regions. Primary verification is linear static structural FEA, with linear buckling eigenvalue as secondary. Vibration, thermal, fluid, and radiation analyses are explicitly excluded. Reaching R4 requires an outer topology-optimization loop (commercial topology-optimization solvers) that wraps the structural FEA inner loop. Deliverables: a single solid body in STEP AP242 and Parasolid formats, plus a report with total mass in grams, per-case max von Mises in MPa, per-case max pin-hole displacement in mm, the first buckling load factor under LC3, and a delta-vs-reference table comparing the agent's LC3 peak stress against the published vendor reference values.",
+  "short_prompt": "Design a single-part, monolithic titanium mounting bracket that connects a jet engine casing to an external accessory and reproduces the vendor-published reference FEM for the aerospace mounting-bracket benchmark. This is a regression benchmark: reproduce within 5% the published reference stress and displacement values. The bracket is monolithic, with no fasteners, inserts, welded joints, or bonded joints.\n\nEnvelope: 203 x 152 x 102 mm (8 x 6 x 4 inches). Top face is a planar flange with four 12.7 mm bolt holes on a 76.2 x 76.2 mm rectangular pattern; bottom carries a 25.4 mm diameter horizontal pin hole 120 mm below the flange mating face.\n\nMaterial: Ti-6Al-4V Grade 5 annealed at 20 C.\n\nDesign per CS-25 with ultimate safety factor 1.5 and yield safety factor 1.15.\n\nLoad cases (bearing pressure on pin hole, four top-flange bolt holes fully fixed in all six DOF).\n- LC1 vertical upward: 35,586 N (8,000 lbf).\n- LC2 horizontal along the engine axis: 37,810 N (8,500 lbf).\n- LC3 off-axis: 42,258 N (9,500 lbf) at 42 degrees from vertical tilted toward the engine axis.\n- LC4 pure torque: 5,650 N*m about the pin axis.\n\nAdditional benchmark criterion: reproduce the vendor-published peak von Mises for LC3 within +/- 5% of the reference (approximately 600 MPa).\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "Mass target R4 (>=40% vs bulk block) is impractical without topo-opt; outer loop wraps the structural FEA. Not an FEA class.",
+        "examples": [
+          "commercial topology solver",
+          "implicit-modeling AM topology tool",
+          "commercial topology-optimization module"
+        ]
+      },
+      {
+        "tool": "reference_fem_regression",
+        "reason": "Benchmark requires reproducing a published numerical result within 5%. This is a comparison/diff step on solver output, not a separate physics.",
+        "examples": [
+          "scripted post-processing",
+          "paraview + diff"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Benchmark-reproducible Ti-6Al-4V jet engine bracket reference FEM",
+    "brief": "Reproduce the vendor-published reference FEM of the aerospace mounting-bracket benchmark. Pass all four static cases and match the published LC3 peak stress within 5%.",
+    "geometric_constraints": {
+      "top_flange": {
+        "bolt_holes": {
+          "count": 4,
+          "diameter_mm": 12.7,
+          "bolt_size": "1/2 inch",
+          "pattern": "rectangular",
+          "spacing_mm": {
+            "x": 76.2,
+            "y": 76.2
+          }
+        },
+        "mating_surface": "planar, flush against engine casing outer skin"
+      },
+      "pin_hole": {
+        "diameter_mm": 25.4,
+        "pin_size": "1 inch",
+        "axis": "horizontal, perpendicular to engine axis"
+      },
+      "vertical_distance_flange_to_pin_mm": 120,
+      "bounding_envelope_mm": {
+        "x": 203,
+        "y": 152,
+        "z": 102
+      },
+      "monolithic": true,
+      "prohibited": [
+        "fasteners",
+        "inserts",
+        "welds",
+        "bonded joints"
+      ]
+    },
+    "material": {
+      "name": "Ti-6Al-4V",
+      "grade": "Grade 5, annealed",
+      "properties": {
+        "youngs_modulus_GPa": 113.8,
+        "poissons_ratio": 0.342,
+        "density_kg_m3": 4430,
+        "yield_strength_MPa": 860,
+        "ultimate_tensile_strength_MPa": 950
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "vertical",
+        "magnitude_N": 35586,
+        "direction": "vertical upward"
+      },
+      {
+        "id": "LC2",
+        "name": "horizontal",
+        "magnitude_N": 37810,
+        "direction": "horizontal, along engine axis"
+      },
+      {
+        "id": "LC3",
+        "name": "off_axis_42deg",
+        "magnitude_N": 42258,
+        "direction": "42 deg from vertical"
+      },
+      {
+        "id": "LC4",
+        "name": "torsion",
+        "magnitude_Nm": 5650,
+        "direction": "about pin axis"
+      }
+    ],
+    "boundary_conditions": {
+      "top_flange_bolt_holes": "fully fixed, all 6 DOF",
+      "pin_hole_inner_surface": "bearing load over 180 deg arc"
+    },
+    "objective": {
+      "minimize": "mass",
+      "target_mass_reduction_vs_bulk_block_pct_min": 40,
+      "reference_match_tolerance_pct": 5
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "max_displacement_per_case_mm",
+        "first_buckling_load_factor_LC3",
+        "delta_vs_reference_LC3_pct"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 633,
+        "derivation": "UTS / 1.5 = 950 / 1.5 (CS-25)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 748,
+        "derivation": "yield / 1.15 = 860 / 1.15",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_displacement_at_pin_hole_center",
+        "limit_mm": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.0,
+        "secondary": ">=40% lighter than bulk-block baseline",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "peak_von_mises_LC3_vs_reference_pct",
+        "limit_pct": 5,
+        "derivation": "Vendor-published reference peak stress for LC3 (approx 600 MPa)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<=",
+        "note": "Reference peak value approximate; set reference_peak_MPa = null if using a different vendor reference."
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 or HEX20",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "Simcenter Nastran",
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "linear buckling eigenvalue (LC3)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static benchmark.",
+      "thermal_analysis": "Fixed room-temperature properties.",
+      "fluid_analysis": "Aero already reduced to bearing loads.",
+      "radiation_analysis": "Not applicable."
+    },
+    "benchmark_role": "Regression harness: checks that the agent's FEA configuration reproduces vendor-published reference results within tolerance, not just that pass/fail gates are met."
+  },
+  "eval_coverage": [
+    "multi-case FEA",
+    "reference-FEM regression (match published numeric answer within 5%)",
+    "topology optimization as an outer loop",
+    "linear buckling eigenvalue"
+  ]
+}

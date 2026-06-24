@@ -1,0 +1,174 @@
+{
+  "id": "083_kr8_micro_gas_turbine_capstone",
+  "source": {
+    "catalog_ref": "KR8",
+    "year": 2025,
+    "tier": "B"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "micro_turbine_impeller",
+  "full_prompt": "Design the centrifugal compressor impeller of a micro gas turbine for a university capstone micro-gas-turbine benchmark. The turbine is a JetCat-class single-shaft unit with peak rotor speed 120,000 rpm (2000 rev/s, omega = 12566 rad/s). Compressor stage: single-stage radial centrifugal impeller, tip diameter 80 mm, hub diameter 25 mm, 12 primary + 12 splitter blades. Material is Al 2618-T61 for the impeller hub and blades (T = up to 180 C in the compressor exit; Al 2618 retains good strength at this temperature; yield 360 MPa at room temp, 280 MPa at 180 C). Under steady operation, the dominant load is centrifugal body force: at 120,000 rpm, tip centrifugal acceleration is omega^2 * r_tip = 12566^2 * 0.04 = 6.31e6 m/s^2 = 6.43e5 g. Blade root stress at hub radius 0.0125 m is (1/2) * rho * omega^2 * (r_tip^2 - r_hub^2) * (cross-section-ratio) for a uniform blade, approximately rho * omega^2 * r_tip^2 / 2 = 2780 * 6.31e6 = 1.75e10 Pa = 175 MPa (spin-alone estimate, discounting tip relief). Pass/fail: (1) maximum centrifugal stress in the impeller at 120,000 rpm and 180 C must not exceed 0.67 x temperature-derated yield = 0.67 * 280 = 188 MPa, (2) maximum blade-tip displacement (elastic growth) must be less than 0.15 mm to preserve 0.3 mm tip clearance to the shroud, (3) first modal frequency of a blade must not coincide within +/- 10% of the per-rev or 2-per-rev excitation at 2000 Hz (blade) or 4000 Hz, (4) at 20% overspeed (144,000 rpm proof test for 30 s), the impeller must not plastically yield. Primary verification is structural FEA (rotating-reference-frame centrifugal body load) plus modal analysis (Campbell diagram check). Vibration modal is a primary gate. Thermal is relevant (blade temperature 180 C degrades yield) and must be baked in as a derated material property; full thermal FEA (conjugate heat transfer) is NOT required. Fluid (aerodynamic pressure loads are small relative to centrifugal) is NOT required. Radiation is NOT applicable. Deliverables: STEP AP242 of the impeller, a mass budget, and a report listing impeller mass in g, max centrifugal stress at 120 krpm and 180 C in MPa, blade tip elastic growth in mm, first blade mode in Hz, and stress at 144 krpm overspeed.",
+  "short_prompt": "Design the single-stage centrifugal compressor impeller of a JetCat-class micro gas turbine for a university capstone benchmark, with 12 primary + 12 splitter blades integral to a hub-and-shroud one-piece casting running on a keyed shaft through a hub bore. The impeller must sit within a shroud with 0.3 mm tip clearance and keep its first blade modes clear of 1P and 2P excitation at design speed (Campbell-diagram separation).\n\nEnvelope: tip diameter 80 mm, hub diameter 25 mm, axial depth on the order of the tip diameter. Material is Al 2618-T61 with the yield allowable derated for 180 C compressor-exit metal temperature.\n\nLoad cases.\n- LC1 design spin: 120,000 rpm, metal at 180 C.\n- LC2 overspeed proof: 144,000 rpm (20% overspeed) for 30 s at room temperature, no plastic yield.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "material_derating_lookup",
+        "reason": "Al 2618 yield at 180 C is a datasheet lookup applied to FEA allowable.",
+        "examples": [
+          "MIL-HDBK-5J",
+          "Kaiser Aluminum datasheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Micro gas turbine compressor impeller",
+    "brief": "Design an Al 2618-T61 centrifugal impeller (80 mm tip, 120 krpm, 180 C) with 12+12 blades surviving 20% overspeed.",
+    "geometric_constraints": {
+      "tip_diameter_mm": 80,
+      "hub_diameter_mm": 25,
+      "blade_count_primary": 12,
+      "blade_count_splitter": 12,
+      "design_rpm": 120000,
+      "overspeed_rpm": 144000,
+      "tip_clearance_mm": 0.3
+    },
+    "material": {
+      "name": "Al 2618-T61",
+      "properties_room": {
+        "yield_MPa": 360,
+        "density_kg_m3": 2780
+      },
+      "properties_180C": {
+        "yield_MPa": 280
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "design_spin_120krpm_180C",
+        "rpm": 120000,
+        "T_C": 180
+      },
+      {
+        "id": "LC2",
+        "name": "overspeed_144krpm_room",
+        "rpm": 144000,
+        "T_C": 25
+      }
+    ],
+    "boundary_conditions": {
+      "hub_bore": "fixed on shaft, cylindrical support"
+    },
+    "objective": {
+      "minimize": "impeller_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "impeller_mass_g",
+        "max_centrifugal_stress_MPa_120krpm_180C",
+        "blade_tip_growth_mm",
+        "first_blade_mode_Hz",
+        "stress_at_144krpm_overspeed_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_centrifugal_stress_MPa",
+        "limit_MPa": 188,
+        "derivation": "0.67 x 280 MPa (Al 2618 at 180 C) yield FoS 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "blade_tip_growth_mm",
+        "limit_mm": 0.15,
+        "derivation": "preserve 0.3 mm tip clearance with 0.15 mm margin",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_stress_at_overspeed_MPa",
+        "limit_fraction_of_yield_room": 1.0,
+        "derivation": "No yield at 20% overspeed proof",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_blade_mode_Hz_separation_from_1P_2P",
+        "excluded_bands_Hz": [
+          [
+            1800,
+            2200
+          ],
+          [
+            3600,
+            4400
+          ]
+        ],
+        "limit_band1_lower_Hz": 1800,
+        "limit_band1_upper_Hz": 2200,
+        "limit_band2_lower_Hz": 3600,
+        "limit_band2_upper_Hz": 4400,
+        "derivation": "1P = 2000 Hz, 2P = 4000 Hz at 120 krpm; avoid +/- 10%",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "outside"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10 with rotational body load",
+      "solver_hints": [
+        "ANSYS Mechanical (CMS)",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "rotational static",
+        "modal (pre-stressed)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Thermal derating applied via yield lookup; full CHT not in gate.",
+      "fluid_analysis": "Aero pressure << centrifugal stress.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "centrifugal stress at 120 krpm",
+    "thermal-derated yield",
+    "Campbell-diagram frequency separation",
+    "20% overspeed proof"
+  ]
+}

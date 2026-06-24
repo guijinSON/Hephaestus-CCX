@@ -1,0 +1,228 @@
+{
+  "id": "017_pt17_sam_gov_bracket_rfq",
+  "source": {
+    "catalog_ref": "PT17",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "defense_ground_vehicle",
+  "part_class": "tactical_vehicle_spare_bracket",
+  "full_prompt": "Design a drop-in replacement mounting bracket for a US Army/Navy wheeled tactical vehicle auxiliary equipment mount, per a representative US government bracket-spares RFQ: deliver a machined 4130 normalized steel bracket meeting MIL-DTL-18326 fastener standards, DI-CMAN-80008B drawing package compliance, and a published static load rating of 2,500 lbf (11.1 kN) with SF 2.0 on yield and 2.5 on ultimate. Envelope: 160 x 100 x 50 mm. Interfaces: four through-holes for 3/8-16 UNC grade 5 bolts on a 100 x 60 mm rectangular pattern (mounts to frame rail); one accessory-side 5/8-18 UNF tapped hole 15 mm deep at the geometric center of the bracket body with engagement length >= 1.5D. Material: AISI 4130 normalized steel per AMS 6345 (yield 460 MPa, UTS 670 MPa, Young's modulus 205 GPa, density 7850 kg/m^3, elongation 21%); surface finish Ra <= 3.2 um; cadmium plating per AMS-QQ-P-416 Type II Class 2 (or equivalent zinc-nickel for RoHS compliance). Load cases: LC1 rated static pull 11,125 N along the 5/8-18 accessory stud axis (most common dynamometer rating test); LC2 rated vertical 11,125 N; LC3 combined 45-degree off-axis at rated magnitude; LC4 10 g bump-load (vehicle-class, per MIL-STD-810H Method 514.8 Procedure I ground vehicle) applied as multi-axis 10 g each axis simultaneously on the accessory lumped mass of 10 kg = 981 N per axis; LC5 salt-fog + cathodic protection durability per ASTM B117 (tracked as a pass/fail on coating continuity, not FEA). Pass/fail: (R1) max von Mises under LC1, LC2, LC3 <= 460 / 2.0 = 230 MPa (SF 2.0 on yield for ground-vehicle secondary structure); (R2) max von Mises <= 670 / 2.5 = 268 MPa (SF 2.5 on ultimate); binding is R1 at 230 MPa; (R3) max von Mises under LC4 shock <= 460 / 1.5 = 307 MPa (relaxed SF 1.5 on yield for shock-transient, per MIL-HDBK-304C or equivalent); (R4) bracket mass <= 600 g; (R5) coating thickness 7.5-15 um cadmium plate per AMS-QQ-P-416; (R6) tapped hole 5/8-18 UNF engagement length >= 15 mm (1.5D) with class 2B thread fit. Deliverables: DI-CMAN-80008B compatible drawing pack (STEP AP242 + PDF 2D drawing + bill of materials); FEA report with per-case max stress; coating specification sheet referencing AMS-QQ-P-416; material certification traceability.",
+  "short_prompt": "Design a drop-in replacement mounting bracket for a US Army/Navy wheeled tactical vehicle auxiliary equipment mount per a representative US government bracket-spares RFQ: a machined AISI 4130 normalized steel bracket meeting MIL-DTL-18326 fastener standards, DI-CMAN-80008B drawing-package compliance, and a static load rating of 2,500 lbf (11.1 kN) with SF 2.0 on yield and 2.5 on ultimate.\n\nEnvelope: 160 x 100 x 50 mm. Interfaces: four through-holes for 3/8-16 UNC grade 5 bolts on 100 x 60 mm (frame rail); one central 5/8-18 UNF tapped hole 15 mm deep with engagement >= 1.5D.\n\nMaterial: AISI 4130 normalized per AMS 6345; surface finish Ra <= 3.2 um; cadmium plating per AMS-QQ-P-416 Type II Class 2 (or RoHS Zn-Ni equivalent), thickness 7.5-15 um.\n\nLoad cases.\n- LC1 rated static pull 11,125 N along the 5/8-18 accessory stud axis.\n- LC2 rated vertical 11,125 N.\n- LC3 combined 45-degree off-axis at rated magnitude.\n- LC4 10 g bump load per MIL-STD-810H Method 514.8 Procedure I, applied as multi-axis 10 g on a 10 kg accessory mass = 981 N per axis.\n- LC5 salt-fog + cathodic protection durability per ASTM B117 (pass/fail on coating continuity, not FEA).\n\nShock LC4 uses relaxed SF 1.5 on yield (per MIL-HDBK-304C or equivalent). Mass <= 600 g.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "drawing_package_compliance",
+        "reason": "DI-CMAN-80008B drawing format is a documentation deliverable, not FEA.",
+        "examples": [
+          "SolidWorks MBD",
+          "Creo Drawings"
+        ]
+      },
+      {
+        "tool": "coating_specification",
+        "reason": "AMS-QQ-P-416 coating control is a process spec, not simulation.",
+        "examples": [
+          "PlatingWorks PN",
+          "supplier certification"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "4130 normalized steel auxiliary equipment bracket, 2,500 lbf rated (US government RFQ template)",
+    "brief": "Design a cadmium-plated 4130 normalized replacement bracket for a tactical vehicle auxiliary mount, 2,500 lbf rated with SF 2.0/2.5 per MIL-DTL-18326.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 160,
+        "y": 100,
+        "z": 50
+      },
+      "frame_bolts": {
+        "count": 4,
+        "thread": "3/8-16 UNC",
+        "grade": "5",
+        "pattern_mm": {
+          "x": 100,
+          "y": 60
+        }
+      },
+      "accessory_hole": {
+        "thread": "5/8-18 UNF",
+        "depth_mm": 15,
+        "fit": "2B"
+      },
+      "surface_finish_Ra_um_max": 3.2
+    },
+    "material": {
+      "name": "AISI 4130 normalized per AMS 6345",
+      "yield_MPa": 460,
+      "ultimate_MPa": 670,
+      "youngs_modulus_GPa": 205,
+      "density_kg_m3": 7850,
+      "coating": "AMS-QQ-P-416 Type II Class 2 cadmium 7.5-15 um"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "rated_axial",
+        "force_N": 11125
+      },
+      {
+        "id": "LC2",
+        "name": "rated_vertical",
+        "force_N": 11125
+      },
+      {
+        "id": "LC3",
+        "name": "rated_45deg",
+        "force_N": 11125
+      },
+      {
+        "id": "LC4",
+        "name": "vehicle_10g_shock",
+        "force_N_per_axis": 981,
+        "axes": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      {
+        "id": "LC5",
+        "name": "salt_fog_durability",
+        "standard": "ASTM B117",
+        "note": "coating continuity only"
+      }
+    ],
+    "boundary_conditions": {
+      "frame_bolts": "fully constrained 4 bolts",
+      "accessory_hole": "service load via threaded stud"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "PDF_2D_drawing"
+      ],
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "mass_g",
+        "coating_spec",
+        "drawing_pack_compliance"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_static",
+        "limit_MPa": 230,
+        "derivation": "yield / 2.0 = 460 / 2.0",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_static",
+        "limit_MPa": 268,
+        "derivation": "UTS / 2.5 = 670 / 2.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_shock",
+        "limit_MPa": 307,
+        "derivation": "yield / 1.5 (shock-transient relaxed SF)",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 600,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "coating_thickness",
+        "limit_um": [
+          7.5,
+          15
+        ],
+        "derivation": "AMS-QQ-P-416 Type II Class 2",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "in_range"
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "tapped_hole_engagement",
+        "limit_mm": 15,
+        "derivation": "1.5D for 5/8-18 UNF",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "MIL-DTL-18326 + DI-CMAN-80008B + AMS 6345 + AMS-QQ-P-416 + ASTM B117",
+    "recommended_fea_setup": {
+      "element_type": "TET10 or HEX20",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static x3 rated + shock transient or equivalent"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not required by MIL-STD-810H Procedure I for this class.",
+      "thermal_analysis": "Ambient service.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "Representative US government bracket RFQ pattern; 2,500 lbf rating and 4130 normalized + cadmium plating are standard ground-vehicle spare bracket practice. Exact RFQ number not pinned; values are typical."
+  },
+  "eval_coverage": [
+    "federal RFQ drawing-pack deliverable",
+    "dual SF on yield + ultimate",
+    "shock transient with relaxed SF",
+    "coating + thread spec compliance"
+  ]
+}

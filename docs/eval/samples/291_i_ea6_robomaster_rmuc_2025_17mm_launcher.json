@@ -1,0 +1,210 @@
+{
+  "id": "291_i_ea6_robomaster_rmuc_2025_17mm_launcher",
+  "source": {
+    "catalog_ref": "I-EA6",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "robotics_weapon_module_structural",
+  "part_class": "flywheel_launcher_assembly",
+  "full_prompt": "Design a 17 mm projectile launcher assembly for a RoboMaster RMUC 2025 Standard Robot. The launcher uses two counter-rotating flywheels to fire 17 mm polycarbonate BBs (nominal projectile diameter 16.8 +/- 0.2 mm, nominal mass 3.2 g) at a muzzle velocity limited by RMUC 2025 Rules v1.1.0 to 30 m/s for the Standard class with a heat cap (barrel heat model accumulates per shot and dissipates per cooling rate). The launcher is one sub-assembly within the robot's 17 mm turret; total chassis mass budget for the Standard class is 20 kg maximum. The launcher assembly envelope must fit within 150 mm (length, along bore axis) x 80 mm (width) x 80 mm (height). Components: (a) a single-body machined aluminium launcher housing that provides two bearing bores for flywheel shafts spaced 32 mm apart center-to-center, a 17.5 mm inner diameter smooth-bore barrel of length 80 mm, and a 4-bolt interface (M4, 40 mm square pattern) to the turret yoke; (b) two flywheel rotors of 60 mm outer diameter, 15 mm wide, machined from 2024-T3 aluminium, each driven by a 3508 brushless motor through a direct-coupled shaft; (c) a feed throat that constrains the projectile to a single file queue. Material for the housing is 6061-T6 aluminium with Young's modulus 69 GPa, Poisson's ratio 0.33, density 2700 kg/m^3, yield strength 276 MPa, ultimate tensile strength 310 MPa. Flywheel material is 2024-T3 aluminium (73.1 GPa, 0.33, 2780 kg/m^3, 345 MPa yield, 483 MPa UTS). Load cases: LC1 (Shot reaction) — an impulsive 1 kN bore-axis reaction force on the barrel root from a BB transferring 30 m/s muzzle velocity over a 5 ms contact, with turret interface fully fixed; LC2 (Flywheel spin) — 10,000 rpm steady rotation of each 60 mm flywheel, giving centrifugal load at rim of 2.8 kN equivalent; LC3 (Barrel heat soak) — uniform thermal rise of 40 K across the barrel, representative of sustained 10 Hz fire with rule-limited heat dissipation, while housing bolt pattern is fixed; LC4 (Turret crash) — 20 g lateral shock on the launcher assembly with turret bolt pattern fully fixed (robot tipover). Pass/fail: (R1) max von Mises in housing under LC1 must stay below 184 MPa (6061-T6 yield/1.5); (R2) max von Mises in flywheel under LC2 must stay below 230 MPa (2024-T3 yield/1.5); (R3) max radial growth of the flywheel under LC2 must stay below 0.15 mm so bearing preload is preserved; (R4) combined LC1 + LC3 thermal-structural analysis peak stress must stay below 200 MPa in the housing; (R5) under LC4, peak von Mises in housing must stay below 184 MPa; (R6) total launcher-assembly mass must be less than 600 g so the 20 kg chassis budget is respected; (R7) barrel inner diameter under LC3 must not drop below 17.0 mm or grow above 18.0 mm (to keep muzzle velocity within RMUC's +/- 2 m/s chrono tolerance). Primary verification: linear static structural FEA for LC1, LC2, LC4; thermal-structural coupled linear FEA for LC3 (and combined LC1 + LC3); linear rotordynamic centrifugal loading for LC2. Vibration modal analysis, CFD, and radiation are explicitly not required. Output one STEP AP242 assembly and a report listing total mass, max von Mises per case, barrel ID change under LC3, and flywheel radial growth under LC2.",
+  "short_prompt": "Design the 17 mm projectile launcher assembly for a RoboMaster RMUC 2025 Standard Robot turret. Muzzle velocity capped at 30 m/s per RMUC 2025 Rules v1.1.0; Standard-class chassis mass cap 20 kg.\n\nEnvelope: assembly 150 x 80 x 80 mm; 6061-T6 housing with two flywheel-shaft bearing bores on 32 mm centers and an 80 mm smooth 17.5 mm ID barrel; two 2024-T3 aluminum flywheels 60 mm OD x 15 mm driven by 3508 motors; 4 x M4 turret-yoke bolts on a 40 mm square pattern.\n\nFactor regime: yield FoS 1.5 on housing and flywheel for the primary cases; combined LC1+LC3 peak <= 200 MPa in housing; barrel ID must stay within 17.0-18.0 mm under thermal.\n\nLoad cases.\n- Shot reaction: impulsive 1 kN along the bore axis over 5 ms at the barrel root.\n- Flywheel spin: 10,000 rpm steady on each 60 mm flywheel (~2.8 kN rim centrifugal).\n- Barrel heat soak: uniform 40 K rise across the barrel (sustained 10 Hz fire).\n- Turret crash: 20 g lateral shock with turret bolts fixed.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "RoboMaster RMUC 2025 17 mm launcher assembly",
+    "brief": "Flywheel-based 17 mm BB launcher sized to the RMUC Standard class 30 m/s muzzle cap and 20 kg chassis budget, with barrel-heat thermal load and shot-reaction impulse included.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 150,
+        "W": 80,
+        "H": 80
+      },
+      "barrel_ID_mm": 17.5,
+      "barrel_length_mm": 80,
+      "flywheel_OD_mm": 60,
+      "flywheel_width_mm": 15,
+      "flywheel_center_spacing_mm": 32,
+      "turret_bolt_pattern": {
+        "count": 4,
+        "size": "M4",
+        "pattern_mm": 40
+      }
+    },
+    "material": {
+      "housing": {
+        "name": "6061-T6",
+        "youngs_modulus_GPa": 69,
+        "yield_MPa": 276,
+        "UTS_MPa": 310,
+        "density_kg_m3": 2700
+      },
+      "flywheel": {
+        "name": "2024-T3",
+        "youngs_modulus_GPa": 73.1,
+        "yield_MPa": 345,
+        "UTS_MPa": 483,
+        "density_kg_m3": 2780
+      }
+    },
+    "projectile": {
+      "diameter_mm": 16.8,
+      "mass_g": 3.2,
+      "muzzle_velocity_max_m_s": 30
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "shot_reaction",
+        "impulse_N": 1000,
+        "duration_ms": 5
+      },
+      {
+        "id": "LC2",
+        "name": "flywheel_spin",
+        "rpm": 10000
+      },
+      {
+        "id": "LC3",
+        "name": "barrel_heat_soak",
+        "delta_T_K": 40
+      },
+      {
+        "id": "LC4",
+        "name": "turret_crash",
+        "shock_g": 20
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 3,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_per_case_MPa",
+        "barrel_ID_change_LC3_mm",
+        "flywheel_radial_growth_LC2_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_housing",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_flywheel",
+        "limit_MPa": 230,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "flywheel_radial_growth",
+        "limit_mm": 0.15,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "combined_max_von_mises",
+        "limit_MPa": 200,
+        "applies_to": [
+          "LC1+LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_housing",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g": 600,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "thermal_analysis",
+        "metric": "barrel_ID",
+        "lower_limit_mm": 17.0,
+        "upper_limit_mm": 18.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "range"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 + axisymmetric for flywheel",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x3)",
+        "thermal-structural (LC3, LC1+LC3)",
+        "rotordynamic centrifugal (LC2)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Modal not gated by RMUC rules.",
+      "fluid_analysis": "Bore aerodynamics modeled by chrono test, not CFD.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compact housing is not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Heat-cap referee-system firmware",
+      "Barrel erosion cycle count"
+    ]
+  },
+  "eval_coverage": [
+    "muzzle-velocity-gated geometry",
+    "rotordynamic + thermal + impulse triple",
+    "tight bore tolerance preservation under heat",
+    "mass budget against robot class"
+  ]
+}

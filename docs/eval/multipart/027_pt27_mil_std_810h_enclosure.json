@@ -1,0 +1,363 @@
+{
+  "id": "027_pt27_mil_std_810h_enclosure",
+  "source": {
+    "catalog_ref": "PT27",
+    "year": 2019,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/027_pt27_mil_std_810h_enclosure.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "defense_electronics",
+  "part_class": "vibration_qualified_electronics_enclosure_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a bolted multi-body MIL-STD-810H-qualified aluminum electronics enclosure assembly consisting of: (A) one machined 6061-T6 housing base (external 220 x 170 x 100 mm, internal 200 x 150 x 80 mm, with D38999 Series III 19-11 connector cutout on one short face and four M6 clearance mount-hole bosses on a 190 x 140 mm rectangular footprint); (B) one machined 6061-T6 removable lid (to mate the 220 x 170 flange on the top face); (C) one EPDM perimeter gasket that seats between the lid and base flange for IP67 sealing; (D) ten M4 captive lid screws that clamp the lid to the base; (E) four M6 mount fasteners at the vehicle rack interface. The 3 kg single-board-computer + power-supply payload is modeled as a lumped mass at the CG inside the base. Material 6061-T6 (yield 276 MPa, UTS 310 MPa, Young's modulus 68.9 GPa, density 2700 kg/m^3, CTE 23.6e-6/K).\n\nService load cases per MIL-STD-810H: LC1 Method 514.8 Annex D Cat 20 ground-vehicle PSD 0.04 g^2/Hz at 5-10 Hz, ramp -6 dB/oct to 500 Hz, 0.001 g^2/Hz flat to 2000 Hz (~2.2 g RMS); LC2 Method 516.8 Procedure I functional shock 20 g peak sawtooth 11 ms; LC3 Method 516.8 Procedure V crash hazard 40 g peak 11 ms; LC4 Method 501.6 high-temp storage 71 C; LC5 Method 502.6 low-temp operation -40 C; LC6 random vibration durability 12 h per axis at LC1 PSD. Pass/fail on the assembled model: (R1) LC1 random 3-sigma von Mises <= yield / 1.5 = 184 MPa; (R2) LC2 shock peak von Mises <= UTS / 1.25 = 248 MPa; (R3) LC3 crash peak <= UTS = 310 MPa; (R4) lid-gasket seat gap variation <= 0.2 mm under LC1 + LC4/LC5 (IP67 retention); (R5) first natural mode >= 200 Hz; (R6) thermal-induced von Mises at delta-T 111 K <= 184 MPa; (R7) total mass <= 1.8 kg; (R_asm1) assembly-scope connection DCR on each captive lid-screw preload path and each rack-mount M6 interface (envelope of bolt tensile, shear, and surface-pressure utilization) <= 1.0 under LC1, LC2, LC3, LC6.\n\nManufacturing: 3-axis + 4th-axis CNC mill base and lid from 6061-T6 billet; mill EPDM gasket groove; install 10 M4 captive screws; torque to spec; IP67 ingress test per IEC 60529. The final FEM check runs on the fully assembled model (base + lid + gasket + 10 M4 captive screws + 4 M6 mount fasteners + lumped payload) with pretensioned bolt elements, nonlinear contact at the lid-base flange with compressible EPDM gasket, and modal/PSD/transient/thermal analyses. Per-part stress is reported (max von Mises on base, lid, gasket compression) but assembly-level passing requires all MIL-STD-810H limits, the modal floor, IP67 gap retention, and connection DCRs to hold simultaneously.\n\nDeliverables: STEP AP242 + IGES of the bolted enclosure assembly with base, lid, gasket, 10 M4 captive screws, and 4 M6 mount fasteners as distinct bodies tagged with part_family and instance_index; FEA report covering random PSD, transient shock, thermal-structural, modal; gasket compression verification; mass log.",
+  "short_prompt": "Design a bolted multi-body MIL-STD-810H-qualified aluminum electronics enclosure delivered as an assembly: a machined 6061-T6 housing base (external 220 x 170 x 100 mm, internal 200 x 150 x 80 mm, D38999 Series III 19-11 connector cutout, four M6 mount bosses on a 190 x 140 mm footprint); a machined 6061-T6 removable lid; an EPDM perimeter gasket for IP67; ten M4 captive lid screws; four M6 rack-mount fasteners; and a 3 kg SBC + PSU lumped internal mass. 6061-T6 properties: yield 276 MPa, UTS 310 MPa, E = 68.9 GPa, rho = 2700 kg/m^3, CTE 23.6e-6/K.\n\nLoad cases per MIL-STD-810H.\n- LC1 Method 514.8 Annex D Cat 20 PSD: 0.04 g^2/Hz at 5-10 Hz, ramp -6 dB/oct to 500 Hz, 0.001 g^2/Hz flat to 2000 Hz (~2.2 g RMS).\n- LC2 Method 516.8 Procedure I functional shock: 20 g peak sawtooth 11 ms.\n- LC3 Method 516.8 Procedure V crash hazard: 40 g peak 11 ms.\n- LC4 Method 501.6 high-temp storage: 71 C.\n- LC5 Method 502.6 low-temp operation: -40 C.\n- LC6 random vibration durability: 12 h per axis at LC1 PSD.\n\nPass limits: LC1 3-sigma von Mises <= 276/1.5 = 184 MPa; LC2 <= 310/1.25 = 248 MPa; LC3 <= 310 MPa; lid-gasket seat gap variation <= 0.2 mm; first mode >= 200 Hz; thermal-induced von Mises at DeltaT 111 K <= 184 MPa; total mass <= 1.8 kg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "connection_integrity"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "ip67_ingress_test",
+        "reason": "IP67 is a physical ingress test, not simulated.",
+        "examples": [
+          "IEC 60529 submersion test"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "6061-T6 MIL-STD-810H qualified electronics enclosure (multi-part assembly)",
+    "brief": "Multi-body bolted enclosure: 6061-T6 machined base + lid + EPDM gasket + 10 M4 captive lid screws + 4 M6 rack-mount fasteners, carrying a 3 kg payload. Must pass MIL-STD-810H Methods 514.8, 516.8, 501.6, 502.6 with IP67 retention. Final FEM check runs on the assembled model.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "enclosure_base",
+        "role": "machined 6061-T6 housing base with connector cutout and M6 mount bosses",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_external_mm": {
+            "x": 220,
+            "y": 170,
+            "z": 100
+          },
+          "envelope_internal_mm": {
+            "x": 200,
+            "y": 150,
+            "z": 80
+          },
+          "mount_pattern_mm": {
+            "x": 190,
+            "y": 140
+          },
+          "connector": "D38999 Series III 19-11 cutout"
+        },
+        "material_hint": "6061-T6",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "enclosure_lid",
+        "role": "machined 6061-T6 removable lid mating the base top flange",
+        "count_min": 1,
+        "geometric_constraints": {
+          "flange_mm": {
+            "x": 220,
+            "y": 170
+          }
+        },
+        "material_hint": "6061-T6",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "perimeter_gasket",
+        "role": "EPDM perimeter gasket in the lid-base groove for IP67 sealing",
+        "count_min": 1,
+        "geometric_constraints": {
+          "ip_rating": "IP67",
+          "seat_gap_variation_mm_max": 0.2
+        },
+        "material_hint": "EPDM",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "lid_captive_screw",
+        "role": "M4 captive screw clamping lid to base with preload sufficient to retain IP67 under vibration and thermal cycling",
+        "count_min": 10,
+        "geometric_constraints": {
+          "thread": "M4"
+        },
+        "material_hint": "stainless or alloy steel per MIL captive screw",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "rack_mount_fastener",
+        "role": "M6 fastener at the vehicle rack interface through each of the 4 mount bosses",
+        "count_min": 4,
+        "geometric_constraints": {
+          "thread": "M6_clearance"
+        },
+        "material_hint": "alloy steel",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "220 x 170 x 100 mm external (base + lid with gasket)",
+      "coordinate_system": "Mount footprint in XY plane; lid along +Z from base"
+    },
+    "material": {
+      "name": "6061-T6",
+      "yield_MPa": 276,
+      "ultimate_MPa": 310,
+      "youngs_modulus_GPa": 68.9,
+      "density_kg_m3": 2700,
+      "alpha_thermal_per_K": 2.36e-05
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "random_PSD_Cat20",
+        "grms": 2.2,
+        "band_Hz": [
+          5,
+          2000
+        ]
+      },
+      {
+        "id": "LC2",
+        "name": "functional_shock_20g",
+        "peak_g": 20,
+        "duration_ms": 11
+      },
+      {
+        "id": "LC3",
+        "name": "crash_hazard_40g",
+        "peak_g": 40,
+        "duration_ms": 11
+      },
+      {
+        "id": "LC4",
+        "name": "high_temp_storage",
+        "temp_C": 71
+      },
+      {
+        "id": "LC5",
+        "name": "low_temp_operation",
+        "temp_C": -40
+      },
+      {
+        "id": "LC6",
+        "name": "vib_durability_12h_per_axis",
+        "grms": 2.2,
+        "duration_h": 12
+      }
+    ],
+    "boundary_conditions": {
+      "mount_holes": "4 M6 fully constrained at rack",
+      "payload": "3 kg lumped at CG inside base",
+      "inter_part_fastener_stiffness": "pretensioned M4 captive screws at lid with nonlinear contact at the EPDM-compressed gasket; M6 mount fasteners modeled with preload at the rack interface"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "IGES"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "random_3sigma_MPa",
+        "shock_peak_MPa_LC2",
+        "shock_peak_MPa_LC3",
+        "first_mode_Hz",
+        "thermal_stress_MPa",
+        "gasket_gap_variation_mm",
+        "mass_kg",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_von_mises",
+        "limit_MPa": 184,
+        "derivation": "yield / 1.5 = 276 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "shock_peak_von_mises_functional",
+        "limit_MPa": 248,
+        "derivation": "UTS / 1.25",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "shock_peak_von_mises_crash",
+        "limit_MPa": 310,
+        "derivation": "UTS (no rupture)",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "gasket_seat_gap_variation",
+        "limit_mm": 0.2,
+        "derivation": "IP67 retention across vibration + thermal cycling",
+        "applies_to": [
+          "LC1",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 200,
+        "derivation": "avoid ground-vehicle energy band 5-200 Hz",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "thermal_analysis",
+        "metric": "thermal_induced_von_mises",
+        "limit_MPa": 184,
+        "derivation": "yield / 1.5 at delta-T 111 K",
+        "applies_to": [
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "type": "connection_integrity",
+        "metric": "connection_DCR",
+        "limit": 1.0,
+        "derivation": "assembly-scope DCR on each captive lid-screw and each rack-mount M6 interface, enveloping bolt tensile, shear, and surface-pressure utilization",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC6"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "MIL-STD-810H Methods 514.8, 516.8, 501.6, 502.6 + MIL-DTL-38999 (connector) + IEC 60529 IP67",
+    "recommended_fea_setup": {
+      "element_type": "shell + solid at bosses",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus Standard + Explicit",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "modal + random PSD + transient shock + thermal-structural"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "lid clamps to base top flange via 10 M4 captive screws with compressed EPDM gasket between"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "base flange groove compresses EPDM gasket; contact pressure governs IP67 retention"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "lid flange compresses top side of EPDM gasket; contact pressure governs IP67 retention"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "M4 captive screw passes through lid and threads into base boss; preload clamps lid + gasket"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "M6 rack-mount fastener passes through base mount boss and clamps enclosure to vehicle rack"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A MIL-STD-810H qualified enclosure is fundamentally a multi-body system (base + lid + gasket + 10 captive lid screws + 4 rack-mount fasteners) whose IP67 retention + modal floor + random / shock response require explicit lid-to-base preload paths and an EPDM gasket body; a single-body model cannot resolve gasket gap variation or per-screw preload utilization.",
+    "speculation_caveats": "Lid-screw count 10 and rack-mount count 4 come directly from the original prompt; base and lid are split along the IP67 flange; EPDM gasket body and fastener bodies are speculated to carry IF2/IF3/IF4/IF5.",
+    "original_sample_preserved_at": "docs/eval/samples/027_pt27_mil_std_810h_enclosure.json"
+  }
+}

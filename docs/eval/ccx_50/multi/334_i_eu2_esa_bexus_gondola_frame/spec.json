@@ -1,0 +1,688 @@
+{
+  "id": "334_i_eu2_esa_bexus_gondola_frame",
+  "source": {
+    "catalog_ref": "I-EU2",
+    "year": 2025,
+    "tier": "A+",
+    "original_sample": "docs/eval/samples/334_i_eu2_esa_bexus_gondola_frame.json",
+    "multipart_basis": "Decomposition reflects a 800 x 800 x 500 mm welded and bolted Al 6082-T6 space frame built from 30 x 30 x 2 mm square tubing, mounted via four M8 bolts to the BEXUS gondola floor and supporting a 60 kg experiment at 300 mm CoM. Individual tube segments, corner gussets, suspension hardpoints, deck plates, skids, and antenna mast are separated. No rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "balloon_gondola_experiment_frame_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Deliver the primary experiment mounting frame installed inside an ESA BEXUS stratospheric balloon gondola as a multi-body assembly rather than a single solid. The BEXUS gondola external envelope is 1.16 x 1.16 x 0.84 m with ~300 kg total lifted mass (gondola + all experiments + recovery hardware); individual experiment allocation 30-112 kg. This design assumes a 60 kg experiment allocation. The mounting frame is a bolted and welded Al 6082-T6 space frame from 30 x 30 x 2 mm square tubing (E 70 GPa, yield 250 MPa, UTS 290 MPa, rho 2700 kg/m^3). Frame envelope 800 x 800 x 500 mm. The frame carries a 60 kg experiment at CoM 300 mm above the gondola floor, mounted via four M8 A4-70 bolts to the gondola's T-slot deck. The gondola rises to 25-33 km over ~2 hr, cruises ~2-5 hr, descends on parachute. Environment: 1 kPa at float, -80 C ascent, -50 C float, -20 C interior, parachute shock + 8 m/s ground impact on rough terrain. Load cases (unchanged): (LC1) parachute opening shock 5 g vertical on 60 kg (2943 N); (LC2) ground-impact 10 g vertical + 5 g horizontal skid on 60 kg (5886 N vertical); (LC3) handling 2 g vertical + 2 g lateral during crane lift; (LC4) float thermal gradient 20 C delta between 10 C interior and 30 C hot bosses; (LC5) ascent cold-soak -80 C with Al/stainless CTE mismatch (23.6e-6 vs 17.3e-6 /K); (LC6) pre-release wind gust 50 N horizontal at frame top. Pass/fail (unchanged): (R1) under LC1 and LC2 max vM <= 166 MPa (250 / 1.5 yield FoS per BEXUS user-manual structural recommendation); (R2) frame dry mass (frame only, no experiment or fasteners) <= 8 kg; (R3) first natural frequency with 60 kg experiment at CoM >= 30 Hz; (R4) under LC4 and LC5 combined bolt preload loss <= 15%; (R5) under LC2 ground impact CoM vertical deflection at the experiment attachment plate <= 3 mm. In this multi-part rendering the frame is decomposed into: (A) gondola tubes (20 segments of 30 x 30 x 2 mm Al extrusion forming a box frame: 12 edges plus internal cross-braces), (B) corner gussets (8 triangular gussets at the 8 box corners providing moment continuity), (C) suspension hardpoints (4 reinforced lugs that carry the four M8 gondola-floor bolts and react LC1 parachute shock), (D) deck plates (2 sheet-aluminum decks: an upper experiment-mount plate at 300 mm CoM and a lower stiffening plate at the base), (E) skids (2 longitudinal skids along the bottom of the frame spreading LC2 landing loads across the gondola floor), (F) antenna mast (1 short vertical mast on top of the frame for comms/GPS). Inter-part connections: tube-to-tube welded at each box-frame node, tubes to corner gussets bolted through 4 x M6 per gusset, tubes to suspension hardpoints welded with doubler plates, deck plates bolted to upper and lower tube rungs, skids bolted through lower tubes, antenna mast bolted to top cross-tube via a reinforced boss, gondola-floor bolts (4 x M8 A4-70) pass through C into the gondola T-slot deck. Final FEM verification runs on the ASSEMBLED frame; per-part stress is reported but does not gate pass/fail. Inter-part connection DCR must be <= 1.0 under governing load case (LC2 ground impact with horizontal skid). All inherited load magnitudes, material properties, and pass/fail thresholds are preserved verbatim; assembly-scope criterion R_asm1 is added. Deliverables: STEP AP242 multi-body assembly; mechanical FEA for LC1-LC3 + LC6; thermo-structural for LC4 and LC5; modal report on the loaded frame; bolt table; mass budget; per-connection DCR table.",
+  "short_prompt": "Deliver the primary experiment mounting frame installed inside an ESA BEXUS stratospheric balloon gondola as a multi-body assembly. BEXUS gondola envelope 1.16 x 1.16 x 0.84 m with ~300 kg lifted mass; individual experiment allocation 30-112 kg. This design assumes a 60 kg experiment.\n\nEnvelope: 800 x 800 x 500 mm space frame from 30 x 30 x 2 mm square tubing, carrying 60 kg experiment at CoM 300 mm above gondola floor, mounted via four M8 A4-70 bolts to T-slot deck.\n\nMaterial: Al 6082-T6 (yield 250 MPa, UTS 290 MPa). Gondola rises to 25-33 km over ~2 hr, cruises ~2-5 hr, descends on parachute. Environment: 1 kPa at float, -80 C ascent, -50 C float, -20 C interior, 8 m/s ground impact.\n\nLoad cases: (LC1) parachute opening 5 g vertical on 60 kg (2943 N); (LC2) ground-impact 10 g vertical + 5 g horizontal skid on 60 kg (5886 N vertical); (LC3) handling 2 g vertical + 2 g lateral during crane lift; (LC4) float thermal 20 C delta (10 C interior vs 30 C hot bosses); (LC5) ascent cold-soak -80 C with Al/stainless CTE mismatch (23.6e-6 vs 17.3e-6 /K); (LC6) pre-release wind gust 50 N horizontal at frame top.\n\nPass/fail: (R1) LC1/LC2 max vM <= 166 MPa (250/1.5 per BEXUS user-manual); (R2) frame dry mass <= 8 kg; (R3) first natural frequency with 60 kg at CoM >= 30 Hz; (R4) LC4+LC5 bolt preload loss <= 15%; (R5) LC2 CoM plate deflection <= 3 mm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ESA BEXUS Gondola Experiment Mounting Frame (multi-part assembly)",
+    "brief": "Al 6082-T6 30 x 30 x 2 mm square-tube space frame, 800 x 800 x 500 mm, carrying 60 kg experiment at 300 mm CoM in a BEXUS gondola. Multi-part: ~20 gondola tubes, 8 corner gussets, 4 suspension hardpoints, 2-3 deck plates, 2 skids, 1 antenna mast. 5 g parachute and 10 g ground-impact gates preserved; FEM on assembled frame, connection DCR <= 1.0.",
+    "geometric_constraints": {
+      "frame_envelope_mm": {
+        "length": 800,
+        "width": 800,
+        "height": 500
+      },
+      "tube_profile_mm": "30 x 30 x 2 square",
+      "gondola_mount_bolt_count": 4,
+      "gondola_mount_bolt_size": "M8",
+      "gondola_mount_bolt_grade": "A4-70"
+    },
+    "material": {
+      "name": "6082-T6 aluminum (square tubing) + stainless fasteners",
+      "properties": {
+        "youngs_modulus_GPa": 70,
+        "yield_strength_MPa": 250,
+        "ultimate_tensile_strength_MPa": 290,
+        "density_kg_m3": 2700,
+        "cte_al_per_K": 2.36e-05,
+        "cte_stainless_per_K": 1.73e-05
+      }
+    },
+    "experiment_mass_kg": 60,
+    "experiment_CoM_height_mm": 300,
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "parachute_shock_5g",
+        "magnitude_N": 2943,
+        "application": "vertical on 60 kg at frame CoM"
+      },
+      {
+        "id": "LC2",
+        "name": "ground_impact_10g_vertical_plus_5g_skid",
+        "magnitude_N_vertical": 5886,
+        "magnitude_g_horizontal": 5,
+        "application": "CoM of 60 kg"
+      },
+      {
+        "id": "LC3",
+        "name": "handling_crane_lift",
+        "magnitude_g_vertical": 2,
+        "magnitude_g_lateral": 2,
+        "application": "simultaneously during integration lift"
+      },
+      {
+        "id": "LC4",
+        "name": "float_thermal_delta_20C",
+        "magnitude_C_delta": 20,
+        "application": "10 C interior vs 30 C hot bosses"
+      },
+      {
+        "id": "LC5",
+        "name": "ascent_cold_soak",
+        "magnitude_C": -80,
+        "application": "ascent through tropopause; CTE mismatch with stainless bolts"
+      },
+      {
+        "id": "LC6",
+        "name": "wind_gust_prelaunch",
+        "magnitude_N": 50,
+        "application": "horizontal at top of frame before release"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 36,
+      "report_fields": [
+        "frame_dry_mass_kg",
+        "max_von_mises_LC1_LC2_MPa",
+        "first_natural_frequency_loaded_Hz",
+        "bolt_preload_loss_LC4_LC5_percent",
+        "CoM_deflection_LC2_mm",
+        "assembly_deflection",
+        "connection_DCR_per_interface",
+        "per_part_max_stress_MPa"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "gondola_tube",
+        "role": "individual Al 6082-T6 30 x 30 x 2 mm square-tube segments forming the 12 edges of the 800 x 800 x 500 mm box plus internal cross-braces",
+        "count_min": 20,
+        "count_note": "12 edges + ~8 internal cross-braces = ~20 tube instances for a 60 kg experiment at 300 mm CoM",
+        "geometric_constraints": {
+          "cross_section_mm": "30 x 30 x 2 wall",
+          "segment_length_range_mm": "300 to 800"
+        },
+        "material_hint": "Al 6082-T6 extrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "corner_gusset",
+        "role": "triangular gusset plate at each of the 8 box corners providing moment continuity between tubes",
+        "count_min": 8,
+        "geometric_constraints": {
+          "leg_length_mm": 80,
+          "thickness_mm": 3,
+          "bolt_count_per_gusset": 4,
+          "bolt_size": "M6"
+        },
+        "material_hint": "Al 6082-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "suspension_hardpoint",
+        "role": "reinforced lug welded to the bottom tubes, carries one M8 A4-70 bolt to the BEXUS gondola T-slot deck; reacts LC1 5 g parachute shock",
+        "count_min": 4,
+        "geometric_constraints": {
+          "plate_thickness_mm": 6,
+          "lug_hole_mm": 9,
+          "bolt_size": "M8",
+          "bolt_grade": "A4-70"
+        },
+        "material_hint": "Al 6082-T6 with doubler plate",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "deck_plate",
+        "role": "upper experiment-mount plate at 300 mm CoM (carrying the 60 kg experiment directly) and lower stiffening plate at the base",
+        "count_min": 2,
+        "count_note": "Upper 300 mm CoM deck + lower base deck; a mid deck may be added for a third instance",
+        "geometric_constraints": {
+          "footprint_mm": "760 x 760",
+          "thickness_mm": 3,
+          "bolt_count_to_frame": 8
+        },
+        "material_hint": "Al 6082-T6 sheet",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "skid",
+        "role": "longitudinal skid along bottom of frame that spreads LC2 ground-impact + 5 g horizontal skid into the gondola floor",
+        "count_min": 2,
+        "geometric_constraints": {
+          "length_mm": 800,
+          "cross_section_mm": "50 x 20 Al extrusion with UHMW-PE shoe",
+          "bolt_count": 4
+        },
+        "material_hint": "Al 6082-T6 extrusion + UHMW-PE skid shoe",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "antenna_mast",
+        "role": "short vertical mast bolted to the top cross-tube for comms / GPS; reacts LC6 50 N horizontal gust and adds ~1 kg mass to R3 modal model",
+        "count_min": 1,
+        "geometric_constraints": {
+          "height_mm": 300,
+          "OD_mm": 15,
+          "wall_mm": 1.5,
+          "base_boss_diameter_mm": 40
+        },
+        "material_hint": "Al 6061-T6 tube",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "gondola_mount_fastener",
+        "role": "4 x M8 A4-70 stainless bolts through C into gondola T-slot deck; LC4/LC5 CTE preload loss check (R4) applies",
+        "count_min": 4,
+        "geometric_constraints": {
+          "size": "M8",
+          "grade": "A4-70",
+          "length_mm": 25
+        },
+        "material_hint": "A4-70 stainless steel",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "800 x 800 x 500 mm inside a 1.16 x 1.16 x 0.84 m gondola interior with 50 mm margins",
+      "coordinate_system": "x-y in gondola floor plane, z vertical (up +); origin at frame footprint centre on gondola floor"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 166,
+        "derivation": "250 / 1.5 yield FoS per BEXUS user-manual structural recommendation",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "frame_dry_mass",
+        "limit_kg": 8,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency_loaded",
+        "limit_Hz": 30,
+        "applies_to": [
+          "design_with_60kg_CoM"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "bolt_preload_loss",
+        "limit_percent": 15,
+        "applies_to": [
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "CoM_vertical_deflection_LC2",
+        "limit_mm": 3,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces (IF1..IF7) <= 1.0 under governing load case (LC2 ground impact with horizontal skid).",
+        "metric": "max DCR across IF1..IF7",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_count_min",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[5].geometric_constraints",
+          "prompt.parts[6].count_min",
+          "prompt.parts[6].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      },
+      {
+        "id": "R_FEA_COVERAGE_LC3",
+        "type": "structural_analysis",
+        "metric": "generated_static_response_norm",
+        "limit": "finite",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "is_finite",
+        "derivation": "Generated coverage gate: ensures the declared load case is present in the CCX deck and checked from model.dat.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      },
+      {
+        "id": "R_FEA_COVERAGE_LC6",
+        "type": "structural_analysis",
+        "metric": "generated_static_response_norm",
+        "limit": "finite",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "is_finite",
+        "derivation": "Generated coverage gate: ensures the declared load case is present in the CCX deck and checked from model.dat.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (BEAM188) with square tube section for A; shell for B/D; solid TET10 at suspension hardpoints C and antenna base F; bolt pretension at G",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (LC1, LC2, LC3, LC6)",
+        "modal with 60 kg CoM point-mass (R3)",
+        "thermo-structural (LC4, LC5)",
+        "bolt preload (LC5)"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "A"
+      ],
+      "mediated_by": "welded",
+      "load_path": "tube-to-tube nodal welds at every edge/cross-brace intersection; primary load redistribution"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "corner gussets bolted to tubes at the 8 box corners; provides moment continuity"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "welded_with_doubler",
+      "load_path": "suspension hardpoints welded to lower tubes with doubler plate; directly carries LC1 parachute shock into frame"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "upper experiment-mount deck and lower stiffener deck bolted to tube rungs; upper deck carries 60 kg experiment CoM deflection (R5)"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "skids bolted to lower tubes; spread LC2 ground-impact loads"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "bolted_through_boss",
+      "load_path": "antenna mast bolted to top cross-tube via reinforced boss; reacts LC6 wind gust"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "C",
+        "G"
+      ],
+      "mediated_by": "bolted_preloaded",
+      "load_path": "4 x M8 A4-70 bolts at suspension hardpoints to gondola T-slot deck; LC4/LC5 CTE preload-loss check R4 governs"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Loaded first-mode frequency (R3), CoM deflection under ground impact (R5), and CTE-driven preload loss at the four M8 gondola bolts (R4) are all assembly-level observables that depend on welded tube stiffness + bolted gussets + deck coupling. Per-part stress is reported for visibility but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Original brief explicitly calls for a bolted and welded aluminum space frame from 30 x 30 x 2 mm tubing with corner gussets, deck plates, skids, and four M8 bolts to the BEXUS T-slot gondola deck; modelling as a single solid collapses the welded+bolted nodal stiffness that governs R3 and the CTE mismatch at the four stainless bolts that governs R4.",
+    "speculation_caveats": "Tube count (~20), gusset count (8), skid count (2), deck count (2-3), antenna-mast presence are typical for a 60 kg experiment frame of this class; gondola-floor bolt family is rulebook-consistent with the four-M8 attachment called out in the brief.",
+    "original_sample_preserved_at": "docs/eval/samples/334_i_eu2_esa_bexus_gondola_frame.json"
+  },
+  "rulebook_citations": [],
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R_asm1"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_count_min",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[5].geometric_constraints",
+      "prompt.parts[6].count_min",
+      "prompt.parts[6].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2",
+      "metric": "max_von_mises_stress",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "frame_dry_mass",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_MODAL",
+      "solver": "calculix",
+      "analysis_card": "*FREQUENCY",
+      "physics_card": null,
+      "load_cases": [
+        "design_with_60kg_CoM"
+      ],
+      "deck_step": "generated_modal_step",
+      "metric": "first_natural_frequency_loaded",
+      "metric_source": "modal eigenfrequency block",
+      "outputs": [
+        "model.dat: eigenfrequencies"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_THERMAL",
+      "solver": "calculix",
+      "analysis_card": "*HEAT TRANSFER",
+      "physics_card": null,
+      "load_cases": [
+        "LC4",
+        "LC5"
+      ],
+      "deck_step": "generated_thermal_step",
+      "metric": "bolt_preload_loss",
+      "metric_source": "thermal temperature block",
+      "outputs": [
+        "model.dat: temperatures"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC2",
+      "metric": "CoM_vertical_deflection_LC2",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_005",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "max DCR across IF1..IF7",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_006",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_FEA_COVERAGE_LC3_007",
+      "requirement_id": "R_FEA_COVERAGE_LC3",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "generated_static_response_norm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_FEA_COVERAGE_LC6_008",
+      "requirement_id": "R_FEA_COVERAGE_LC6",
+      "requirement_path": "requirements.pass_fail_criteria[8]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC6"
+      ],
+      "deck_step": "generated_static_step:LC6",
+      "metric": "generated_static_response_norm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

@@ -1,0 +1,237 @@
+{
+  "id": "021_pt21_lockheed_patent_topo_opt",
+  "source": {
+    "catalog_ref": "PT21",
+    "year": 2021,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "topology_optimized_aero_bracket",
+  "needs_patent_fetch": true,
+  "full_prompt": "Design a topology-optimized AM Ti-6Al-4V aero bracket in the spirit of a canonical topology-optimized-aero-bracket patent (US11174899B2-style), for a representative aircraft secondary-structure mounting problem with multiple independent interface load cases and a specified mass reduction target versus a baseline milled bracket. Envelope: 220 x 160 x 100 mm. Interfaces: primary mounting side has four M8 bolts on 160 x 60 mm rectangular pattern (equipment-bay frame); secondary mounting side has two M10 pin bearings of 12 mm diameter spaced 80 mm apart. Material: AM Ti-6Al-4V Grade 5 post-HIP (yield 860 MPa, UTS 930 MPa, E 113.8 GPa, density 4430 kg/m^3, min elongation 10%). Representative load vectors following the patent's multi-case layout (magnitudes are placeholders when specific patent values are not pinned): LC1 axial tension 12 kN along primary mounting axis; LC2 axial compression 12 kN same axis; LC3 transverse 8 kN perpendicular; LC4 vertical 10 kN; LC5 combined LC1 + LC4 at 75% each (9 + 7.5 kN); LC6 ultimate = 1.5 x the envelope of LC1-5. The central technical feature is that the bracket geometry comes from a topology-optimization solution whose design variables are density field elements with a minimum member size (stated in the patent as approximately 2 mm for AM Ti) and a symmetry constraint about the primary mounting plane. Pass/fail: (R1) max von Mises at limit (LC1-5) <= yield = 860 MPa with no permanent deformation; (R2) max von Mises at ultimate LC6 <= UTS = 930 MPa (per CS-25/MIL-HDBK-5 airframe ultimate factor 1.5 built into LC6); (R3) mass reduction vs baseline milled bracket filling the 220x160x100 envelope >= 45% (the patent's stated technical effect, typical 40-50% for Ti topo-opt AM brackets); (R4) first natural mode frequency >= 160 Hz (typical airframe equipment decoupling target); (R5) minimum printed member size >= 2 mm (AM manufacturability + patent constraint); (R6) symmetry about primary mounting plane preserved in final geometry (patent claim element); (R7) linear buckling eigenvalue under LC2 worst-compression case >= 1.5 (CS-25 ultimate). Deliverables: STEP AP242 + 3MF of the final topo-opt body; optimization history log with compliance vs iteration; modal analysis; FEA report per load case; mass-vs-baseline ratio.",
+  "short_prompt": "Design a topology-optimized AM Ti-6Al-4V aero bracket in the spirit of a canonical topology-optimized-aero-bracket patent (US11174899B2-style), for an aircraft secondary-structure mounting problem with multiple independent interface load cases and a stated mass-reduction target vs a baseline milled bracket.\n\nEnvelope: 220 x 160 x 100 mm. Primary mounting: four M8 bolts on 160 x 60 mm. Secondary mounting: two M10 pin bearings of 12 mm diameter spaced 80 mm apart.\n\nMaterial: AM Ti-6Al-4V Grade 5 post-HIP.\n\nDesign per CS-25/MIL-HDBK-5 airframe ultimate factor 1.5 built into LC6; topology optimization with minimum member size ~2 mm for AM Ti and symmetry constraint about the primary mounting plane.\n\nLoad cases (magnitudes placeholder when patent values not pinned).\n- LC1 axial tension 12 kN along primary mounting axis.\n- LC2 axial compression 12 kN same axis.\n- LC3 transverse 8 kN perpendicular.\n- LC4 vertical 10 kN.\n- LC5 combined LC1 + LC4 at 75% each (9 + 7.5 kN).\n- LC6 ultimate = 1.5 x the envelope of LC1-5.\n\nAdditional gates: mass reduction >= 45% vs milled baseline; first natural mode >= 160 Hz; minimum printed member >= 2 mm; symmetry preserved; linear buckling eigenvalue under LC2 >= 1.5.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "Central patent feature. Outer loop around the structural FEA.",
+        "examples": [
+          "Altair OptiStruct",
+          "nTopology",
+          "Ansys Mechanical Topo-Opt"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "AM Ti-6Al-4V topology-optimized aero bracket (topology-optimized-aero-bracket patent US11174899B2 style)",
+    "brief": "Design a 220x160x100 mm topo-opt Ti-6Al-4V aero bracket with 6 load cases, symmetry constraint, min member 2 mm, and >=45% mass reduction vs baseline milled bracket.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 220,
+        "y": 160,
+        "z": 100
+      },
+      "primary_interface": {
+        "bolts": 4,
+        "thread": "M8",
+        "pattern_mm": {
+          "x": 160,
+          "y": 60
+        }
+      },
+      "secondary_interface": {
+        "pins": 2,
+        "diameter_mm": 12,
+        "spacing_mm": 80
+      },
+      "min_member_mm": 2,
+      "symmetry_plane": "primary mounting plane"
+    },
+    "material": {
+      "name": "AM Ti-6Al-4V Grade 5 post-HIP",
+      "yield_MPa": 860,
+      "ultimate_MPa": 930,
+      "youngs_modulus_GPa": 113.8,
+      "density_kg_m3": 4430
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "axial_tension",
+        "force_N": 12000
+      },
+      {
+        "id": "LC2",
+        "name": "axial_compression",
+        "force_N": 12000
+      },
+      {
+        "id": "LC3",
+        "name": "transverse",
+        "force_N": 8000
+      },
+      {
+        "id": "LC4",
+        "name": "vertical",
+        "force_N": 10000
+      },
+      {
+        "id": "LC5",
+        "name": "combined_75pct",
+        "force_N": "LC1*0.75 + LC4*0.75"
+      },
+      {
+        "id": "LC6",
+        "name": "ultimate_1.5x",
+        "multiplier": 1.5
+      }
+    ],
+    "boundary_conditions": {
+      "primary_interface": "4 M8 fully constrained",
+      "secondary_interface": "bearing loads at pin holes"
+    },
+    "objective": {
+      "minimize": "mass",
+      "mass_reduction_vs_baseline_pct_min": 45
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "3MF"
+      ],
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_mode_Hz",
+        "first_buckling_factor",
+        "mass_g",
+        "mass_reduction_vs_baseline_pct",
+        "optimization_history"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_limit",
+        "limit_MPa": 860,
+        "derivation": "yield (no permanent deformation at limit)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_ultimate",
+        "limit_MPa": 930,
+        "derivation": "UTS (no rupture at 1.5x limit)",
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "mass_reduction_vs_baseline",
+        "limit_pct": 45,
+        "derivation": "patent's stated technical effect",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 160,
+        "derivation": "airframe equipment decoupling target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "min_printed_member_size",
+        "limit_mm": 2,
+        "derivation": "AM manufacturability + patent constraint",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "symmetry_about_primary_mounting_plane",
+        "limit": 1,
+        "derivation": "patent claim element",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R7",
+        "type": "buckling_analysis",
+        "metric": "first_buckling_load_factor",
+        "limit": 1.5,
+        "derivation": "CS-25 buckling ultimate",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "governing_standard": "CS-25.305 + MIL-HDBK-5J allowables + AMS 4928 (HIP'd Ti-6Al-4V AM)",
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "Altair OptiStruct",
+        "Ansys Mechanical",
+        "Abaqus + Tosca"
+      ],
+      "analysis_types": [
+        "topology optimization outer loop + linear static x6 + modal + buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Out of scope.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "patent_fetch": "Load vectors are plausible placeholders; actual US11174899B2 tables require patent text fetch. needs_patent_fetch = true at root.",
+    "numeric_source": "CS-25 + AM Ti-6Al-4V post-HIP allowables per AMS 4928."
+  },
+  "eval_coverage": [
+    "topology optimization as central requirement",
+    "multi-case load-vector table",
+    "symmetry + min-member manufacturing constraints",
+    "modal + buckling secondary checks"
+  ]
+}

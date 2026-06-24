@@ -1,0 +1,215 @@
+{
+  "id": "349_i_eu12_seds_canada_can_rgx",
+  "source": {
+    "catalog_ref": "I-EU12 (SEDS Canada CAN-RGX, Latin America + Canada + Nordic + ESA subsection)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "parabolic_flight_experiment_rack",
+  "full_prompt": "Design the primary structural rack that houses a student-built experiment for the SEDS Canada Canadian Reduced Gravity Experiment Design Challenge (CAN-RGX) 2026 flown aboard the NRC Falcon 20 parabolic aircraft. CAN-RGX Student Handbook v2.0 and Application Guide v1.1 constrain the experiment to a total mass not exceeding 45 kg excluding the Pelican-class transport case, peak electrical power below 600 W, restricted battery chemistries (only sealed lead-acid, NiMH, or lab-qualified Li-ion packs with Falcon 20 safety sign-off), and a form factor that fits within a 600 mm x 500 mm x 500 mm aircraft-cabin footprint with four M10 floor-tiedown bolts on a 400 mm x 300 mm pattern per the NRC Falcon 20 interface control document. The rack is a bolted-and-welded frame of 6061-T6 aluminum extrusion 40 mm x 40 mm x 3 mm wall (E 68.9 GPa, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3) with 2 mm aluminum sheet side panels and a central 10 mm aluminum baseplate carrying the experiment hardware (sensors, valves, pumps, control PC) summed to 25 kg payload mass, the rack itself budgeted at 15 kg and the battery pack 5 kg, totalling 45 kg. Load cases per NRC Falcon 20 parabolic profile plus Transport Canada CAR 602.11 safety-of-flight: (LC1) micro-g coast: 0 g on structure, no load gate but baseplate must remain flat within 0.5 mm to keep experiment alignment; (LC2) pull-up: 1.8 g vertical applied to all mass items along aircraft z-axis as the aircraft recovers from parabola; (LC3) lateral turbulence: 0.5 g lateral simultaneously with 1 g vertical; (LC4) emergency landing: 9 g forward per CAR 525 Subpart C emergency-landing condition applied to all payload mass along aircraft x-axis (this is the sizing case for tiedown bolts); (LC5) vibration environment: random 0.02 g^2/Hz PSD 20-500 Hz (Falcon 20 cabin typical) over 10 min flight; (LC6) battery thermal runaway: local 150 C hot spot on the battery enclosure wall - rack must not catch fire and the rack-to-cabin interface must remain below 60 C (safety-of-flight), verified by steady thermal FEA with 20 W battery dissipation. Pass/fail: (R1) max von Mises stress on the rack frame under LC4 emergency landing must remain below 184 MPa (276 / 1.5 yield FoS per CAR 525.561 and NRC Falcon 20 payload guide); (R2) max stress under LC2 and LC3 operational cases must remain below 138 MPa (276 / 2.0 operational FoS); (R3) tiedown bolt (4 x M10 class 8.8) shear stress under LC4 must remain below 320 MPa (approx 0.5 x ultimate tensile / FoS 1.25); (R4) rack dry mass (frame + panels + baseplate) must not exceed 15 kg; (R5) first rack natural frequency must exceed 50 Hz to decouple from Falcon 20 structural response below 40 Hz; (R6) under LC6 thermal, rack-to-cabin interface temperature must remain below 60 C. Fluid, radiation analyses not required. Buckling is not primary at this compact frame scale but a check of the vertical column under LC4 x-axis crushing load is advised. Deliverables: STEP AP242 of rack frame + panels + baseplate + tiedown bolts + battery enclosure as separate bodies, 2D tiedown interface drawing, FEA per load case, modal report, thermal steady-state plot, mass budget.",
+  "short_prompt": "Design the primary structural rack of a student-built experiment for SEDS Canada CAN-RGX 2026 aboard the NRC Falcon 20 parabolic aircraft. CAN-RGX Student Handbook v2.0 + App Guide v1.1: total experiment mass <= 45 kg, peak power < 600 W, battery chemistries restricted (sealed lead-acid / NiMH / qualified Li-ion), form factor 600 x 500 x 500 mm with 4 x M10 floor-tiedown on a 400 x 300 mm pattern per the NRC Falcon 20 ICD.\n\nEnvelope: bolted-and-welded 6061-T6 40 x 40 x 3 mm extrusion frame + 2 mm side panels + 10 mm central baseplate; 25 kg experiment payload on the baseplate, 15 kg rack, 5 kg battery = 45 kg total.\n\nFactor regime: CAR 525.561 emergency landing yield FoS 1.5 (allowable 184 MPa) under LC4; operational FoS 2.0 (allowable 138 MPa) under LC2-LC3; tiedown bolt (M10 class 8.8) shear < 320 MPa at LC4; rack dry mass <= 15 kg; first mode > 50 Hz (Falcon 20 decouple); rack-to-cabin temperature < 60 C under LC6.\n\nLoad cases.\n- Micro-g coast 0 g (no stress gate, but baseplate-flatness < 0.5 mm).\n- Pull-up 1.8 g vertical on all mass items along aircraft z.\n- Lateral turbulence: 0.5 g lateral + 1 g vertical simultaneously.\n- CAR 525 Subpart C emergency landing: 9 g forward along x.\n- Vibration: random 0.02 g^2/Hz PSD 20-500 Hz over 10 min flight (Falcon 20 cabin).\n- Battery thermal-runaway: 150 C local hot spot on the battery enclosure wall with 20 W dissipation.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "SEDS Canada CAN-RGX 2026 Parabolic Experiment Rack",
+    "brief": "45 kg 6061-T6 rack for Falcon 20 parabolic flight; 1.8 g pull-up + 9 g emergency landing + random vib.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "l": 600,
+        "w": 500,
+        "h": 500
+      },
+      "tiedown_bolts": {
+        "count": 4,
+        "size": "M10",
+        "grade": "8.8",
+        "pattern_mm": {
+          "x": 400,
+          "y": 300
+        }
+      },
+      "extrusion_mm": "40x40x3",
+      "sheet_panel_mm": 2,
+      "baseplate_mm": 10
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "mass_budget_kg": {
+      "payload": 25,
+      "rack_frame": 15,
+      "battery": 5,
+      "total_cap": 45
+    },
+    "power_cap_W": 600,
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "microg_coast",
+        "magnitude_g": 0
+      },
+      {
+        "id": "LC2",
+        "name": "pullup_1p8g",
+        "magnitude_g": 1.8
+      },
+      {
+        "id": "LC3",
+        "name": "lateral_turbulence",
+        "lat_g": 0.5,
+        "vert_g": 1.0
+      },
+      {
+        "id": "LC4",
+        "name": "emergency_landing_9g_fwd",
+        "magnitude_g": 9,
+        "axis": "x"
+      },
+      {
+        "id": "LC5",
+        "name": "random_vibration",
+        "psd_g2_Hz": 0.02,
+        "band_Hz": [
+          20,
+          500
+        ],
+        "duration_min": 10
+      },
+      {
+        "id": "LC6",
+        "name": "battery_thermal_runaway",
+        "hotspot_C": 150,
+        "dissipation_W": 20
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 8,
+      "report_fields": [
+        "rack_mass_kg",
+        "max_stress_LC4_MPa",
+        "max_stress_LC2_LC3_MPa",
+        "tiedown_bolt_shear_LC4_MPa",
+        "first_freq_Hz",
+        "interface_temp_LC6_C"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "rack_max_stress_emergency",
+        "limit_MPa": 184,
+        "derivation": "276 / 1.5 FoS per CAR 525.561",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "rack_max_stress_operational",
+        "limit_MPa": 138,
+        "derivation": "276 / 2.0 FoS",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "M10_tiedown_bolt_shear",
+        "limit_MPa": 320,
+        "derivation": "~0.5 * ultimate / 1.25",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "rack_dry_mass",
+        "limit_kg": 15,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_rack_freq",
+        "limit_Hz": 50,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "thermal_analysis",
+        "metric": "rack_to_cabin_interface_temp",
+        "limit_C": 60,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for panels, beam/solid for extrusion, solid for baseplate",
+      "mesh_size_mm": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "SolidWorks Simulation",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "modal",
+        "random vibration PSD (LC5)",
+        "steady thermal (LC6)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "fluid_analysis": "N/A; no fluid payload at rack level.",
+      "radiation_analysis": "Parabolic flight in atmosphere, no ionizing-radiation gate."
+    }
+  },
+  "eval_coverage": [
+    "parabolic-flight rack FEA",
+    "9 g CAR 525.561 emergency landing",
+    "random vibration cabin PSD",
+    "battery thermal safety",
+    "Falcon 20 tiedown interface"
+  ]
+}

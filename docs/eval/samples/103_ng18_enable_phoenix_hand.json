@@ -1,0 +1,185 @@
+{
+  "id": "103_ng18_enable_phoenix_hand",
+  "source": {
+    "catalog_ref": "NG18",
+    "year": 2024,
+    "tier": "B"
+  },
+  "domain": "medical_devices_open_source",
+  "part_class": "enable_phoenix_proximal_phalanx_finger",
+  "full_prompt": "Design one representative e-NABLE Phoenix v3 proximal-phalanx finger segment + gauntlet tendon-anchor pair, a 3D-printed body-powered upper-limb prosthetic component compliant with the e-NABLE Device Library specifications. The finger proximal phalanx is a PLA 3D-printed part approximately 55 mm long, 18 mm wide, 15 mm tall, with an internal 2 mm diameter tendon channel from the fingertip joint down through the palm. Flexion is driven by a braided fishing-line or polyester tendon anchored at the fingertip and routed through the PIP and MCP pivot pins, reacting against a wrist-driven gauntlet. Design tendon tension is 30 N nominal with a 50 N maximum per e-NABLE specification (30-50 N range). Joint pivot pins are 2 mm diameter steel machine screws acting in double shear. Target material is PLA 3D-printed on an FFF printer with typical layer adhesion giving a conservative tensile yield of 35 MPa (PLA bulk yield ~50 MPa; 0.7 anisotropy factor on Z-direction strength) and flexural modulus ~3.5 GPa. Print orientation is with the length of the finger parallel to the build plate (Z axis = finger thickness). The part must sustain a 50 N tendon pull with a safety factor of 2.0, i.e. verified to 100 N pull, without part fracture or pivot-hole ovalization greater than 0.2 mm. Joint torque envelope: the MCP pivot must transmit up to 50 N * 30 mm moment arm = 1.5 Nm design torque. Deliverable is a single CAD part of the Phoenix v3 proximal phalanx plus a dummy of the MCP pin suitable for (a) linear static structural FEA at 100 N verification tendon load applied at the fingertip anchor with the MCP pivot fixed, (b) pin-bearing check on the pivot hole. Vibration, thermal, fluid, radiation, buckling analyses are NOT required.",
+  "short_prompt": "Design the proximal-phalanx finger segment of an e-NABLE Phoenix v3 body-powered upper-limb prosthetic, 3D-printed in PLA on an FFF printer with print orientation parallel to the build plate so the Z-axis is finger thickness. Flexion is driven by a braided tendon routed through an internal channel and pivoted on 2 mm steel pins in double shear. Design tendon tension 30-50 N per e-NABLE spec; safety factor 2.0 so verify to 100 N, with pivot-hole ovalization <= 0.2 mm. PLA design strength 35 MPa (bulk yield ~50 MPa, 0.7 anisotropy knockdown for Z).\n\nEnvelope: ~55 x 18 x 15 mm phalanx with a 2 mm tendon channel and 2 mm pivot holes at PIP and MCP.\n\nLoad cases.\n- LC1 tendon nominal: 30 N axial pull at fingertip anchor.\n- LC2 tendon max: 50 N axial pull at fingertip anchor.\n- LC3 tendon factored (SF 2): 100 N verification pull at fingertip anchor with MCP pivot fixed.\n- LC4 MCP joint torque: 1.5 Nm (50 N at ~30 mm moment arm) about the MCP pivot.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "e-NABLE Phoenix v3 proximal-phalanx finger",
+    "brief": "Design a PLA 3D-printed Phoenix v3 proximal phalanx taking a 50 N tendon pull with SF 2 (verified to 100 N) and 1.5 Nm MCP joint torque.",
+    "geometric_constraints": {
+      "phalanx_length_mm": 55,
+      "phalanx_width_mm": 18,
+      "phalanx_height_mm": 15,
+      "tendon_channel_diameter_mm": 2,
+      "pivot_pin_diameter_mm": 2
+    },
+    "material": {
+      "name": "PLA FFF-printed",
+      "tensile_yield_MPa": 35,
+      "flexural_modulus_GPa": 3.5,
+      "anisotropy_factor_Z_over_XY": 0.7,
+      "density_kg_m3": 1240
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "tendon_nominal",
+        "magnitude_N": 30,
+        "application": "axial pull on tendon channel at fingertip"
+      },
+      {
+        "id": "LC2",
+        "name": "tendon_max",
+        "magnitude_N": 50,
+        "application": "axial pull at fingertip"
+      },
+      {
+        "id": "LC3",
+        "name": "tendon_factored_SF2",
+        "magnitude_N": 100,
+        "application": "verification load"
+      },
+      {
+        "id": "LC4",
+        "name": "MCP_joint_torque",
+        "magnitude_Nm": 1.5,
+        "application": "torque about MCP pivot"
+      }
+    ],
+    "boundary_conditions": {
+      "MCP_pivot": "fixed (double-shear pin)",
+      "PIP_pivot": "pinned",
+      "fingertip_anchor": "tendon pull applied"
+    },
+    "objective": {
+      "primary": "pass structural criteria",
+      "secondary": "minimize print mass and time"
+    },
+    "output_format": {
+      "geometry": [
+        "STL",
+        "STEP_AP242"
+      ],
+      "body_count": "single part",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "pivot_hole_ovalization_mm",
+        "part_mass_g",
+        "print_time_min_est"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "tendon_design_tension_N",
+        "limit_N": 50,
+        "derivation": "e-NABLE upper bound",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tendon_safety_factor",
+        "limit": 2.0,
+        "derivation": "verified to 2x max design load",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_MPa",
+        "limit_MPa": 35,
+        "derivation": "PLA tensile yield (Z-direction anisotropy already folded in)",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "pivot_hole_ovalization_mm",
+        "limit_mm": 0.2,
+        "derivation": "pin-bearing durability",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "MCP_joint_torque_Nm",
+        "limit_Nm": 1.5,
+        "derivation": "50 N x 30 mm moment arm",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10 + bearing pin",
+      "mesh_size_mm_in_critical_regions": 0.5,
+      "solver_hints": [
+        "FreeCAD-FEM",
+        "CalculiX",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static tendon pull + joint torque"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Body-powered manual device.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Stocky part."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Cyclic fatigue of tendon channel",
+      "Fitting to user hand anatomy",
+      "Aesthetic finish / color"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "3D-printed anisotropic PLA structural check",
+    "tendon SF 2 load verification",
+    "joint torque envelope",
+    "humanitarian / open-source assistive device",
+    "single-part FEA with pin-bearing detail"
+  ]
+}

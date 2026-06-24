@@ -1,0 +1,229 @@
+{
+  "id": "281_a41_nasa_docking_floor",
+  "open_cad_source": true,
+  "source": {
+    "catalog_ref": "A41",
+    "year": 2021,
+    "tier": "A"
+  },
+  "domain": "space_structural",
+  "part_class": "spacecraft_docking_floor",
+  "full_prompt": "Design a single-part monolithic docking-adapter floor per the NASA 'Spacecraft Docking Adapter with Flexible but Load-Bearing Floor' open-CAD challenge. The floor is the walkable interface between a docked crew vehicle and a station module. Geometric constraints per the brief: floor accommodates a standing spacesuited astronaut footprint of 1.0 m x 0.78 m; each boot footprint 0.39 m x 0.24 m; total usable floor depth (floor-to-ceiling) at least 16 in (406 mm) below the docking tunnel flange; floor circular OD 1.6 m with a central 0.8 m diameter docking-hatch opening. Material: aluminum-lithium alloy 2195 (E = 78 GPa, yield = 540 MPa, ultimate = 590 MPa, density = 2710 kg/m^3). Floor thickness to be sized. Mounted around perimeter to the docking tunnel with 24 bolted lugs (M8 Grade A2-70 stainless). Load cases: (R1) Single-boot astronaut crash: 2.5 x astronaut-plus-suit mass (160 kg) = 400 kg lumped through a single boot footprint 0.39 x 0.24 m, = 3,924 N over 0.0936 m^2 = 42 kPa patch load; max von Mises <= yield / 1.5 = 360 MPa; floor deflection at load <= 5 mm. (R2) Two-boot standing: full astronaut 160 kg through two 0.39 x 0.24 m patches = 1,570 N total, 8.4 kPa each patch; max von Mises <= 360 MPa; deflection <= 2 mm. (R3) Docking flange pressurized load: cabin pressure 1 atm (101.3 kPa) acting on the full 1.6 m diameter floor area from above = 203,700 N total (2.01 m^2 x 101.3 kPa); max von Mises <= yield / 1.25 = 432 MPa; deflection <= 15 mm. (R4) Floor flexibility: a quasi-static 500 N uniform load across the full walking area must produce a measurable but bounded deflection (target 5-15 mm) so the floor 'gives' slightly under load (challenge 'flexible but load-bearing' objective). (R5) Floor mass <= 35 kg. (R6) First modal frequency fixed at perimeter >= 20 Hz. Primary verification: structural FEA (linear static x3 pass/fail cases + R4 flexibility range) + modal (R6). Vibration secondary via R6. Thermal, fluid, radiation NOT required. Deliverables: STEP AP242 + Parasolid floor, perimeter bolt drawing, and a report listing floor mass in kg, max von Mises per case in MPa, deflection per case in mm, first modal frequency in Hz.",
+  "short_prompt": "Design a single-part monolithic docking-adapter floor per the NASA 'Spacecraft Docking Adapter with Flexible but Load-Bearing Floor' open-CAD challenge. The floor is the walkable interface between a docked crew vehicle and a station module.\n\nEnvelope: circular 1.6 m OD with an 0.8 m central hatch opening, depth >= 406 mm (16 in) below the tunnel flange, accommodating a standing spacesuited astronaut footprint of 1.0 m x 0.78 m with 0.39 x 0.24 m boots. Perimeter attachment via 24 M8 lugs.\n\nFactor regime: yield FoS 1.5 for crash/standing cases, yield FoS 1.25 for the pressurized case; the brief also asks for a bounded 'flexible but load-bearing' deflection target.\n\nLoad cases.\n- Single-boot crash: 400 kg (2.5 x 160 kg suited astronaut) through one 0.39 x 0.24 m boot = 42 kPa patch (3,924 N).\n- Two-boot standing: 160 kg through two 0.39 x 0.24 m patches = 8.4 kPa per patch.\n- Docking flange pressurized: 1 atm (101.3 kPa) across the full 1.6 m OD floor (~203.7 kN total).\n- Flexibility: 500 N uniform UDL across the walking area, target deflection 5-15 mm.\n- Fixed-perimeter first-mode frequency >= 20 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "NASA spacecraft docking floor",
+    "brief": "Al-Li 2195 circular floor, 1.6 m OD with 0.8 m central hatch. Flexible but load-bearing, survives boot crash + pressurized cabin differential.",
+    "geometric_constraints": {
+      "OD_mm": 1600,
+      "central_hatch_OD_mm": 800,
+      "floor_depth_below_tunnel_mm_min": 406,
+      "spacesuit_footprint_mm": "1000 x 780",
+      "boot_footprint_mm": "390 x 240",
+      "perimeter_bolts": {
+        "count": 24,
+        "size": "M8 A2-70"
+      }
+    },
+    "material": {
+      "name": "Al-Li 2195 alloy",
+      "properties": {
+        "youngs_modulus_GPa": 78,
+        "yield_strength_MPa": 540,
+        "ultimate_tensile_strength_MPa": 590,
+        "density_kg_m3": 2710
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "single_boot_crash",
+        "patch_force_N": 3924,
+        "patch_mm": "390 x 240"
+      },
+      {
+        "id": "LC2",
+        "name": "two_boot_standing",
+        "total_force_N": 1570,
+        "patch_each_mm": "390 x 240"
+      },
+      {
+        "id": "LC3",
+        "name": "cabin_pressure",
+        "pressure_kPa": 101.3,
+        "area_m2": 2.01
+      },
+      {
+        "id": "LC4",
+        "name": "flexibility_check",
+        "uniform_force_N": 500,
+        "target_deflection_mm_range": [
+          5,
+          15
+        ]
+      },
+      {
+        "id": "LC5",
+        "name": "modal"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "24 perimeter bolt holes fully fixed",
+      "loads": "patch or uniform pressure on floor"
+    },
+    "objective": {
+      "minimize": "floor_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "floor_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "deflection_LC4_mm",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 360,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "deflection_at_load",
+        "limit_mm": 5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 360,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "structural_analysis",
+        "metric": "deflection_at_load",
+        "limit_mm": 2,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3a",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 432,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3b",
+        "type": "structural_analysis",
+        "metric": "max_floor_deflection",
+        "limit_mm": 15,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "flexibility_deflection_range",
+        "limit_range_mm": [
+          5,
+          15
+        ],
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "floor_mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 20,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell or solid-shell",
+      "mesh_size_mm_in_critical_regions": 15,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Cabin ambient.",
+      "fluid_analysis": "Pressure differential reduced to uniform pressure.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Floor under bending; not driving."
+    }
+  },
+  "eval_coverage": [
+    "spacesuit + boot patch loads",
+    "flexibility range (upper and lower deflection bound)",
+    "cabin-pressure differential",
+    "modal floor for mission"
+  ]
+}

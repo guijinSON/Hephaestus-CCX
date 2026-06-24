@@ -1,0 +1,230 @@
+{
+  "id": "045_s14_nasa_6030_am_bracket",
+  "source": {
+    "catalog_ref": "S14",
+    "year": 2021,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "laser_powder_bed_fusion_bracket",
+  "full_prompt": "Design a Laser Powder Bed Fusion (LPBF) AlSi10Mg spaceflight bracket classified Additive Manufacturing Classification (AMC) Class B per NASA-STD-6030 (2021). NASA-STD-6030 Section 5.2 specifies that AM-produced allowables are derived by applying a knockdown factor to the MMPDS-equivalent wrought properties unless a qualified Equipment-and-Process Control (EPC) building-block database is available. For AMC Class B parts in development the default knockdown factor is 0.85 on strength and 0.85 on fatigue endurance; additionally for LPBF-AlSi10Mg the tensile Y-direction (perpendicular to build) property is typically the governing direction. The bracket holds a 2.5 kg electronics unit.\n\nGeometry. The bracket is topology-optimized, but the designer delivers a topology-optimized solid of roughly 120 mm x 80 mm x 50 mm. Base flange 120 mm x 30 mm x 5 mm with 4 M5 holes on 100 mm x 20 mm pattern. Upper interface 80 mm x 40 mm for the 2.5 kg box (4 M4 inserts). Build orientation: base flange at Z = 0, build direction Z+. Minimum wall thickness 1.2 mm. Supports must be accessible for removal; unsupported overhangs limited to 45 degrees relative to build plate. Surface as-built on critical hole bores must be post-machined to Ra 3.2 micron or better.\n\nMaterial. LPBF AlSi10Mg stress-relieved at 300 C / 2 h, with minimum Z-direction properties (typical vendor data with NASA-STD-6030 AMC-B 0.85 knockdown applied): E = 70 GPa, nu = 0.33, rho = 2670 kg/m^3, Fty = 220 * 0.85 = 187 MPa, Ftu = 390 * 0.85 = 331.5 MPa, K_IC = 18 MPa*m^0.5 (Z-direction, reduced vs wrought). X-Y plane properties are higher (Fty approx 0.95 x 220 = 209 MPa) but the brief uses the Z governing value.\n\nLoad cases. LC1 (quasi-static launch): 20 g axial + 10 g lateral simultaneously on the 2.5 kg mass at the upper interface CG, with the 4 base bolts fixed. LC2 (random vib Miles-equivalent): 30 g envelope of 20 Grms random, each axis separately. LC3 (thermoelastic): DeltaT from 20 C to -40 C bulk change.\n\nPass/fail criteria. (R1) Max von Mises under LC1 limit x NASA-STD-5001B protoflight yield FoS 1.25 must not exceed Z-direction Fty with AMC-B knockdown = 187 MPa; equivalently max stress at limit <= 187 / 1.25 = 150 MPa. (R2) Max von Mises under LC1 limit x ultimate FoS 1.4 must not exceed Ftu_Z with knockdown = 331.5 MPa; equivalently max stress at limit <= 331.5 / 1.4 = 237 MPa. R1 binding. (R3) Max von Mises under LC2 3-sigma random response must not exceed Ftu_Z / 1.4 = 237 MPa. (R4) For LC3 thermoelastic, max von Mises must not exceed Fty_Z = 187 MPa (unfactored - thermal is not a primary load per 5001B). (R5) AMC Class B compliance: the part must declare its AMC class in the deliverable and meet the 115 AMRs; as a CAD-agent proxy, only Class B geometric AMRs are checked: (a) minimum wall 1.2 mm enforced, (b) unsupported overhang <= 45 deg, (c) post-machined critical bores to Ra <= 3.2 micron, (d) build orientation documented. Binary compliance. (R6) Bracket as-built mass <= 220 g. (R7) Witness coupons and a critical fatigue location must show fatigue endurance limit >= (wrought endurance at 10^7 cycles) x 0.85; treat as a data-log requirement, not a CAD design variable.\n\nSolver and analysis expectations. Primary: linear static FEM for LC1 three axes and LC3 thermoelastic; random response (PSD modal superposition) for LC2. TET10 at 1.5 mm in critical fillets. Thermal gradient is bulk DeltaT, no transient. Fluid, radiation, buckling NOT required. Material orthotropy (stronger XY than Z) may be modeled explicitly if the solver supports direction-dependent allowables; otherwise use Z as isotropic governing value.\n\nDeliverables. STEP AP242 of bracket, declared AMC class, build-orientation sketch, as-built mass in g, max von Mises per load case, random 3-sigma stress per axis, and an AMR geometric compliance table for R5.",
+  "short_prompt": "Design a topology-optimized, laser-powder-bed-fusion AlSi10Mg spaceflight bracket holding a 2.5 kg electronics unit. Classify the part as AMC Class B per NASA-STD-6030 (2021), applying the default 0.85 knockdown on strength and fatigue endurance with the Z-direction (perpendicular to build) as the governing orientation. Stress factors per NASA-STD-5001B (yield 1.25, ultimate 1.4).\n\nEnvelope: roughly 120 x 80 x 50 mm. Base flange 120 x 30 x 5 mm with 4 M5 holes on a 100 x 20 mm pattern; upper interface 80 x 40 mm with 4 M4 inserts for the avionics box. Build direction Z+ with minimum wall 1.2 mm, unsupported overhangs <= 45 deg, critical bores post-machined to Ra <= 3.2 um.\n\nLoad cases.\n- LC1 quasi-static launch: 20 g axial + 10 g lateral simultaneously on the 2.5 kg mass at the upper interface.\n- LC2 random vibration Miles-equivalent: 30 g envelope of 20 Grms source, each axis separately.\n- LC3 thermoelastic: bulk DeltaT = 60 C (from 20 C to -40 C).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "Mass reduction leverages AM geometric freedom.",
+        "examples": [
+          "Altair OptiStruct",
+          "nTopology",
+          "Ansys Mechanical Topology"
+        ]
+      },
+      {
+        "tool": "AMR_geometric_compliance",
+        "reason": "NASA-STD-6030 115 AMRs include geometric constraints.",
+        "examples": [
+          "nTopology rules",
+          "CAD validation scripts"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "LPBF AlSi10Mg bracket per NASA-STD-6030 AMC Class B",
+    "brief": "Topology-optimized LPBF AlSi10Mg bracket holding 2.5 kg avionics; 0.85 knockdown on Z-direction allowables; protoflight FoS 1.25/1.4; AMC-B AMRs.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 50
+      },
+      "base_flange_mm": {
+        "x": 120,
+        "y": 30,
+        "z": 5
+      },
+      "base_holes": {
+        "count": 4,
+        "size": "M5",
+        "pattern_mm": {
+          "x": 100,
+          "y": 20
+        }
+      },
+      "upper_interface_mm": {
+        "x": 80,
+        "y": 40
+      },
+      "min_wall_thickness_mm": 1.2,
+      "max_unsupported_overhang_deg": 45,
+      "build_direction": "Z+",
+      "critical_bore_Ra_um_max": 3.2
+    },
+    "material": {
+      "name": "LPBF AlSi10Mg stress-relieved 300C/2h",
+      "direction": "Z governing",
+      "AMC_knockdown": 0.85,
+      "properties_with_knockdown": {
+        "E_GPa": 70,
+        "nu": 0.33,
+        "density_kg_m3": 2670,
+        "Fty_MPa": 187,
+        "Ftu_MPa": 331.5,
+        "K_IC_MPa_sqrt_m": 18
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "qs_launch_20g_ax_10g_lat",
+        "payload_kg": 2.5
+      },
+      {
+        "id": "LC2",
+        "name": "random_vib_miles_30g_env",
+        "source_Grms": 20
+      },
+      {
+        "id": "LC3",
+        "name": "thermoelastic_bulk",
+        "deltaT_C": 60
+      }
+    ],
+    "boundary_conditions": {
+      "base_bolts": "fully fixed"
+    },
+    "objective": {
+      "minimize": "as_built_mass",
+      "target_g_max": 220
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "NASA-STD-6030",
+      "revision": "2021-04-21"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit_LC1",
+        "limit_MPa": 150,
+        "derivation": "Fty_Z * AMC_B / 1.25 = 220 * 0.85 / 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit_LC1_ultimate_equiv",
+        "limit_MPa": 237,
+        "derivation": "Ftu_Z * AMC_B / 1.4 = 390 * 0.85 / 1.4",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "random_3sigma_stress_LC2",
+        "limit_MPa": 237,
+        "derivation": "Ftu_Z * AMC_B / 1.4",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "thermoelastic_max_von_mises",
+        "limit_MPa": 187,
+        "derivation": "Fty_Z * AMC_B unfactored",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "AMC_B_geometric_AMRs_compliance",
+        "limit": 1,
+        "derivation": "Subset of NASA-STD-6030 115 AMRs on geometry (walls, overhangs, finish, orientation)",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "==",
+        "note": "binary"
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "as_built_mass",
+        "limit_g": 220,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "fatigue_endurance_vs_wrought_10_7",
+        "limit_factor": 0.85,
+        "derivation": "AMC-B fatigue knockdown",
+        "applies_to": [
+          "coupons"
+        ],
+        "operator": ">=",
+        "note": "verified via process witness coupons, not CAD-intrinsic"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 (orthotropic if supported)",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "nTopology + Abaqus"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "PSD random",
+        "thermoelastic"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not a compressive design."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Process-control EPC witness-coupon qualification",
+      "HIP (Hot Isostatic Press) porosity reduction evaluation",
+      "NDI CT scan acceptance thresholds"
+    ]
+  },
+  "eval_coverage": [
+    "AMC-B knockdown factor applied to MMPDS-equivalent properties",
+    "geometric AMR compliance (walls/overhangs/finish)",
+    "build-orientation-aware Z-direction governing case"
+  ]
+}

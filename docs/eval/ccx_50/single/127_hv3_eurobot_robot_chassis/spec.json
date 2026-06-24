@@ -1,0 +1,211 @@
+{
+  "id": "127_hv3_eurobot_robot_chassis",
+  "source": {
+    "catalog_ref": "HV3",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "autonomous_robotics",
+  "part_class": "robot_chassis_deck",
+  "full_prompt": "Design a monolithic 5083-H111 aluminum base-plate chassis deck for a collegiate autonomous robot contest benchmark on a 3000 mm x 2000 mm playfield, respecting the benchmark perimeter rule: start-size silhouette fits a 1200 mm perimeter (e.g., 300 x 300 mm footprint) and the expanded-size silhouette fits a 1400 mm perimeter (e.g., 400 x 300 mm). The deck is a single flat plate (no welded stiffeners; all pockets and rib features machined from a single billet) with a 300 mm x 300 mm footprint and 8 mm thickness, with an extended wing on one side within the expanded-size envelope (a hinged secondary piece is NOT part of this CAD prompt; only the base deck is to be designed). Geometry: 300 mm x 300 mm square base, 8 mm plate thickness, four pocketed weight-reduction cavities 80 mm x 80 mm x 4 mm deep on a 150 mm spacing, twelve M5 through-holes (5.5 mm clearance) in a 3x4 grid on 60 mm centers for motor + electronics mounting, four 12 mm through-bores at the corners for vertical M12 standoffs, two 25 mm D-shaped cutouts on opposite edges for drive-wheel clearance, integral front edge recess 200 mm wide x 10 mm deep for a pick-up manipulator, total bounding envelope 300 mm x 300 mm x 8 mm. Material 5083-H111 aluminum with E 71 GPa, Poisson's ratio 0.33, density 2660 kg/m^3, yield 145 MPa, UTS 310 MPa. Payload carried: 3.5 kg of electronics + batteries + actuators distributed across the 3x4 grid, plus a 2.0 kg grip end-effector at the front edge recess producing a 0.3 m moment arm from the chassis center. Three load cases. Load Case 1 (match-play operating): the robot carries 3.5 kg on-deck plus 2.0 kg at the front edge recess and accelerates at 1.5 m/s^2 while on a 4 mm play-mat surface; treat as a 1g vertical + 0.15g horizontal body-force load with the four corner standoff bores fully fixed. Load Case 2 (opponent collision): a 50 N horizontal impact on the front edge recess lasting 100 ms per benchmark General Rules collision-survivability practice; evaluate as 50 N quasi-static on the front edge. Load Case 3 (lift-and-drop during setup): 5g vertical downward drop (representing a 0.25 m accidental drop) with only the four corner standoff bores fixed, evaluating the plate as a cantilevered disk. Pass/fail: (R1) under LC1 operating, peak von Mises in the deck must not exceed 72 MPa (yield/2.0, standard robotics engineering practice); (R2) under LC2 collision, peak stress 97 MPa (yield/1.5, transient); (R3) under LC3 drop, peak stress 97 MPa AND maximum deflection of any point on the deck must not exceed 3.0 mm to preserve motor gearhead alignment; (R4) first six natural frequencies must exceed 60 Hz to avoid coupling with the 20-50 Hz typical drive-motor harmonics of brushed DC motors at 3000-6000 rpm on a typical benchmark drivetrain; (R5) deck mass must not exceed 1.6 kg to leave ~5 kg budget for electronics and manipulator in the benchmark total mass limit; (R6) the deck silhouette must fit inside the 1200 mm start-perimeter (sum of perimeter edges <= 1200 mm, trivially 4 x 300 = 1200 mm exactly at limit); the expanded wing footprint including any deck extension must not exceed 1400 mm perimeter. Thermal, fluid, buckling, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 5083-H111 aluminum base-plate chassis deck for a collegiate autonomous robot contest on a 3000 x 2000 mm playfield. The deck is a single billet-machined 300 x 300 x 8 mm flat plate with integral weight-reduction pockets, a 3x4 grid of M5 motor/electronics mounting holes, four corner M12 standoff bores, D-shaped drive-wheel clearance cutouts, and a front-edge recess for a pick-up manipulator. The benchmark perimeter rule limits the start silhouette to a 1200 mm perimeter and the expanded silhouette to 1400 mm. Use yield/2.0 operating and yield/1.5 transient safety factors per standard robotics engineering practice.\n\nEnvelope: 300 x 300 x 8 mm.\n\nLoad cases.\n- LC1 match-play operating: 3.5 kg distributed on the 3x4 grid plus 2.0 kg at the front-edge recess (0.3 m moment arm), 1 g vertical + 0.15 g horizontal body force (1.5 m/s^2 accel), four corner standoffs fixed.\n- LC2 opponent collision: 50 N quasi-static horizontal at the front-edge recess (100 ms impact).\n- LC3 lift-and-drop: 5 g vertical down (0.25 m accidental drop), only the four corner standoff bores fixed.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Collegiate autonomous robot chassis deck plate benchmark",
+    "brief": "5083-H111 flat base plate 300x300x8 with integral wheel cutouts + motor grid + front edge recess; 1200/1400 mm perimeter.",
+    "geometric_constraints": {
+      "deck_mm": {
+        "w": 300,
+        "h": 300,
+        "t": 8
+      },
+      "motor_grid_holes": {
+        "count": 12,
+        "diameter_mm": 5.5,
+        "pattern": "3x4 @ 60 mm"
+      },
+      "corner_bores": {
+        "count": 4,
+        "diameter_mm": 12
+      },
+      "wheel_cutouts": {
+        "count": 2,
+        "diameter_mm": 25
+      },
+      "front_edge_recess_mm": {
+        "w": 200,
+        "d": 10
+      },
+      "pockets_mm": {
+        "count": 4,
+        "w": 80,
+        "h": 80,
+        "d": 4
+      },
+      "start_perimeter_limit_mm": 1200,
+      "expanded_perimeter_limit_mm": 1400,
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 5083-H111",
+      "properties": {
+        "youngs_modulus_GPa": 71,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2660,
+        "yield_MPa": 145,
+        "ultimate_tensile_strength_MPa": 310
+      }
+    },
+    "payload": {
+      "on_deck_kg": 3.5,
+      "front_recess_kg": 2.0,
+      "moment_arm_m": 0.3
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "match_play",
+        "vertical_g": 1.0,
+        "horizontal_g": 0.15
+      },
+      {
+        "id": "LC2",
+        "name": "opponent_collision",
+        "force_N": 50,
+        "duration_ms": 100,
+        "location": "front_edge"
+      },
+      {
+        "id": "LC3",
+        "name": "drop_5g",
+        "vertical_g": 5.0
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "max_deflection_mm",
+        "first_six_freqs_Hz",
+        "silhouette_perimeter_mm",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 72,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 97,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_and_deflection",
+        "limit_compound": {
+          "stress_MPa": 97,
+          "deflection_mm": 3.0
+        },
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 60,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 1.6,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "silhouette_perimeter",
+        "limit_mm": 1200,
+        "applies_to": [
+          "start_footprint"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid hybrid",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Low-power electronics, no thermal gate.",
+      "fluid_analysis": "Indoor playfield, no aero load.",
+      "buckling_analysis": "Plate is too thick to be buckling-critical at these loads.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Wheel encoder mount flatness",
+      "IR beacon attach point",
+      "Rules-verifier perimeter string check"
+    ]
+  },
+  "eval_coverage": [
+    "rulebook perimeter silhouette gate",
+    "robotics-standard yield/2.0 operating SF",
+    "drive-motor harmonic avoidance",
+    "drop survival with deflection cap"
+  ]
+}

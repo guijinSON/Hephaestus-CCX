@@ -1,0 +1,147 @@
+**
+** 126_hv2 Hyperloop pod shell -- submission-agnostic CalculiX template
+**
+** Spliced by wire_bcs.py with:
+**   - mesh.inp        (gmsh -3 of agent's out.step -> C3D tet mesh)
+**   - *ELSET=Eall     (auto-built from C3D ELSETs by wire_bcs.py)
+**   - *NSET=NEND1     (z_min end face, clamped 1-3)
+**   - *NSET=NEND2     (z_max end face, clamped 1-3)
+**   - *NSET=NINNER    (inner cylindrical surface NSET; for debug / NODE PRINT)
+**   - *SURFACE=SINNER (inner cylindrical surface as element-face list,
+**                      auto-built from meta.json's `pressure_surfaces`)
+**
+** Units: mm, N, MPa, t (tonne), s -- consistent SI-mm
+**   E = 72 GPa  -> 72000 MPa
+**   nu = 0.33
+**   rho = 2810 kg/m^3 = 2.810e-9 t/mm^3
+**   pressure 0.2 MPa  =  0.2 N/mm^2  ~  spec factored deltaP (LC1 +202450 Pa,
+**                                       LC2 -198000 Pa, both rounded to 0.2 MPa
+**                                       per the eval-kit task spec)
+**   GRAV magnitude    : g = 9810 mm/s^2
+**
+** Coordinate frame: +z = pod axis, +x = lateral, +y = vertical.
+**
+** Five steps:
+**   STEP 1  LC1   *STATIC   internal pressurization +0.2 MPa  (*DSLOAD on SINNER)
+**   STEP 2  LC2   *STATIC   external crush         -0.2 MPa   (*DSLOAD on SINNER, sign-reversed)
+**   STEP 3  LC2   *BUCKLE   linear eigenvalue under same external-crush load
+**   STEP 4  LC3   *STATIC   cornering body force   0.4 g lateral + 2 g vertical (*DLOAD GRAV)
+**   STEP 5        *FREQUENCY  first 5 modes (R4 vs 10-40 Hz track-joint band)
+**
+** Note on LC1/LC2 pressure sign convention:
+**   The eval-kit task brief calls these loads "*DSLOAD" pressures on the
+**   inner cylindrical surface.  In CalculiX 2.22, *DSLOAD is reserved for
+**   shell-edge loads; for 3-D solid (C3D*) elements with a *SURFACE
+**   TYPE=ELEMENT block, the equivalent surface-pressure card is *DLOAD
+**   with the surface name and the standard P magnitude.
+**   Sign: positive P pushes INTO the element (against the outward face
+**   normal).  SINNER's outward normal is radially INWARD (the cavity is
+**   outside the wall element from the inner-face perspective), so:
+**     * P = +0.2 MPa pushes the wall radially OUTWARD -> INTERNAL pressurization (LC1).
+**     * P = -0.2 MPa pushes the wall radially INWARD  -> EXTERNAL crush equivalent
+**       on the wall (membrane-equivalent for the thin 5/900 wall, and
+**       buckling-equivalent for the open-ended cylinder in this kit).
+**
+** (NOTE: gmsh's mesh.inp already emits a *Heading at the top; CCX rejects
+**  duplicate *HEADING cards, so we omit one here and rely on comments.)
+**
+** ---- Material: Aluminum 7075-T73 (mm-MPa-N-tonne) -----------------------
+*MATERIAL, NAME=AL7075T73
+*ELASTIC
+72000., 0.33
+*DENSITY
+2.810e-9
+**
+** ---- Solid section (Eall auto-built from gmsh C3D* ELSETs) --------------
+*SOLID SECTION, ELSET=Eall, MATERIAL=AL7075T73
+**
+** ---- Inner cylindrical surface (SINNER) for *DLOAD pressure -----------
+** wire_bcs.py emits *SURFACE, NAME=SINNER, TYPE=ELEMENT directly from the
+** `pressure_surfaces` block in meta.json (every tet face whose three
+** corner nodes lie on the inner-radius cylinder).  Nothing to declare
+** here.
+**
+** ---- Boundary: both end flanges fully clamped (1-3 DOF; "NFIXED") -------
+*BOUNDARY
+NEND1, 1, 3, 0.0
+NEND2, 1, 3, 0.0
+**
+** =========================================================================
+** STEP 1  LC1  Internal pressurization +0.2 MPa  (push inner surface outward)
+**              R1 limit: peak von Mises <= 218 MPa (yield/2.0)
+** =========================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*DLOAD
+SINNER, P, 0.2
+*NODE FILE
+U
+*EL FILE
+S
+*EL PRINT, ELSET=Eall
+S
+*END STEP
+**
+** =========================================================================
+** STEP 2  LC2  External crush -0.2 MPa  (push inner surface inward,
+**              membrane-equivalent to outer-surface inward push for thin shell)
+**              R3 limit: peak von Mises <= 218 MPa (yield/2.0)
+** =========================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*DLOAD, OP=NEW
+SINNER, P, -0.2
+*NODE FILE
+U
+*EL FILE
+S
+*EL PRINT, ELSET=Eall
+S
+*END STEP
+**
+** =========================================================================
+** STEP 3  LC2  *BUCKLE  linear eigenvalue analysis under external crush
+**              R2 limit: first eigenvalue >= 2.0  (factored crush already at SF2)
+** =========================================================================
+*STEP
+*BUCKLE
+5
+*DLOAD, OP=NEW
+SINNER, P, -0.2
+*NODE FILE
+U
+*END STEP
+**
+** =========================================================================
+** STEP 4  LC3  Cornering: 0.4 g lateral (+x) + 2.0 g vertical (-y) body force
+**              R1 (LC3) limit: peak von Mises <= 218 MPa (yield/2.0)
+**              GRAV magnitude in mm-MPa-N-tonne: g_eff = 9810 mm/s^2 * factor
+**                lateral  : 0.4 * 9810 =  3924 mm/s^2 along +x
+**                vertical : 2.0 * 9810 = 19620 mm/s^2 along -y
+** =========================================================================
+*STEP
+*STATIC
+1.0, 1.0
+*DLOAD, OP=NEW
+Eall, GRAV,  3924.0, 1.0,  0.0, 0.0
+Eall, GRAV, 19620.0, 0.0, -1.0, 0.0
+*NODE FILE
+U
+*EL FILE
+S
+*EL PRINT, ELSET=Eall
+S
+*END STEP
+**
+** =========================================================================
+** STEP 5  *FREQUENCY  first 5 modes
+**              R4 limit: f1..f5 must lie outside the 10-40 Hz track-joint band
+** =========================================================================
+*STEP
+*FREQUENCY
+5
+*NODE FILE
+U
+*END STEP

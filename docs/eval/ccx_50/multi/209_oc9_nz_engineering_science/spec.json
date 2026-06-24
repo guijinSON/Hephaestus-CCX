@@ -1,0 +1,504 @@
+{
+  "id": "209_oc9_nz_engineering_science",
+  "source": {
+    "catalog_ref": "OC11",
+    "year": 2026,
+    "tier": "C",
+    "original_sample": "docs/eval/samples/209_oc9_nz_engineering_science.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "structural_modelling_brief",
+  "part_class": "pedestrian_bridge_truss_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "For an 8-hour modelling-only engineering-science benchmark, submit an analysis-driven preliminary design of a 20 m single-span pedestrian footbridge over a river crossing on a city council pedestrian network, carrying a 3 m wide deck. The bridge is a simply-supported steel Warren truss explicitly modelled as a multi-part assembly with top chords, bottom chords, diagonal web members, vertical web members, timber deck planks, transverse cross-beams connecting the two truss planes, and bolted / welded connection plates at panel nodes. Top and bottom chords are in AS/NZS 3679.1 Grade 300 steel (Young's modulus 200 GPa, Poisson 0.30, yield 300 MPa, density 7850 kg/m^3). Timber deck planking is LVL (Young's modulus 13 GPa, design tension parallel to grain 22 MPa, density 600 kg/m^3). Design loads per AS/NZS 1170.1 pedestrian crowd: (LC1) uniformly distributed pedestrian live load 5 kPa on the full 20 m x 3 m deck; (LC2) concentrated load 10 kN on a 0.5 m x 0.5 m patch at mid-span deck; (LC3) pedestrian dynamic vertical: 280 N at first-mode frequency 2 Hz applied at mid-span to check serviceability; (LC4) wind lateral on elevation: 1.0 kPa on the full truss side elevation per AS/NZS 1170.2 region A7 ultimate. Pass/fail: (R1) max truss chord axial stress under LC1+LC2 below 200 MPa (yield 300 / 1.5), (R2) mid-span vertical deflection under LC1 below L/500 = 40 mm, (R3) vertical acceleration under LC3 below 0.5 m/s^2 per AS 5100.2 pedestrian comfort, (R4) lateral displacement under LC4 below L/400 = 50 mm. Verification is performed on the assembled multi-body STEP skeleton with representative nodal connection stiffness; per-part stress is reported but does not gate pass/fail. Because organizers mark the analysis narrative rather than a 3D geometry, the primary deliverable is an 8-page analytical report; the STEP AP242 skeleton model is emitted so the schema remains uniform with the rest of the benchmark set.",
+  "short_prompt": "For an 8-hour modelling-only engineering-science benchmark, submit the preliminary design of a 20 m single-span pedestrian footbridge carrying a 3 m wide deck, delivered as a multi-part simply-supported steel Warren truss.\n\nChords are AS/NZS 3679.1 Grade 300 steel (E 200 GPa, Poisson 0.30, yield 300 MPa, density 7850 kg/m^3); timber deck planking is LVL (E 13 GPa, tension parallel to grain 22 MPa, density 600 kg/m^3).\n\nLoad cases per AS/NZS 1170.\n- LC1 uniform pedestrian live load 5 kPa on the full 20 m x 3 m deck.\n- LC2 concentrated load 10 kN on a 0.5 x 0.5 m patch at mid-span.\n- LC3 pedestrian dynamic vertical: 280 N at first-mode frequency 2 Hz at mid-span.\n- LC4 wind lateral on elevation: 1.0 kPa on the full truss side elevation per AS/NZS 1170.2 region A7 ultimate.\n\nMid-span deflection limit L/500 = 40 mm; lateral L/400 = 50 mm; vertical accel under LC3 <= 0.5 m/s^2 per AS 5100.2.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Engineering-science pedestrian bridge model (multi-part Warren truss)",
+    "brief": "20 m simply-supported steel Warren truss + LVL deck modelled as a multi-part assembly of chords, web diagonals / verticals, cross-beams, deck planks, and connection plates.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "top_chord_member",
+        "role": "upper chord forming the compression flange of each truss plane",
+        "count_min": 2,
+        "geometric_constraints": {
+          "total_length_m": 20
+        },
+        "material_hint": "AS/NZS 3679.1 Grade 300",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "bottom_chord_member",
+        "role": "lower chord forming the tension flange of each truss plane",
+        "count_min": 2,
+        "geometric_constraints": {
+          "total_length_m": 20
+        },
+        "material_hint": "AS/NZS 3679.1 Grade 300",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "web_diagonal_member",
+        "role": "diagonal web member forming the Warren pattern between chords",
+        "count_min": 10,
+        "geometric_constraints": {},
+        "material_hint": "AS/NZS 3679.1 Grade 300",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "web_vertical_member",
+        "role": "vertical web member at panel nodes (if used in the Warren variant)",
+        "count_min": 5,
+        "geometric_constraints": {},
+        "material_hint": "AS/NZS 3679.1 Grade 300",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "cross_beam",
+        "role": "transverse beam connecting the two truss planes and supporting deck planks",
+        "count_min": 6,
+        "geometric_constraints": {
+          "length_m": 3
+        },
+        "material_hint": "AS/NZS 3679.1 Grade 300",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "deck_plank",
+        "role": "LVL timber deck plank running between cross-beams",
+        "count_min": 20,
+        "geometric_constraints": {
+          "panel_m": {
+            "L": 3
+          }
+        },
+        "material_hint": "LVL timber",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "connection_plate",
+        "role": "bolted / welded gusset plate at each panel node tying chords and web members together",
+        "count_min": 12,
+        "geometric_constraints": {},
+        "material_hint": "AS/NZS 3679.1 Grade 300 plate",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "20 m span x 3 m deck width x team-selected truss depth",
+      "coordinate_system": "X along span, Y transverse across deck, Z vertical"
+    },
+    "material": {
+      "primary": {
+        "name": "AS/NZS 3679.1 Grade 300 steel",
+        "youngs_modulus_GPa": 200,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 7850,
+        "yield_strength_MPa": 300
+      },
+      "deck": {
+        "name": "LVL timber",
+        "E_GPa": 13,
+        "design_tension_parallel_MPa": 22,
+        "density_kg_m3": 600
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pedestrian_udl",
+        "pressure_kPa": 5.0,
+        "area_m2": 60
+      },
+      {
+        "id": "LC2",
+        "name": "concentrated_10kN",
+        "F_kN": 10,
+        "footprint_mm": [
+          500,
+          500
+        ],
+        "application": "mid-span"
+      },
+      {
+        "id": "LC3",
+        "name": "pedestrian_dynamic",
+        "F_N": 280,
+        "freq_Hz": 2
+      },
+      {
+        "id": "LC4",
+        "name": "wind_lateral",
+        "pressure_kPa": 1.0,
+        "application": "side elevation"
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "chord-web connections via gusset plates with bolted / welded stiffness; cross-beams bolted to bottom chord nodes; deck planks pinned to cross-beams",
+      "support": "simply-supported at each end"
+    },
+    "objective": "size truss and deck to pass AS/NZS 1170 serviceability and strength gates with minimum steel tonnage",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "chord_axial_stress_MPa",
+        "mid_span_deflection_mm",
+        "vertical_acceleration_m_s2",
+        "lateral_deflection_mm",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_chord_axial_stress",
+        "limit_MPa": 200,
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mid_span_deflection",
+        "limit_mm": 40,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "vertical_deck_acceleration",
+        "limit_m_s2": 0.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "lateral_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[3].count_min",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[5].geometric_constraints",
+          "prompt.parts[6].count_min"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "top chord / diagonal axial load into gusset"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "bottom chord / diagonal axial load into gusset"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "cross-beam reaction into bottom chord node"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "E",
+        "F"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "deck plank shear into cross-beam"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "welded",
+      "load_path": "gusset plate weld to chord"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Warren trusses are explicitly multi-member skeletons (chords + diagonals + verticals) connected by gusset plates at panel nodes, tied across the deck width by cross-beams and deck planks.",
+    "speculation_caveats": "Panel count, diagonal angle, and vertical presence are team-selectable; materials, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "docs/eval/samples/209_oc9_nz_engineering_science.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R_ASM1"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[3].count_min",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[5].geometric_constraints",
+      "prompt.parts[6].count_min"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2",
+      "metric": "max_chord_axial_stress",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "mid_span_deflection",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_OTHER",
+      "solver": "calculix",
+      "analysis_card": "*DYNAMIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_dynamic_step",
+      "metric": "vertical_deck_acceleration",
+      "metric_source": "dynamic/static response block",
+      "outputs": [
+        "model.dat: dynamic displacement response"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC4",
+      "metric": "lateral_deflection",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_ASM1_004",
+      "requirement_id": "R_ASM1",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC4",
+      "metric": "assembly_interface_connection_DCR",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_005",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

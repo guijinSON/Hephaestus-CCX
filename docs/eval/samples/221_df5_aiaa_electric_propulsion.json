@@ -1,0 +1,165 @@
+{
+  "id": "221_df5_aiaa_electric_propulsion",
+  "source": {
+    "catalog_ref": "DF2",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "electric_propulsion_structural",
+  "part_class": "hybrid_electric_motor_rotor_shaft",
+  "full_prompt": "Design the primary rotor shaft of a 2.5 MW electric motor driving the aft BLI fan of a hybrid-electric boundary-layer-ingesting single-aisle aircraft propulsion benchmark. Motor operates at 6500 rpm (680 rad/s) in cruise; peak torque 3675 N-m (2.5 MW / 680 rad/s), peak thrust to be reacted by an aft thrust bearing of 15 kN axial. Shaft material: 300M high-strength steel (Young's modulus 205 GPa, Poisson 0.29, yield 1650 MPa, ultimate 1930 MPa, density 7850 kg/m^3). Shaft outer diameter 90 mm, bore 30 mm, length 800 mm between front radial bearing and rear radial+thrust bearing. Operating envelope per FAR Part 25 + RTCA DO-160G: -55 C to +85 C, 55,000 ft service altitude, BLI fan with 15% inlet total-pressure distortion amplitude at 3P frequency = 325 Hz. Load cases: (LC1) steady torque: 3675 N-m transmitted through shaft; (LC2) thrust: 15 kN axial at rear thrust bearing; (LC3) fan blade-out (FBO): single blade-out on the BLI fan produces 35,000 N unbalance at the fan plane 250 mm forward of the front bearing, transmitted as reversing radial load at front shaft journal, resonant dwell at 325 Hz for 10 seconds before shutdown; (LC4) inlet distortion cyclic: 15% of thrust reversing at 325 Hz, steady-state 10^8 cycle fatigue over service life; (LC5) overtorque 150% for 10 ms electromagnetic fault (5510 N-m); (LC6) overspeed 115% (7475 rpm). Pass/fail per MIL-HDBK-516C + FAR 25.901: (R1) max von Mises across LC1-LC2+LC5 <= 1100 MPa (yield 1650 / 1.5); (R2) FBO transient peak stress LC3 <= 1930 MPa (ultimate, one-time event); (R3) fatigue 10^8 alternating stress at bearing journals <= 400 MPa (endurance for polished 300M); (R4) overspeed LC6 produces no yielding; (R5) lateral critical speed >= 15% margin above 6500 rpm (i.e., first lateral mode outside 5525-7475 rpm window); (R6) shaft mass <= 35 kg. Deliverables: STEP, FEA per case, rotordynamics Campbell diagram, fatigue summary, and mass report.",
+  "short_prompt": "Design the primary rotor shaft of a 2.5 MW electric motor driving the aft BLI fan of a hybrid-electric boundary-layer-ingesting single-aisle aircraft, operating at 6500 rpm cruise with 3675 N-m peak torque and a 15 kN aft thrust bearing. Material class: 300M high-strength steel. Qualify per MIL-HDBK-516C + FAR 25.901, with 1.5 FoS on yield for steady cases, ultimate allowed for one-shot FBO, and 15% Campbell margin above 6500 rpm.\n\nEnvelope: 90 mm OD x 30 mm bore x 800 mm length between the front radial bearing and the rear radial-plus-thrust bearing.\n\nLoad cases.\n- LC1 steady torque: 3675 N-m through the shaft.\n- LC2 thrust: 15 kN axial at the rear thrust bearing.\n- LC3 FBO: 35,000 N unbalance at the fan plane 250 mm forward of the front bearing, dwell at 325 Hz for 10 s.\n- LC4 inlet distortion: 15% of thrust reversing at 325 Hz (3P) for 1e8 cycles.\n- LC5 overtorque: 150% = 5510 N-m for 10 ms (electromagnetic fault).\n- LC6 overspeed: 115% = 7475 rpm.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Hybrid-electric BLI motor rotor shaft",
+    "brief": "2.5 MW 6500 rpm rotor shaft with aft thrust bearing and BLI distortion at 3P.",
+    "geometric_constraints": {
+      "OD_mm": 90,
+      "bore_mm": 30,
+      "length_mm": 800,
+      "speed_rpm": 6500,
+      "torque_Nm": 3675
+    },
+    "material": {
+      "name": "300M high-strength steel",
+      "youngs_modulus_GPa": 205,
+      "poissons_ratio": 0.29,
+      "density_kg_m3": 7850,
+      "yield_strength_MPa": 1650,
+      "ultimate_tensile_strength_MPa": 1930
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "steady_torque",
+        "torque_Nm": 3675
+      },
+      {
+        "id": "LC2",
+        "name": "thrust",
+        "F_N_axial": 15000
+      },
+      {
+        "id": "LC3",
+        "name": "FBO",
+        "F_N_unbalance": 35000,
+        "dwell_freq_Hz": 325,
+        "dwell_s": 10
+      },
+      {
+        "id": "LC4",
+        "name": "inlet_distortion_cyclic",
+        "F_N_reversing_pct": 15,
+        "freq_Hz": 325,
+        "cycles": 100000000.0
+      },
+      {
+        "id": "LC5",
+        "name": "overtorque_150pct",
+        "torque_Nm": 5510,
+        "duration_ms": 10
+      },
+      {
+        "id": "LC6",
+        "name": "overspeed_115pct",
+        "rpm": 7475
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "shaft_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "alt_stress_MPa",
+        "first_lateral_critical_rpm",
+        "campbell_margin_pct"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 1100,
+        "derivation": "yield 1650 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "FBO_peak_stress",
+        "limit_MPa": 1930,
+        "derivation": "ultimate, one-time",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "alt_stress_at_bearing_journal",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "overspeed_no_yield",
+        "limit_MPa": 1650,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_lateral_critical_margin",
+        "limit_pct": 15,
+        "applies_to": [
+          "rotordynamics"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "shaft_mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

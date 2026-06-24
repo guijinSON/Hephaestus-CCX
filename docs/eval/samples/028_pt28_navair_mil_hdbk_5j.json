@@ -1,0 +1,227 @@
+{
+  "id": "028_pt28_navair_mil_hdbk_5j",
+  "source": {
+    "catalog_ref": "PT28",
+    "year": 2003,
+    "tier": "A"
+  },
+  "domain": "aerospace_military",
+  "part_class": "external_store_suspension_lug",
+  "full_prompt": "Design a NAVAIR external-store suspension lug for a generic 500-lb class external store carried on a tactical aircraft, using MIL-HDBK-5J / MMPDS A-basis material allowables per NAVAIR 01-1A-1 manual guidance, and MIL-A-8591 suspension lug specification. Envelope: 120 x 60 x 80 mm. Interfaces: 14 MK 80-series standard suspension hook bore 12.7 mm (0.500 inch) +0.05/-0.00, with a minimum bearing length of 20 mm; mounting footprint bolts four NAS-1351 5/16 inch bolts on 50 x 50 mm square pattern. Material: AISI 4340 steel per AMS 6415 (L-direction A-basis yield 1,034 MPa = 150 ksi, A-basis UTS 1,241 MPa = 180 ksi, Young's modulus 205 GPa, density 7850 kg/m^3, minimum elongation 12%) heat treated to 180 ksi UTS and cadmium plated per AMS-QQ-P-416. Load cases per MIL-A-8591H: LC1 limit load 3 x store weight vertical = 3 x 500 lbf = 1,500 lbf (6.67 kN) during 3 g maneuver; LC2 ultimate 1.5 x limit = 2,250 lbf (10.0 kN); LC3 ejection load at store release 30 g vertical = 15,000 lbf (66.7 kN) for 10 ms; LC4 buffet/fatigue spectrum 10^6 cycles at varying store weight 0.5x to 1.5x static in 1 Hz bandwidth; LC5 yaw maneuver side load 2 g lateral = 1,000 lbf (4.45 kN). Pass/fail per MIL-HDBK-5J + MIL-A-8591H: (R1) max von Mises at limit LC1 <= A-basis yield = 1,034 MPa (no permanent deformation at limit); (R2) max von Mises at ultimate LC2 <= A-basis UTS = 1,241 MPa (no rupture at ultimate, SF 1.5 on UTS); (R3) lug bearing stress at the 14 MK 80 hook hole <= F_bru / 1.5 = A-basis bearing ultimate 1,724 MPa (250 ksi per MMPDS for 4340 at 180 ksi UTS with e/D=2) / 1.5 = 1,149 MPa; (R4) ejection transient LC3 peak stress <= UTS 1,241 MPa; (R5) fatigue life >= 10^6 cycles at buffet spectrum using 4340 S-N curve per MIL-HDBK-5J (endurance limit approx 0.5 x UTS = 620 MPa at 10^7, derated for Kt 2.5 + mean stress); (R6) cadmium plating thickness 7.5-15 um per AMS-QQ-P-416 Type II; (R7) hook-bore tolerance +0.05/-0.00 and surface finish Ra <= 0.8 um. Deliverables: STEP AP242; FEA static + transient ejection + fatigue; MIL-HDBK-5J allowables cited explicitly in the compliance matrix.",
+  "short_prompt": "Design a NAVAIR external-store suspension lug for a generic 500-lb class external store on a tactical aircraft, using MIL-HDBK-5J / MMPDS A-basis allowables per NAVAIR 01-1A-1 and MIL-A-8591 suspension-lug specification.\n\nEnvelope: 120 x 60 x 80 mm. Interfaces: 14 MK 80-series standard suspension hook bore 12.7 mm (0.500 inch) +0.05/-0.00 with minimum bearing length 20 mm; mounting footprint with four NAS-1351 5/16 inch bolts on 50 x 50 mm.\n\nMaterial: AISI 4340 per AMS 6415 heat-treated to 180 ksi UTS, cadmium plated per AMS-QQ-P-416 Type II (7.5-15 um). Surface finish at hook bore Ra <= 0.8 um.\n\nLoad cases per MIL-A-8591H.\n- LC1 limit 3 x store weight vertical: 3 x 500 lbf = 1,500 lbf (6.67 kN).\n- LC2 ultimate 1.5 x limit: 2,250 lbf (10.0 kN).\n- LC3 ejection at store release: 30 g vertical = 15,000 lbf (66.7 kN) for 10 ms.\n- LC4 buffet/fatigue 10^6 cycles at 0.5x-1.5x static store weight in 1 Hz bandwidth.\n- LC5 yaw maneuver side: 2 g lateral = 1,000 lbf (4.45 kN).\n\nBearing allowable at the 14 MK 80 hook hole: F_bru / 1.5 = 1,149 MPa (MMPDS 4340, 250 ksi bearing at e/D = 2, SF 1.5). Fatigue per MIL-HDBK-5J (endurance ~0.5 x UTS = 620 MPa at 10^7, derated for Kt 2.5 + mean stress).\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "mmpds_allowables_lookup",
+        "reason": "MIL-HDBK-5J / MMPDS tables are reference tables, not simulation.",
+        "examples": [
+          "MMPDS-2019",
+          "MIL-HDBK-5J PDF"
+        ]
+      },
+      {
+        "tool": "fatigue_S_N_knockdown",
+        "reason": "Kt, Kf, mean-stress corrections per Goodman/Gerber are closed-form.",
+        "examples": [
+          "MIL-HDBK-5J fatigue section",
+          "nCode DesignLife"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "AISI 4340 180 ksi external-store suspension lug per MIL-A-8591H + MIL-HDBK-5J",
+    "brief": "Design a 120x60x80 mm 4340 forged/machined lug for 500-lb class store, 14 MK 80 hook, pass limit/ultimate/ejection/fatigue per MIL-HDBK-5J A-basis allowables.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 120,
+        "y": 60,
+        "z": 80
+      },
+      "hook_bore_mm": 12.7,
+      "hook_bore_tol_mm": "+0.05/-0.00",
+      "bearing_length_mm_min": 20,
+      "mount_bolts": {
+        "count": 4,
+        "thread": "NAS-1351 5/16 in",
+        "pattern_mm": 50
+      },
+      "surface_finish_Ra_um_max": 0.8,
+      "plating": "cadmium 7.5-15 um AMS-QQ-P-416 Type II"
+    },
+    "material": {
+      "name": "AISI 4340 per AMS 6415, HT to 180 ksi UTS",
+      "A_basis_yield_MPa": 1034,
+      "A_basis_ultimate_MPa": 1241,
+      "A_basis_bearing_ultimate_MPa": 1724,
+      "youngs_modulus_GPa": 205,
+      "density_kg_m3": 7850
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "limit_3g",
+        "force_N": 6670
+      },
+      {
+        "id": "LC2",
+        "name": "ultimate_1.5xLC1",
+        "force_N": 10005
+      },
+      {
+        "id": "LC3",
+        "name": "ejection_30g",
+        "force_N": 66700,
+        "duration_ms": 10
+      },
+      {
+        "id": "LC4",
+        "name": "buffet_fatigue_10e6",
+        "spectrum": "0.5-1.5x static, 1 Hz"
+      },
+      {
+        "id": "LC5",
+        "name": "yaw_2g_lateral",
+        "force_N": 4450
+      }
+    ],
+    "boundary_conditions": {
+      "mount_bolts": "4 bolts fully constrained",
+      "hook_bore": "bearing load over 180 deg arc"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "max_von_mises_limit_MPa",
+        "max_von_mises_ultimate_MPa",
+        "bearing_stress_MPa",
+        "ejection_peak_MPa",
+        "fatigue_life_cycles",
+        "plating_spec"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_limit",
+        "limit_MPa": 1034,
+        "derivation": "A-basis yield per MIL-HDBK-5J AISI 4340 180 ksi",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_ultimate",
+        "limit_MPa": 1241,
+        "derivation": "A-basis UTS per MIL-HDBK-5J",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "bearing_stress_at_hook_bore",
+        "limit_MPa": 1149,
+        "derivation": "A-basis bearing ult 1724 / 1.5 (e/D=2.0)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "ejection_peak_von_mises",
+        "limit_MPa": 1241,
+        "derivation": "A-basis UTS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "fatigue_life",
+        "limit_cycles": 1000000,
+        "derivation": "MIL-HDBK-5J 4340 S-N with Kt 2.5 and mean stress correction",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "cadmium_plating_thickness",
+        "limit_um": [
+          7.5,
+          15
+        ],
+        "derivation": "AMS-QQ-P-416 Type II",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "in_range"
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "hook_bore_surface_finish_Ra",
+        "limit_um": 0.8,
+        "derivation": "MIL-A-8591H suspension lug",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "MIL-HDBK-5J / MMPDS + MIL-A-8591H + NAVAIR 01-1A-1 + AMS 6415 + AMS-QQ-P-416",
+    "recommended_fea_setup": {
+      "element_type": "HEX20 or TET10",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Nastran",
+        "Abaqus",
+        "Ansys Mechanical"
+      ],
+      "analysis_types": [
+        "linear static limit + ultimate + transient ejection + fatigue S-N"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Buffet handled as fatigue spectrum, not modal.",
+      "thermal_analysis": "Ambient / store temp range within 4340 working envelope.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "MIL-HDBK-5J Table 2.3.1 for 4340 180 ksi UTS A-basis allowables; MIL-A-8591H load factors for external stores."
+  },
+  "eval_coverage": [
+    "A-basis allowables enforcement",
+    "bearing stress check with e/D derivation",
+    "transient ejection load",
+    "fatigue S-N with notch factor"
+  ]
+}

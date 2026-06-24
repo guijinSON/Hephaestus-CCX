@@ -1,0 +1,221 @@
+{
+  "id": "137_hv13_fs_east_upright",
+  "source": {
+    "catalog_ref": "HV13",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "fsae_suspension",
+  "part_class": "front_steering_upright",
+  "full_prompt": "Design a monolithic 7075-T6 aluminum front-left steering upright (knuckle) for a collegiate formula-class racecar benchmark 2026 Class 1 CV vehicle running FS Rules 2026 base and FSEast Handbook 2026 v0.3 (Hungaroring high-speed slick-tire event format). The upright is a single billet-machined 7075-T6 part (no welds, no bolted gussets, no inserts; integral brake caliper tabs + integral ball-joint stubs). Geometry: central bearing bore 60 mm ID x 45 mm axial length for wheel-bearing cartridge, upper A-arm ball-joint boss 25 mm hemispherical seat at 150 mm above bearing centerline and 30 mm forward, lower A-arm ball-joint boss 28 mm hemispherical seat at 150 mm below bearing centerline and 35 mm rearward (defining a 17.5 deg kingpin inclination and 8 mm mechanical trail at the contact patch), steering arm boss 180 mm above ground (100 mm ahead of bearing centerline) with a 10 mm through-bore for the tie-rod rod-end, two integral brake-caliper mounting tabs 15 mm thick spaced 52 mm inboard-outboard each with M10 (11 mm clearance) holes matching a Brembo P32 4-pot caliper inner plate (102 mm bolt spacing), the pair located 60 mm aft of the bearing centerline at 100 mm below the upper ball joint. Overall bounding envelope 180 x 100 x 340 mm. Material 7075-T6 (E 71.7 GPa, nu 0.33, density 2810 kg/m^3, yield 503 MPa, UTS 572 MPa, endurance 159 MPa at 5e8 cycles). Vehicle data: 260 kg + 68 kg driver = 328 kg, 50% front = 164 kg front axle, 82 kg per front wheel; tire loaded radius 230 mm; FSEast lateral load event on slick compound at Hungaroring allows 2.0g sustained lateral + 2.5g combined peak (slick tire + FSEast event allowance). Three load cases. Load Case 1 (sustained 2.0g cornering outboard wheel): vertical 1608 N (2.0g on 82 kg), lateral 1608 N outboard at tire contact, longitudinal 482 N braking (0.6g partial), moments reacted at ball joints and steering arm. Load Case 2 (peak brake + turn-in 2.5g): vertical 1608 N, lateral 2010 N, longitudinal 2010 N (1g brake at turn-in). Load Case 3 (curb strike): 8 kN horizontal inboard at the wheel centre, reacted at both ball-joint bosses. Pass/fail: (R1) under LC1 sustained cornering, peak von Mises must not exceed 252 MPa (yield/2.0 collegiate formula-class racecar benchmark suspension); (R2) under LC2 peak combined, peak stress 335 MPa (yield/1.5 peak transient); (R3) under LC3 curb strike, peak stress 335 MPa; (R4) fatigue: 10^7 cycles LC1 stress range 40% peak, local range at any fillet must not exceed 159 MPa; (R5) first six natural frequencies (empty upright) must exceed 400 Hz to avoid suspension wind-up excitation; (R6) upright mass must not exceed 0.95 kg; (R7) maximum lateral deflection at the bearing bore under LC1 must not exceed 0.4 mm to preserve camber stiffness (target ratio: camber stiffness > 5 kN-m per deg). Thermal, fluid, buckling, and radiation analyses are not required. Deliver STEP AP242 and Parasolid plus report.",
+  "short_prompt": "Design a monolithic 7075-T6 aluminum front-left steering upright (knuckle) for a collegiate formula-class racecar (FS 2026 base + FSEast 2026 Hungaroring high-speed slick-tire format). The upright is billet-machined from a single 7075-T6 part with a central 60 mm wheel-bearing bore, upper and lower A-arm ball-joint bosses (defining 17.5-degree kingpin inclination and 8 mm trail), a forward steering-arm boss, and two integral caliper-mounting tabs for a 4-pot 102 mm-spacing caliper. Apply yield/2.0 suspension SF and yield/1.5 peak-transient SF per collegiate formula-class practice.\n\nEnvelope: ~180 x 100 x 340 mm.\n\nLoad cases.\n- LC1 sustained 2 g cornering (outboard wheel): 1608 N vertical, 1608 N lateral outboard, 482 N longitudinal braking at tire contact (2 g on 82 kg plus 0.6 g partial brake).\n- LC2 peak brake + turn-in 2.5 g: 1608 N vertical, 2010 N lateral, 2010 N longitudinal.\n- LC3 curb strike: 8 kN horizontal inboard at the wheel center, both ball joints reacted.\nAlso check a 10^7-cycle fatigue spectrum off LC1, first six natural frequencies above 400 Hz, and bearing-bore lateral deflection under LC1 below 0.4 mm (camber stiffness > 5 kN-m/deg).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "FSEast 2026 front-left steering upright (7075-T6)",
+    "brief": "Single-billet upright with integral ball-joint bosses + steering arm + brake caliper tabs; 60 mm bearing bore; FS Rules 2026 + FSEast.",
+    "geometric_constraints": {
+      "bearing_bore_mm": 60,
+      "bearing_axial_length_mm": 45,
+      "upper_ball_joint_mm": {
+        "seat": 25,
+        "offset_mm": [
+          30,
+          150
+        ],
+        "direction": "forward_up"
+      },
+      "lower_ball_joint_mm": {
+        "seat": 28,
+        "offset_mm": [
+          -35,
+          -150
+        ],
+        "direction": "rearward_down"
+      },
+      "steering_arm_mm": {
+        "z_above_ground": 180,
+        "x_ahead_bearing": 100,
+        "hole_mm": 10
+      },
+      "brake_caliper_tabs": {
+        "count": 2,
+        "spacing_mm": 52,
+        "thickness_mm": 15,
+        "holes_mm": 11,
+        "bolt_spacing_mm": 102,
+        "offset_aft_mm": 60
+      },
+      "bounding_envelope_mm": {
+        "x": 180,
+        "y": 100,
+        "z": 340
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 7075-T6",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2810,
+        "yield_MPa": 503,
+        "ultimate_tensile_strength_MPa": 572,
+        "endurance_5e8_MPa": 159
+      }
+    },
+    "vehicle_data": {
+      "corner_weight_N": 804,
+      "loaded_tire_radius_mm": 230,
+      "event_lateral_g_sustained": 2.0,
+      "event_combined_g_peak": 2.5
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "sustained_2g_corner",
+        "vertical_N": 1608,
+        "lateral_N": 1608,
+        "longitudinal_N": 482
+      },
+      {
+        "id": "LC2",
+        "name": "peak_2.5g_turn_in",
+        "vertical_N": 1608,
+        "lateral_N": 2010,
+        "longitudinal_N": 2010
+      },
+      {
+        "id": "LC3",
+        "name": "curb_strike",
+        "force_N": 8000,
+        "direction": "inboard_horizontal"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_six_freqs_Hz",
+        "bearing_bore_lateral_deflection_mm",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 252,
+        "derivation": "yield/2.0 collegiate formula-class racecar benchmark suspension",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 335,
+        "derivation": "yield/1.5 peak transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 159,
+        "cycles": 10000000,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 400,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.95,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "bearing_bore_lateral_deflection",
+        "limit_mm": 0.4,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "S-N fatigue",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Brake heat handled at rotor/caliper.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compact billet geometry not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Caliper deflection coupling",
+      "Ball-joint retainer thread fatigue",
+      "Tie-rod clevis buckling"
+    ]
+  },
+  "eval_coverage": [
+    "collegiate formula-class racecar benchmark 2.0 / 1.5 differentiated SF per load",
+    "camber-stiffness bearing-bore deflection cap",
+    "curb-strike shock load",
+    "kingpin + trail geometric layout"
+  ]
+}

@@ -1,0 +1,199 @@
+{
+  "id": "252_a12_asme_hpvc_rps",
+  "source": {
+    "catalog_ref": "A12",
+    "year": 2026,
+    "tier": "A+"
+  },
+  "domain": "mechanical_structural",
+  "part_class": "human_powered_vehicle_roll_protection_system",
+  "full_prompt": "Design a single-part monolithic Roll Protection System (RPS) enclosure-frame for a two-rider human-powered vehicle (tandem HPV). The RPS is a tubular roll cage that protects two riders during rollover and crash. The RPS must be a closed frame fully surrounding the occupant zone, constructed from 25.4 mm (1 in) OD x 2.41 mm (0.095 in) wall 4130 chromoly steel tubing, TIG-welded at nodes. Material: 4130 normalized steel, E = 205 GPa, yield = 460 MPa, ultimate = 670 MPa, density = 7850 kg/m^3. Geometry constraints: overall roll-hoop height above seat pan 1050 mm; tandem-rider cockpit length 2200 mm; helmet clearance 50 mm minimum to any hoop surface; vehicle braking capability independent of RPS (must decelerate from 25 km/h to rest in <= 6 m, included for completeness). Load cases: (R1) Top load: a 2670 N (600 lbf) load applied at 12 degrees from vertical at the top of the main roll hoop, aimed toward the driver. Maximum deflection at load-application point shall not exceed 5.1 cm (2 in, 51 mm). Max von Mises <= yield / 1.15 = 400 MPa. (R2) Side load: a 1330 N (300 lbf) load applied horizontally at the shoulder level of the main roll hoop. Max deflection at load point <= 3.8 cm (1.5 in, 38 mm). Max von Mises <= yield / 1.15 = 400 MPa. (R3) Harness-mount load: 1334 N (300 lbf) pulled rearward at the shoulder harness-attachment tab (simulating forward crash deceleration of the rider pulling on the harness). Max von Mises <= yield / 1.15 = 400 MPa. (R4) Combined top + side: 2670 N top + 1330 N side applied simultaneously; deflections must each meet their individual limits (<= 51 mm top, <= 38 mm side). Max von Mises <= ultimate / 1.5 = 447 MPa. (R5) RPS mass <= 7.5 kg. Primary verification: structural FEA, linear static, four independent + one combined load case. Vibration, thermal, fluid, radiation, buckling explicitly NOT required. Deliverables: STEP AP242 welded frame assembly treated as a single monolithic part, weld inspection certificate, and a report listing mass in kg, max deflection per load case in mm, max von Mises per load case in MPa.",
+  "short_prompt": "Design a monolithic welded tubular Roll Protection System (RPS) for a two-rider human-powered vehicle (tandem HPV). The RPS is a closed frame around the tandem cockpit, built from 25.4 mm OD x 2.41 mm wall 4130 normalized chromoly steel, TIG-welded at nodes; four-point chassis mount.\n\nEnvelope: roll-hoop top >= 1050 mm above seat pan, tandem cockpit length 2200 mm, >= 50 mm helmet clearance to any hoop surface.\n\nLoad cases.\n- LC1 top load: 2670 N (600 lbf) at 12 deg from vertical at the top of the main hoop, aimed at the driver; load-point deflection <= 51 mm (2 in).\n- LC2 side load: 1330 N (300 lbf) horizontal at shoulder height of the main hoop; deflection <= 38 mm (1.5 in).\n- LC3 harness load: 1334 N (300 lbf) rearward on the shoulder-harness tab.\n- LC4 combined top + side: 2670 N top + 1330 N side simultaneous; each deflection limit still applies.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Human-Powered Vehicle Roll Protection System (tandem)",
+    "brief": "Chromoly tubular RPS sized to 2670 N top @ 12 deg (<=51 mm), 1330 N side (<=38 mm), 1334 N harness load cases.",
+    "geometric_constraints": {
+      "tube_OD_mm": 25.4,
+      "tube_wall_mm": 2.41,
+      "cockpit_length_mm": 2200,
+      "hoop_height_mm": 1050,
+      "helmet_clearance_mm_min": 50,
+      "rider_count": 2,
+      "braking_distance_from_25kmh_m_max": 6
+    },
+    "material": {
+      "name": "4130 normalized chromoly steel",
+      "properties": {
+        "youngs_modulus_GPa": 205,
+        "yield_strength_MPa": 460,
+        "ultimate_tensile_strength_MPa": 670,
+        "density_kg_m3": 7850
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "top_load",
+        "force_N": 2670,
+        "angle_from_vertical_deg": 12,
+        "deflection_limit_mm": 51
+      },
+      {
+        "id": "LC2",
+        "name": "side_load",
+        "force_N": 1330,
+        "direction": "horizontal at shoulder",
+        "deflection_limit_mm": 38
+      },
+      {
+        "id": "LC3",
+        "name": "harness_pull",
+        "force_N": 1334,
+        "direction": "rearward at harness tab"
+      },
+      {
+        "id": "LC4",
+        "name": "combined_top_side",
+        "forces_N": {
+          "top": 2670,
+          "side": 1330
+        }
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "frame fixed at four chassis-anchor points (under seat pan)",
+      "loads": "point loads at hoop top / shoulder / harness tab"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_kg",
+        "max_deflection_LC1_mm",
+        "max_deflection_LC2_mm",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "deflection_at_load",
+        "limit_mm": 51,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "deflection_at_load",
+        "limit_mm": 38,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 447,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 7.5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order beam (B32) or second-order shell",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x4 cases)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "HPV is low-speed, RPS is quasi-static.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Closed tubular frame with redundant load paths."
+    }
+  },
+  "eval_coverage": [
+    "dual stress + deflection pass/fail per case",
+    "four static cases",
+    "harness-anchor subsystem load",
+    "combined load case"
+  ]
+}

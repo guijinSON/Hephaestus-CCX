@@ -1,0 +1,186 @@
+{
+  "id": "227_df11_nasa_xhab",
+  "source": {
+    "catalog_ref": "DF11",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "deep_space_hab_structural",
+  "part_class": "xhab_deep_space_stowage_rack",
+  "full_prompt": "Design a crew-accessible stowage rack for a deep-space habitat stowage benchmark, following a space-grant solicitation baseline. Rack outer envelope 1050 mm H x 530 mm W x 813 mm D, compliant with International Standard Payload Rack (ISPR) footprint; it must host four 406 mm x 330 mm x 254 mm cargo transfer bags (CTBs), each fully loaded to 27.2 kg per NASA-STD-3001. Rack hosts two pivoting crew-facing doors latched by paired Nomex-reinforced quarter-turn fasteners. Material: Aluminum 2024-T3 honeycomb panel (skin E = 73 GPa, face-sheet thickness 0.8 mm, core 25 mm Al honeycomb density 32 kg/m^3 with out-of-plane compression 1.5 MPa and shear 0.85 MPa, total panel areal density 5 kg/m^2) for walls + shelves; frame uses Al 6061-T6 extrusion. Environment: launched in SLS Block 1 cargo section under 9 g axial + 2 g lateral quasi-static + random vibration per NASA-HDBK-7005 spacecraft PSD, operated in-hab at 1 atm / 22 C nominal. Load cases: (LC1) launch quasi-static: 4 x 27.2 kg = 108.8 kg CTB mass inside rack + 35 kg rack mass, apply 9 g axial + 2 g lateral simultaneous; (LC2) random vib qual per NASA-HDBK-7005 (6.9 Grms from 20-2000 Hz, 2 min/axis); (LC3) crew operational load: 300 N vertical on an open door (crew stabilizing); (LC4) ECLSS hose routing reaction: 150 N lateral on the routing clip at top of rack; (LC5) thermal: rack surfaces 10-40 C nominal, during de-stow 5 C temporary exposure at exterior door; (LC6) hard-dock preload: frame bolts into habitat standoff at four corner posts with 5 kN preload each. Pass/fail: (R1) max von Mises in frame Al 6061-T6 under LC1 <= 184 MPa (yield 276 / 1.5); (R2) honeycomb panel face-sheet strain under LC1 <= 0.3%; (R3) core shear under LC1 <= 0.57 MPa (0.85 / 1.5); (R4) random-vib 3-sigma stress <= 184 MPa; (R5) first natural frequency of loaded rack above 35 Hz to stay above primary launch vehicle excitation band; (R6) rack dry mass <= 35 kg. Deliverables: STEP, quasi-static FEA, random-vib analysis, modal (10 modes), thermal FEA, mass report.",
+  "short_prompt": "Design a crew-accessible stowage rack for a deep-space habitat, hosting four 406 x 330 x 254 mm Cargo Transfer Bags at 27.2 kg each, with two pivoting crew-facing doors on quarter-turn fasteners. Walls and shelves are 2024-T3 Al honeycomb-skin sandwich panels over a 6061-T6 aluminum extrusion frame. Qualify per NASA-STD-3001 for CTB mass class and NASA-HDBK-7005 random-vib qualification; static cases at a 1.5 FoS on yield.\n\nEnvelope: International Standard Payload Rack (ISPR) footprint, 1050 mm H x 530 mm W x 813 mm D; rack dry mass target <= 35 kg.\n\nLoad cases.\n- LC1 launch quasi-static: 9 g axial + 2 g lateral simultaneous on 4 x 27.2 kg CTB + rack.\n- LC2 random vibration: NASA-HDBK-7005 profile, 6.9 Grms, 20-2000 Hz, 2 min per axis.\n- LC3 crew door load: 300 N vertical on an open door.\n- LC4 ECLSS hose reaction: 150 N lateral on the top routing clip.\n- LC5 thermal: 5-40 C (in-hab 10-40 C nominal, 5 C transient at exterior door).\n- LC6 dock preload: 5 kN axial at each of four corner posts into the habitat standoff.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Deep-space habitat stowage rack",
+    "brief": "ISPR-footprint stowage rack for four 27.2 kg CTBs, surviving 9 g launch + random vib.",
+    "geometric_constraints": {
+      "rack_mm": {
+        "H": 1050,
+        "W": 530,
+        "D": 813
+      },
+      "CTB_count": 4,
+      "CTB_mm": {
+        "L": 406,
+        "W": 330,
+        "H": 254
+      },
+      "CTB_mass_kg": 27.2
+    },
+    "material": {
+      "frame": {
+        "name": "Aluminum 6061-T6 extrusion",
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700
+      },
+      "panel_skin": {
+        "name": "Aluminum 2024-T3",
+        "E_GPa": 73,
+        "thickness_mm": 0.8
+      },
+      "panel_core": {
+        "name": "Al honeycomb",
+        "core_thickness_mm": 25,
+        "density_kg_m3": 32,
+        "out_of_plane_compression_MPa": 1.5,
+        "shear_MPa": 0.85
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_qs",
+        "g_axial": 9,
+        "g_lateral": 2
+      },
+      {
+        "id": "LC2",
+        "name": "random_vib",
+        "profile": "NASA-HDBK-7005 6.9 Grms 20-2000 Hz, 2 min/axis"
+      },
+      {
+        "id": "LC3",
+        "name": "crew_door_300N",
+        "F_N": 300
+      },
+      {
+        "id": "LC4",
+        "name": "eclss_hose",
+        "F_N": 150
+      },
+      {
+        "id": "LC5",
+        "name": "thermal",
+        "range_C": [
+          5,
+          40
+        ]
+      },
+      {
+        "id": "LC6",
+        "name": "dock_preload",
+        "F_N_per_post": 5000
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "rack_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "panel_skin_strain_pct",
+        "core_shear_MPa",
+        "first_10_modes_Hz",
+        "rms_stress_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "frame_max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC3",
+          "LC4",
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "face_sheet_strain",
+        "limit_pct": 0.3,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "core_shear",
+        "limit_MPa": 0.57,
+        "derivation": "honeycomb shear 0.85 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "random_vib_3sigma_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 35,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "rack_dry_mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

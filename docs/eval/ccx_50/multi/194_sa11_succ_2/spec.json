@@ -1,0 +1,808 @@
+{
+  "id": "194_sa11_succ_2",
+  "source": {
+    "catalog_ref": "SA11",
+    "year": 2025,
+    "tier": "B+",
+    "original_sample": "docs/eval/samples/194_sa11_succ_2.json",
+    "multipart_basis": "Decomposition derived from Cal Poly CDS Rev 14.1 3U practice plus NanoRacks CBAS ICD: four 340.5 mm corner rails, side panels, +Z/-Z end decks, three PC/104 bulkheads at Z=85.1/170.2/255.4 mm, deployment-switch bracket, and Ti standoff + fastener families are the canonical NanoRacks 3U bus breakdown. No rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cubesat_3u_primary_structure",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary structural chassis of a 3U CubeSat as an open-source 3U CubeSat primary structure benchmark. The CubeSat will be deployed from a NanoRacks-style 3U deployer on the ISS and performs Earth-observation imaging plus a secondary communications-relay payload.\n\nGeometry. The structure follows Cal Poly CubeSat Design Specification Rev 14.1 for 3U: external envelope 100 mm x 100 mm x 340.5 mm (nominal, with +/-0.1 mm tolerance on all faces). Rails are chamfered 1 mm x 45 deg and anodized black per NanoRacks ICD. Four +Z/-Z rails span the full 340.5 mm length with a minimum 8.5 mm wide mating surface contacting the deployer at a minimum 6.5 mm from each end. The structure is machined from 7075-T73 aluminum. Internal bulkheads at three locations (at Z = 85.1, 170.2, 255.4 mm) host three stacked PC/104 PCBs per unit (nine PCBs total) connected by a common 104-pin header. The -Z face carries the separation-spring interface and four deployment-switch cutouts; the +Z face is the payload aperture. Total structural envelope mass budget <= 450 g (leaves 3.55 kg for payload given the 4 kg 3U wet-mass cap).\n\nMaterial. 7075-T73 aluminum (Young's modulus 71.7 GPa, density 2810 kg/m^3, yield strength 435 MPa, ultimate tensile strength 505 MPa, CTE 23.6 um/m/K). Surface treatment hard-anodize per MIL-A-8625 Type III to 50 um thickness on rails. Standoffs and fasteners are Ti-6Al-4V for thermal-expansion matching with the PC/104 stack.\n\nLoad cases. (LC1) Launch quasi-static load: 12 g along each orthogonal axis applied to the full wet mass of 4 kg (per NanoRacks NROL CBAS 14.2). (LC2) Launch random vibration: 10.0 g-rms PSD 20-2000 Hz per ISS Cargo Integration ICD, applied to all three axes. (LC3) Launch sine vibration: 0-2000 Hz sweep with 2.5 g input below 50 Hz and 5 g above, per GEVS-STD-7000A. (LC4) Deployment spring release: 75 N peak force (NanoRacks deployer spring) applied to the -Z face separation bosses for 50 ms. (LC5) Thermal cycling on-orbit: -40 C to +80 C cycle inducing CTE-mismatch stress at the PC/104 standoff interfaces.\n\nPass/fail criteria. (R1) Maximum von Mises stress under LC1, LC4, and LC5 must not exceed 290 MPa (yield / 1.5 = 435 / 1.5). (R2) First natural frequency must be above 100 Hz per NanoRacks CBAS deployer requirement. (R3) Peak random-vibration RMS stress under LC2 must not exceed 145 MPa (3-sigma <= 435 MPa absolute). (R4) Structural mass must not exceed 450 g. (R5) Deployment switches must remain unobstructed through all deformation states (clearance check: displacement < 0.5 mm at switch locations). (R6) Rail dimensional compliance: rails must remain within +/-0.1 mm after all load cases per Cal Poly CDS rail tolerance. (R7) No plastic deformation permitted during thermal cycling (yield never exceeded in LC5).\n\nSolver and analysis expectations. Linear static structural FEA for LC1 and LC4. Random-vibration PSD analysis for LC2. Sine-sweep harmonic response analysis for LC3. Modal analysis for R2. Thermal-structural coupled analysis for LC5 (steady-state temperatures at extrema, linear CTE stress computation). Fluid analysis is not applicable. Radiation analysis for mission lifetime survivability is flagged as a non-FEA verification task requiring orbit-average dose calculation (SPENVIS or similar) but is not required for this structural deliverable.\n\nDeliverables. STEP (AP242) + Parasolid of the complete 3U chassis with rails, bulkheads, and PC/104 standoff points. Rail dimensional compliance report. Mass budget table. Structural report with LC1-LC5 stress extrema, first 10 modal frequencies, PSD 3-sigma stress, and thermal-CTE stress at the Ti-Al interface.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis 3U bus is delivered as a bolted multi-part assembly mirroring canonical CDS Rev 14.1 3U practice: (A) four 340.5 mm 7075-T73 corner rails hard-anodized to 50 um, (B) four side panels closing the cage, (C) +Z and -Z end decks (the -Z deck carries the NanoRacks separation-spring interface and four deployment-switch cutouts), (D) three PC/104 bulkhead plates at Z = 85.1, 170.2, 255.4 mm hosting nine PCBs total, (E) a deployment-switch bracket / spring boss assembly on the -Z deck, (F) Ti-6Al-4V PC/104 standoffs sized for CTE matching, and (G) Ti-6Al-4V M3 fastener set. FEM verification runs on the assembled model only; per-part stress reported. All inherited load magnitudes (LC1-LC5), the 7075-T73 property set, and R1-R7 pass/fail thresholds are preserved verbatim; assembly-scope criteria (R_asm1 connection DCR, R_asm2 Ti-Al standoff preload retention, R_asm3 deployment-switch clearance on assembled model) are added.",
+  "short_prompt": "Design the primary structural chassis of a 3U CubeSat deployed from a NanoRacks-style 3U deployer on the ISS, performing Earth-observation imaging plus a secondary communications-relay payload.\n\nThe structure follows Cal Poly CubeSat Design Specification Rev 14.1 for 3U: external envelope 100 mm x 100 mm x 340.5 mm with +/-0.1 mm tolerance. Rails are chamfered 1 mm x 45 deg and anodized black per NanoRacks ICD. Four +Z/-Z rails span the full 340.5 mm length with a minimum 8.5 mm wide mating surface contacting the deployer at a minimum 6.5 mm from each end. The structure is machined from 7075-T73 aluminum with internal bulkheads at Z = 85.1, 170.2, 255.4 mm. Total structural envelope mass budget <= 450 g (4 kg 3U wet-mass cap).\n\nMaterial: 7075-T73 aluminum (Young's modulus 71.7 GPa, density 2810 kg/m^3, yield strength 435 MPa, ultimate tensile strength 505 MPa, CTE 23.6 um/m/K). Surface treatment hard-anodize per MIL-A-8625 Type III to 50 um on rails.\n\nLoad cases: LC1 12 g along each orthogonal axis; LC2 10.0 g-rms PSD 20-2000 Hz per ISS Cargo Integration ICD; LC3 sine 0-2000 Hz sweep with 2.5 g below 50 Hz and 5 g above per GEVS-STD-7000A; LC4 deployment spring 75 N peak for 50 ms; LC5 thermal cycling -40 C to +80 C.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "orbital_radiation_dose_calculator",
+        "reason": "Mission-lifetime TID dose calculation (SPENVIS or OMERE) is not an FEA category. Required to confirm electronics survivability but is out of scope for the structural deliverable.",
+        "examples": [
+          "ESA SPENVIS",
+          "TRAD OMERE"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "3U CubeSat primary structure benchmark (multi-part assembly)",
+    "brief": "Bolted 7075-T73 3U CubeSat assembly (100 x 100 x 340.5 mm, <=450 g structure): four hard-anodized corner rails, four side panels, +Z/-Z end decks with NanoRacks separation interface, three PC/104 bulkheads at Z=85.1/170.2/255.4 mm, deployment-switch bracket, Ti-6Al-4V PC/104 standoffs, and Ti fastener set. Must pass NanoRacks CBAS 12 g quasi-static, 10 g-rms PSD, GEVS sine sweep, 75 N deployment spring, and -40/+80 C CTE cycling at the assembled level.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 100,
+        "y": 100,
+        "z": 340.5
+      },
+      "envelope_tolerance_mm": 0.1,
+      "rail_chamfer": "1 mm x 45 deg",
+      "rail_surface_treatment": "hard anodize per MIL-A-8625 Type III, 50 um",
+      "bulkhead_locations_mm": [
+        85.1,
+        170.2,
+        255.4
+      ],
+      "pcb_standard": "PC/104 104-pin header",
+      "pcb_count": 9,
+      "mass_budget_structure_g": 450
+    },
+    "material": {
+      "name": "Al-7075-T73",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "density_kg_m3": 2810,
+        "yield_strength_MPa": 435,
+        "ultimate_tensile_strength_MPa": 505,
+        "cte_um_m_K": 23.6
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_quasi_static",
+        "magnitude_g": 12,
+        "axes": [
+          "x",
+          "y",
+          "z"
+        ]
+      },
+      {
+        "id": "LC2",
+        "name": "launch_random_vibration",
+        "spec": "ISS Cargo Integration ICD",
+        "g_rms": 10.0,
+        "frequency_Hz_range": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "launch_sine_sweep",
+        "spec": "GEVS-STD-7000A",
+        "below_50Hz_g": 2.5,
+        "above_50Hz_g": 5
+      },
+      {
+        "id": "LC4",
+        "name": "deployment_spring",
+        "magnitude_N": 75,
+        "duration_ms": 50,
+        "application": "-Z face"
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_cycling",
+        "min_C": -40,
+        "max_C": 80,
+        "cycles_required": 1
+      }
+    ],
+    "boundary_conditions": {
+      "deployer_rails": "constrained in NanoRacks 3U deployer",
+      "separation_spring": "applied to -Z face bosses during LC4"
+    },
+    "objective": {
+      "primary": "pass CDS Rev 14.1 + NanoRacks CBAS + GEVS + MIL-A-8625 compliance",
+      "secondary": "minimize structural mass below 450 g"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_10_modal_frequencies_Hz",
+        "psd_3sigma_stress_MPa",
+        "cte_stress_at_Ti_Al_interface_MPa",
+        "rail_tolerance_postload_mm",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "3U corner rail (hard-anodized)",
+        "role": "primary load-path rail contacting NanoRacks 3U deployer along full 340.5 mm length",
+        "count_min": 4,
+        "geometric_constraints": {
+          "length_mm": 340.5,
+          "rail_contact_mm": "8.5 wide x 6.5 mm from each end",
+          "end_chamfer_mm": "1 x 45 deg",
+          "surface_finish": "hard anodize MIL-A-8625 Type III, 50 um"
+        },
+        "material_hint": "Al-7075-T73",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side panel",
+        "role": "structural side skin closing the rail cage between adjacent rails",
+        "count_min": 4,
+        "geometric_constraints": {
+          "footprint_mm": [
+            100,
+            340.5
+          ],
+          "wall_thickness_mm": 1.8
+        },
+        "material_hint": "Al-7075-T73",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "end deck (+Z payload aperture / -Z separation interface)",
+        "role": "end plate closing the cage; +Z hosts payload aperture, -Z hosts separation spring and switch cutouts",
+        "count_min": 2,
+        "geometric_constraints": {
+          "footprint_mm": [
+            100,
+            100
+          ],
+          "thickness_mm": 3.0,
+          "switch_cutouts_on_minus_Z": 4
+        },
+        "material_hint": "Al-7075-T73",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "PC/104 bulkhead plate (3 unit planes)",
+        "role": "internal bulkhead at Z=85.1, 170.2, 255.4 mm; each hosts a 3-PCB PC/104 stack",
+        "count_min": 3,
+        "geometric_constraints": {
+          "z_locations_mm": [
+            85.1,
+            170.2,
+            255.4
+          ],
+          "footprint_mm": [
+            96,
+            90
+          ],
+          "pcbs_per_plate": 3
+        },
+        "material_hint": "Al-7075-T73",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "deployment-switch bracket / spring boss",
+        "role": "bolts to -Z deck; provides NanoRacks separation-spring bosses and four switch cutouts",
+        "count_min": 1,
+        "geometric_constraints": {
+          "footprint_mm": [
+            80,
+            80
+          ],
+          "boss_count": 4,
+          "thickness_mm": 2.5
+        },
+        "material_hint": "Al-7075-T73",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "Ti-6Al-4V PC/104 standoff",
+        "role": "CTE-matched titanium standoff locating PC/104 stack between bulkheads and rails",
+        "count_min": 12,
+        "geometric_constraints": {
+          "diameter_mm": 4.5,
+          "length_mm_typ": 15,
+          "internal_thread": "M3"
+        },
+        "material_hint": "Ti-6Al-4V",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "Ti-6Al-4V M3 fastener set",
+        "role": "bolts rails/panels/decks/bulkheads; Ti reduces CTE mismatch with 7075-T73",
+        "count_min": 32,
+        "geometric_constraints": {
+          "thread": "M3",
+          "head": "SHCS",
+          "length_mm_range": [
+            6,
+            16
+          ]
+        },
+        "material_hint": "Ti-6Al-4V",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox_mm": [
+        100,
+        100,
+        340.5
+      ],
+      "coordinate_system": "CDS Rev 14.1: +Z along rail; -Z face is NanoRacks separation interface"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 290,
+        "derivation": "yield / 1.5 = 435 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 100,
+        "derivation": "NanoRacks CBAS deployer",
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "random_vibration_3sigma_stress",
+        "limit_MPa": 435,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "structural_mass",
+        "limit_g": 450,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "deployment_switch_clearance",
+        "limit_mm": 0.5,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "dimensional_compliance",
+        "metric": "rail_tolerance_postload",
+        "limit_mm": 0.1,
+        "applies_to": [
+          "LC1",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "thermal_analysis",
+        "metric": "thermal_cycle_peak_stress",
+        "limit_MPa": 435,
+        "derivation": "must stay below 7075-T73 yield 435 MPa (no plastic deformation)",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection demand-to-capacity ratio (DCR) across rail/panel/deck/bulkhead bolted interfaces <= 1.0 under governing launch case (LC1 12 g).",
+        "metric": "max DCR across IF1..IF6",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Ti-6Al-4V standoff-to-Al-rail preload retention after LC5 thermal cycling (-40 / +80 C): loss of preload <= 15% per NASA-STD-5020 for CTE-mismatched joints.",
+        "metric": "fastener_preload_loss_pct",
+        "threshold": 15,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm3",
+        "description": "Assembled-model deployment-switch clearance: switch cutouts on -Z deck must remain >= 0.5 mm clear of adjacent panel/bracket edges under LC1+LC4 combined deformation.",
+        "metric": "switch_clearance_mm",
+        "threshold": 0.5,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[5].geometric_constraints",
+          "prompt.parts[6].count_min",
+          "prompt.parts[6].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      },
+      {
+        "id": "R_FEA_COVERAGE_LC3",
+        "type": "structural_analysis",
+        "metric": "generated_static_response_norm",
+        "limit": "finite",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "is_finite",
+        "derivation": "Generated coverage gate: ensures the declared load case is present in the CCX deck and checked from model.dat.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "Ti-6Al-4V M3 SHCS bolted lap joint along full rail length",
+      "load_path": "corner rail (A) transfers shear into side panel (B) along bolt rows; panel reacts into opposite rail."
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "Ti-6Al-4V M3 SHCS into rail end tapped holes",
+      "load_path": "rail (A) end reaction transferred into +Z/-Z end deck (C) at each of four corners."
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "Ti-6Al-4V M3 SHCS along panel-deck edge",
+      "load_path": "side panel (B) edge bolts to end deck (C), providing torsional closure of the 3U cage."
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "Ti standoff threaded into rail tapped hole at each bulkhead plane",
+      "load_path": "Ti standoffs (F) bridge between rail (A) and bulkhead (D); PCB inertia flows through standoffs into rails and is the critical CTE-mismatch interface under LC5."
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "F",
+        "D"
+      ],
+      "mediated_by": "M3 SHCS through bulkhead into standoff",
+      "load_path": "bulkhead plate (D) bolted on top of Ti standoffs (F); bulkhead + PCB mass reacts into standoffs and rails under LC1/LC2."
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "C",
+        "E"
+      ],
+      "mediated_by": "Ti-6Al-4V M3 SHCS through -Z deck into switch-bracket pattern",
+      "load_path": "deployment-switch bracket / spring boss (E) bolted to -Z deck (C); LC4 75 N NanoRacks spring reaction flows through bosses into -Z deck and then into rails."
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "3U CDS / NanoRacks compliance is integrated: rail tolerance, switch clearance, and CTE stress only become verifiable once rails, decks, bulkheads, and Ti standoffs are assembled under a common preload.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Vacuum orbit; no convective loads."
+    },
+    "governing_standards": [
+      "Cal Poly CDS Rev 14.1",
+      "NanoRacks NROL CBAS ICD",
+      "GEVS-STD-7000A",
+      "MIL-A-8625 Type III"
+    ],
+    "why_multi_part": "CTE-mismatch stress and PC/104 standoff preload retention (R7 / R_asm2) are inherently multi-part interactions that a monolithic model cannot represent.",
+    "speculation_caveats": "Panel thickness, bracket detail, and exact standoff count are programmatic speculation within CDS 3U / NanoRacks practice.",
+    "original_sample_preserved_at": "docs/eval/samples/194_sa11_succ_2.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "R7",
+      "R_asm1",
+      "R_asm2",
+      "R_asm3"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[5].geometric_constraints",
+      "prompt.parts[6].count_min",
+      "prompt.parts[6].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC4",
+        "LC5"
+      ],
+      "deck_step": "generated_static_step:LC1,LC4,LC5",
+      "metric": "max_von_mises_stress",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_MODAL",
+      "solver": "calculix",
+      "analysis_card": "*FREQUENCY",
+      "physics_card": null,
+      "load_cases": [
+        "modal"
+      ],
+      "deck_step": "generated_modal_step",
+      "metric": "first_natural_frequency",
+      "metric_source": "modal eigenfrequency block",
+      "outputs": [
+        "model.dat: eigenfrequencies"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_OTHER",
+      "solver": "calculix",
+      "analysis_card": "*DYNAMIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_dynamic_step",
+      "metric": "random_vibration_3sigma_stress",
+      "metric_source": "dynamic/static response block",
+      "outputs": [
+        "model.dat: dynamic displacement response"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "structural_mass",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC4",
+      "metric": "deployment_switch_clearance",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_005",
+      "requirement_id": "R6",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC4"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "rail_tolerance_postload",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R7_006",
+      "requirement_id": "R7",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "FEA_THERMAL",
+      "solver": "calculix",
+      "analysis_card": "*HEAT TRANSFER",
+      "physics_card": null,
+      "load_cases": [
+        "LC5"
+      ],
+      "deck_step": "generated_thermal_step",
+      "metric": "thermal_cycle_peak_stress",
+      "metric_source": "thermal temperature block",
+      "outputs": [
+        "model.dat: temperatures"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_007",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "max DCR across IF1..IF6",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm2_008",
+      "requirement_id": "R_asm2",
+      "requirement_path": "requirements.pass_fail_criteria[8]",
+      "requirement_class": "FEA_THERMAL",
+      "solver": "calculix",
+      "analysis_card": "*HEAT TRANSFER",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_thermal_step",
+      "metric": "fastener_preload_loss_pct",
+      "metric_source": "thermal temperature block",
+      "outputs": [
+        "model.dat: temperatures"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm3_009",
+      "requirement_id": "R_asm3",
+      "requirement_path": "requirements.pass_fail_criteria[9]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "switch_clearance_mm",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_010",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[10]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_FEA_COVERAGE_LC3_011",
+      "requirement_id": "R_FEA_COVERAGE_LC3",
+      "requirement_path": "requirements.pass_fail_criteria[11]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "generated_static_response_norm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "id": "102_ng17_ifrc_emergency_shelter",
+  "source": {
+    "catalog_ref": "NG17",
+    "year": 2023,
+    "tier": "B+"
+  },
+  "domain": "humanitarian_shelter",
+  "part_class": "ifrc_emergency_a_frame_shelter",
+  "full_prompt": "Design one representative single-family emergency A-frame shelter compliant with the IFRC Emergency Shelter Cluster Technical Brief for bamboo/timber shelters (2023). The shelter footprint is 4.5 m (L) x 3.5 m (W) in plan (~16 m2 floor area, Sphere-exceeding 4.5 m2/person for a family of 3-4), span direction 3.5 m between eaves, eave height 2.0 m, ridge height 3.2 m. Structural system is two pairs of 3-leg bamboo/timber A-frames at 1.5 m and 3.0 m from the gable end, plus one ridge pole and two eave plates tying the frames together. Members are 100 mm diameter seasoned bamboo culms (alternatively 75 x 75 mm sawn softwood timber) with the published lower-bound design stresses: bamboo allowable bending 10 MPa, allowable compression along grain 12 MPa, allowable shear 1.2 MPa (timber equivalents per IFRC brief). Roof covering is corrugated metal sheet or tarpaulin on timber battens spaced 600 mm. Design loads per IFRC brief: wind speed 120 km/h (33.3 m/s) giving ASCE 7 / Eurocode-simplified dynamic pressure q = 0.613 * V^2 = 0.613 * 33.3^2 ~ 680 Pa on vertical surfaces with cp,lee ~ 0.7 and cp,wind ~ 0.8; snow load 0.5 kN/m2 (or equivalent tropical alternative 0.25 kN/m2 where snow is not applicable); pedestrian / maintenance live 0.5 kN/m2 on roof. The shelter is anchored to ground with four corner anchors sized to resist wind uplift with a safety factor of 1.5. Deliverable is a CAD assembly of the A-frames, ridge pole, eave plates, battens, covering, and anchors suitable for linear static FEA under three independent IFRC load combinations (LC1 wind + dead, LC2 snow + dead, LC3 wind + snow + dead). Vibration, thermal, fluid, radiation, buckling analyses are NOT required.",
+  "short_prompt": "Design a single-family emergency A-frame shelter (two pairs of 3-leg bamboo or softwood-timber A-frames with ridge pole + eave plates + battens, corrugated-metal or tarpaulin roof, four corner anchors sized to resist wind uplift with SF 1.5) per the IFRC Emergency Shelter Cluster Technical Brief for bamboo/timber shelters (2023). Use published lower-bound allowables for bamboo (Fb = 10, Fc = 12, Fv = 1.2 MPa) or equivalent C24 timber. Locally-sourced materials preferred.\n\nEnvelope: 4.5 x 3.5 m plan (~16 m^2), 3.5 m span, eave 2.0 m, ridge 3.2 m, 100 mm bamboo culms (or 75x75 mm sawn timber), battens at 600 mm.\n\nLoad cases.\n- LC1 wind: 120 km/h (33.3 m/s) design wind giving q ~ 680 Pa with cp,windward +0.8 and cp,leeward -0.5 on the envelope.\n- LC2 snow: 0.5 kN/m^2 vertical on roof projection (or 0.25 kN/m^2 in tropical alternates).\n- LC3 dead + maintenance: self-weight + 0.5 kN/m^2 maintenance-live on the roof.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "IFRC emergency A-frame family shelter",
+    "brief": "Design a 4.5 x 3.5 m bamboo/timber A-frame shelter surviving 120 km/h wind + 0.5 kN/m2 snow on a 3.5 m span.",
+    "geometric_constraints": {
+      "plan_LxW_m": [
+        4.5,
+        3.5
+      ],
+      "eave_height_m": 2.0,
+      "ridge_height_m": 3.2,
+      "span_m": 3.5,
+      "a_frame_pair_count": 2,
+      "bamboo_culm_diameter_mm": 100,
+      "batten_spacing_mm": 600
+    },
+    "material": {
+      "bamboo": {
+        "allowable_Fb_MPa": 10,
+        "allowable_Fc_MPa": 12,
+        "allowable_Fv_MPa": 1.2
+      },
+      "timber_equivalent": "75 x 75 mm softwood C24 equivalent"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "wind",
+        "V_kmh": 120,
+        "V_m_s": 33.3,
+        "q_Pa": 680,
+        "cp_windward": 0.8,
+        "cp_leeward": -0.5,
+        "application": "ASCE 7 / Eurocode-simplified pressure coefficients"
+      },
+      {
+        "id": "LC2",
+        "name": "snow",
+        "magnitude_kN_m2": 0.5,
+        "application": "vertical on roof projection"
+      },
+      {
+        "id": "LC3",
+        "name": "dead_plus_maintenance",
+        "application": "self-weight + 0.5 kN/m2 maintenance live on roof"
+      }
+    ],
+    "boundary_conditions": {
+      "anchors": "4 corner anchors resisting uplift with SF 1.5",
+      "base": "A-frame feet pinned to anchors"
+    },
+    "objective": {
+      "primary": "pass IFRC criteria",
+      "secondary": "use only locally available materials"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_bamboo_bending_stress_MPa",
+        "max_bamboo_compressive_stress_MPa",
+        "anchor_uplift_SF",
+        "max_ridge_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "design_wind_speed_kmh",
+        "limit_kmh": 120,
+        "derivation": "IFRC brief",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "design_snow_load_kN_m2",
+        "limit_kN_m2": 0.5,
+        "derivation": "IFRC brief",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "span_m",
+        "limit_m": 3.5,
+        "derivation": "IFRC brief span",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bamboo_bending_stress_MPa",
+        "limit_MPa": 10,
+        "derivation": "IFRC allowable Fb",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "anchor_uplift_safety_factor",
+        "limit": 1.5,
+        "derivation": "IFRC anchorage SF",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (culms, poles, battens), shell (covering)",
+      "solver_hints": [
+        "SAP2000",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static combined loads"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Not applicable.",
+      "thermal_analysis": "Not applicable (passive shelter).",
+      "fluid_analysis": "Wind as equivalent static.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Short compression culms, not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Passive ventilation and thermal comfort",
+      "Fire resistance of covering",
+      "Bamboo durability treatment"
+    ],
+    "uncertainty_flags": []
+  },
+  "eval_coverage": [
+    "wind + snow + maintenance combined FEA",
+    "bamboo-specific allowable-stress design",
+    "anchor uplift SF",
+    "humanitarian emergency shelter scope",
+    "locally-sourced materials constraint"
+  ]
+}

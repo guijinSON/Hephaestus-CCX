@@ -1,0 +1,138 @@
+{
+  "id": "209_oc9_nz_engineering_science",
+  "source": {
+    "catalog_ref": "OC11",
+    "year": 2026,
+    "tier": "C"
+  },
+  "domain": "structural_modelling_brief",
+  "part_class": "pedestrian_bridge_model",
+  "full_prompt": "For an 8-hour modelling-only engineering-science benchmark, submit an analysis-driven preliminary design of a 20 m single-span pedestrian footbridge over a river crossing on a city council pedestrian network, carrying a 3 m wide deck. The bridge is a simply-supported steel Warren truss with top and bottom chords in AS/NZS 3679.1 Grade 300 steel (Young's modulus 200 GPa, Poisson 0.30, yield 300 MPa, density 7850 kg/m^3) and timber deck planking (LVL, Young's modulus 13 GPa, design tension parallel to grain 22 MPa, density 600 kg/m^3). Design loads per AS/NZS 1170.1 pedestrian crowd: (LC1) uniformly distributed pedestrian live load 5 kPa on the full 20 m x 3 m deck; (LC2) concentrated load 10 kN on a 0.5 m x 0.5 m patch at mid-span deck; (LC3) pedestrian dynamic vertical: 280 N at first-mode frequency 2 Hz applied at mid-span to check serviceability; (LC4) wind lateral on elevation: 1.0 kPa on the full truss side elevation per AS/NZS 1170.2 region A7 ultimate. Pass/fail: (R1) max truss chord axial stress under LC1+LC2 below 200 MPa (yield 300 / 1.5), (R2) mid-span vertical deflection under LC1 below L/500 = 40 mm, (R3) vertical acceleration under LC3 below 0.5 m/s^2 per AS 5100.2 pedestrian comfort, (R4) lateral displacement under LC4 below L/400 = 50 mm. Because organizers mark the analysis narrative rather than a 3D geometry, the deliverable is an 8-page analytical report; we include a representative STEP AP242 skeleton model so that the schema remains uniform with rest of the benchmark set.",
+  "short_prompt": "For an 8-hour modelling-only engineering-science exercise, submit a preliminary design of a 20 m single-span pedestrian footbridge carrying a 3 m wide deck over a city-network river crossing. The bridge is a simply-supported steel Warren truss (AS/NZS 3679.1 Grade 300 class chords) with an LVL timber deck. Design loads per AS/NZS 1170.1 (pedestrian live), AS/NZS 1170.2 (wind, region A7 ULS), and AS 5100.2 pedestrian-comfort serviceability.\n\nNote: the brief is analysis-narrative-driven; a representative STEP skeleton is expected for schema uniformity, not detailed geometry.\n\nLoad cases.\n- LC1 pedestrian UDL: 5 kPa over the full 20 m x 3 m deck.\n- LC2 concentrated: 10 kN on a 0.5 x 0.5 m patch at mid-span.\n- LC3 pedestrian dynamic vertical: 280 N at 2 Hz (first mode) at mid-span.\n- LC4 wind lateral: 1.0 kPa on the full side elevation per AS/NZS 1170.2 A7 ULS.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Engineering-science pedestrian bridge model",
+    "brief": "20 m Warren-truss pedestrian bridge sized to AS/NZS 1170 and AS 5100 serviceability.",
+    "geometric_constraints": {
+      "span_m": 20,
+      "deck_width_m": 3
+    },
+    "material": {
+      "primary": {
+        "name": "AS/NZS 3679.1 Grade 300 steel",
+        "youngs_modulus_GPa": 200,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 7850,
+        "yield_strength_MPa": 300
+      },
+      "deck": {
+        "name": "LVL timber",
+        "E_GPa": 13,
+        "design_tension_parallel_MPa": 22,
+        "density_kg_m3": 600
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pedestrian_udl",
+        "pressure_kPa": 5.0,
+        "area_m2": 60
+      },
+      {
+        "id": "LC2",
+        "name": "concentrated_10kN",
+        "F_kN": 10,
+        "footprint_mm": [
+          500,
+          500
+        ],
+        "application": "mid-span"
+      },
+      {
+        "id": "LC3",
+        "name": "pedestrian_dynamic",
+        "F_N": 280,
+        "freq_Hz": 2
+      },
+      {
+        "id": "LC4",
+        "name": "wind_lateral",
+        "pressure_kPa": 1.0,
+        "application": "side elevation"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "chord_axial_stress_MPa",
+        "mid_span_deflection_mm",
+        "vertical_acceleration_m_s2",
+        "lateral_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_chord_axial_stress",
+        "limit_MPa": 200,
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mid_span_deflection",
+        "limit_mm": 40,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "vertical_deck_acceleration",
+        "limit_m_s2": 0.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "lateral_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "id": "093_ng8_build_change_seismic_retrofit",
+  "source": {
+    "catalog_ref": "NG8",
+    "year": 2022,
+    "tier": "A+"
+  },
+  "domain": "humanitarian_civil",
+  "part_class": "seismic_retrofit_confined_masonry_house",
+  "full_prompt": "Design one representative seismic retrofit package for a 2-story unreinforced masonry (URM) family house in a seismic zone of PGA 0.3-0.4 g (Nepal / Philippines / Colombia analog), following the Build Change Seismic Retrofit Guidelines (2022). The existing house is a 7.0 m x 8.5 m plan, two stories, with 230 mm (9 in) clay-brick solid-bed cement-mortar walls, flat RC slab roof with 120 mm thickness, and no existing tie beams or corner ties. The retrofit design must bring the house to: (a) PGA design ground motion of 0.35 g horizontal (inside the Build Change 0.3-0.4 g band); (b) cement mortar mean compressive strength in new work of at least 5.0 MPa verified by cube test; (c) wall density (percentage of each floor plan area occupied by resisting walls in each orthogonal direction) at least 3.0 percent per floor per direction per Build Change density chart (higher of 3 percent or local-code value); (d) corner tie schedule installed at every external and internal wall corner, at every floor and roof level, consisting of stitched RC tie beams or steel strap ties with minimum 4 x 12 mm rebar in the tie-beam or equivalent strap capacity per Build Change corner-tie detail. Retrofit interventions include: (1) add continuous RC tie beam at first-floor and roof slab levels, 200 mm x 200 mm section with 4 x 12 mm longitudinal bars + 8 mm stirrups at 150 mm; (2) install RC corner columns at all 8 external corners, 200 mm x 200 mm with 4 x 12 mm longitudinal bars; (3) add vertical steel strap corner ties at each window / door jamb per Build Change typical detail; (4) install a 40 mm RC jacket (welded wire mesh + shotcrete or cast-in-place) on critical ground-floor walls with inadequate density. Target materials: concrete fc >= 20 MPa, rebar ASTM A615 Gr 60 (fy = 420 MPa), mortar fc >= 5 MPa, masonry prism fm >= 5 MPa. Deliverable is a CAD assembly of the retrofitted house showing existing walls + new tie beams + new corner columns + strap ties + RC wall jackets, suitable for (a) linear/nonlinear static pushover FEA under 0.35 g equivalent lateral force distribution, (b) wall-density check (geometric, not FEA). Vibration (modal) may be used but is NOT required; thermal, fluid, radiation, and buckling analyses are NOT required. A nonlinear pushover / equivalent lateral force solver is the required non-linear-static solver.",
+  "short_prompt": "Design a seismic retrofit package for a 2-story unreinforced clay-brick / cement-mortar masonry family house with an RC slab roof, per the Build Change Seismic Retrofit Guidelines (2022) for a PGA 0.3-0.4 g zone (Nepal / Philippines / Colombia analog). Retrofit interventions include continuous RC tie beams at each floor and roof, RC corner columns at all external corners, vertical steel strap ties at window / door jambs, and RC jackets on critical ground-floor walls. New mortar fc >= 5 MPa; concrete fc >= 20 MPa; rebar Gr 60. Wall density >= 3% per floor per direction; corner ties at every external and internal corner and floor/roof level.\n\nEnvelope: 7.0 x 8.5 m plan, two stories, 230 mm existing URM walls, 120 mm RC roof slab.\n\nLoad cases.\n- LC1 design seismic: PGA 0.35 g applied as an equivalent lateral force distribution, with pushover base-shear capacity >= demand.\n- LC2 gravity: dead + live.\n\nA nonlinear static pushover solver (ASCE 41 / FEMA 356 style) is required; wall-density is a geometric plan check.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "nonlinear_static_pushover_solver",
+        "reason": "Seismic retrofit is evaluated by equivalent lateral force + nonlinear static pushover per FEMA 356 / ASCE 41 idioms embedded in Build Change guidance; not pure linear FEA.",
+        "examples": [
+          "SAP2000 pushover",
+          "ETABS pushover",
+          "OpenSees"
+        ]
+      },
+      {
+        "tool": "wall_density_geometric_check",
+        "reason": "Wall-density pass/fail is a geometric plan-area check, not FEA.",
+        "examples": [
+          "CAD measurement + Build Change chart"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Seismic retrofit for 2-story URM house in 0.35 g zone",
+    "brief": "Retrofit a 7 x 8.5 m two-story URM house to Build Change guidelines for PGA 0.35 g with RC tie beams, corner columns, strap ties, and RC wall jackets.",
+    "geometric_constraints": {
+      "plan_LxW_m": [
+        7.0,
+        8.5
+      ],
+      "stories": 2,
+      "existing_wall_thickness_mm": 230,
+      "new_tie_beam_section_mm": [
+        200,
+        200
+      ],
+      "new_corner_column_section_mm": [
+        200,
+        200
+      ],
+      "new_RC_jacket_thickness_mm": 40
+    },
+    "material": {
+      "concrete": {
+        "fc_MPa": 20
+      },
+      "rebar": {
+        "grade": "Gr 60",
+        "fy_MPa": 420
+      },
+      "mortar": {
+        "min_fc_MPa": 5
+      },
+      "masonry_prism": {
+        "min_fm_MPa": 5
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "design_seismic",
+        "PGA_g": 0.35,
+        "application": "equivalent lateral force per code / Build Change guide"
+      },
+      {
+        "id": "LC2",
+        "name": "dead_plus_live",
+        "application": "gravity"
+      }
+    ],
+    "boundary_conditions": {
+      "foundation": "existing strip footing, assumed rigid",
+      "diaphragm": "RC slab, assumed rigid in-plane"
+    },
+    "objective": {
+      "primary": "pass all Build Change retrofit criteria",
+      "secondary": "minimize new concrete + steel mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "IFC"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "wall_density_pct_per_direction_per_floor",
+        "pushover_capacity_vs_demand_g",
+        "corner_tie_count_installed",
+        "mortar_fc_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "design_PGA_g",
+        "limit_g": 0.35,
+        "derivation": "Build Change 0.3-0.4 g band",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mortar_compressive_strength_MPa",
+        "limit_MPa": 5.0,
+        "derivation": "Build Change minimum new mortar",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "wall_density_pct_per_floor_per_direction",
+        "limit_pct": 3.0,
+        "derivation": "Build Change wall-density chart lower bound",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "corner_ties_at_all_corners_and_levels",
+        "limit": "all 8 external + internal corners, 2 floor levels + roof",
+        "derivation": "Build Change corner tie schedule",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "pushover_base_shear_capacity_vs_demand_ratio",
+        "limit": 1.0,
+        "derivation": "ASCE 41 / FEMA 356 nonlinear static procedure",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (walls, jackets), beam (tie beams + corner columns), strap (strap ties)",
+      "solver_hints": [
+        "SAP2000",
+        "ETABS",
+        "OpenSees"
+      ],
+      "analysis_types": [
+        "linear static lateral",
+        "nonlinear static pushover"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Nonlinear pushover supersedes linear modal for this retrofit evaluation.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Stocky masonry + RC elements not buckling-critical."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Foundation retrofit where existing strip footing is inadequate",
+      "Non-structural hazard mitigation (chimneys, parapets)",
+      "Diaphragm strengthening for timber-roof variants"
+    ],
+    "uncertainty_flags": [
+      {
+        "field": "wall_density_pct_limit",
+        "value": 3.0,
+        "note": "Build Change density charts vary by country manual; 3.0 percent is a representative lower bound, confirm per-country chart before finalizing."
+      }
+    ]
+  },
+  "eval_coverage": [
+    "nonlinear static pushover coupled with geometric wall-density check",
+    "explicit PGA 0.35 g seismic demand",
+    "retrofit detailing (tie beams + corner columns + jackets) as design variables",
+    "humanitarian low-resource structural scope",
+    "multi-material (existing URM + new RC + steel) assembly"
+  ]
+}

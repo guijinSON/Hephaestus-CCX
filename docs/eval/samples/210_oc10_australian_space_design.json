@@ -1,0 +1,149 @@
+{
+  "id": "210_oc10_australian_space_design",
+  "source": {
+    "catalog_ref": "OC12",
+    "year": 2026,
+    "tier": "C"
+  },
+  "domain": "space_habitat_pressure_shell",
+  "part_class": "crew_quarters_pressure_vessel",
+  "full_prompt": "Design the primary pressure shell of the crew living-quarters module of a lunar-surface habitat for a space-design tender-response benchmark. The shell is an aluminum cylindrical monocoque with hemispherical endcaps, internal volume 100 m^3, outer diameter 4.5 m, cylindrical length 5.5 m, total length including endcaps 9.0 m. Material is Aluminum 2219-T87 (Young's modulus 73 GPa, Poisson 0.33, yield 352 MPa, ultimate 455 MPa, density 2840 kg/m^3). Shell wall nominal thickness 6 mm; endcap nominal thickness 5 mm. Maximum Expected Operating Pressure (MEOP) is 101.325 kPa (one atmosphere) internal with zero external on the lunar surface. Following ANSI/AIAA S-080A-2018 metallic pressure vessel rules and ECSS-E-ST-32-02C Rev.2, design factors are: proof = 1.5 x MEOP = 152 kPa, burst (non-hazardous crewed) = 2.0 x MEOP = 203 kPa, yield FoS = 1.25, ultimate FoS = 1.4. Load cases: (LC1) internal pressure at MEOP 101.325 kPa; (LC2) proof pressure 152 kPa; (LC3) burst pressure 203 kPa must not produce ultimate failure; (LC4) seismic - lunar moonquake 0.1 g horizontal baseline; (LC5) thermal: outer-skin swing -170 C (shadow) to +120 C (sun) with internal held at 22 C; gradient across 6 mm wall applied as 1D thermal analysis. Pass/fail: (R1) yield FoS 1.25 on LC1 means max von Mises <= 281 MPa; (R2) ultimate FoS 1.4 on LC1 means max stress <= 325 MPa; (R3) under LC3 burst, no ultimate violation (stress <= 455 MPa); (R4) shell + endcap total mass must stay below 4500 kg; (R5) linear buckling eigenvalue under external-pressure 20 kPa fault-case must exceed 2.0. Deliverables: STEP AP242, pressure-vessel FEA across LC1-LC3, thermal FEA, modal for first 5 axial + ovalization modes, buckling eigenvalue, and a mass + wall-thickness map.",
+  "short_prompt": "Design the primary pressure shell of the crew living-quarters module of a lunar-surface habitat. The shell is an aluminum 2219-T87-class cylindrical monocoque with hemispherical endcaps, internal volume 100 m^3. Qualify per ANSI/AIAA S-080A-2018 and ECSS-E-ST-32-02C Rev.2 metallic-pressure-vessel rules, with yield FoS 1.25, ultimate FoS 1.4, proof 1.5 x MEOP, burst 2.0 x MEOP (non-hazardous crewed class).\n\nEnvelope: 4.5 m OD, 9.0 m total length (5.5 m cylindrical + hemi endcaps).\n\nLoad cases.\n- LC1 MEOP: 101.325 kPa internal (one atmosphere), 0 kPa external.\n- LC2 proof: 152 kPa internal.\n- LC3 burst: 203 kPa internal, must not produce ultimate failure.\n- LC4 moonquake: 0.1 g horizontal.\n- LC5 thermal: outer skin -170 C (shadow) to +120 C (sun), interior held at 22 C.\nPlus a 20 kPa external-pressure fault case for buckling margin.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Lunar habitat crew-quarters pressure shell",
+    "brief": "2219-T87 Al pressure shell, 4.5 m OD x 9 m L, compliant with AIAA S-080A and ECSS-E-ST-32-02C.",
+    "geometric_constraints": {
+      "OD_m": 4.5,
+      "total_length_m": 9.0,
+      "cylindrical_length_m": 5.5,
+      "wall_mm": 6,
+      "endcap_mm": 5,
+      "internal_volume_m3": 100
+    },
+    "material": {
+      "name": "Aluminum 2219-T87",
+      "youngs_modulus_GPa": 73,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2840,
+      "yield_strength_MPa": 352,
+      "ultimate_tensile_strength_MPa": 455
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "MEOP",
+        "pressure_kPa": 101.325
+      },
+      {
+        "id": "LC2",
+        "name": "proof",
+        "pressure_kPa": 152
+      },
+      {
+        "id": "LC3",
+        "name": "burst",
+        "pressure_kPa": 203
+      },
+      {
+        "id": "LC4",
+        "name": "moonquake",
+        "g_lateral": 0.1
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_swing",
+        "outer_skin_C": [
+          -170,
+          120
+        ],
+        "inner_C": 22
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "mass_kg",
+        "max_von_mises_per_case_MPa",
+        "proof_plastic_strain",
+        "burst_margin_MPa",
+        "first_5_modes_Hz",
+        "buckling_eigenvalue"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_at_MEOP",
+        "limit_MPa": 281,
+        "derivation": "yield 352 / 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_at_MEOP",
+        "limit_MPa": 325,
+        "derivation": "ultimate 455 / 1.4",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_stress_at_burst",
+        "limit_MPa": 455,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_shell_mass",
+        "limit_kg": 4500,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "external_fault_case_eigenvalue",
+        "limit": 2.0,
+        "applies_to": [
+          "external pressure 20 kPa fault"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

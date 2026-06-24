@@ -1,0 +1,213 @@
+{
+  "id": "336_i_eu4_launch_canada_rocket",
+  "source": {
+    "catalog_ref": "I-EU4 (I-NA subthread)",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "sounding_rocket_recovery_bay",
+  "full_prompt": "Design the recovery bay (coupler section housing the drogue and main parachute deployment system) of a student-built high-power sounding rocket competing in Launch Canada 2025, Advanced Flight category. Target apogee 20000 ft AGL (6096 m) with cumulative motor impulse at the FAA Class 2 ceiling of 40960 N*s. Vehicle GLOW 38 kg wet, airframe outer diameter 152 mm (6 inch), total length 3.2 m. The recovery bay is a separate tubular coupler section, length 600 mm, fitting inside adjacent airframe tubes by friction plus four M4 shear pins per interface (total 8 shear pins). Structure is 6061-T6 aluminum alloy tube (E 68.9 GPa, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3), wall thickness 2.5 mm. The bay contains: one 200 mm x 200 mm x 50 mm payload sled (4 kg of avionics), two pyrotechnic ejection charges (one drogue at apogee, one main at 300 m AGL per Launch Canada dual-event requirement), and a 2.5 m parachute for main event. Drogue canopy opening force peak is 1800 N; main canopy opening force peak is 4500 N. The bay has eyebolt attachments welded through internal bulkheads at each end. Load cases: (LC1) peak motor thrust transient: 4.5 kN axial on the bay from below + 380 N drag reaction on upper interface = compressive axial 4.12 kN on bay tube; (LC2) drogue deployment shock: 1800 N axial tension at lower eyebolt (bay hanging from rocket upper section at apogee); (LC3) main deployment shock: 4500 N axial tension at lower eyebolt during descent; (LC4) ejection pressure pulse: 70 kPa internal over 0.2 s, acting on bay inner wall between sealed bulkheads; (LC5) recovery bay impact if main fails to deploy: 60 m/s terminal with just drogue, equivalent static 25 g axial on the bay itself (this is a burst-margin / safe-life gate per Launch Canada airframe SF); (LC6) shear pin cross-check: verify bay-to-airframe interface shear pins fail before airframe yield during nominal separation (pins must shear at ~1000 N per DTEG). Pass/fail: (R1) under LC1-LC4, max von Mises stress in the bay tube must remain below 184 MPa (276 / 1.5 yield FoS, Launch Canada DTEG standard); (R2) linear buckling eigenvalue under LC1 axial compression must exceed 2.0; (R3) under LC5 burst case, stress must remain below 310 MPa (ultimate, no catastrophic failure) - implicit safe-life gate; (R4) bay dry mass (tube + 2 bulkheads + eyebolts) must not exceed 1.6 kg; (R5) under LC4, bulkhead deflection must remain below 2 mm (to preserve pyrotechnic initiator alignment); (R6) M4 shear pin total shear capacity at interface: 8 pins must not fail below 6000 N combined (per expected separation force) - verified by pin shear formula, not FEA. Vibration (random PSD) is recommended but not a pass/fail gate at this competition class; thermal, fluid, radiation not primary. Deliverables: STEP AP242 assembly, coupler + 2 bulkheads + 2 eyebolts + 8 shear pins as separate bodies, FEA report per LC1-LC5, buckling eigenvalue for LC1, bulkhead deflection for LC4, shear pin calculation, mass budget.",
+  "short_prompt": "Design the recovery bay (coupler section housing the drogue + main parachute deployment system) of a student-built high-power sounding rocket for Launch Canada 2025 Advanced Flight category. Target apogee 20000 ft (6096 m); FAA Class 2 impulse ceiling 40960 N-s; GLOW 38 kg wet; airframe 152 mm OD x 3.2 m.\n\nEnvelope: 6061-T6 aluminum tube coupler, 600 mm long, 2.5 mm wall, friction-fit into adjacent airframe tubes plus 4 x M4 shear pins per interface (8 total); 200 x 200 x 50 mm avionics sled (4 kg); two pyro charges (drogue at apogee, main at 300 m AGL per Launch Canada dual event); 2.5 m main canopy (4500 N opening peak, 1800 N drogue peak); eyebolts welded through each end bulkhead.\n\nFactor regime: Launch Canada DTEG yield FoS 1.5 (allowable 184 MPa) on LC1-LC4; linear buckling eigenvalue >= 2.0 under axial compression; LC5 burst-margin stress < ultimate (310 MPa); bulkhead deflection under pulse < 2 mm; 8 shear pins combined shear >= 6000 N per DTEG.\n\nLoad cases.\n- Peak motor transient: 4.5 kN axial from below + 380 N drag above = 4.12 kN compression on the bay.\n- Drogue shock: 1800 N axial tension at the lower eyebolt.\n- Main shock: 4500 N axial tension at the lower eyebolt.\n- Ejection pressure pulse: 70 kPa internal for 0.2 s between sealed bulkheads.\n- Main-fails-to-deploy burst margin: 60 m/s drogue-only terminal = 25 g axial on the bay.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "pin_shear_calculator",
+        "reason": "Shear-pin sizing for interface separation uses direct formula, not FEA.",
+        "examples": [
+          "hand calculation",
+          "Launch Canada DTEG template"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Launch Canada Advanced-Flight Recovery Bay",
+    "brief": "6061-T6 coupler recovery bay, 152 mm OD x 600 mm L, 1800 N drogue + 4500 N main shock, DTEG FoS 1.5, 20000 ft apogee.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 152,
+      "length_mm": 600,
+      "wall_mm": 2.5,
+      "shear_pins": {
+        "count": 8,
+        "size": "M4"
+      },
+      "bulkhead_count": 2
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "properties": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700
+      }
+    },
+    "mission": {
+      "target_apogee_ft": 20000,
+      "impulse_ceiling_Ns": 40960,
+      "GLOW_kg": 38,
+      "recovery": "dual-event: drogue at apogee + main at 300 m AGL"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "peak_thrust_compression",
+        "magnitude_N": 4120,
+        "application": "axial compressive"
+      },
+      {
+        "id": "LC2",
+        "name": "drogue_shock",
+        "magnitude_N": 1800,
+        "application": "lower eyebolt tension"
+      },
+      {
+        "id": "LC3",
+        "name": "main_shock",
+        "magnitude_N": 4500,
+        "application": "lower eyebolt tension"
+      },
+      {
+        "id": "LC4",
+        "name": "ejection_pressure",
+        "magnitude_kPa": 70,
+        "application": "internal between bulkheads"
+      },
+      {
+        "id": "LC5",
+        "name": "drogue_only_impact_25g",
+        "magnitude_g": 25,
+        "application": "burst-margin gate"
+      },
+      {
+        "id": "LC6",
+        "name": "shear_pin_separation",
+        "magnitude_N_total": 6000,
+        "application": "8 M4 pins in shear"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 13,
+      "report_fields": [
+        "bay_mass_kg",
+        "max_stress_LC1_LC4_MPa",
+        "buckling_factor_LC1",
+        "stress_LC5_MPa",
+        "bulkhead_deflection_LC4_mm",
+        "shear_pin_capacity_N"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "276 / 1.5 yield FoS per DTEG",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_stress_burst",
+        "limit_MPa": 310,
+        "derivation": "ultimate, no catastrophic failure",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bay_dry_mass",
+        "limit_kg": 1.6,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "bulkhead_deflection",
+        "limit_mm": 2,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "shear_pin_capacity_total",
+        "limit_N_min": 6000,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for tube; TET10 for bulkhead and eyebolt",
+      "mesh_size_mm": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "linear buckling (LC1)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "vibration_analysis": "Random-vib PSD not a Launch Canada hard gate at this apogee class.",
+      "thermal_analysis": "Short mission duration.",
+      "fluid_analysis": "Aero handled via thrust + drag axial combination LC1.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "multi-event recovery shock",
+    "buckling under axial thrust",
+    "ejection pressure pulse",
+    "DTEG FoS traceability",
+    "shear-pin interface sizing"
+  ]
+}

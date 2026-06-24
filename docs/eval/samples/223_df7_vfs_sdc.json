@@ -1,0 +1,176 @@
+{
+  "id": "223_df7_vfs_sdc",
+  "source": {
+    "catalog_ref": "DF7",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "tiltrotor_structural",
+  "part_class": "tiltrotor_wing_root_fitting",
+  "full_prompt": "Design the wing root fitting of an XV-15-baseline hybrid-electric tiltrotor benchmark, interfacing the cantilever wing box to the fuselage carry-through structure. Aircraft gross weight 6577 kg (14500 lb), rotor diameter 7.62 m, two wing-tip proprotors each generating 35,600 N of hover thrust in helicopter mode, rotor blade count 3. Wing root fitting must transfer: (a) rotor thrust reacted vertically in helicopter mode and forward in airplane mode during conversion, (b) wing bending from aerodynamic lift in cruise, (c) nacelle-tilt actuator reaction moment during the 12-second conversion from helicopter to airplane mode. Fitting material: Ti-6Al-4V forging (Young's modulus 113.8 GPa, Poisson 0.342, yield 860 MPa, ultimate 950 MPa, density 4430 kg/m^3). Fitting envelope: 500 mm fore-aft x 300 mm chord-wise x 250 mm vertical, with a main pin interface (OD 80 mm bore) to the nacelle spindle, four M20 bolt holes to the wing box spar at a 150 x 120 mm pattern, and two M24 bolts to the fuselage frame. Load cases: (LC1) helicopter hover OGE: vertical lift 35,600 N per rotor down on the fitting through the nacelle spindle pin; (LC2) conversion 50% airplane: cyclic couple 8000 N-m plus 25,000 N thrust at 45 deg; (LC3) airplane cruise: forward thrust 7000 N + wing bending moment 120 kN-m out-of-plane at root; (LC4) OEI hover at 1220 m: single-rotor thrust up to 42,000 N with lateral sway load 8000 N; (LC5) hard-landing: 4 g vertical at DGW (258 kN across both wing fittings, 129 kN per side); (LC6) fatigue: 10^7 cycles of +/- 30% hover load plus conversion cycle spectrum. Pass/fail per MIL-HDBK-516C + FAR 29 rotorcraft: (R1) max von Mises across LC1-LC5 <= 633 MPa (ultimate 950 / 1.5); (R2) max stress at limit <= 748 MPa (yield 860 / 1.15); (R3) pin bore ovalization under LC1 <= 0.15 mm; (R4) fatigue at fillet radius <= 120 MPa 10^7 cycle endurance; (R5) fitting mass <= 32 kg; (R6) first in-plane mode above 25 Hz. Deliverables: STEP, FEA per case, modal, fatigue, mass report.",
+  "short_prompt": "Design the wing root fitting of a hybrid-electric tiltrotor (XV-15 baseline aerodynamics), transferring rotor thrust, wing bending, and nacelle-tilt actuator reaction between the cantilever wing box and the fuselage carry-through during the 12 s helicopter-to-airplane conversion. Aircraft DGW 6577 kg, wing-tip proprotors 35,600 N hover thrust each, three blades. Material class: Ti-6Al-4V forging. Qualify per MIL-HDBK-516C + FAR Part 29 rotorcraft, with ultimate FoS 1.5 and yield FoS 1.15.\n\nEnvelope: fitting on the order of 500 mm fore-aft x 300 mm chord-wise x 250 mm vertical, with an 80 mm nacelle-spindle pin bore, a four-bolt wing-box pattern, and two bolts to the fuselage frame.\n\nLoad cases.\n- LC1 helicopter hover OGE: 35,600 N vertical down through the nacelle spindle pin.\n- LC2 conversion at 50% airplane mode: 8000 N-m couple + 25,000 N thrust at 45 deg.\n- LC3 airplane cruise: 7000 N forward thrust + 120 kN-m out-of-plane wing root bending.\n- LC4 OEI hover at 1220 m: 42,000 N up + 8000 N lateral sway.\n- LC5 hard landing: 4 g vertical at DGW, 129 kN per side fitting.\n- LC6 fatigue: 1e7 cycles of +/- 30% hover load plus the conversion spectrum.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Hybrid-electric tiltrotor wing root fitting",
+    "brief": "Ti-6Al-4V root fitting transferring rotor + wing + conversion loads to fuselage.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "LON": 500,
+        "CHORD": 300,
+        "V": 250
+      },
+      "spindle_bore_mm": 80,
+      "wing_bolt_pattern_mm": [
+        150,
+        120
+      ],
+      "fuselage_bolts": "2xM24"
+    },
+    "material": {
+      "name": "Ti-6Al-4V forging",
+      "youngs_modulus_GPa": 113.8,
+      "poissons_ratio": 0.342,
+      "density_kg_m3": 4430,
+      "yield_strength_MPa": 860,
+      "ultimate_tensile_strength_MPa": 950
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "helo_hover",
+        "F_N": 35600
+      },
+      {
+        "id": "LC2",
+        "name": "conversion_50pct",
+        "moment_Nm": 8000,
+        "F_N": 25000,
+        "angle_deg": 45
+      },
+      {
+        "id": "LC3",
+        "name": "airplane_cruise",
+        "thrust_N": 7000,
+        "bending_kNm": 120
+      },
+      {
+        "id": "LC4",
+        "name": "OEI_hover_1220m",
+        "F_N": 42000,
+        "lateral_N": 8000
+      },
+      {
+        "id": "LC5",
+        "name": "hard_landing_4g",
+        "F_N_per_side": 129000
+      },
+      {
+        "id": "LC6",
+        "name": "fatigue_1e7",
+        "amplitude_pct_of_hover": 30
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "fitting_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "pin_bore_ovalization_mm",
+        "fillet_alt_stress_MPa",
+        "first_inplane_mode_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 633,
+        "derivation": "ultimate 950 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_limit",
+        "limit_MPa": 748,
+        "derivation": "yield 860 / 1.15",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "pin_bore_ovalization",
+        "limit_mm": 0.15,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "fillet_alt_stress",
+        "limit_MPa": 120,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "fitting_mass",
+        "limit_kg": 32,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_inplane_mode",
+        "limit_Hz": 25,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      }
+    ]
+  },
+  "notes": {
+    "needs_rulebook_fetch": false
+  }
+}

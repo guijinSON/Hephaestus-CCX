@@ -1,0 +1,203 @@
+{
+  "id": "125_hv1_motostudent_swingarm",
+  "source": {
+    "catalog_ref": "HV1",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "motorcycle_chassis",
+  "part_class": "swingarm",
+  "full_prompt": "Design a monolithic aluminum 7020-T6 swingarm for an electric motorcycle swingarm benchmark (collegiate petrol-category prototype racing motorcycle) using a spec liquid-cooled four-stroke 250 cc single producing 30 kW and 27 N-m at the countershaft sprocket, within the Moto3-adjacent geometry envelope prescribed in the benchmark regulations. The swingarm is a single extruded-and-machined 7020-T6 aluminum body (no welds in the primary structure; it is machined from a single forged billet or equivalent CNC envelope), with integral chain-adjuster slots and integral rear axle forks. Geometry: pivot-axis-to-rear-axle length 560 mm (centre-to-centre), pivot bore 22 mm ID x 115 mm wide across both pivot lugs, rear axle slot 22 mm diameter (adjuster range 20 mm), twin-sided box-section arms each 60 mm wide x 45 mm tall with wall thickness 5 mm, bridge 200 mm aft of pivot for lateral rigidity 40 mm wide x 35 mm tall x 4 mm wall, brake-caliper mounting ear with 2x M10 holes on 82 mm centers on the left arm, rear axle nut clearance 35 mm. Total bounding envelope 580 mm x 250 mm x 100 mm. Material 7020-T6 aluminum (EN AW-7020) with Young's modulus 72 GPa, Poisson's ratio 0.33, density 2780 kg/m^3, yield 290 MPa, UTS 345 MPa; fatigue endurance limit 90 MPa at 10^7 cycles (welded joint derated, but for monolithic billet the base-metal value 130 MPa applies and a further 0.7 surface factor yields 90 MPa conservatively). Three load cases per FIM racing-motorcycle frame structural practice and benchmark chassis guidelines Section 4. Load Case 1 (longitudinal drive + bump): 4.0 kN horizontal chain-pull force forward on the rear axle simulating peak drive torque (27 N-m x 5.5 primary ratio x 14-tooth front sprocket pitch radius gives ~4.0 kN at the swingarm pivot), combined with 3.5g vertical bump-load on the rear axle centered on rider + bike mass 195 kg distributed 40% rear = 2.7 kN; pivot bore fully constrained. Load Case 2 (cornering + braking): 3.5 kN lateral force at the rear axle (cornering), combined with 1.8 kN longitudinal rearward force from 1.0g rear-wheel braking. Load Case 3 (wheelie / landing): 5.0g vertical down-load at the rear axle following a wheelie landing, 4.9 kN vertical. Pass/fail: (R1) peak von Mises under LC1, LC2, LC3 must not exceed 145 MPa (yield/2.0 per FIM chassis practice); (R2) fatigue check: under an assumed 10^7-cycle service spectrum using LC1 stress range scaled to 40% of LC1 peak, the local stress range at any notch (axle slot, pivot bore, caliper-mount ear) must remain below 90 MPa; (R3) maximum lateral deflection of the rear axle under LC2 cornering must not exceed 2.5 mm to preserve handling geometry; (R4) a linear buckling eigenvalue analysis under LC1 (compressive chain-pull path) must yield a first-mode load factor of at least 3.0; (R5) first torsional natural frequency (swingarm alone, with axle fixed, pivot free) must exceed 100 Hz to avoid chatter coupling with the 100 Hz rear-wheel-hop mode typical of 200 mm stroke suspension; (R6) swingarm mass must not exceed 3.2 kg per the benchmark chassis-mass target tables. Thermal, fluid, and radiation analyses are not required. Deliver STEP AP242 and Parasolid geometry plus report.",
+  "short_prompt": "Design a monolithic 7020-T6 aluminum swingarm for a collegiate petrol-category prototype racing motorcycle (Moto3-adjacent geometry) with a 250 cc single producing 30 kW / 27 N-m at the countershaft sprocket. The swingarm is machined from a single forged billet (no welds) with integral pivot lugs, rear axle forks with adjuster slots, a lateral bridge, and a left-arm brake-caliper mounting ear. Apply FIM racing-motorcycle chassis practice with yield/2.0 safety factor on primary structure.\n\nEnvelope: pivot-to-axle 560 mm, overall ~580 x 250 x 100 mm, twin-sided box-section arms.\n\nLoad cases.\n- LC1 longitudinal drive + bump: 4.0 kN forward chain-pull at the rear axle combined with 2.7 kN vertical bump (3.5 g on rear-biased 78 kg), pivot bore fixed.\n- LC2 cornering + braking: 3.5 kN lateral at the rear axle plus 1.8 kN rearward braking.\n- LC3 wheelie landing: 4.9 kN vertical down at the rear axle (5 g).\nAlso check a 10^7-cycle fatigue spectrum off LC1 at notch features and a modal case (axle fixed, pivot free) for torsional chatter coupling.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Electric motorcycle swingarm benchmark (petrol-category 250 cc spec engine)",
+    "brief": "Monolithic 7020-T6 billet swingarm; pivot-to-axle 560 mm; twin-sided box arms; Moto3 envelope; FIM chassis safety factors.",
+    "geometric_constraints": {
+      "pivot_to_axle_mm": 560,
+      "pivot_bore_mm": 22,
+      "pivot_width_mm": 115,
+      "axle_slot_mm": 22,
+      "adjuster_range_mm": 20,
+      "arm_cross_section_mm": {
+        "w": 60,
+        "h": 45,
+        "wall": 5
+      },
+      "bridge_mm": {
+        "location_aft_pivot_mm": 200,
+        "w": 40,
+        "h": 35,
+        "wall": 4
+      },
+      "caliper_mount_holes": {
+        "count": 2,
+        "diameter_mm": 10,
+        "spacing_mm": 82
+      },
+      "bounding_envelope_mm": {
+        "x": 580,
+        "y": 250,
+        "z": 100
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "Aluminum 7020-T6 (EN AW-7020)",
+      "properties": {
+        "youngs_modulus_GPa": 72,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2780,
+        "yield_MPa": 290,
+        "ultimate_tensile_strength_MPa": 345,
+        "endurance_limit_MPa": 90
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "drive_plus_bump",
+        "chain_pull_N": 4000,
+        "bump_vertical_N": 2700
+      },
+      {
+        "id": "LC2",
+        "name": "corner_plus_brake",
+        "lateral_N": 3500,
+        "brake_N": 1800
+      },
+      {
+        "id": "LC3",
+        "name": "wheelie_land",
+        "vertical_N": 4900
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "Parasolid"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "lateral_axle_deflection_mm",
+        "first_buckling_load_factor",
+        "first_torsional_freq_Hz",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 145,
+        "derivation": "yield/2.0 FIM chassis",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 90,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "lateral_axle_deflection",
+        "limit_mm": 2.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_natural_frequency",
+        "limit_Hz": 100,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 3.2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "S-N fatigue check",
+        "linear buckling",
+        "modal torsional"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Exhaust-heat standoff is outside swingarm path.",
+      "fluid_analysis": "Aero loads on swingarm negligible at Moto3 speeds.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Chain-guide friction wear",
+      "Rear-sprocket carrier misalignment",
+      "Rider preference tuning knobs"
+    ]
+  },
+  "eval_coverage": [
+    "FIM motorcycle chassis safety factor",
+    "fatigue at pivot bore + axle slot notches",
+    "first-torsion mode gate vs wheel-hop",
+    "cornering lateral stiffness limit"
+  ]
+}

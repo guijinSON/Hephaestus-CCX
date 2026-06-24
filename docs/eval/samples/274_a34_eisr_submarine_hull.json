@@ -1,0 +1,195 @@
+{
+  "id": "274_a34_eisr_submarine_hull",
+  "source": {
+    "catalog_ref": "A34",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "marine_structural",
+  "part_class": "human_powered_submarine_hull",
+  "full_prompt": "Design the main hull (monocoque shell) for an eISR (European International Submarine Races) human-powered submarine, compliant with eISR24 Rulebook. The pilot operates on SCUBA inside a wet submarine (flooded hull). Geometric constraints per eISR24: overall hull length 3.0 m, maximum beam (diameter) 0.85 m (length-to-beam ratio 3.53:1, within rule limits), height 0.85 m. Hull is a one-piece GFRP (glass fiber reinforced plastic) hand-laid shell, [0/90/+45/-45]s quasi-isotropic layup with 0.5 mm plies, 12 plies total (6 mm shell thickness). Material: E-glass/polyester; E1 = 25 GPa, E2 = 8 GPa, long-tensile strength 400 MPa, long-compressive strength 300 MPa, density 1900 kg/m^3. Operating depth 5 m (pool); max planned depth 10 m for structural margin. Load cases: (R1) Hydrostatic at 10 m (100 kPa external differential, interior flooded, so net differential = 0 across the shell for a wet submarine -- the rule here is actually inertial + steering loads, not pressure); (R2) Pilot pedal effort: 500 N forward through the bulkhead propulsion mount; max fiber stress <= 400 / 3.0 = 133 MPa. (R3) Fin bending: aft control fins (deflectable by pilot) apply 200 N at 200 mm from hull centerline = 40 N*m moment at the fin-mount; max fiber stress at mount <= 133 MPa. (R4) Ballast release: mechanical dead-man releases a 5 kg ballast weight (5 x 9.81 = 49 N) from the hull; the mounting lug must survive 2x dynamic amplification = 98 N without permanent damage; max fiber stress <= 133 MPa. (R5) Linear buckling eigenvalue under external-pressure equivalent of 100 kPa (the wet-hull case is slightly more complex but model as crush check) >= 3.0. (R6) Positive buoyancy reserve: vehicle without pilot must float positively (rule requires at least +5 kgf buoyancy empty); displaced volume - structural mass - ballast <= -5 kg equivalent; geometric check. (R7) Hull structural mass <= 35 kg. (R8) SCUBA integration: clear internal volume behind the pilot's bulkhead >= 200 L for tanks and regulators; geometric check. Primary verification: laminate composite structural FEA for R2-R4 + linear buckling for R5. Vibration, thermal, fluid, radiation NOT required. Deliverables: STEP AP242 hull, laminate schedule, and a report listing hull mass in kg, max fiber stress per case in MPa, first buckling load factor, buoyancy reserve in kgf, internal volume in L.",
+  "short_prompt": "Design the main hull (monocoque shell) for an eISR (European International Submarine Races) human-powered wet submarine, compliant with eISR24 Rulebook. Pilot operates on SCUBA inside a flooded hull. Shell is a one-piece GFRP hand-laid laminate, [0/90/+45/-45]s with 0.5 mm plies, 12 plies total (6 mm thickness). Operating depth 5 m (pool); 10 m used for structural margin. Required positive-buoyancy reserve without pilot >= +5 kgf. Clear internal volume behind the pilot bulkhead >= 200 L for tanks and regulators.\n\nEnvelope: 3.0 m length, 0.85 m max beam, 0.85 m height (length-to-beam 3.53:1).\n\nLoad cases.\n- LC1 pilot pedal effort: 500 N forward through the propulsion-mount bulkhead.\n- LC2 aft control-fin bending: 200 N at 200 mm from hull centerline = 40 N*m moment at the fin mount.\n- LC3 ballast release: 5 kg ballast (49 N) with 2 x dynamic amplification = 98 N on the mounting lug.\n- LC4 external crush equivalent: linear buckling eigenvalue under 100 kPa (10 m margin) >= 3.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "eISR24 human-powered submarine hull",
+    "brief": "GFRP monocoque wet-hull submarine, 3.0 m long x 0.85 m beam, pilot-powered. Survives pedal/fin/ballast loads + crush buckling.",
+    "geometric_constraints": {
+      "length_m": 3.0,
+      "beam_m_max": 0.85,
+      "height_m": 0.85,
+      "L_over_B": 3.53,
+      "skin_thickness_mm": 6,
+      "layup": "[0/90/+45/-45]s, 12 plies @ 0.5 mm",
+      "internal_clear_volume_L_min": 200
+    },
+    "material": {
+      "name": "E-glass / polyester GFRP",
+      "properties": {
+        "E1_GPa": 25,
+        "E2_GPa": 8,
+        "long_tensile_strength_MPa": 400,
+        "long_compressive_strength_MPa": 300,
+        "density_kg_m3": 1900
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pilot_pedal",
+        "force_N": 500,
+        "direction": "forward at propulsion mount"
+      },
+      {
+        "id": "LC2",
+        "name": "fin_bending",
+        "moment_Nm": 40,
+        "location": "aft fin mount"
+      },
+      {
+        "id": "LC3",
+        "name": "ballast_release",
+        "force_N": 98,
+        "direction": "downward at ballast lug"
+      },
+      {
+        "id": "LC4",
+        "name": "crush_buckling",
+        "external_pressure_kPa": 100
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "internal pilot bulkhead fixed for structural loads",
+      "loads": "concentrated at propulsion, fin, ballast points"
+    },
+    "objective": {
+      "minimize": "hull_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "hull_mass_kg",
+        "max_fiber_stress_LC1_MPa",
+        "max_fiber_stress_LC2_MPa",
+        "max_fiber_stress_LC3_MPa",
+        "first_buckling_load_factor",
+        "buoyancy_reserve_kgf",
+        "internal_clear_volume_L"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "buoyancy_reserve",
+        "limit_kgf": 5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "hull_mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R8",
+        "type": "structural_analysis",
+        "metric": "internal_clear_volume",
+        "limit_L": 200,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "laminated shell",
+      "mesh_size_mm_in_critical_regions": 25,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Slow wet submarine.",
+      "thermal_analysis": "Pool ambient.",
+      "fluid_analysis": "Wet hull; pressure equalized.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "wet-hull submarine monocoque",
+    "three-direction structural + crush buckling",
+    "buoyancy reserve + internal volume geometric checks"
+  ]
+}

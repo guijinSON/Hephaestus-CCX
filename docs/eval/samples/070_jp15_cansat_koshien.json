@@ -1,0 +1,161 @@
+{
+  "id": "070_jp15_cansat_koshien",
+  "source": {
+    "catalog_ref": "JP15",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_structure_hs",
+  "full_prompt": "Design the primary structure of a high-school-division CanSat benchmark. The CanSat must fit inside a 350 ml can envelope of outside diameter 66 mm and height 130 mm. Total mass including structure, electronics, and payload must not exceed 350 g (high-school class). The CanSat is deployed from a small model rocket at approximately 100 m altitude, descending on a parachute. Structural pass/fail: the chassis must survive a 15 G deployment shock in all three principal axes with no component displacement exceeding 2 mm. A touchdown ground-impact equivalent of 30 G (5 m/s descent into soft ground treated as a 30 G half-sine) must not produce plastic yield in the primary structure. The chassis must hold an antenna for 920 MHz (LoRa) or 430 MHz telemetry, and therefore must provide a non-conductive RF window or slot. Primary verification is linear static structural FEA at 15 G and 30 G, plus a modal analysis confirming first natural frequency above 80 Hz (to decouple from the small rocket motor's burn frequency). Vibration (modal) is a secondary gate. Thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the CanSat, a mass budget, and a report listing total mass in grams, max bracket stress at 30 G in MPa, max component displacement at 15 G in mm, and first modal frequency in Hz.",
+  "short_prompt": "Design the primary structure of a high-school-division CanSat. Envelope: 350 ml can (66 mm OD x 130 mm height). Total mass <= 350 g. Deployed from a small model rocket at ~100 m altitude; descends on a parachute. Telemetry on 430 MHz or 920 MHz (LoRa) so the chassis must provide a non-conductive RF window/slot. First natural frequency >= 80 Hz (rocket motor burn decoupling).\n\nLoad cases.\n- LC1 deployment shock X: 15 G axial.\n- LC2 deployment shock Y: 15 G lateral.\n- LC3 deployment shock Z: 15 G lateral. Max component displacement <= 2 mm under LC1-LC3.\n- LC4 touchdown ground-impact equivalent: 30 G half-sine axial (5 m/s into soft ground) with no plastic yield in the primary structure.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "High-school CanSat chassis",
+    "brief": "Design a 350 ml can envelope CanSat, ≤ 350 g, survives 15 G deployment + 30 G touchdown, first mode ≥ 80 Hz.",
+    "geometric_constraints": {
+      "envelope_diameter_mm_max": 66,
+      "envelope_height_mm_max": 130,
+      "deploy_altitude_m": 100,
+      "antenna_band_MHz_options": [
+        430,
+        920
+      ]
+    },
+    "material": {
+      "typical": "Al 6061-T6 sheet or PLA/ABS print + FR4 decks",
+      "Al6061_T6": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "deployment_shock_X",
+        "magnitude_g": 15,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "deployment_shock_Y",
+        "magnitude_g": 15,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "deployment_shock_Z",
+        "magnitude_g": 15,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC4",
+        "name": "touchdown_30g",
+        "magnitude_g": 30,
+        "direction": "axial"
+      }
+    ],
+    "boundary_conditions": {
+      "deployer_interface": "fixed during deployment shock"
+    },
+    "objective": {
+      "minimize": "mass",
+      "total_mass_g_max": 350
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "total_mass_g",
+        "max_bracket_stress_30g_MPa",
+        "max_component_displacement_15g_mm",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "total_mass_g",
+        "limit_g": 350,
+        "derivation": "HS class mass cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_component_displacement_mm",
+        "limit_mm": 2.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_stress_MPa",
+        "limit_fraction_of_yield": 1.0,
+        "derivation": "No plastic yield at 30 G touchdown",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency_Hz",
+        "limit_Hz": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "solver_hints": [
+        "CalculiX",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static x4",
+        "modal"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Not in rulebook gate.",
+      "fluid_analysis": "Parachute kinematic, not CFD.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "can-form-factor envelope",
+    "deployment shock triaxial",
+    "touchdown static equivalent",
+    "first modal decoupling"
+  ]
+}

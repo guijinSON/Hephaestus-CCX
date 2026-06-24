@@ -1,0 +1,548 @@
+{
+  "id": "166_cn16_wfsa_ferry",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "source": {
+    "catalog_ref": "CN16",
+    "year": 2026,
+    "tier": "B",
+    "original_sample": "docs/eval/samples/166_cn16_wfsa_ferry.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "naval_architecture_safety",
+  "part_class": "riverine_ferry_hull_assembly",
+  "full_prompt": "Design a full riverine passenger ferry hull for an inland-waterway route roughly 200 km long, delivered as a welded multipart steel assembly rather than a single monolithic shell. The ferry carries 150 passengers plus 6 crew plus 6,000 kg of cargo and baggage across a calm-to-moderate inland waterway with a minimum navigable depth of 2.0 m in the dry season. Principal dimensions: LOA 30.0 m, beam 8.0 m, depth molded 2.5 m, design draft 1.4 m fully loaded. Hull structural material throughout is ASTM A131 Grade A shipbuilding steel (yield 235 MPa, ultimate 400 MPa, E 200 GPa, density 7850 kg/m^3) with matching filler wire per AWS D1.1/D1.1M. The assembly comprises, at minimum: (P1) bottom shell plating strakes running the length of the hull between station 0 and station 30, (P2) bilge and side shell plating strakes up to the sheer strake, (P3) passenger deck plating panels, (P4) transverse watertight bulkheads subdividing the hull into at least four compartments so that any single-compartment flooding still satisfies damage stability, (P5) a longitudinal centerline girder plus bottom longitudinals acting as the hull girder tension/compression chords, (P6) transverse web frames at regular frame spacing supporting the plating, and (P7) the welded seams and butts that connect them. Each plating-to-framing and bulkhead-to-shell joint is a full-penetration or fillet weld qualified to AWS D1.1/D1.1M. Pass/fail criteria for the ferry as a whole remain unchanged and are checked at the assembled level only: (R1) intact stability per IMO Resolution A.749 (18) requires GMt at least 0.35 m, GZ curve showing positive righting up to at least 40 degrees heel, and area under GZ 0-30 degrees at least 0.055 m-rad. (R2) damage stability after one-compartment flooding per SOLAS 2020 Chapter II-1 requires residual GMt at least 0.05 m and margin line at least 76 mm above the damaged waterline. (R3) minimum passenger deck freeboard in the fully loaded condition must be at least 760 mm per inland-waterway rule. (R4) hull longitudinal bending stress under still-water hogging condition must not exceed 157 MPa which is yield divided by 1.5. (R5) average passenger deck area per passenger must be at least 0.45 m^2. In addition, a new assembled-level connection check (R6-assembly) requires that the governing weld demand-to-capacity ratio across every plating-to-framing and bulkhead-to-shell interface be at most 1.0 under the still-water hog hull-girder bending case LC3. Vibration, thermal, fluid CFD, and radiation analyses are not required. Deliver a STEP AP242 assembly of the ferry hull including watertight bulkheads, plus a stability booklet with GMt, GZ curve to 60 degrees, damage stability result, freeboard, longitudinal bending stress, passenger-area allocation, and a one-page weld-DCR table aggregated per interface family.",
+  "short_prompt": "Design a 30.0 m riverine passenger ferry hull as a multi-part welded-steel assembly (bottom shell plating strakes, bilge + side shell strakes, passenger deck plating panels, transverse watertight bulkheads, longitudinal centreline girder + bottom longitudinals, transverse web frames, AWS D1.1 welds).\n\nLOA 30.0 m, beam 8.0 m, depth molded 2.5 m, design draft 1.4 m; 150 passengers + 6 crew + 6,000 kg cargo. Structural steel ASTM A131 Grade A (yield 235 MPa, ultimate 400 MPa, E 200 GPa, density 7850 kg/m3).\n\nLoad cases: LC1 full-load intact; LC2 one-compartment damage (any single compartment flooded); LC3 still-water hog per IACS UR S7.\n\nPass/fail: intact IMO A.749 GMt >= 0.35 m, area under GZ 0-30 deg >= 0.055 m-rad, positive range >= 40 deg; SOLAS II-1 residual GMt >= 0.05 m and margin line >= 76 mm; passenger-deck freeboard >= 760 mm; hull-girder bending stress <= 157 MPa (yield 235 / 1.5); passenger deck area >= 0.45 m2/PAX; FEM at assembled level; weld DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "IMO_A749_intact_stability_solver",
+        "reason": "Intact and damage stability are closed-form hydrostatic + righting-arm calculations, not FEA.",
+        "examples": [
+          "Maxsurf Stability",
+          "GHS",
+          "Orca3D"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "30 m inland passenger ferry, 150 PAX (multipart welded-steel hull)",
+    "brief": "Design a 30.0 m x 8.0 m x 2.5 m welded-steel multipart monohull ferry for 150 PAX + 6 crew + 6 t cargo on an inland river. The assembly comprises bottom and side shell plating strakes, deck plating panels, transverse watertight bulkheads, a longitudinal centerline girder with bottom longitudinals, transverse web frames at regular spacing, and the welded seams joining them. Plating-to-framing and bulkhead-to-shell joints are AWS D1.1 welds. The assembled ferry must satisfy IMO A.749 intact stability (GMt >= 0.35 m, area >= 0.055 m-rad, positive range >= 40 deg), SOLAS II-1 one-compartment damage stability (residual GMt >= 0.05 m, margin line >= 76 mm), inland-waterway freeboard >= 760 mm, hull-girder bending stress <= 157 MPa, passenger deck area >= 0.45 m^2/PAX, and a new R6-assembly weld-DCR <= 1.0 across every plating-to-framing and bulkhead-to-shell interface under LC3 still-water hog. FEM checks are evaluated on the assembled ferry only; per-part metrics are reported for traceability but do not independently pass/fail.",
+    "geometric_constraints": {
+      "LOA_m": 30.0,
+      "beam_m": 8.0,
+      "depth_m": 2.5,
+      "design_draft_m": 1.4,
+      "passenger_capacity": 150,
+      "crew": 6,
+      "cargo_kg": 6000
+    },
+    "material": {
+      "name": "ASTM A131 Grade A shipbuilding steel",
+      "yield_MPa": 235,
+      "ultimate_MPa": 400,
+      "E_GPa": 200
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "full_load_intact",
+        "application": "fully loaded 150 PAX + crew + cargo"
+      },
+      {
+        "id": "LC2",
+        "name": "one_compartment_damage",
+        "application": "any single compartment flooded"
+      },
+      {
+        "id": "LC3",
+        "name": "still_water_hog",
+        "application": "hogging moment per IACS UR S7"
+      }
+    ],
+    "boundary_conditions": {
+      "hull": "freely floating in still water, weight + buoyancy balanced"
+    },
+    "objective": {
+      "primary": "pass intact + damage stability + freeboard + girder stress + assembled weld DCR",
+      "secondary": "minimize steel tonnage"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "GMt_m",
+        "area_under_GZ_0_30deg_m_rad",
+        "residual_GMt_damage_m",
+        "min_freeboard_mm",
+        "max_hull_girder_stress_MPa",
+        "passenger_deck_area_per_PAX_m2",
+        "max_weld_DCR_assembled"
+      ]
+    },
+    "parts": [
+      {
+        "id": "P1",
+        "family": "bottom_shell_plating",
+        "count": 4,
+        "speculation": true,
+        "material_ref": "ASTM A131 Grade A shipbuilding steel",
+        "role": "primary hull envelope carrying bottom hydrostatic pressure and hull-girder stress, running from station 0 to station 30 in multiple strakes"
+      },
+      {
+        "id": "P2",
+        "family": "side_shell_plating",
+        "count": 4,
+        "speculation": true,
+        "material_ref": "ASTM A131 Grade A shipbuilding steel",
+        "role": "bilge and side strakes up to the sheer strake on port and starboard"
+      },
+      {
+        "id": "P3",
+        "family": "passenger_deck_plating",
+        "count": 6,
+        "speculation": true,
+        "material_ref": "ASTM A131 Grade A shipbuilding steel",
+        "role": "passenger deck panels forming the upper flange of the hull girder and the passenger walking surface"
+      },
+      {
+        "id": "P4",
+        "family": "transverse_watertight_bulkheads",
+        "count": 3,
+        "speculation": true,
+        "material_ref": "ASTM A131 Grade A shipbuilding steel",
+        "role": "watertight subdivision into at least four compartments so single-compartment flooding still meets SOLAS II-1 damage stability"
+      },
+      {
+        "id": "P5",
+        "family": "centerline_girder_and_bottom_longitudinals",
+        "count": 5,
+        "speculation": true,
+        "material_ref": "ASTM A131 Grade A shipbuilding steel",
+        "role": "longitudinal centerline girder plus bottom longitudinals acting as hull-girder chords carrying LC3 hog bending"
+      },
+      {
+        "id": "P6",
+        "family": "transverse_web_frames",
+        "count": 12,
+        "speculation": true,
+        "material_ref": "ASTM A131 Grade A shipbuilding steel",
+        "role": "transverse frames at regular frame spacing supporting shell plating and deck plating against local pressure"
+      },
+      {
+        "id": "P7",
+        "family": "welded_seams_and_butts",
+        "count": 1,
+        "speculation": true,
+        "material_ref": "AWS D1.1/D1.1M qualified filler wire matched to A131 Grade A",
+        "role": "full-penetration and fillet welds at plating-to-framing, plating-to-plating butts, and bulkhead-to-shell joints"
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "P1",
+        "P6"
+      ],
+      "mediated_by": "welded",
+      "speculation": true,
+      "note": "Bottom shell plating welded to transverse web frames via fillet welds per AWS D1.1/D1.1M."
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "P2",
+        "P6"
+      ],
+      "mediated_by": "welded",
+      "speculation": true,
+      "note": "Side shell plating welded to transverse web frames via fillet welds."
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "P3",
+        "P6"
+      ],
+      "mediated_by": "welded",
+      "speculation": true,
+      "note": "Passenger deck plating welded to transverse web frames, forming the upper-flange continuity of the hull girder."
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "P4",
+        "P1"
+      ],
+      "mediated_by": "welded",
+      "speculation": true,
+      "note": "Transverse watertight bulkhead to bottom shell plating - full-penetration welded watertight seam."
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "P4",
+        "P2"
+      ],
+      "mediated_by": "welded",
+      "speculation": true,
+      "note": "Transverse watertight bulkhead to side shell plating - full-penetration welded watertight seam."
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "P5",
+        "P1"
+      ],
+      "mediated_by": "welded",
+      "speculation": true,
+      "note": "Centerline girder and bottom longitudinals welded to the bottom shell, acting as the lower chord of the hull girder."
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "per_part_metrics_reported": true,
+    "rationale": "Intact and damage stability and hull-girder bending are inherently assembled-hull properties. Per-part metrics are emitted for traceability only; pass/fail is decided on the assembled ferry plus the assembled-level weld-DCR check."
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "intact_GMt_and_GZ",
+        "limit_GMt_m": 0.35,
+        "limit_area_0_30deg_m_rad": 0.055,
+        "limit_positive_range_deg": 40,
+        "derivation": "IMO Resolution A.749 (18) Chapter 3",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">=",
+        "evaluation_level": "assembled"
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "damage_stability",
+        "limit_residual_GMt_m": 0.05,
+        "limit_margin_line_mm": 76,
+        "derivation": "SOLAS 2020 Chapter II-1",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">=",
+        "evaluation_level": "assembled"
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "passenger_deck_freeboard",
+        "limit_mm": 760,
+        "derivation": "inland-waterway passenger freeboard rule",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">=",
+        "evaluation_level": "assembled"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_hull_girder_stress",
+        "limit_MPa": 157,
+        "derivation": "yield 235 / 1.5",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<=",
+        "evaluation_level": "assembled"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "passenger_deck_area_per_PAX",
+        "limit_m2": 0.45,
+        "derivation": "passenger-capacity allocation rule",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">=",
+        "evaluation_level": "assembled"
+      },
+      {
+        "id": "R6-assembly",
+        "type": "connection_check",
+        "metric": "max_weld_DCR_assembled",
+        "limit": 1.0,
+        "derivation": "AWS D1.1/D1.1M weld strength demand-to-capacity under LC3 hull-girder hog bending at each plating-to-framing and bulkhead-to-shell interface; newly introduced by the multipart wrapper to check the connections that the original monolithic brief did not.",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<=",
+        "evaluation_level": "assembled",
+        "speculation": true
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.report_fields"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for plating, beam for framing",
+      "mesh_size_mm_in_critical_regions": 100,
+      "solver_hints": [
+        "Maxsurf Stability",
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "hydrostatic stability",
+        "linear static girder bending",
+        "assembled weld-DCR check"
+      ]
+    }
+  },
+  "notes": {
+    "multipart_rationale": "A 30 m welded-steel riverine ferry is physically fabricated from shell plating strakes, deck plating panels, transverse watertight bulkheads, a longitudinal centerline girder plus bottom longitudinals, transverse web frames, and AWS D1.1 welded seams. Pass/fail is inherently hull-assembled (intact + damage stability, freeboard, hull-girder bending, passenger-area allocation) and is joined here by an assembled-level weld-DCR check at plating-to-framing and bulkhead-to-shell interfaces.",
+    "speculation_disclosure": "Part counts and per-part roles are speculated at the family level - e.g., four bottom-shell strakes, four side-shell strakes, six deck-plating panels, three transverse watertight bulkheads (to produce at least four compartments for SOLAS one-compartment damage stability), five centerline-girder-plus-bottom-longitudinal members, and twelve transverse web frames at regular frame spacing. Exact strake widths, plate thicknesses, frame pitch, and bulkhead locations are not specified in the source brief.",
+    "exclusions_explained": {
+      "vibration_analysis": "Propulsion vibration not in scope.",
+      "thermal_analysis": "Tropical ambient only.",
+      "fluid_analysis": "No seakeeping CFD required on inland river at low speed.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Not in pass/fail for this brief."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Evacuation analysis per IMO MSC.1/Circ.1533",
+      "Life-saving appliance equipment list",
+      "Seasonal dredging and siltation"
+    ]
+  },
+  "eval_coverage": [
+    "IMO Resolution A.749 intact stability + SOLAS damage stability",
+    "passenger safety-driven freeboard and deck allocation",
+    "hull-girder bending stress",
+    "riverine ferry design with single-compartment damage",
+    "multipart welded-steel hull with assembled-level weld-DCR check"
+  ],
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6-assembly"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.report_fields"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "intact_GMt_and_GZ",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC2",
+      "metric": "damage_stability",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "passenger_deck_freeboard",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "max_hull_girder_stress",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "generated_static_step:design",
+      "metric": "passenger_deck_area_per_PAX",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_assembly_005",
+      "requirement_id": "R6-assembly",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "max_weld_DCR_assembled",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_006",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

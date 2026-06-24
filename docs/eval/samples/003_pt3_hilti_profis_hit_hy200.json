@@ -1,0 +1,216 @@
+{
+  "id": "003_pt3_hilti_profis_hit_hy200",
+  "source": {
+    "catalog_ref": "PT3",
+    "year": 2024,
+    "tier": "A+"
+  },
+  "domain": "civil_structural",
+  "part_class": "anchored_baseplate",
+  "full_prompt": "Design a steel baseplate that anchors a tubular steel column to a cracked C20/25 normal-weight concrete slab using a single canonical adhesive-anchor family: four epoxy-acrylate adhesive anchors with M16 grade 8.8 threaded rods at an effective embedment depth h_ef = 125 mm (the catalog's canonical size for M16). The representative published characteristic resistances for this configuration in cracked C20/25 concrete per representative 2024 ETA data are approximately: characteristic tension (bond/pull-out combined) N_Rk ~= 74 kN per anchor, characteristic steel tension N_Rk,s ~= 90.4 kN per anchor, characteristic steel shear V_Rk,s ~= 54.2 kN per anchor, and characteristic concrete cone N_Rk,c depending on spacing and edge distance. The baseplate is a rectangular steel plate (S355) at least 20 mm thick, 300 x 300 mm in plan, with four anchor holes arranged on a 200 x 200 mm square pattern, centered under a welded 120 x 120 x 8 mm rectangular hollow section (RHS) column stub 300 mm tall. The anchor pattern must maintain edge distance c >= 80 mm (>= 0.5 h_ef per ETA minimum) and spacing s >= 100 mm. The baseplate, column stub, and weld detail must be modeled as a single assembly; the anchors and threaded rods are included as cylindrical bolt features with preload. Applied loads at the top of the column stub: axial tension up to 120 kN, horizontal shear up to 80 kN, and an overturning moment of 25 kN*m about the strong axis. Pass/fail is evaluated under the ACI 318-19 Chapter 17 / EOTA TR 029 framework: (R1) per-anchor tension demand <= phi * N_Rk / gamma_M with phi = 0.75 and gamma_M,p = 1.5 for adhesive bond, giving a factored tension capacity N_Rd ~= 37 kN per anchor; (R2) per-anchor shear demand <= V_Rd,s = V_Rk,s / gamma_M,s with gamma_M,s = 1.25, giving V_Rd,s ~= 43 kN per anchor; (R3) combined tension+shear interaction (N/N_Rd)^5/3 + (V/V_Rd)^5/3 <= 1.0 at every anchor; (R4) concrete breakout and pryout checks must satisfy the same gamma_M = 1.5 with the effective anchor group area A_Nc/A_Nc0; (R5) baseplate bending stress <= 0.9 * f_y = 0.9 * 355 = 319.5 MPa under the factored load combination (AISC 360-22 LRFD flexural resistance); (R6) plate deflection at the column footprint <= L/300 = 1.0 mm across the 300 mm plate width. Manufacturing: baseplate is flame-cut then machined flat to within 0.5 mm across the column footprint; holes are drilled oversize by 2 mm relative to anchor diameter. Deliverables: STEP AP242 assembly file with baseplate, column stub, weld fillets, and anchor envelopes; a loads/capacities report listing per-anchor demand vs capacity, combined interaction, concrete cone check, plate stress, and plate deflection.",
+  "short_prompt": "Design a steel baseplate that anchors a tubular steel column to a cracked C20/25 normal-weight concrete slab using four epoxy-acrylate adhesive anchors with M16 grade 8.8 threaded rods at effective embedment depth h_ef = 125 mm. The assembly includes the baseplate, a welded RHS column stub, and the anchor/weld detail as a single modeled assembly with preloaded cylindrical bolt features.\n\nEnvelope: rectangular S355 baseplate at least 20 mm thick, 300 x 300 mm in plan, with four anchor holes on a 200 x 200 mm square pattern centered under a welded 120 x 120 x 8 mm RHS column stub 300 mm tall. Edge distance c >= 80 mm and spacing s >= 100 mm.\n\nDesign per ACI 318-19 Chapter 17 / EOTA TR 029, with adhesive-bond partial factor gamma_M,p = 1.5 (phi = 0.75 on tension) and steel shear partial factor gamma_M,s = 1.25. Baseplate bending checked per AISC 360-22 LRFD (limit 0.9 * f_y = 319.5 MPa for S355).\n\nApplied loads at the top of the column stub.\n- Axial tension up to 120 kN.\n- Horizontal shear up to 80 kN.\n- Overturning moment 25 kN*m about the strong axis.\n\nDeflection limit: L/300 = 1.0 mm across the 300 mm plate width.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "anchor_design_calculator",
+        "reason": "Concrete cone breakout, pry-out, and combined interaction are closed-form equations from ACI 318-19 Ch.17 / EOTA TR 029, not FEA. Standard implementations are available in anchor-design software packages.",
+        "examples": [
+          "adhesive-anchor design software",
+          "hand calculation against ACI 318-19 Ch.17"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Adhesive-anchor steel baseplate on C20/25 concrete",
+    "brief": "Design a 4-anchor steel baseplate using an epoxy-acrylate adhesive anchor system with M16 grade 8.8 rods at h_ef = 125 mm in cracked C20/25 concrete, under combined axial, shear, and moment.",
+    "geometric_constraints": {
+      "baseplate": {
+        "material": "S355",
+        "thickness_mm_min": 20,
+        "plan_mm": {
+          "x": 300,
+          "y": 300
+        }
+      },
+      "column_stub": {
+        "section": "RHS 120x120x8",
+        "height_mm": 300,
+        "material": "S355"
+      },
+      "anchor_pattern": {
+        "count": 4,
+        "pattern": "square",
+        "spacing_mm": 200,
+        "min_edge_distance_mm": 80
+      },
+      "anchor": {
+        "family": "adhesive-anchor M16",
+        "thread": "M16",
+        "grade": "8.8",
+        "effective_embedment_mm": 125,
+        "hole_oversize_mm": 2
+      }
+    },
+    "material": {
+      "plate": {
+        "name": "S355",
+        "yield_strength_MPa": 355,
+        "ultimate_tensile_strength_MPa": 510
+      },
+      "concrete": {
+        "class": "C20/25",
+        "condition": "cracked",
+        "f_ck_MPa": 20
+      },
+      "anchor_rod": {
+        "grade": "8.8",
+        "yield_MPa": 640,
+        "UTS_MPa": 800
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "combined_service",
+        "axial_tension_kN": 120,
+        "shear_kN": 80,
+        "moment_kNm": 25,
+        "application": "at top of column stub"
+      }
+    ],
+    "boundary_conditions": {
+      "concrete_interface": "baseplate bearing on concrete; uplift resisted only by anchors",
+      "anchor_preload": "catalog value per adhesive-anchor design software for M16 threaded rod"
+    },
+    "objective": {
+      "minimize": "baseplate mass subject to passing all anchor + plate checks"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "assembly_bodies": [
+        "baseplate",
+        "column_stub",
+        "weld_fillets",
+        "anchor_envelopes"
+      ],
+      "report_fields": [
+        "per_anchor_tension_demand_kN",
+        "per_anchor_shear_demand_kN",
+        "combined_interaction_ratio",
+        "concrete_cone_utilization",
+        "plate_max_bending_MPa",
+        "plate_max_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "per_anchor_tension_demand",
+        "limit_kN": 37,
+        "derivation": "N_Rd = N_Rk / gamma_M,p = 74 / 1.5 * phi with phi=0.75 and gamma_M,p=1.5 per representative ETA + ACI 318-19 Ch.17",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<=",
+        "note": "Representative factored capacity for adhesive anchor + M16 h_ef=125 mm, cracked C20/25."
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "per_anchor_shear_demand",
+        "limit_kN": 43,
+        "derivation": "V_Rd,s = V_Rk,s / gamma_M,s = 54.2 / 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "combined_tension_shear_interaction",
+        "limit": 1.0,
+        "derivation": "(N/N_Rd)^(5/3) + (V/V_Rd)^(5/3) <= 1.0 per EOTA TR 029",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "concrete_cone_utilization",
+        "limit": 1.0,
+        "derivation": "group N_Rd,c with A_Nc/A_Nc0 per ACI 318-19 17.4.2",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "plate_max_bending_stress",
+        "limit_MPa": 319.5,
+        "derivation": "0.9 * f_y = 0.9 * 355 (AISC 360-22 LRFD)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "plate_deflection_across_column_footprint",
+        "limit_mm": 1.0,
+        "derivation": "L/300 with L = 300 mm plate span",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "ACI 318-19 Chapter 17 + EOTA TR 029 + AISC 360-22 + representative adhesive-anchor ETA",
+    "recommended_fea_setup": {
+      "element_type": "shell (baseplate) + solid bolt stubs",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "IDEA StatiCa Connection",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static + anchor design code-check"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static service load case; seismic anchor checks are a separate variant.",
+      "thermal_analysis": "Isothermal.",
+      "fluid_analysis": "N/A.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "Representative 2024 ETA values for an epoxy-acrylate adhesive anchor with M16 rod h_ef=125 mm, cracked C20/25. Exact characteristic resistances vary with bond factor; set to null and annotate if the agent needs to pull verbatim from ETA."
+  },
+  "eval_coverage": [
+    "catalog-driven anchor design",
+    "combined tension+shear interaction check",
+    "concrete cone breakout code-check",
+    "mixed FEA + closed-form anchor design workflow"
+  ]
+}

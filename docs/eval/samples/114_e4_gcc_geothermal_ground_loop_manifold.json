@@ -1,0 +1,203 @@
+{
+  "id": "114_e4_gcc_geothermal_ground_loop_manifold",
+  "source": {
+    "catalog_ref": "E4",
+    "year": 2024,
+    "tier": "A"
+  },
+  "domain": "geothermal_hvac",
+  "part_class": "ground_loop_manifold",
+  "full_prompt": "Design a monolithic HDPE PE4710 reverse-return ground-loop manifold for a 150 kW campus geothermal heat-pump loop in a collegiate geothermal design-and-siting package, sized to ASHRAE Handbook HVAC Applications Chapter 35 and IGSHPA Closed-Loop/Geothermal Heat Pump Systems Design and Installation Standards 2019 Edition. The manifold is a single socket-fused HDPE body (not welded, not bolted) with one 75 mm SDR-11 supply header inlet on the left, eight 32 mm SDR-11 branch tappings on the front face spaced on a 90 mm pitch, one 75 mm SDR-11 return header outlet on the right, and one 13 mm vent tap on the top. Overall envelope 900 mm x 120 mm x 150 mm. Material PE4710 (PE100 equivalent) with Young's modulus 1.1 GPa at 20 C, Poisson's ratio 0.42, density 960 kg/m^3, long-term hydrostatic design basis (HDB) 1100 psi = 7.58 MPa, minimum required strength (MRS) 10 MPa per ISO 12162, design factor 1.25 per IGSHPA (allowable operating stress = MRS/1.25 = 8.0 MPa short-term, 5.52 MPa long-term per ASTM F714). The internal fluid is 20% by volume propylene-glycol/water antifreeze with density 1022 kg/m^3, viscosity 3.2e-3 Pa-s at 5 C loop minimum, and specific heat 3920 J/kg-K. Operating range: supply temperature 4 C in cooling mode to 38 C in heating mode; internal pressure 550 kPa (80 psi) design, 1.5x = 825 kPa hydrostatic test. Three load cases. Load Case 1 (design pressure + buried): internal 550 kPa with 1.2 m of moist soil cover producing 24 kPa external earth load on the top and 16 kPa lateral, header inlets/outlets constrained axially. Load Case 2 (hydrotest): internal 825 kPa at 20 C for 2 hours, atmospheric external, all ports closed. Load Case 3 (freeze expansion): internal gauge pressure spikes to 2.0 MPa for 60 minutes at -5 C due to localized glycol freeze-thaw, external soil at 0 C. Pass/fail: (R1) under LC1 and LC2, peak hoop stress in any branch or header wall must not exceed 5.52 MPa (ASTM F714 long-term allowable at 20 C); (R2) under LC3 freeze transient, peak stress must not exceed 8.0 MPa (short-term allowable); (R3) a steady-state CFD with all eight branches flowing 3.5 L/s (equal split from a 28 L/s header supply at 1.5 m/s) must show branch-to-branch flow imbalance of at most +/-5% and total manifold pressure drop below 15 kPa; (R4) a steady-state thermal analysis with 5 C glycol flow and 10 C surrounding soil must show manifold outer wall temperature above 2 C everywhere to prevent soil freeze; (R5) a linear buckling check under LC1 external collapse pressure (buried + groundwater table) must yield a first-mode load factor of at least 3.0 per IGSHPA buried-pipe collapse guidance; (R6) mass must not exceed 12 kg. Vibration and radiation analyses are not required. Deliver STEP AP242 geometry as a single solid body plus a report.",
+  "short_prompt": "Design a monolithic socket-fused HDPE PE4710 reverse-return ground-loop manifold for a 150 kW collegiate campus geothermal heat-pump loop, per ASHRAE Handbook HVAC Applications Ch.35 and IGSHPA Closed-Loop Standards (2019 Ed., ASTM F714 / ISO 12162). Single SDR-11 body with one 75 mm supply header in, eight 32 mm branch tappings at 90 mm pitch on the front face, one 75 mm return header out, one 13 mm top vent tap. Internal fluid 20% propylene-glycol/water (5 C min, 38 C max). Mass <= 12 kg. Allowables: 5.52 MPa long-term hoop at 20 C (ASTM F714, MRS/1.25), 8.0 MPa short-term; buried-pipe collapse buckling SF 3.0.\n\nEnvelope: 900 x 120 x 150 mm overall.\n\nLoad cases.\n- LC1 design-pressure buried: 550 kPa internal + 24 kPa top / 16 kPa lateral earth load under 1.2 m of moist soil cover.\n- LC2 hydrotest: 825 kPa internal at 20 C for 2 h, ports closed.\n- LC3 freeze spike: 2.0 MPa internal for 60 min at -5 C metal / 0 C soil (localized glycol freeze-thaw).\n- Plus a steady-state CFD at 8 x 3.5 L/s branch flow (28 L/s header at 1.5 m/s): branch-to-branch imbalance <= 5%, manifold pressure drop <= 15 kPa; and a steady-state thermal with 5 C glycol / 10 C soil keeping outer wall >= 2 C.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "fluid_analysis",
+      "thermal_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "HDPE PE4710 reverse-return manifold for 150 kW collegiate campus geothermal loop",
+    "brief": "Single socket-fused HDPE manifold with 1x75 supply + 8x32 branches + 1x75 return. ASHRAE/IGSHPA-sized for 28 L/s @ 550 kPa, 4-38 C.",
+    "geometric_constraints": {
+      "supply_header_dn_mm": 75,
+      "return_header_dn_mm": 75,
+      "branch_dn_mm": 32,
+      "branch_count": 8,
+      "branch_pitch_mm": 90,
+      "vent_tap_dn_mm": 13,
+      "pipe_SDR": 11,
+      "bounding_envelope_mm": {
+        "x": 900,
+        "y": 120,
+        "z": 150
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "HDPE PE4710 / PE100",
+      "standard": "ASTM F714 / ISO 12162",
+      "properties": {
+        "youngs_modulus_GPa": 1.1,
+        "poissons_ratio": 0.42,
+        "density_kg_m3": 960,
+        "HDB_MPa_20C": 7.58,
+        "MRS_MPa": 10.0,
+        "long_term_allowable_MPa": 5.52,
+        "short_term_allowable_MPa": 8.0
+      }
+    },
+    "fluid": {
+      "type": "20% propylene glycol / water",
+      "density_kg_m3": 1022,
+      "viscosity_Pa_s": 0.0032,
+      "specific_heat_J_kg_K": 3920,
+      "min_C": 4,
+      "max_C": 38
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "design_pressure_buried",
+        "internal_kPa": 550,
+        "external_soil_top_kPa": 24,
+        "external_lateral_kPa": 16
+      },
+      {
+        "id": "LC2",
+        "name": "hydrotest",
+        "internal_kPa": 825,
+        "duration_min": 120
+      },
+      {
+        "id": "LC3",
+        "name": "freeze_spike",
+        "internal_MPa": 2.0,
+        "temp_C": -5,
+        "duration_min": 60
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_hoop_stress_per_case_MPa",
+        "branch_flow_imbalance_pct",
+        "total_pressure_drop_kPa",
+        "min_outer_wall_temperature_C",
+        "first_buckling_load_factor",
+        "mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_hoop_stress",
+        "limit_MPa": 5.52,
+        "derivation": "ASTM F714 long-term allowable at 20 C, MRS/1.25/safety",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_hoop_stress",
+        "limit_MPa": 8.0,
+        "derivation": "short-term allowable PE4710",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "fluid_analysis",
+        "metric": "branch_flow_imbalance_and_pressure_drop",
+        "limit_compound": {
+          "imbalance_pct": 5,
+          "pressure_drop_kPa": 15
+        },
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "min_outer_wall_temperature",
+        "limit_C": 2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 12,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral, shell for thin-wall branches",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical + Fluent",
+        "Abaqus Standard",
+        "CalculiX + OpenFOAM"
+      ],
+      "analysis_types": [
+        "linear static pressure x3",
+        "steady RANS CFD",
+        "steady-state thermal",
+        "linear buckling (external pressure)"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Loop is pump-driven low-speed; no significant dynamic excitation.",
+      "radiation_analysis": "Buried."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Socket fusion bond integrity",
+      "Long-term creep at 38 C over 50-year life",
+      "Slow crack growth per PENT F1473"
+    ]
+  },
+  "eval_coverage": [
+    "PE4710 long-term vs short-term hydrostatic stress",
+    "eight-branch reverse-return flow balance",
+    "buried-pipe external collapse buckling",
+    "winter soil-freeze thermal check"
+  ]
+}

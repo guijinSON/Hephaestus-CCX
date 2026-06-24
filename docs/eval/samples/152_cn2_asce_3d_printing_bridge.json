@@ -1,0 +1,176 @@
+{
+  "id": "152_cn2_asce_3d_printing_bridge",
+  "source": {
+    "catalog_ref": "CN2",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "civil_additive_manufacturing",
+  "part_class": "3d_printed_bridge",
+  "full_prompt": "Design a single 3D-printable bridge. The bridge must span a clear opening of 20 inches (508 mm) with supports under the extreme ends of the bridge, and the total overall length of the bridge measured along the span axis must not exceed 24 inches (610 mm). The bridge must be printed from 100% plain PLA filament with no metallic, composite, or multi-material reinforcement, with typical properties Young's modulus 3.5 GPa, yield tensile strength 50 MPa, ultimate tensile strength 60 MPa, density 1240 kg/m^3, and print orientation flat along the span. The bridge must present a continuous deck at least 50 mm wide over the full 508 mm clear span that can accept a centered vertical point load applied through a 25.4 mm diameter steel loading pin resting on the deck at mid-span. The objective is to maximize a structural efficiency ratio defined as maximum static load carried to failure in newtons divided by total bridge mass in grams while also meeting a minimum stiffness threshold. The bridge must simultaneously satisfy the following pass/fail criteria under a mid-span concentrated load applied vertically downward through the loading pin with both ends of the bridge resting on two roller supports separated by 508 mm: (R1) the bridge must carry a minimum static load of 500 N without any permanent deformation or fracture observable in an FEA or test, (R2) the maximum von Mises stress in the PLA must remain below 40 MPa at the 500 N reference load, which applies a 1.5 factor on ultimate tensile strength divided by ultimate, (R3) the mid-span vertical deflection under the 500 N reference load must not exceed 8.0 mm, (R4) the total bridge mass must not exceed 250 g, and (R5) a linear buckling eigenvalue analysis under the mid-span load must yield a first-mode load factor of at least 2.0 against global snap-through. Vibration, thermal, fluid, and radiation analyses are explicitly not required. Deliver a single STL file for 3D printing plus a STEP AP242 solid body and a report listing total mass in grams, maximum von Mises stress at 500 N, mid-span deflection at 500 N, and the first buckling load factor.",
+  "short_prompt": "Design a single 3D-printable bridge in 100% plain PLA filament (no metallic, composite, or multi-material reinforcement, print orientation flat along the span). The bridge spans a 508 mm (20 in) clear opening with supports under its extreme ends; total length must not exceed 610 mm (24 in). It must present a continuous deck at least 50 mm wide over the full span, accepting a centered mid-span vertical point load applied through a 25.4 mm diameter steel loading pin. The objective is to maximize structural efficiency (failure load in newtons / bridge mass in grams) while meeting a minimum stiffness threshold.\n\nLoad case. Mid-span concentrated vertical point load applied through the loading pin, with the two ends resting on roller supports 508 mm apart; reference load for pass/fail is 500 N. The design must also pass a minimum 500 N load-to-failure with no permanent deformation or fracture and a linear-buckling check under the mid-span load against global snap-through.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "topology_optimization",
+        "reason": "Efficiency ratio (load / mass) under a single-point mid-span load is typically only winnable by topology or lattice optimization around the structural FEA.",
+        "examples": [
+          "nTopology",
+          "Altair OptiStruct",
+          "Ansys Mechanical Topology"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "PLA 3D-printed bridge, 20 in clear span",
+    "brief": "Design a 100% PLA 3D-printed bridge with 508 mm clear span and <=610 mm overall length, maximizing load-to-mass efficiency while passing stress, deflection, and buckling limits at a 500 N reference mid-span load.",
+    "geometric_constraints": {
+      "clear_span_mm": 508,
+      "overall_length_max_mm": 610,
+      "deck_width_min_mm": 50,
+      "loading_pin_diameter_mm": 25.4,
+      "monolithic_print": true
+    },
+    "material": {
+      "name": "Plain PLA filament",
+      "properties": {
+        "youngs_modulus_GPa": 3.5,
+        "yield_tensile_MPa": 50,
+        "ultimate_tensile_MPa": 60,
+        "density_kg_m3": 1240
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "midspan_reference_load",
+        "magnitude_N": 500,
+        "direction": "vertical downward",
+        "application": "concentrated through 25.4 mm steel pin at mid-span"
+      }
+    ],
+    "boundary_conditions": {
+      "end_supports": "two roller supports 508 mm apart at extreme ends of the bridge"
+    },
+    "objective": {
+      "primary": "maximize load_to_mass efficiency ratio (N/g)",
+      "secondary": "pass all structural pass/fail criteria"
+    },
+    "output_format": {
+      "geometry": [
+        "STL",
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "mass_g",
+        "max_von_mises_at_500N_MPa",
+        "midspan_deflection_at_500N_mm",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "min_static_load_without_failure",
+        "limit_N": 500,
+        "derivation": "reference target load",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 40,
+        "derivation": "UTS/1.5 = 60/1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection",
+        "limit_mm": 8.0,
+        "derivation": "span/64 ~ practical stiffness floor",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_g": 250,
+        "derivation": "efficiency practical cap for PLA print within 610 mm envelope",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "derivation": "global snap-through guard for thin-web truss under point load",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet or shell",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling eigenvalue"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Static load test; no dynamic excitation.",
+      "thermal_analysis": "Room-temperature PLA properties.",
+      "fluid_analysis": "Dry lab test.",
+      "radiation_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Layer-to-layer anisotropy of FDM PLA",
+      "Creep under sustained load",
+      "Support removal quality"
+    ]
+  },
+  "eval_coverage": [
+    "load-to-mass efficiency as optimization driver",
+    "PLA-only constraint with anisotropic-capable structural FEA",
+    "global buckling eigenvalue under concentrated point load",
+    "dual geometry output (STL + STEP) for printable submission"
+  ]
+}

@@ -1,0 +1,213 @@
+{
+  "id": "344_i_la_lasc_lander",
+  "source": {
+    "catalog_ref": "I-EU6 (I-LA thread LASC)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "rocket_borne_lander_legs",
+  "full_prompt": "Design the four landing legs of a LASC 2026 Lander class payload that is ejected from the nose cone of a 3000 m apogee sounding rocket at apogee, descends under a parachute to approximately 30 m AGL, then uses four cold-gas thrusters to decelerate and land softly on a flat surface at a target vertical velocity of 2 m/s. Lander total dry mass 3.5 kg; with cold-gas propellant and electronics total wet mass at landing 4.2 kg. Envelope: 250 mm diameter body cylinder + 4 deployable legs on a 400 mm pitch circle when extended. Each leg is a CFRP pultruded rod of 20 mm OD x 2 mm wall, length 220 mm, angled 30 degrees outward from vertical, terminating in a 50 mm rubber landing foot. Material: CFRP UD (E 140 GPa, tensile 1600 MPa, compressive 1100 MPa, density 1550 kg/m^3). Legs fold up into the body during ascent and deploy via spring-release on cold-gas activation. Load cases: (LC1) ascent stowed: 20 g axial on folded legs (launch-qualification equivalent on Lander; sees full rocket ascent acceleration); (LC2) leg deployment kickout: spring produces 80 N tension at leg-to-body hinge during 100 ms deploy; (LC3) touchdown at 2 m/s on flat ground: 4.2 kg lander decelerates over 20 mm stroke of rubber foot; energy = 0.5 x 4.2 x 2^2 = 8.4 J over 20 mm = equivalent average 420 N per leg vertical, peak assumed 1.5x average = 630 N per leg; (LC4) off-axis touchdown: 2 of 4 legs contact first with 2x load on those two legs = 1260 N each; (LC5) wind-tip test: 50 N horizontal applied at body CoM while lander stands on legs on ground - verify stability margin by computing moment about leg-to-ground contact circle. Pass/fail: (R1) under LC1-LC4, max CFRP leg stress must remain below 800 MPa (1600 / 2.0 FoS) tensile, 550 MPa (1100 / 2.0) compressive; (R2) leg-hinge shear pin (3 mm 316 stainless, yield 215 MPa) must remain below 107 MPa under LC2 deployment; (R3) leg-tip deflection under LC4 off-axis touchdown must remain below 8 mm to preserve stable geometry; (R4) lander must not tip over under LC5 (quasi-static stability check); (R5) combined 4-leg dry mass must not exceed 180 g; (R6) linear buckling eigenvalue on a single leg under LC4 must exceed 2.0. Thermal, fluid, radiation analyses not required. Deliverables: STEP AP242 of the 4 legs + 4 hinges + 4 feet (as separate bodies), FEA per case, buckling for LC4, stability calculation for LC5, mass budget.",
+  "short_prompt": "Design the four landing legs of a LASC 2026 Lander-class payload. Ejected from the nose cone of a 3000 m apogee sounding rocket at apogee, descends under parachute to ~30 m AGL, then four cold-gas thrusters decelerate to a 2 m/s vertical-velocity target landing. Lander dry 3.5 kg; landing wet 4.2 kg; 250 mm OD body cylinder; legs deploy on a 400 mm pitch circle.\n\nEnvelope: each leg is a 20 mm OD x 2 mm wall x 220 mm pultruded UD CFRP rod angled 30 deg outward, 50 mm rubber foot, folded during ascent and spring-released on cold-gas activation.\n\nFactor regime: CFRP FoS 2.0 (tensile 800 MPa / compressive 550 MPa); 316 SST hinge-pin yield FoS 2.0 (107 MPa); leg-tip deflection under off-axis touchdown < 8 mm (stability); wind-tip stability is a moment-about-contact-circle check (no stress gate); combined 4-leg dry mass <= 180 g; linear buckling eigenvalue on a single leg under LC4 >= 2.0.\n\nLoad cases.\n- Ascent stowed: 20 g axial on the folded legs (launch qualification).\n- Leg deployment kickout: 80 N spring tension at the leg-to-body hinge over 100 ms.\n- Touchdown at 2 m/s: 8.4 J over a 20 mm foot stroke = 420 N avg per leg, 630 N peak (1.5x avg).\n- Off-axis touchdown: 2 of 4 legs contact first = 1260 N each.\n- Wind-tip stability: 50 N horizontal at CoM with lander standing on legs.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "LASC 2026 Lander Class 4-Leg Landing Gear",
+    "brief": "4 CFRP legs for 4.2 kg wet lander, 2 m/s vertical touchdown, 3000 m deploy apogee, LASC lander scheme.",
+    "geometric_constraints": {
+      "body_diameter_mm": 250,
+      "leg_pitch_circle_mm": 400,
+      "leg_OD_mm": 20,
+      "leg_wall_mm": 2,
+      "leg_length_mm": 220,
+      "leg_angle_deg": 30,
+      "foot_rubber_diameter_mm": 50
+    },
+    "material": {
+      "leg": {
+        "name": "CFRP pultruded UD",
+        "E_GPa": 140,
+        "tensile_MPa": 1600,
+        "compressive_MPa": 1100,
+        "density_kg_m3": 1550
+      },
+      "hinge_pin": {
+        "name": "AISI 316 stainless",
+        "yield_MPa": 215,
+        "OD_mm": 3
+      }
+    },
+    "lander_mass_kg": {
+      "dry": 3.5,
+      "wet": 4.2
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "ascent_20g_stowed",
+        "magnitude_g": 20
+      },
+      {
+        "id": "LC2",
+        "name": "deploy_kickout",
+        "magnitude_N": 80,
+        "application": "hinge tension"
+      },
+      {
+        "id": "LC3",
+        "name": "touchdown_2mps",
+        "magnitude_N_per_leg": 630
+      },
+      {
+        "id": "LC4",
+        "name": "off_axis_touchdown",
+        "magnitude_N_per_leg": 1260
+      },
+      {
+        "id": "LC5",
+        "name": "wind_tip_stability",
+        "magnitude_N": 50,
+        "application": "body CoM horizontal"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 12,
+      "report_fields": [
+        "legs_total_mass_g",
+        "tensile_stress_LC4_MPa",
+        "compressive_stress_LC4_MPa",
+        "hinge_pin_shear_LC2_MPa",
+        "buckling_factor_LC4",
+        "tip_deflection_LC4_mm",
+        "stability_margin_LC5"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "leg_tensile_stress",
+        "limit_MPa": 800,
+        "derivation": "1600 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "leg_compressive_stress",
+        "limit_MPa": 550,
+        "derivation": "1100 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "hinge_pin_shear",
+        "limit_MPa": 107,
+        "derivation": "215 / 2.0 yield FoS",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "leg_tip_deflection",
+        "limit_mm": 8,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "quasi_static_stability_margin",
+        "limit": "> 0 positive moment margin",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "legs_total_mass",
+        "limit_g": 180,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "single_leg_first_mode_factor",
+        "limit": 2.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (BEAM188) for legs; shell for foot pad; solid for hinge pin",
+      "mesh_size_mm": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "linear buckling (LC4 single leg)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "LASC 2026 official Lander-class rulebook not yet published as stand-alone PDF; catalog cites 2026 overview page and 2023 rules mirror. Confirm touchdown-velocity spec, envelope, and wet-mass cap when the PDF releases.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not primary for legs.",
+      "thermal_analysis": "Short duration.",
+      "fluid_analysis": "Parachute descent reduced to touchdown velocity.",
+      "radiation_analysis": "N/A."
+    }
+  },
+  "eval_coverage": [
+    "deployable leg kinematics + FEA",
+    "off-axis touchdown asymmetric",
+    "buckling on slender CFRP rod",
+    "stability quasi-static check",
+    "multi-body STEP"
+  ]
+}

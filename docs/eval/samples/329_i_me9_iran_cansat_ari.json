@@ -1,0 +1,207 @@
+{
+  "id": "329_i_me9_iran_cansat_ari",
+  "source": {
+    "catalog_ref": "I-ME9 (Iran CanSat, ARI 11th International)",
+    "year": 2025,
+    "tier": "A"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_with_autogyro_rotor",
+  "full_prompt": "Design the integrated structural assembly of an Iran-CanSat Professional-class entry consisting of the main soda-can body plus a deployable two-blade auto-gyro rotor used for stable descent in place of a parachute. The CanSat body fits a 66 mm outer diameter by 115 mm height envelope with total wet mass between 350 g and 500 g (Professional class relaxes the mass cap vs 350 g Standard). The auto-gyro rotor has two hinged blades of length 200 mm (so 400 mm tip-to-tip rotor disc diameter) stowed along the body axis inside a cylindrical top cap of diameter 66 mm and height 220 mm added above the soda-can body (total stowed height 335 mm; only the soda-can body must fit 115 mm, the top-cap rotor is a permitted extension for Professional class per ARI rules). After ejection at approximately 700 m AGL, a spring-release mechanism rotates each blade 90 degrees outward where a mechanical lock engages. The blades are pitched at 4 degrees nose-down. Descent rate is targeted at 8-10 m/s autorotation. Materials: soda-can body is PA12 SLS (E 1.6 GPa, tensile 45 MPa, density 1010 kg/m^3); rotor blades are CFRP solid (UD T300/epoxy, E_long 120 GPa, tensile 1800 MPa, density 1550 kg/m^3); hinge pins are 3 mm AISI 316 stainless (yield 215 MPa). Load cases: (LC1) 20 g axial launch acceleration on 500 g wet mass with rotor stowed; (LC2) rotor deployment kickout: the spring that rotates each blade produces an instantaneous hinge shear of 40 N and an axial tip load of 25 N on the blade root; (LC3) steady autorotation aerodynamic load: each blade carries a distributed lift of 12 N along 200 mm span (3 N centrifugal per blade at nominal 180 rpm autorotation); verify hinge lock-pin shear and blade-root bending; (LC4) ground impact at 10 m/s descent: 10 g equivalent deceleration on the CanSat body base. Pass/fail criteria: (R1) under LC1 launch, body von Mises stress must remain below 22.5 MPa (45 / 2.0 FoS) and rotor-blade stress below 900 MPa (1800 / 2.0); (R2) under LC3 autorotation, hinge-pin shear stress must remain below 107 MPa (215 / 2.0 yield FoS); (R3) blade-root bending stress under LC3 must remain below 900 MPa; (R4) total integrated dry mass (body + rotor + hinges, no electronics or battery) must not exceed 180 g; (R5) rotor deployment mechanism must clear the body skin by at least 2 mm in the fully deployed configuration (collision check, not a stress gate). Thermal, fluid, radiation, and buckling analyses not required. Deliverables: STEP AP242 assembly with body, 2 rotor blades, 2 hinge assemblies, FEA report per load case, deployment kinematics sketch, and mass budget.",
+  "short_prompt": "Design the integrated structural assembly of an Iran-CanSat Professional-class entry: soda-can body + deployable two-blade auto-gyro rotor in place of a parachute. 66 mm OD x 115 mm body envelope (soda-can), wet mass 350-500 g; a cylindrical top cap 66 mm x 220 mm is permitted in Professional class to house the stowed rotor (total stowed 335 mm).\n\nEnvelope: PA12-SLS body; two CFRP blades (200 mm length, 400 mm tip-to-tip, 4 deg nose-down pitch) stowed axially, spring-release rotates each blade 90 deg outward into a mechanical lock at ejection (~700 m AGL); AISI 316 3 mm hinge pins. Target autorotation 8-10 m/s descent at ~180 rpm.\n\nFactor regime: material FoS 2.0 on body (22.5 MPa) and blades (900 MPa); hinge-pin yield FoS 2.0 (107 MPa); body stress-at-impact same material gate; deployed-rotor body-clearance >= 2 mm (collision check, not stress).\n\nLoad cases.\n- Launch 20 g axial on 500 g wet with rotor stowed.\n- Rotor deployment kickout: 40 N hinge shear + 25 N axial tip load at the blade root.\n- Steady autorotation: 12 N distributed lift along each 200 mm blade + 3 N centrifugal per blade; verify hinge lock-pin shear and blade-root bending.\n- Ground impact at 10 m/s descent: 10 g equivalent decel on the body base.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "multibody_kinematics",
+        "reason": "Rotor deployment kinematics (90 deg blade rotation + lock) verified by rigid-body multibody, not FEA. Rules-compliance only.",
+        "examples": [
+          "ADAMS",
+          "Simulink Simscape Multibody"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Iran ARI CanSat Professional Class — Body + Auto-Gyro Rotor",
+    "brief": "Soda-can body + 2-blade hinged auto-gyro for 500 g Professional class, 20 g launch qual + autorotation loads.",
+    "geometric_constraints": {
+      "body_OD_mm": 66,
+      "body_height_mm": 115,
+      "rotor_top_cap_height_mm": 220,
+      "blade_length_mm": 200,
+      "rotor_disc_diameter_mm": 400,
+      "blade_count": 2,
+      "blade_pitch_deg": 4
+    },
+    "material": {
+      "body": {
+        "name": "PA12 SLS",
+        "E_GPa": 1.6,
+        "tensile_MPa": 45,
+        "density_kg_m3": 1010
+      },
+      "blades": {
+        "name": "T300/epoxy UD CFRP",
+        "E_long_GPa": 120,
+        "tensile_MPa": 1800,
+        "density_kg_m3": 1550
+      },
+      "hinge_pins": {
+        "name": "AISI 316 stainless 3 mm",
+        "yield_MPa": 215
+      }
+    },
+    "mass_envelope_g": {
+      "min": 350,
+      "max": 500
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_20g",
+        "magnitude_g": 20,
+        "application": "axial on 500 g wet, rotor stowed"
+      },
+      {
+        "id": "LC2",
+        "name": "rotor_deploy_kickout",
+        "hinge_shear_N": 40,
+        "tip_axial_N": 25,
+        "application": "blade root at deploy"
+      },
+      {
+        "id": "LC3",
+        "name": "autorotation_steady",
+        "blade_distributed_lift_N": 12,
+        "blade_centrifugal_N": 3,
+        "rpm": 180
+      },
+      {
+        "id": "LC4",
+        "name": "ground_impact_10g",
+        "magnitude_g": 10,
+        "application": "CanSat body base"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 5,
+      "report_fields": [
+        "integrated_structural_dry_mass_g",
+        "body_stress_LC1_MPa",
+        "blade_stress_LC1_MPa",
+        "hinge_pin_shear_LC3_MPa",
+        "blade_root_bending_LC3_MPa",
+        "deploy_clearance_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "body_von_mises_stress",
+        "limit_MPa": 22.5,
+        "derivation": "45 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "blade_max_stress",
+        "limit_MPa": 900,
+        "derivation": "1800 / 2.0 FoS",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "hinge_pin_shear",
+        "limit_MPa": 107,
+        "derivation": "215 / 2.0 yield FoS",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "blade_root_bending",
+        "limit_MPa": 900,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "integrated_structural_dry_mass",
+        "limit_g": 180,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "rotor_body_clearance",
+        "limit_mm_min": 2,
+        "applies_to": [
+          "deployed"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid TET10; beam model for rotor span admissible",
+      "mesh_size_mm": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static (x4)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": true,
+    "needs_rulebook_fetch_reason": "ARI Professional-class PDF is registration-gated; top-cap height, exact mass cap, and hinge-pin minimum diameter should be re-checked when the current-year rulebook is obtained. Numeric values above follow typical ARI practice.",
+    "exclusions_explained": {
+      "vibration_analysis": "Rotor rotating mass below FEA-grade dynamic concern at 180 rpm (3 Hz).",
+      "thermal_analysis": "Short mission.",
+      "fluid_analysis": "Aero reduced to blade-lift load.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Slender members bounded by stress gates."
+    }
+  },
+  "eval_coverage": [
+    "mixed-material FEA (polymer + CFRP + steel)",
+    "hinge-pin shear",
+    "deployable mechanism clearance",
+    "mass budget gate"
+  ]
+}

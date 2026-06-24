@@ -1,0 +1,190 @@
+{
+  "id": "141_hv17_baja_india_roll_cage_gusset",
+  "source": {
+    "catalog_ref": "HV17 (user-assigned Baja collegiate motorsport society)",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "baja_chassis",
+  "part_class": "main_hoop_gusset_plate",
+  "full_prompt": "Design a monolithic AISI 1018 cold-rolled low-carbon steel gusset plate welded at the junction of the BAJA collegiate motorsport society 2026 Rev01 rulebook primary roll cage main hoop (25 mm OD x 3 mm wall 1018) and the front-upper side-tube, per BAJA collegiate motorsport society 2026 chassis section. The gusset is a single laser-cut and formed plate (monolithic; the weld to the tubes is not part of this CAD prompt; you are designing only the plate body). BAJA collegiate motorsport society 2026 inherits Baja USA primary roll cage mandatory tubing (25 mm OD x 3 mm wall for primary, 25.4 mm OD x 0.89 mm wall for secondary). Geometry: triangular gusset plate with base 120 mm (along main hoop tube) x perpendicular height 80 mm, thickness 5 mm, the longest edge (hypotenuse) 144 mm. Two integral 26 mm radius semi-circular coped edges along the two catetes that mate to the 25 mm OD tubes (so the plate saddles cleanly to the tubes for a continuous fillet weld). Three integral 10 mm diameter drain/inspection holes spaced along the interior of the triangle to reduce mass and allow weld-bead visual inspection. No bolts on the gusset itself (pure welded structure). Bounding envelope 120 x 80 x 5 mm. Material AISI 1018 CRS: E 205 GPa, nu 0.29, density 7870 kg/m^3, yield 370 MPa, UTS 440 MPa (cold-rolled); fatigue endurance 220 MPa at 10^7 cycles for polished, 154 MPa derated for weld HAZ per AWS D1.1 stress category C. Three load cases per Baja USA rulebook + BAJA collegiate motorsport society inheritance (Baja rollover survival + mBAJA 4WD drivetrain reaction). Load Case 1 (mandated rollover side-load): 1.5 kN applied perpendicular to the main hoop tube at the plate location per typical Baja chassis rollover structural demonstration (derived from 272 kg GVW * 5g rollover factor spread over the cage); the main-hoop tube endpoints constrained as pin + roller, the front side-tube endpoint constrained as pin. Load Case 2 (front impact): 4.5 kN along the front-upper side-tube axis, reacted into the gusset as shear and bending; this is a Baja rulebook front-impact design load (272 kg * 4.5g * partial = 12 kN total spread 1/3 to this gusset = 4 kN; rounded to 4.5 kN). Load Case 3 (mBAJA 4WD drive reaction): 2.0 kN axial pulling along the front-upper side-tube plus 500 N lateral from a differential-case reaction transmitted from mBAJA mandatory 4WD drivetrain. Pass/fail: (R1) under LC1 rollover side-load, peak von Mises in the gusset plate must not exceed 185 MPa (yield/2.0, Baja chassis safety allowable); (R2) under LC2 front impact, peak stress 247 MPa (yield/1.5 transient); (R3) under LC3 4WD drive reaction, peak stress 185 MPa; (R4) fatigue: 10^7 cycles of LC3 stress range 50% peak, local stress range at weld-coped edge HAZ must not exceed 154 MPa (weld HAZ derated endurance); (R5) gusset mass must not exceed 0.15 kg (per gusset; Baja chassis packages several gussets so mass budget is tight); (R6) no plate buckling under LC2 compressive flow: first-mode buckling load factor must be >= 2.5 under LC2. Thermal, fluid, vibration, and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic AISI 1018 cold-rolled-steel gusset plate welded at the junction of the collegiate Baja 2026 primary roll-cage main hoop and front-upper side-tube (both 25 mm OD x 3 mm wall). The gusset is a single laser-cut triangular plate with two coped semicircular edges saddling the tubes for continuous fillet welding and three interior drain/inspection holes; no bolts on the gusset itself. Apply yield/2.0 (continuous) and yield/1.5 (transient) safety factors per the Baja chassis rulebook, using AWS D1.1 stress category C weld-HAZ endurance for fatigue.\n\nEnvelope: 120 x 80 x 5 mm triangular plate.\n\nLoad cases.\n- LC1 rollover side load: 1.5 kN perpendicular to the main hoop at the plate (272 kg GVW * 5 g rollover factor spread over the cage), main-hoop endpoints pin/roller, side-tube end pinned.\n- LC2 front impact: 4.5 kN along the front-upper side-tube axis reacted as shear and bending at the gusset.\n- LC3 4WD drive reaction: 2.0 kN axial pull plus 500 N lateral from differential-case reaction through the side tube.\nAlso check a 10^7-cycle fatigue spectrum off LC3 at the weld-HAZ coped edge and a linear-buckling factor >= 2.5 under LC2 compressive flow.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "BAJA collegiate motorsport society main-hoop to front-tube gusset plate",
+    "brief": "1018 CRS laser-cut gusset triangle 120x80x5, two coped tube saddles; Baja primary cage rollover + front impact + mBAJA 4WD.",
+    "geometric_constraints": {
+      "triangle_mm": {
+        "base": 120,
+        "height": 80,
+        "hypotenuse": 144,
+        "thickness": 5
+      },
+      "coped_saddles": {
+        "count": 2,
+        "radius_mm": 26
+      },
+      "inspection_holes": {
+        "count": 3,
+        "diameter_mm": 10
+      },
+      "bounding_envelope_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 5
+      },
+      "monolithic": true
+    },
+    "material": {
+      "name": "AISI 1018 CRS",
+      "properties": {
+        "youngs_modulus_GPa": 205,
+        "poissons_ratio": 0.29,
+        "density_kg_m3": 7870,
+        "yield_MPa": 370,
+        "ultimate_tensile_strength_MPa": 440,
+        "endurance_polished_MPa": 220,
+        "endurance_weld_HAZ_MPa": 154
+      }
+    },
+    "rule_basis": {
+      "baja_usa": "primary 25 x 3 mm 1018, secondary 25.4 x 0.89 mm",
+      "baja_india_delta": "mBAJA 4WD/AWD mandatory"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "rollover_side",
+        "force_N": 1500,
+        "location": "main_hoop_tube"
+      },
+      {
+        "id": "LC2",
+        "name": "front_impact",
+        "force_N": 4500,
+        "location": "front_upper_side_tube"
+      },
+      {
+        "id": "LC3",
+        "name": "mBAJA_4WD_reaction",
+        "axial_N": 2000,
+        "lateral_N": 500
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "local_fatigue_stress_range_MPa",
+        "first_buckling_load_factor",
+        "mass_g"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 185,
+        "derivation": "yield/2.0 Baja chassis",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 247,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "local_fatigue_stress_range",
+        "limit_MPa": 154,
+        "cycles": 10000000,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.15,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (SHELL181)",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "S-N fatigue (weld HAZ)",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Ambient operation.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "vibration_analysis": "Frame-level NVH studied at full chassis; not at gusset."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Weld residual stress",
+      "Galvanic with galvanized skin panels",
+      "Baja rulebook tube-certification paperwork"
+    ]
+  },
+  "eval_coverage": [
+    "Baja chassis rollover SF",
+    "weld HAZ fatigue derate",
+    "mBAJA 4WD delta load reaction",
+    "shear buckling on thin gusset"
+  ]
+}

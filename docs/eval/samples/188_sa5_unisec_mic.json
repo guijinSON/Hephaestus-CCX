@@ -1,0 +1,211 @@
+{
+  "id": "188_sa5_unisec_mic",
+  "source": {
+    "catalog_ref": "SA5",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "satellite_structural",
+  "part_class": "6u_cubesat_primary_structure",
+  "full_prompt": "Design a 6U CubeSat primary structure benchmark for a constellation member, compliant with Cal Poly CDS Rev 14 for 6U deployers (12U / 24U capable P-PODs) and carrying deployable solar arrays. The structure is a skeletonized Al 7075-T6 chassis with external envelope 226.3 mm x 100.0 mm x 366.0 mm (6U standard), four deployer rails on the long 366.0 mm corners, and a total mass cap of 12.0 kg per CDS Rev 14 6U with 14 kg absolute cap. The structure must support two deployable solar arrays each 340 x 200 mm x 1.5 mm (triple-junction GaAs, 250 g each) folded against the long face during launch and deployed after separation to 45 degrees off-axis, plus an internal PC/104+ stack of 12 boards. Qualification loads per GEVS-SE GSFC-STD-7000 / NASA-STD-5001B: (LC1) quasi-static 15 g axial + 10 g lateral, (LC2) sine vibration 2.5 g at 5-100 Hz, (LC3) random vibration GRMS 14.1 at 20-2000 Hz, (LC4) shock 1000 g peak 100-10000 Hz, (LC5) thermal vacuum -40 to +70 C LEO thermal cycle. Material 7075-T6 (yield 503 MPa, E 71.7 GPa, density 2810 kg/m^3). Pass/fail: (R1) quasi-static combined load max von Mises must not exceed 251 MPa (yield 503 / SF 2.0), (R2) first natural frequency stowed must be at least 80 Hz per GEVS secondary payload, (R3) total mass at or below 12 kg, (R4) thermal cycle combined stress at hot case (+70 C) plus 15 g axial must not exceed 251 MPa, (R5) solar array tip deflection when deployed and operating at 45 degrees under 1g ground-test must not exceed 5 mm (reality check for hinge stiffness). Vibration (modal) is required for R2. Thermal is required for R4. Fluid and radiation analyses are not required. Deliver a STEP AP242 assembly with chassis, solar array panels (stowed), hinges, and PC/104+ cage as sub-bodies plus a structural + thermal report.",
+  "short_prompt": "Design a 6U CubeSat primary structure for a constellation member, to Cal Poly CDS Rev 14 (6U / 12U / 24U deployer family), in 7075-T6 aluminum. Envelope 226.3 x 100.0 x 366.0 mm with four deployer rails on the long corners and a mass cap of 12.0 kg (14 kg absolute). Two deployable solar arrays (each 340 x 200 x 1.5 mm, ~250 g, triple-junction GaAs) stow flat against the long face during launch and deploy to 45 deg off-axis; internal PC/104+ stack of 12 boards. Rails are constrained in the P-POD; stowed arrays are clamped to the long face.\n\nQualification per GEVS-SE GSFC-STD-7000 / NASA-STD-5001B.\n\nLoad cases.\n- LC1 quasi-static: 15 g axial + 10 g lateral.\n- LC2 sine vibration: 2.5 g, 5-100 Hz.\n- LC3 random vibration: 14.1 GRMS, 20-2000 Hz.\n- LC4 shock: 1000 g peak, 100-10000 Hz.\n- LC5 thermal vacuum: -40 to +70 C LEO cycle.\n\nFirst natural frequency (stowed) must be >=80 Hz per GEVS; solar-array tip deflection when deployed at 45 deg under 1 g ground-test is also checked.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "constellation_link_budget",
+        "reason": "Multi-sat benefit justification requires a constellation-level link and coverage budget, outside FEA.",
+        "examples": [
+          "STK (Systems Tool Kit)",
+          "GMAT",
+          "MATLAB link budget"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "6U constellation CubeSat primary structure",
+    "brief": "Design a 7075-T6 6U CubeSat structure (226.3 x 100 x 366 mm, <=12 kg) with 2 deployable solar arrays passing GEVS quasi-static 15 g + 10 g, modal >=80 Hz, thermal -40/+70 C, and 1 g ground-deployment deflection.",
+    "geometric_constraints": {
+      "envelope_mm": [
+        226.3,
+        100.0,
+        366.0
+      ],
+      "mass_max_kg": 12,
+      "solar_panel_mm": [
+        340,
+        200,
+        1.5
+      ],
+      "deployment_angle_deg": 45
+    },
+    "material": {
+      "name": "Aluminum 7075-T6",
+      "yield_MPa": 503,
+      "E_GPa": 71.7,
+      "density_kg_m3": 2810
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static",
+        "axial_g": 15,
+        "lateral_g": 10
+      },
+      {
+        "id": "LC2",
+        "name": "sine_vib",
+        "g": 2.5,
+        "freq_Hz": [
+          5,
+          100
+        ]
+      },
+      {
+        "id": "LC3",
+        "name": "random_vib",
+        "GRMS": 14.1,
+        "freq_Hz": [
+          20,
+          2000
+        ]
+      },
+      {
+        "id": "LC4",
+        "name": "shock",
+        "peak_g": 1000,
+        "freq_Hz": [
+          100,
+          10000
+        ]
+      },
+      {
+        "id": "LC5",
+        "name": "thermal_cycle",
+        "T_min_C": -40,
+        "T_max_C": 70
+      }
+    ],
+    "boundary_conditions": {
+      "deployer_rails": "constrained in P-POD",
+      "solar_arrays_stowed": "clamped to long face"
+    },
+    "objective": {
+      "primary": "pass GEVS + CDS Rev 14 6U compliance",
+      "secondary": "minimize chassis mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "assembly",
+      "report_fields": [
+        "max_von_mises_MPa",
+        "first_natural_frequency_Hz",
+        "total_mass_kg",
+        "thermal_cycle_combined_stress_MPa",
+        "solar_array_tip_deflection_1g_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises",
+        "limit_MPa": 251,
+        "derivation": "7075-T6 yield 503 / SF 2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 80,
+        "derivation": "GEVS secondary payload",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 12,
+        "derivation": "CDS Rev 14 6U",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "thermal_cycle_combined_stress",
+        "limit_MPa": 251,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "solar_array_tip_deflection_1g",
+        "limit_mm": 5,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell/solid hybrid",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Nastran"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "random vibration",
+        "thermal-stress"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "fluid_analysis": "Vacuum environment.",
+      "radiation_analysis": "Board-level shielding scope.",
+      "buckling_analysis": "Chassis stiffness dominated by modal floor."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Solar array deployment kinematics test",
+      "ADCS actuator accommodation",
+      "Constellation formation keeping delta-V"
+    ]
+  },
+  "eval_coverage": [
+    "6U CubeSat + deployable solar arrays",
+    "constellation link-budget non-FEA solver",
+    "hot-case thermal + mechanical combined stress",
+    "ground-deployment 1 g deflection sanity check"
+  ]
+}

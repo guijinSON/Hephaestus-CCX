@@ -1,0 +1,67 @@
+**
+** Coma Wars JP6 — Spinning-Top LC1 Lateral-Collision FEM (analysis template)
+** (mesh + NSETs spliced in by wire_bcs.py from the agent's STEP)
+**
+** This template models LC1 (50 N quasi-static lateral force at the widest
+** diameter of the koma). The pass/fail authority for the four spec
+** requirements lives in check.py:
+**   R1 OD_mm           <= 20.0   (envelope, from CAD via mass_properties.json)
+**   R2 height_mm       <= 60.0   (envelope, from CAD)
+**   R3 concentricity   <= 0.02   (manufacturing-declared, not FEA)
+**   R4 max_vm_stress   <= 310    (Brass C36000 yield Sy, parsed from model.dat)
+**
+** Units: mm, N, t (tonne), s -> stress = MPa, density = t/mm^3.
+**
+** Required NSETs (provided via meta.json selectors):
+**   NFIXED  - bottom contact patch (tip / dohyo contact, z_min face)
+**   NLOAD   - top-rim widest-diameter ring (lateral 50 N collision impact, z_max face)
+**
+** *SOLID SECTION uses ELSET=Eall (auto-built from gmsh's volume sets).
+**
+** ----------------------------------------------------------------
+** Material: Brass C36000 (free-machining, lathe-typical koma body)
+**   E    = 100 GPa  = 100000 MPa
+**   nu   = 0.34
+**   rho  = 8500 kg/m^3 = 8.5e-9 t/mm^3
+**   Sy   = 310 MPa  (cold-drawn, used by check.py for R4)
+** ----------------------------------------------------------------
+*MATERIAL, NAME=BRASS_C36000
+*ELASTIC
+100000.0, 0.34
+*DENSITY
+8.5e-9
+**
+*SOLID SECTION, ELSET=Eall, MATERIAL=BRASS_C36000
+**
+** ----------------------------------------------------------------
+** Boundary: pin the bottom contact patch in 3 DOF.
+** Represents the hardened tip + dohyo contact during the lateral impact;
+** rotational degrees about the spin axis are not relevant for LC1.
+** ----------------------------------------------------------------
+*BOUNDARY
+NFIXED, 1, 3, 0.0
+**
+** ----------------------------------------------------------------
+** Step 1: LC1 collision-impact equivalent
+**   50 N lateral force in +X applied at the top rim (widest diameter).
+**   *CLOAD on a NSET applies the listed force to *each* node in the set,
+**   so the total scales with the mesher's node count on the z_max face.
+**   Per-node magnitude is set so that for a typical gmsh tet-mesh of a
+**   20 mm OD x 18 mm cylinder (a few-tens of nodes on the top face) the
+**   integrated load is on the order of 50 N. The brass body has ~12x
+**   margin against yield, so this corroboration is robust to mesh density.
+** ----------------------------------------------------------------
+*STEP
+*STATIC
+1.0, 1.0
+*CLOAD
+NLOAD, 1, 1.0
+*EL PRINT, ELSET=Eall
+S
+*NODE PRINT, NSET=NLOAD
+U
+*NODE FILE
+U
+*EL FILE
+S
+*END STEP

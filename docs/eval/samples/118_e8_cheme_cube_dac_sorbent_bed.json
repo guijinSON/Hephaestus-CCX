@@ -1,0 +1,200 @@
+{
+  "id": "118_e8_cheme_cube_dac_sorbent_bed",
+  "source": {
+    "catalog_ref": "E8",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "chemical_process_equipment",
+  "part_class": "dac_sorbent_bed_canister",
+  "full_prompt": "Design a monolithic 316 stainless steel cylindrical fixed-bed sorbent canister for a Direct Air Capture module fitting inside a 1 cubic-foot (1 ft = 304.8 mm) modular-plant student benchmark envelope. The canister is a single welded-and-machined body (treated as monolithic for CAD) containing amine-impregnated silica sorbent pellets; the canister has integral removable top cover retained by a 1/4-turn bayonet (the bayonet tabs are integral, but for simulation treat the canister as a single closed body). Canister geometry: external cylinder OD 200 mm, wall 2.5 mm, internal chamber length 260 mm, two integral perforated stainless plate retaining meshes 1.5 mm thick at top and bottom with 3 mm holes on 6 mm triangular pitch; one 25 mm ID bottom air-inlet port (ANSI B1.20.1 1-inch NPT female), one 25 mm top air-outlet port (same), and two integral resistance-heater cartridge wells 12 mm ID x 240 mm deep on the side wall for the regeneration thermal cycle. Overall part must fit within a 220 mm x 220 mm x 290 mm sub-envelope inside the 304.8 mm cube. Material 316 stainless: E 193 GPa, nu 0.30, density 8000 kg/m^3, yield 205 MPa at 20 C, 170 MPa at 120 C (regeneration cycle peak), UTS 515 MPa. Sorbent bed: amine-functionalized silica, bulk density 650 kg/m^3, bulk volume 6.5 L, porosity 0.40, target = 1.5 g CO2 captured per minute during adsorption then desorbed in the regeneration phase. Two operating modes plus a proof load case. Load Case 1 (adsorption flow): ambient air at 20 C, 40% RH flowed through the bed at 20 L/min (standard conditions), resulting in a pressure drop of about 0.8 kPa across the sorbent per Ergun equation and canister-internal maximum gauge of 1.2 kPa; canister wall stresses effectively negligible, but the air-flow distribution across the inlet plenum must be verified. Load Case 2 (regeneration): the two heater cartridges deliver 600 W total, heating the bed to 120 C for 30 minutes under sealed conditions; internal pressure rises to 50 kPa gauge from thermal expansion of residual moisture and released CO2. Load Case 3 (proof / safety): 100 kPa gauge internal pressure at 120 C (2x LC2 regeneration peak) representing a blocked-outlet fault; canister ports constrained. Pass/fail: (R1) under LC3 proof at 120 C, peak von Mises in canister wall must not exceed 85 MPa (yield at 120 C / 2.0); (R2) under LC2 regeneration, peak stress must not exceed 57 MPa (yield at 120 C / 3.0, long-duration operational); (R3) a steady-state thermal analysis under LC2 with 600 W heater input and 20 C ambient, natural convection h=8 W/m^2-K on the external canister wall, must show canister outer surface temperature below 65 C with 25 mm mineral wool insulation (k=0.045 W/m-K), to enable safe handling inside the cube enclosure; (R4) a CFD analysis of LC1 adsorption flow must show flow maldistribution across the top retaining mesh of at most 10% (max/mean velocity ratio) to guarantee uniform sorbent utilization; (R5) a linear buckling eigenvalue analysis under 60 kPa external pressure (hypothetical thermal-vacuum fault during cooling) must yield a first-mode factor of at least 3.0; (R6) mass of the empty canister (excluding sorbent) must not exceed 4.0 kg, leaving headroom below the benchmark 30 kg total cube weight. Vibration and radiation analyses are not required. Deliver STEP AP242 geometry plus report.",
+  "short_prompt": "Design a monolithic 316 stainless-steel cylindrical fixed-bed DAC sorbent canister (integral 1/4-turn bayonet tabs, integral perforated retaining meshes at top and bottom, two integral resistance-heater cartridge wells on the side wall) fitting inside a 1 cubic-foot modular-plant student benchmark envelope. Amine-impregnated silica pellets (bulk density 650 kg/m^3, 6.5 L bulk volume, porosity 0.40, 1.5 g CO2/min capture target) are charged inside but are not part of the CAD body. Empty mass <= 4.0 kg. Allowables use 316 SS yield_120C = 170 MPa: proof SF 2.0, continuous-operation SF 3.0; external-collapse buckling SF 3.0.\n\nEnvelope: 200 mm OD x 2.5 mm wall x 260 mm internal chamber length, two 12 mm x 240 mm heater wells, 25 mm NPT air inlet (bottom) and outlet (top), inside a 220 x 220 x 290 mm sub-envelope of the 304.8 mm cube.\n\nLoad cases.\n- LC1 adsorption flow: ambient 20 C air at 40% RH flowed at 20 L/min standard, ~0.8 kPa Ergun bed drop, canister-internal <= 1.2 kPa gauge.\n- LC2 regeneration: 600 W total from the two cartridge heaters, sealed bed at 120 C for 30 min, internal 50 kPa gauge.\n- LC3 proof fault: 100 kPa gauge internal at 120 C (2x regeneration peak) with blocked outlet.\n- Plus steady-state CFD on LC1 (flow maldistribution across the top mesh <= 1.10 max/mean) and steady-state thermal on LC2 with 25 mm mineral-wool insulation and h = 8 W/m^2-K (outer surface <= 65 C for safe handling).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "radiation_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "316 SS DAC sorbent canister for 1 cubic-foot modular-plant student benchmark",
+    "brief": "Fixed-bed canister with two integral heater wells for amine-sorbent thermal-swing DAC; must fit inside 1 ft cube and handle 120 C regen + proof fault.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 200,
+      "wall_thickness_mm": 2.5,
+      "chamber_length_mm": 260,
+      "inlet_port_nps_mm": 25,
+      "outlet_port_nps_mm": 25,
+      "heater_wells": {
+        "count": 2,
+        "id_mm": 12,
+        "depth_mm": 240
+      },
+      "retaining_mesh_thickness_mm": 1.5,
+      "bounding_envelope_mm": {
+        "x": 220,
+        "y": 220,
+        "z": 290
+      },
+      "cube_envelope_mm": 304.8,
+      "monolithic": true
+    },
+    "material": {
+      "name": "316 stainless steel",
+      "properties": {
+        "youngs_modulus_GPa": 193,
+        "poissons_ratio": 0.3,
+        "density_kg_m3": 8000,
+        "yield_20C_MPa": 205,
+        "yield_120C_MPa": 170,
+        "ultimate_tensile_strength_MPa": 515
+      }
+    },
+    "sorbent": {
+      "type": "amine-functionalized silica",
+      "bulk_density_kg_m3": 650,
+      "bulk_volume_L": 6.5,
+      "porosity": 0.4,
+      "capture_rate_gCO2_min": 1.5
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "adsorption_flow",
+        "flow_L_min_std": 20,
+        "temp_C": 20,
+        "delta_P_kPa": 0.8
+      },
+      {
+        "id": "LC2",
+        "name": "regeneration",
+        "heater_W": 600,
+        "temp_C": 120,
+        "duration_min": 30,
+        "internal_kPa": 50
+      },
+      {
+        "id": "LC3",
+        "name": "proof_fault",
+        "internal_kPa": 100,
+        "temp_C": 120
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "peak_outer_surface_temp_C",
+        "flow_maldistribution_ratio",
+        "first_buckling_load_factor",
+        "empty_mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 85,
+        "derivation": "yield_120C/2.0",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 57,
+        "derivation": "yield_120C/3.0 (operational)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "peak_outer_surface_temp_with_insulation",
+        "limit_C": 65,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "fluid_analysis",
+        "metric": "flow_maldistribution_ratio",
+        "limit": 1.1,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "external_60kPa_fault"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "empty_mass",
+        "limit_kg": 4.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10)",
+      "mesh_size_mm_in_critical_regions": 1.0,
+      "solver_hints": [
+        "ANSYS Mechanical + Fluent",
+        "OpenFOAM + CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "steady thermal with conjugate BC",
+        "steady RANS CFD porous media (Ergun)",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Stationary benchtop module.",
+      "radiation_analysis": "Accounted for in thermal BC."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Amine degradation thermal cycling",
+      "Pressure-swing seal durability",
+      "Moisture crossover to sorbent"
+    ]
+  },
+  "eval_coverage": [
+    "temperature-dependent stainless allowable",
+    "fixed-bed Ergun porous-media CFD",
+    "thermal-swing regeneration proof fault",
+    "insulated outer-surface personnel-safety temperature"
+  ]
+}

@@ -1,0 +1,185 @@
+{
+  "id": "262_a22_fsuk_suspension_wishbone",
+  "source": {
+    "catalog_ref": "A22",
+    "year": 2026,
+    "tier": "A"
+  },
+  "domain": "automotive_structural",
+  "part_class": "student_race_vehicle_suspension_wishbone",
+  "full_prompt": "Design a single-piece welded front lower A-arm (wishbone) for a student-built open-wheel race vehicle. Vehicle total mass (with driver) 300 kg; front axle sprung mass 130 kg; tire scrub radius 25 mm. The wishbone is a two-legged triangular tube weldment using 4130 chromoly tubing, front leg 19.05 mm (3/4 in) OD x 1.6 mm wall, rear leg identical; inboard pickup points are two spherical rod ends on M8 Grade 8.8 studs spaced 200 mm apart on the chassis; outboard is a single 40 mm diameter ball-joint cup that receives the upright ball joint. Material: AISI 4130 normalized steel, E = 205 GPa, yield = 460 MPa, ultimate = 670 MPa, density = 7850 kg/m^3. Overall plan dimensions: 350 mm inboard pivot axis length; 400 mm lateral span from chassis to outboard ball-joint. Load cases (reduced from vehicle mass x g x load factor): (R1) 3 g cornering: lateral load at ball-joint 3 x (130/2) kg x 9.81 = 1,913 N pushing outward; combined with 1 g vertical 65 x 9.81 = 638 N; max von Mises <= yield / 1.5 = 307 MPa. (R2) 2 g bump: vertical load 2 x 65 x 9.81 = 1,275 N upward at ball joint; max von Mises <= 307 MPa. (R3) 1.5 g braking (tractive load into wheel): longitudinal load at ball joint 1.5 x 65 x 9.81 = 956 N rearward, plus 1 g vertical 638 N; max von Mises <= 307 MPa. (R4) Curb-strike: 5 g lateral impulse 5 x 65 x 9.81 = 3,188 N at ball-joint; max von Mises <= ultimate / 1.5 = 447 MPa (ultimate load). (R5) Wishbone mass <= 600 g. (R6) Linear buckling eigenvalue under LC3 compressive leg load >= 3.0. Primary verification: structural FEA (linear static, 4 cases) + linear buckling. Vibration, thermal, fluid, radiation explicitly NOT required. Deliverables: STEP AP242 welded assembly, weld map, and a report listing wishbone mass in g, max von Mises per load case in MPa, first buckling load factor.",
+  "short_prompt": "Design a single-piece welded front lower A-arm (wishbone) for a student-built open-wheel race vehicle. Tubing is 4130 normalized chromoly, front and rear legs both 19.05 mm OD x 1.6 mm wall; inboard pickup points are two M8 Grade 8.8 spherical rod ends spaced 200 mm apart, outboard is a single 40 mm ball-joint cup receiving the upright ball joint. Vehicle total mass (with driver) 300 kg; front axle sprung mass 130 kg; tire scrub radius 25 mm.\n\nEnvelope: inboard pivot axis length 350 mm, lateral span chassis-to-ball-joint 400 mm.\n\nLoad cases.\n- LC1 3 g cornering: 1,913 N lateral outward at the ball joint + 1 g vertical 638 N.\n- LC2 2 g bump: 1,275 N vertical upward at the ball joint.\n- LC3 1.5 g braking: 956 N rearward at the ball joint + 1 g vertical 638 N.\n- LC4 curb-strike: 5 g lateral impulse 3,188 N at the ball joint (ultimate-load case).\n- LC5 linear buckling under LC3 compressive leg load, eigenvalue >= 3.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student race vehicle front lower A-arm",
+    "brief": "4130 chromoly wishbone, 3/4 in OD x 1.6 mm wall tube. Qualified under 3 g corner / 2 g bump / 1.5 g brake / 5 g curb.",
+    "geometric_constraints": {
+      "tube_OD_mm": 19.05,
+      "tube_wall_mm": 1.6,
+      "inboard_pivot_length_mm": 350,
+      "lateral_span_mm": 400,
+      "outboard_ball_joint_cup_dia_mm": 40
+    },
+    "material": {
+      "name": "AISI 4130 normalized",
+      "properties": {
+        "youngs_modulus_GPa": 205,
+        "yield_strength_MPa": 460,
+        "ultimate_tensile_strength_MPa": 670,
+        "density_kg_m3": 7850
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "3g_cornering",
+        "lateral_N": 1913,
+        "vertical_N": 638
+      },
+      {
+        "id": "LC2",
+        "name": "2g_bump",
+        "vertical_N": 1275
+      },
+      {
+        "id": "LC3",
+        "name": "1.5g_brake",
+        "longitudinal_N": 956,
+        "vertical_N": 638
+      },
+      {
+        "id": "LC4",
+        "name": "curb_strike_5g",
+        "lateral_N": 3188
+      },
+      {
+        "id": "LC5",
+        "name": "buckling",
+        "applied_load": "LC3"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "two inboard M8 rod-end centers pinned (ball-joint style)",
+      "loads": "applied at outboard ball-joint cup center"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": 1,
+      "report_fields": [
+        "wishbone_mass_g",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "max_von_mises_LC4_MPa",
+        "first_buckling_load_factor"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 307,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 307,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 307,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 447,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "wishbone_mass",
+        "limit_g": 600,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B31) or shell",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "linear buckling"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static chassis loads.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "four-scenario combined load cases",
+    "curb-strike ultimate case",
+    "tube buckling"
+  ]
+}

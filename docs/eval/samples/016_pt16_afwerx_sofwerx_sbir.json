@@ -1,0 +1,242 @@
+{
+  "id": "016_pt16_afwerx_sofwerx_sbir",
+  "source": {
+    "catalog_ref": "PT16",
+    "year": 2024,
+    "tier": "B"
+  },
+  "domain": "aerospace_uas",
+  "part_class": "tactical_uas_payload_mount",
+  "full_prompt": "Design a quick-release payload mount bracket for a Group-2 tactical UAS per a representative defense-innovation open SBIR mechanical-structures brief: mount a 2.5 kg gimbal payload to the bottom of an airframe rail with a tool-less quarter-turn mechanism, survive +/- 9 g operational flight envelope and 6 m/s hard landing, and be 100% 3D-printable in field conditions (FDM PETG or LPBF AlSi10Mg). Envelope: 120 x 80 x 40 mm. Interfaces: airframe rail dovetail (MIL-STD-1913 compatible 21.2 mm width, 3.5 mm depth) on the top face; payload interface on bottom face with a 4-point Picatinny-adjacent pattern (M4 bolts on 50 x 50 mm square). Preferred material: LPBF AlSi10Mg (yield 230 MPa, UTS 345 MPa, E 68 GPa, density 2670 kg/m^3); alternate field material FDM PETG (yield 50 MPa, UTS 53 MPa, E 2.0 GPa, density 1270 kg/m^3). Load cases: LC1 +9 g vertical payload = 2.5 kg * 9 * 9.81 = 221 N; LC2 -9 g vertical = 221 N (inverted); LC3 +6 g lateral = 147 N; LC4 6 m/s hard landing with 50 ms half-sine shock = effective 30 g = 736 N; LC5 gust +5 g combined with +3 g lateral (vector sum magnitude ~143 N). Pass/fail under DoD SBIR flight-hardware guidance, SF 1.5 on ultimate for non-man-rated UAS structures: (R1) max von Mises in AlSi10Mg primary material <= 345 / 1.5 = 230 MPa under all LC; (R2) max von Mises in PETG field-printed alternate <= 53 / 2.0 = 26.5 MPa (higher SF 2.0 for FDM process variability); (R3) payload tip deflection under LC1 <= 1.5 mm for gimbal optical axis stability; (R4) quarter-turn release mechanism retention force >= 500 N (5x payload weight at 1g for safe handling); (R5) mass <= 150 g AlSi10Mg / <= 90 g PETG; (R6) print time target <= 3 h FDM PETG (enables field replacement); (R7) dovetail engagement contact stress <= 150 MPa AlSi10Mg / 40 MPa PETG (prevent rail wear or bracket yielding). Deliverables: STEP AP242 + 3MF for both material variants; report with per-case max stress, deflection, retention force, mass, and print-time estimate.",
+  "short_prompt": "Design a quick-release payload mount bracket for a Group-2 tactical UAS: mount a 2.5 kg gimbal payload to the bottom of an airframe rail with a tool-less quarter-turn mechanism, survive +/- 9 g operational flight envelope and 6 m/s hard landing, and be 100% 3D-printable in field conditions (FDM PETG or LPBF AlSi10Mg).\n\nEnvelope: 120 x 80 x 40 mm. Interfaces: MIL-STD-1913 compatible dovetail (21.2 mm width, 3.5 mm depth) on the top face; bottom face 4-point Picatinny-adjacent pattern (M4 bolts on 50 x 50 mm square).\n\nMaterials: LPBF AlSi10Mg primary; alternate field FDM PETG.\n\nDesign SF 1.5 on ultimate for AlSi10Mg, 2.0 for FDM PETG (per DoD SBIR flight-hardware guidance for non-man-rated UAS).\n\nLoad cases.\n- LC1 +9 g vertical: 2.5 kg x 9 x 9.81 = 221 N.\n- LC2 -9 g vertical: 221 N inverted.\n- LC3 +6 g lateral: 147 N.\n- LC4 6 m/s hard landing, 50 ms half-sine shock, effective 30 g = 736 N.\n- LC5 gust +5 g combined +3 g lateral (vector-sum ~143 N).\n\nGates include payload-tip deflection under LC1 <= 1.5 mm, quarter-turn release retention >= 500 N, mass <= 150 g AlSi10Mg / <= 90 g PETG, print-time <= 3 h FDM PETG, dovetail contact <= 150 MPa AlSi10Mg / 40 MPa PETG.\n",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "am_print_time_estimator",
+        "reason": "Print time is a slicer output, not FEA.",
+        "examples": [
+          "PrusaSlicer",
+          "Cura",
+          "Materialise Magics"
+        ]
+      },
+      {
+        "tool": "shock_response_spectrum",
+        "reason": "Hard-landing shock SRS may be used instead of transient FEA.",
+        "examples": [
+          "MATLAB SRS toolbox"
+        ]
+      }
+    ],
+    "requires_shock_note": "LC4 transient shock may be run as a full transient or as SRS-equivalent quasi-static at 30 g."
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Quick-release Group-2 UAS payload mount (defense-innovation SBIR template)",
+    "brief": "Design a 120x80x40 mm quick-release payload mount carrying a 2.5 kg gimbal payload through +/-9 g flight and 30 g landing shock, printable in AlSi10Mg or PETG.",
+    "geometric_constraints": {
+      "envelope_mm": {
+        "x": 120,
+        "y": 80,
+        "z": 40
+      },
+      "rail_interface": {
+        "type": "MIL-STD-1913 dovetail",
+        "width_mm": 21.2,
+        "depth_mm": 3.5
+      },
+      "payload_interface": {
+        "bolts": 4,
+        "thread": "M4",
+        "pattern_mm": 50
+      }
+    },
+    "material": {
+      "primary_am_metal": {
+        "name": "LPBF AlSi10Mg",
+        "yield_MPa": 230,
+        "ultimate_MPa": 345,
+        "density_kg_m3": 2670
+      },
+      "field_fdm": {
+        "name": "PETG",
+        "yield_MPa": 50,
+        "ultimate_MPa": 53,
+        "density_kg_m3": 1270
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "plus_9g_vertical",
+        "force_N": 221
+      },
+      {
+        "id": "LC2",
+        "name": "minus_9g_vertical",
+        "force_N": 221
+      },
+      {
+        "id": "LC3",
+        "name": "plus_6g_lateral",
+        "force_N": 147
+      },
+      {
+        "id": "LC4",
+        "name": "hard_landing_30g",
+        "force_N": 736,
+        "duration_ms": 50
+      },
+      {
+        "id": "LC5",
+        "name": "gust_combined",
+        "force_N": 143
+      }
+    ],
+    "boundary_conditions": {
+      "rail_interface": "dovetail contact + quarter-turn retention",
+      "payload_interface": "4 M4 bolts, payload 2.5 kg lumped"
+    },
+    "objective": {
+      "minimize": "mass_plus_print_time"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242",
+        "3MF"
+      ],
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "payload_tip_deflection_mm",
+        "retention_force_N",
+        "mass_g",
+        "print_time_estimate_h"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_AlSi10Mg",
+        "limit_MPa": 230,
+        "derivation": "UTS / 1.5 = 345 / 1.5 (DoD SBIR non-man-rated structure)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_PETG",
+        "limit_MPa": 26.5,
+        "derivation": "UTS / 2.0 = 53 / 2.0 (FDM process variability)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "payload_tip_deflection",
+        "limit_mm": 1.5,
+        "derivation": "gimbal optical axis stability",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "quarter_turn_retention_force",
+        "limit_N": 500,
+        "derivation": "5x payload weight at 1g for handling safety",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_g_AlSi10Mg": 150,
+        "limit_g_PETG": 90,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "manufacturability_flagged_out_of_class",
+        "metric": "print_time_FDM",
+        "limit_h": 3,
+        "derivation": "field replaceability target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "dovetail_contact_stress",
+        "limit_MPa_AlSi10Mg": 150,
+        "limit_MPa_PETG": 40,
+        "derivation": "prevent rail wear or bracket yielding",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "DoD SBIR flight-hardware guidance + MIL-STD-1913 (rail) + DoD UAS flight envelope typical",
+    "recommended_fea_setup": {
+      "element_type": "TET10",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Ansys Mechanical",
+        "Abaqus",
+        "FreeCAD FEM"
+      ],
+      "analysis_types": [
+        "linear static x5 + transient shock or SRS for LC4"
+      ]
+    }
+  },
+  "notes": {
+    "exclusions_explained": {
+      "thermal_analysis": "Operational temp range covered by material data; no gradient analysis.",
+      "fluid_analysis": "Aero loads reduced to g-loads.",
+      "radiation_analysis": "N/A."
+    },
+    "numeric_source": "Typical defense-innovation open-topic envelopes for Group-2 UAS secondary structure (no specific topic ID used); +/-9 g is DoD tactical UAS standard envelope."
+  },
+  "eval_coverage": [
+    "dual-material design (AM metal + field FDM)",
+    "transient shock or SRS-equivalent",
+    "retention force hand-check",
+    "print-time manufacturability"
+  ]
+}

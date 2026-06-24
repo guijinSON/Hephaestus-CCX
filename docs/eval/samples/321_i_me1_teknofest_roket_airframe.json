@@ -1,0 +1,224 @@
+{
+  "id": "321_i_me1_teknofest_roket_airframe",
+  "source": {
+    "catalog_ref": "I-ME1 (I-TF1)",
+    "year": 2025,
+    "tier": "A+"
+  },
+  "domain": "aerospace_structural",
+  "part_class": "rocket_airframe_tube",
+  "full_prompt": "Design the primary load-bearing airframe tube assembly (nose-cone to boat-tail, excluding motor case) of a student-built sounding rocket competing in the national aerospace student benchmark 2025 Roket Yarışması Yüksek İrtifa (high-altitude) category, targeting a nominal apogee of 15000 ft (4572 m) AGL with a maximum allowable apogee of 18000 ft (5486 m) AGL. The vehicle uses a student-researched and developed (SRAD) solid-propellant motor permitted in this class. Gross lift-off weight (GLOW) must not exceed the category cap of 30 kg wet. Minimum rail-exit velocity from a 5.2 m launch rail is 30 m/s. The airframe outer diameter is 152 mm (6 inch) with a total length of 2.8 m from nose tip to aft boat-tail. The airframe must be a multi-section tubular structure (nose cone + payload bay + recovery bay + motor mount bay + fin can) joined by shear-pin and coupler interfaces, fabricated from filament-wound glass-fiber reinforced composite (G10/FR4 or equivalent) with laminate Young's modulus 18 GPa (longitudinal), ultimate tensile strength 310 MPa, compressive strength 240 MPa, interlaminar shear strength 35 MPa, and density 1850 kg/m^3. Recovery is dual-event: drogue deploys at apogee, main parachute deploys at 450 m AGL, both fired by a commercial dual-redundant electronic altimeter chain (e.g. StratoLoggerCF + RRC3). Load cases to be verified: (LC1) peak motor thrust of 4000 N applied axially at the motor mount bulkhead with gravity and aerodynamic drag reactions distributed over the body; (LC2) maximum aerodynamic bending moment at max-Q corresponding to 2 degree angle of attack at Mach 0.9 producing a distributed side load equivalent to 1800 N applied at the aerodynamic center; (LC3) drogue deployment shock of 3000 N applied axially at the drogue attachment bulkhead; (LC4) main parachute opening shock of 4500 N applied axially at the main parachute eyebolt; (LC5) internal recovery-bay ejection pressure pulse of 50 kPa applied to the coupler and bulkhead interfaces. Pass/fail criteria: (R1) maximum von Mises (or Tsai-Wu composite failure index equivalent) stress must stay below ultimate divided by a factor of safety of 2.0 (so below 155 MPa in tension, below 120 MPa in compression, below 17.5 MPa interlaminar shear) for every load case; (R2) linear buckling eigenvalue load factor for the worst compressive case (LC1) must be at least 1.5 on the slenderest body tube section; (R3) maximum airframe deflection at the nose tip relative to the fin can must not exceed 15 mm under LC2; (R4) airframe-tube system dry mass must remain below 6.0 kg to meet the GLOW budget; (R5) fin-root shear stress under LC2 must stay below 17.5 MPa. Vibration, thermal, fluid, and radiation analyses are not required for this structural qualification; the external aerodynamic pressure distribution has already been reduced to the equivalent side load in LC2. Deliverables: STEP AP242 assembly with each tube section as a separate solid body, composite layup definition (ply sequence, thickness per section), FEA report with stress/deflection per load case, linear-buckling report for LC1, and mass budget summary.",
+  "short_prompt": "Design the primary load-bearing airframe tube assembly (nose-cone through boat-tail, excluding motor case) of a student-built sounding rocket in the national aerospace student benchmark 2025 Roket Yarışması Yüksek İrtifa category. Target apogee 15000 ft AGL (max 18000 ft), GLOW <= 30 kg wet, rail-exit >= 30 m/s from a 5.2 m launch rail. SRAD solid motor permitted.\n\nEnvelope: 152 mm (6 in) OD x 2.8 m total, multi-section tubular airframe (nose, payload, recovery, motor mount, fin can) joined by shear-pin + coupler interfaces; filament-wound G10/FR4 composite. Dual-event recovery (drogue at apogee, main at 450 m AGL).\n\nFactor regime: FoS 2.0 on ultimate (tensile 155 MPa / compressive 120 MPa / ILSS 17.5 MPa); linear buckling eigenvalue >= 1.5 on the worst compressive case; nose-tip deflection relative to fin can <= 15 mm under max-Q bending.\n\nLoad cases.\n- Peak motor thrust 4000 N axial at the motor-mount bulkhead.\n- Max-Q bending: equivalent 1800 N side load at the aerodynamic center (Mach 0.9, 2 deg AoA).\n- Drogue deployment shock 3000 N axial at the drogue bulkhead.\n- Main parachute opening shock 4500 N axial at the main eyebolt.\n- Recovery-bay ejection pulse: 50 kPa internal on the coupler/bulkhead.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark 2025 High-Altitude Rocket Airframe Tube Assembly",
+    "brief": "Composite airframe tube assembly for 15000 ft apogee SRAD-propelled sounding rocket in national aerospace student benchmark Yüksek İrtifa class.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 152,
+      "total_length_m": 2.8,
+      "sections": [
+        "nose_cone",
+        "payload_bay",
+        "recovery_bay",
+        "motor_mount_bay",
+        "fin_can"
+      ],
+      "joint_type": "shear_pin_and_coupler",
+      "launch_rail_length_m": 5.2
+    },
+    "material": {
+      "name": "Filament-wound GFRP (G10/FR4 class)",
+      "properties": {
+        "youngs_modulus_longitudinal_GPa": 18,
+        "ultimate_tensile_strength_MPa": 310,
+        "compressive_strength_MPa": 240,
+        "interlaminar_shear_strength_MPa": 35,
+        "density_kg_m3": 1850
+      }
+    },
+    "mission": {
+      "target_apogee_ft": 15000,
+      "max_apogee_ft": 18000,
+      "min_rail_exit_velocity_mps": 30,
+      "GLOW_max_kg": 30,
+      "recovery": "dual_event: drogue at apogee + main at 450 m AGL",
+      "propulsion": "SRAD solid motor permitted"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "peak_thrust",
+        "magnitude_N": 4000,
+        "application": "motor mount bulkhead axial"
+      },
+      {
+        "id": "LC2",
+        "name": "max_Q_bending",
+        "magnitude_N": 1800,
+        "application": "aerodynamic center side load at 2 deg AoA, Mach 0.9"
+      },
+      {
+        "id": "LC3",
+        "name": "drogue_shock",
+        "magnitude_N": 3000,
+        "application": "drogue attachment bulkhead axial"
+      },
+      {
+        "id": "LC4",
+        "name": "main_shock",
+        "magnitude_N": 4500,
+        "application": "main parachute eyebolt axial"
+      },
+      {
+        "id": "LC5",
+        "name": "ejection_pressure",
+        "magnitude_kPa": 50,
+        "application": "recovery bay internal pulse"
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count_min": 5,
+      "report_fields": [
+        "mass_kg",
+        "max_stress_per_case_MPa",
+        "buckling_factor_LC1",
+        "nose_tip_deflection_LC2_mm",
+        "fin_root_shear_MPa"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_tensile_stress",
+        "limit_MPa": 155,
+        "derivation": "310 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_compressive_stress",
+        "limit_MPa": 120,
+        "derivation": "240 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1c",
+        "type": "structural_analysis",
+        "metric": "max_interlaminar_shear",
+        "limit_MPa": 17.5,
+        "derivation": "35 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "nose_tip_deflection",
+        "limit_mm": 15,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "airframe_tube_dry_mass",
+        "limit_kg": 6.0,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "fin_root_shear",
+        "limit_MPa": 17.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell (SHELL281 / S4R) for tubes; solid TET10 for bulkheads",
+      "mesh_size_mm": 5,
+      "solver_hints": [
+        "ANSYS Mechanical ACP",
+        "Abaqus Composite Modeler",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "linear buckling eigenvalue (LC1)"
+      ]
+    }
+  },
+  "notes": {
+    "needs_rulebook_fetch": false,
+    "exclusions_explained": {
+      "vibration_analysis": "Motor combustion vibration and wind-induced flutter are screened out; only peak quasi-static thrust retained.",
+      "thermal_analysis": "Short mission duration (< 60 s motor burn) and external aero heating below 80 C for this apogee class are not driving.",
+      "fluid_analysis": "Aero loads reduced to LC2 equivalent side load.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "composite layup FEA",
+    "multi-load-case linear static",
+    "buckling eigenvalue",
+    "GLOW mass budget gate",
+    "multi-body STEP assembly"
+  ]
+}
