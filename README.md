@@ -61,12 +61,20 @@ released specs; numeric limits are written inline.
 
 ## Environment
 
+Two environments are involved. To **only evaluate** submissions you need just
+the eval environment plus a CalculiX binary:
+
 ```bash
-python3 -m pip install -r requirements.txt
-export CCX=/opt/homebrew/bin/ccx_2.22                       # CalculiX binary
-export EVAL_PYTHON=/opt/anaconda3/envs/cadquery/bin/python  # env with cadquery + gmsh
+python3 -m pip install -r requirements-eval.txt   # cadquery + gmsh
+export CCX=/opt/homebrew/bin/ccx_2.22             # CalculiX binary (e.g. brew install calculix)
+export EVAL_PYTHON=$(which python3)               # python of the env above
 # optional: export GMSH=/path/to/gmsh   (else the Gmsh Python API via EVAL_PYTHON is used)
 ```
+
+`requirements.txt` is the heavier **agent/generation** environment
+(langchain, openai, litellm, …) used by the generation launchers in `scripts/`.
+The pure pass/fail checkers (`single_engineering_check.py`,
+`multi_engineering_check.py`) are standard-library only and need neither.
 
 ## Grade one submission
 

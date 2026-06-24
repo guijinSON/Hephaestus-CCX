@@ -1,0 +1,9 @@
+# Dependencies for the EVALUATION harness only (scripts/ccx_eval/).
+# This is the environment referenced by EVAL_PYTHON in the README.
+# Install into a dedicated env, then point EVAL_PYTHON at its python.
+#
+# Also required, as an EXTERNAL binary (not pip-installable):
+#   CalculiX  ->  set CCX=/path/to/ccx_2.22   (e.g. `brew install calculix`)
+
+cadquery==2.7.0      # executes submitted build.py -> out.step
+gmsh                 # meshing: out.step -> mesh.inp (Python API; or set GMSH=/path/to/gmsh)
