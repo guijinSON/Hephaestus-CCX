@@ -1,0 +1,412 @@
+{
+  "id": "066_jp11_birdman_rally",
+  "source": {
+    "catalog_ref": "JP11",
+    "year": 2025,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/066_jp11_birdman_rally.json",
+    "multipart_basis": "Decomposition inferred from human-powered glider CFRP wing construction practice: CFRP main spar tube with tapered sections, rear subspar at trailing edge, alternating compression/tension ribs, root spar-fuselage fitting, wingtip cap, film-covered skin panels, and wire-bracing ferrules. Load magnitudes, material properties, and pass/fail thresholds inherit verbatim from the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "human_powered_aircraft_wing_spar_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the wing spar and primary wing structure of a human-powered glider (Human-powered Prop-plane division assumed) for a human-powered aircraft launch benchmark. The total wingspan must not exceed 36 m; this design targets a 25 m wingspan as representative. The aircraft launches from a 10 m high horizontal platform above the lake surface. The pilot is seated in a semi-reclined cockpit. The wing spar must carry a symmetric positive-g flight load of 2.5 g at an assumed gross weight of 120 kg (pilot 70 kg + aircraft 50 kg), giving a design limit load of 300 kg equivalent distributed span-wise in an elliptical lift distribution. The spar must also survive a negative-g load factor of -1.0 g for gusts. A mandatory pre-competition bend test requires the completed wing to support a root bending moment equivalent to the 2.5 g flight load held statically for at least 10 seconds with no audible cracking and no permanent deformation beyond 5 mm at the wingtip on unload. Material is typically a CFRP tube spar with balsa/foam ribs and heat-shrink film skin; the spar CFRP is modeled as linear elastic orthotropic with longitudinal E approximately 130 GPa (pultruded T300/epoxy). Primary verification is linear static structural FEA of the wing spar under the 2.5 g positive and 1.0 g negative load cases, with stress gated by CFRP laminate allowables. A linear buckling eigenvalue analysis is required on the upper skin / spar cap under the positive-g case with minimum load factor 1.5. Vibration (flutter) analysis is relevant in a certification context but is NOT required at this design gate. Thermal, fluid (sectional aerodynamic lift is already reduced to a distributed load on the spar), and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the wing structure, a mass budget, and a report listing total aircraft structural mass in kg, wingtip deflection at 2.5 g in mm, peak spar cap strain, and first buckling load factor.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis wing is delivered as a multi-part assembly modelled on established human-powered aircraft practice. The speculative part decomposition is: (A) CFRP main spar tube in two telescoping sections joined at midspan, (B) trailing-edge subspar of reduced diameter, (C) compression ribs at high-load stations, (D) tension ribs between compression ribs, (E) steel root spar-fuselage fitting, (F) wingtip cap with integrated nav-light mount, (G) heat-shrink film skin panels bonded to rib perimeters, and (H) wire-bracing ferrules if the design uses jury struts. Inter-family interfaces: spar-to-rib adhesively bonded with fillet, spar-to-root-fitting pinned with shear pin, subspar-to-rib bonded, wingtip-cap-to-spar bonded, skin-to-rib film bonded. The final FEM verification runs on the ASSEMBLED model only — per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) at the root-fitting pin and at spar-rib bond lines must be ≤ 1.0 under the governing 2.5 g load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design the wing spar and primary wing structure of a human-powered glider (Prop-plane division) for a human-powered-aircraft launch benchmark, delivered as a multi-part assembly: CFRP main spar tube in two telescoping sections joined at midspan + reduced-diameter trailing-edge subspar + compression ribs at high-load stations + tension ribs between them + steel root spar-fuselage fitting + wingtip cap + heat-shrink film skin panels bonded to rib perimeters + optional wire-bracing ferrules. Wingspan <= 36 m (this design targets 25 m); launch from a 10 m high horizontal platform above a lake; pilot semi-reclined. Spar CFRP modeled linear-elastic orthotropic, longitudinal E ~ 130 GPa (pultruded T300/epoxy).\n\nGross weight 120 kg (pilot 70 kg + aircraft 50 kg).\n\nLoad cases.\n- Positive flight load: 2.5 g symmetric (300 kg equivalent distributed elliptically span-wise).\n- Negative gust: -1.0 g.\n- Pre-competition bend test: static root bending moment at the 2.5 g flight load for >= 10 s with no audible cracking and no permanent wingtip deformation > 5 mm on unload.\n\nA linear buckling eigenvalue on the upper skin / spar cap under positive-g must be >= 1.5. Inter-part DCR at root-fitting pin and at spar-rib bond lines <= 1.0 under 2.5 g.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "lifting_line_aero",
+        "reason": "Elliptical lift distribution comes from lifting-line or panel-method aero, not FEA.",
+        "examples": [
+          "XFLR5",
+          "AVL"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Human-powered glider 25 m wing spar (multi-part assembly)",
+    "brief": "Design a 25 m CFRP wing structure as an assembly of main spar tube, trailing-edge subspar, compression and tension ribs, root fitting, wingtip cap, film skin panels, and bracing ferrules; carry 2.5 g flight load with elliptical lift, survive -1 g gust, pass static bend test. FEM verification at assembled level only; connection DCR ≤ 1.0 under governing load case.",
+    "geometric_constraints": {
+      "wingspan_m": 25,
+      "wingspan_m_max": 36,
+      "launch_platform_height_m": 10
+    },
+    "material": {
+      "spar_CFRP": {
+        "longitudinal_E_GPa": 130,
+        "tensile_allowable_MPa": 1800,
+        "density_kg_m3": 1550
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "flight_2p5g_positive",
+        "magnitude_kg_equiv": 300,
+        "distribution": "elliptical span-wise lift, 2.5 g at 120 kg gross"
+      },
+      {
+        "id": "LC2",
+        "name": "gust_negative_1g",
+        "magnitude_kg_equiv": -120,
+        "distribution": "elliptical, inverted"
+      },
+      {
+        "id": "LC3",
+        "name": "static_bend_test",
+        "description": "root bending moment equivalent to LC1, held 10 s"
+      }
+    ],
+    "boundary_conditions": {
+      "wing_root": "clamped at fuselage attachment"
+    },
+    "objective": {
+      "minimize": "wing_structural_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "structural_mass_kg",
+        "wingtip_deflection_mm_2p5g",
+        "peak_spar_cap_strain_microstrain",
+        "first_buckling_load_factor",
+        "assembly_deflection_mm",
+        "connection_DCR",
+        "per_part_max_stress_MPa"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "CFRP main spar tube",
+        "role": "primary bending member carrying elliptical lift from root to tip in two telescoping sections",
+        "count_min": 2,
+        "geometric_constraints": {
+          "tube_od_mm_range": [
+            90,
+            140
+          ],
+          "wall_thickness_mm_range": [
+            2.0,
+            5.0
+          ],
+          "section_length_mm_max": 6500,
+          "taper": "linear taper od reduces toward wingtip"
+        },
+        "material_hint": "pultruded T300/epoxy CFRP, longitudinal E approx 130 GPa, tensile allowable 1800 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "trailing-edge subspar",
+        "role": "secondary torsion-resisting spar at rear of chord, reacts pitching moment and carries trailing-edge loads",
+        "count_min": 2,
+        "geometric_constraints": {
+          "tube_od_mm_range": [
+            30,
+            55
+          ],
+          "wall_thickness_mm_range": [
+            1.0,
+            2.5
+          ],
+          "length_mm_max": 6500
+        },
+        "material_hint": "CFRP pultruded tube, lower stiffness than main spar",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "compression rib",
+        "role": "high-load chordwise rib at aileron hinge, jury-strut, and root stations, transfers lift to spar and preserves airfoil",
+        "count_min": 6,
+        "geometric_constraints": {
+          "rib_chord_mm_range": [
+            700,
+            1200
+          ],
+          "rib_thickness_mm_range": [
+            5,
+            12
+          ],
+          "spar_cutout_od_tolerance_mm": 0.3
+        },
+        "material_hint": "balsa sandwich with CFRP cap strips or plywood web",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "tension rib",
+        "role": "lightweight chordwise rib between compression ribs maintaining airfoil shape under film tension",
+        "count_min": 12,
+        "geometric_constraints": {
+          "rib_chord_mm_range": [
+            700,
+            1200
+          ],
+          "rib_thickness_mm_range": [
+            2,
+            4
+          ],
+          "pitch_mm_range": [
+            250,
+            400
+          ]
+        },
+        "material_hint": "balsa or EPS foam with film skin adhesion surface",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "root spar-fuselage fitting",
+        "role": "metal fitting transferring root bending moment and shear into fuselage via shear pin",
+        "count_min": 2,
+        "geometric_constraints": {
+          "pin_diameter_mm_range": [
+            8,
+            14
+          ],
+          "fitting_wall_thickness_mm_range": [
+            3,
+            6
+          ],
+          "lug_hole_tolerance_mm": 0.1
+        },
+        "material_hint": "4130 chromoly steel or 7075-T6 aluminium, heat-treated",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "wingtip cap",
+        "role": "closes spar tube end, integrates nav-light mount, protects tip in ground handling",
+        "count_min": 2,
+        "geometric_constraints": {
+          "cap_length_mm_range": [
+            150,
+            300
+          ],
+          "wall_thickness_mm_range": [
+            1.5,
+            3.0
+          ]
+        },
+        "material_hint": "balsa/foam core with CFRP veil, bonded to spar",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "heat-shrink film skin panel",
+        "role": "aerodynamic cover bonded to rib perimeters, transfers distributed lift pressure into ribs",
+        "count_min": 8,
+        "geometric_constraints": {
+          "panel_span_mm_range": [
+            1500,
+            3500
+          ],
+          "film_thickness_um_range": [
+            20,
+            50
+          ]
+        },
+        "material_hint": "polyester heat-shrink covering film (e.g. Oracover/Solartex), bonded with contact adhesive",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "bracing-wire ferrule",
+        "role": "terminates kevlar/steel bracing wire at rib or spar pick-ups if jury-strut bracing is used",
+        "count_min": 4,
+        "geometric_constraints": {
+          "ferrule_od_mm_range": [
+            5,
+            10
+          ],
+          "wire_diameter_mm_range": [
+            1.0,
+            2.5
+          ]
+        },
+        "material_hint": "swaged aluminium ferrule on 7x7 steel cable or Kevlar rope",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox_mm": {
+        "span": 25000,
+        "chord_max": 1200,
+        "thickness_max": 200
+      },
+      "coordinate_system": "origin at wing root leading edge, X along chord, Y along span, Z up"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "wingspan_m",
+        "limit_m": 36,
+        "derivation": "Rulebook cap",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "peak_spar_cap_stress_MPa",
+        "limit_MPa": 1200,
+        "derivation": "CFRP allowable 1800 MPa / SF 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "wingtip_residual_deflection_after_bend_test_mm",
+        "limit_mm": 5.0,
+        "derivation": "Pre-comp bend-test acceptance",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Root-fitting shear-pin and spar-rib bondline demand-to-capacity ratio (DCR) across all inter-part interfaces ≤ 1.0 under 2.5 g positive-g load case.",
+        "metric": "max DCR across IF1..IF6",
+        "threshold": 1.0,
+        "scope": "assembled_only",
+        "operator": "<="
+      },
+      {
+        "id": "R_asm2",
+        "description": "Assembled wing first-bending mode frequency must exceed the pilot-cadence input band (0-3 Hz) with margin, i.e. first bending mode ≥ 5 Hz for stable flight.",
+        "metric": "first_bending_mode_Hz",
+        "threshold": 5.0,
+        "scope": "assembled_only",
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (spar) + shell (skin + ribs) + solid (root fitting)",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static x2",
+        "linear buckling"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "Main spar tube transfers shear and bending into compression ribs via adhesive fillet at spar cutout"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "Main spar tube transfers root bending moment and shear into root fitting via shear pin in lug"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "Main spar tube terminates in wingtip cap with adhesive bond"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "Trailing-edge subspar bonded to compression ribs reacting torsion and trailing-edge loads"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "Compression ribs and tension ribs share continuous leading-edge and trailing-edge members bonded between them"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "D",
+        "G"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "Tension ribs receive film skin tension from heat-shrink skin panel via perimeter adhesive"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "E",
+        "H"
+      ],
+      "mediated_by": "threaded",
+      "load_path": "Root fitting terminates bracing-wire ferrule via threaded clevis if jury-strut bracing is used"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Wing behavior is dominated by spar-rib-skin interaction and root-fitting load transfer; per-part stress is reported for traceability but does not gate pass/fail. The assembled model captures spar buckling, rib-spar bondline stress, and root-pin shear simultaneously.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A human-powered glider wing cannot be modelled as a single solid body: its CFRP spar, ribs, film skin, and root fitting each carry distinct load paths and are manufactured separately. Typical competition wings use 20-50 discrete components.",
+    "speculation_caveats": "parts[] counts, interface types, and dimensional ranges are inferred from published HPA design practice (Daedalus, Musashino Birdman Team, Nihon University) and are not taken from a specific rulebook.",
+    "original_sample_preserved_at": "benchmark/briefs/single/066_jp11_birdman_rally.json"
+  }
+}

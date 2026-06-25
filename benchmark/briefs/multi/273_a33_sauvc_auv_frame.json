@@ -1,0 +1,389 @@
+{
+  "id": "273_a33_sauvc_auv_frame",
+  "source": {
+    "catalog_ref": "A33",
+    "year": 2025,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/273_a33_sauvc_auv_frame.json",
+    "multipart_basis": "SAUVC open-frame AUVs are naturally multi-part: forward and aft circular ring frames, longitudinal tubes tying them, thruster cradles at each face, the pressure-hull mount saddle, a camera / acoustic-array dome mount, and a ballast tray. The single-body brief collapses this into one idealised structure; the multipart file restores the real assembly. Speculative at the level of exact longitudinal count; all load magnitudes, material, and pass/fail thresholds are preserved."
+  },
+  "domain": "marine_structural",
+  "part_class": "auv_open_frame_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the open-frame chassis for a SAUVC (Singapore AUV Challenge) AUV compliant with SAUVC Rulebook v6. Vehicle bounding box 1500 mm x 800 mm x 500 mm. Pool-depth rated 5 m (SAUVC pool). Vehicle dry mass 35 kg. The frame is a bolted assembly of extruded aluminum 6063-T6 bars (25 mm x 25 mm square cross-section, 3 mm wall) forming a 3D open cage; the frame itself is the subject of design but shall be idealized and submitted as a single STEP assembly treated as one part. Material: 6063-T6 aluminum, E = 68.3 GPa, yield = 214 MPa, ultimate = 241 MPa, density = 2700 kg/m^3. The frame carries: 6 thrusters (mounted at 6 faces of the frame; each applies nominal 50 N static thrust, peak 80 N); 1 pressure hull (8 kg dry); 1 battery pod (4 kg dry); acoustic array (2 kg). Total applied-in-frame mass 35 kg. Load cases: (R1) Handling: the full 35 kg vehicle lifted by a single top handle at mid-length => 35 x 9.81 = 343 N concentrated vertical load with 2x dynamic amplification = 687 N; max von Mises in any frame member <= yield / 2.0 = 107 MPa. (R2) Thruster combined: 6 thrusters at peak 80 N each applied in the worst-combined direction (e.g., 2 surge + 2 sway + 2 heave); max von Mises <= 107 MPa. (R3) Impact: 500 N concentrated load applied to any corner (pool wall strike); max von Mises <= yield / 1.5 = 143 MPa. (R4) Hydrostatic buoyancy: frame shall maintain its geometry within +-0.5 mm over its long axis at 5 m depth (50 kPa external); this is effectively a stiffness check - deflection under hydrostatic differential acting on any enclosed bladder-like members <= 0.5 mm (no closed-volume members in this design, so geometric by inspection). (R5) Frame structural mass <= 4 kg. (R6) Kill-switch accessibility: kill switch mount shall be reachable from any accessible face within 500 mm (geometric). Primary verification: structural FEA (linear static x3). Vibration, thermal, fluid, radiation, buckling NOT required. Deliverables: STEP AP242 frame assembly as single structural idealization, bolt schedule, and a report listing frame mass, max von Mises per case in MPa.\n\n--- ASSEMBLY RECONFIGURATION ---\nSAUVC AUV frames are bolted extrusion cages with discrete sub-assemblies; delivered as a multi-part assembly. Speculated families: (A) forward ring frame (rectangular hoop 800 x 500 from 25 x 25 extrusion at the bow); (B) aft ring frame (rectangular hoop at the stern); (C) longitudinal tubes (x6) tying A and B with corner longitudinals (top, bottom, and midline port/starboard); (D) thruster cradles (x6, one per face: forward, aft, top, bottom, port, starboard), each an aluminum plate with a through-bore and 4 bolts into the adjacent longitudinals or ring; (E) pressure-hull saddle (2-strap + backplate carrying the 8 kg pressure hull through the central longitudinals); (F) camera / acoustic-array dome mount (forward-facing plate bolted to A ring); (G) ballast tray bolted to the bottom longitudinal, carrying battery pod 4 kg + ballast; (H) top lift handle bolted across the top longitudinals (primary LC1 point). Interfaces: A<->C bolted corner brackets (4 per ring); B<->C bolted corner brackets (4 per ring); D<->C/A/B bolted (thruster cradles bolt onto the existing frame); E<->C bolted through the two bottom longitudinals (saddle straps clamp the pressure hull); F<->A bolted plate on the forward ring; G<->C bolted on the bottom longitudinal; H<->C bolted on the top longitudinals. FEM verification runs on the assembled model ONLY per fem_check_policy=assembled_only. Under LC1 the top handle H loads flow through IF7 into the top longitudinals C; under LC2 each thruster reaction from D feeds its cradle into the adjacent longitudinals; LC3 impact at a corner stresses the corner bracket between A/B and C. Load magnitudes (687 N LC1, 80 N x 6 LC2, 500 N LC3), material (6063-T6, 214 MPa yield), and stress limits (107 / 107 / 143 MPa) are preserved verbatim. Mass cap 4 kg is the total assembled frame mass (A+B+C+D+...).",
+  "short_prompt": "Design the open-frame chassis for a SAUVC (Singapore AUV Challenge) AUV as a multi-part bolted extrusion assembly, compliant with SAUVC Rulebook v6. Vehicle bounding box 1500 mm x 800 mm x 500 mm; pool-depth rated 5 m; vehicle dry mass 35 kg.\n\nFrame is bolted extruded 6063-T6 aluminum (25 x 25 mm square, 3 mm wall). Material: 6063-T6 (E = 68.3 GPa, yield = 214 MPa, ultimate = 241 MPa, density 2700 kg/m^3).\n\nCarries 6 thrusters (each nominal 50 N static, peak 80 N), 1 pressure hull (8 kg dry), 1 battery pod (4 kg dry), acoustic array (2 kg). Total applied-in-frame mass 35 kg.\n\nLC1 handling: 35 kg lifted by a single top handle at mid-length => 343 N concentrated with 2x dynamic amp = 687 N; max von Mises <= yield / 2.0 = 107 MPa. LC2 thruster combined: 6 thrusters at peak 80 N in worst combination (2 surge + 2 sway + 2 heave); max von Mises <= 107 MPa. LC3 impact: 500 N at any corner; max von Mises <= yield / 1.5 = 143 MPa. LC4 hydrostatic buoyancy at 5 m depth (50 kPa external): deflection on any closed-volume member <= 0.5 mm (geometric). Frame structural mass <= 4 kg. Kill-switch reachable from any accessible face within 500 mm (geometric).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "VDI_2230_bolt_check",
+        "reason": "Corner-bracket and thruster-cradle bolt utilization under LC1-LC3 is a VDI 2230 hand-calc on top of FEA reactions.",
+        "examples": [
+          "VDI 2230 spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "SAUVC AUV open-frame chassis (multi-part bolted assembly)",
+    "brief": "Al 6063-T6 25 x 25 x 3 wall extrusion open cage for a 35 kg AUV at 5 m pool depth. Multi-part: forward ring (A), aft ring (B), longitudinal tubes (C x6), thruster cradles (D x6), pressure-hull saddle (E), dome mount (F), ballast tray (G), top lift handle (H). FEM assembled-only; DCR <= 1.0.",
+    "geometric_constraints": {
+      "bounding_box_mm": "1500 x 800 x 500",
+      "extrusion_cross_section_mm": "25 x 25 x 3 wall",
+      "vehicle_dry_mass_kg": 35,
+      "thruster_count": 6,
+      "pool_depth_m": 5,
+      "longitudinal_tube_count": 6,
+      "ring_frame_count": 2
+    },
+    "material": {
+      "name": "Al 6063-T6 extrusion",
+      "properties": {
+        "youngs_modulus_GPa": 68.3,
+        "yield_strength_MPa": 214,
+        "ultimate_tensile_strength_MPa": 241,
+        "density_kg_m3": 2700
+      },
+      "corner_bracket_material": "Al 6061-T6 or 7075-T6 machined",
+      "fastener": "M6 A2-70 stainless"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "handling_lift",
+        "force_N": 687,
+        "direction": "vertical at top handle H",
+        "applied_to": "H top lift handle at mid-length of top longitudinals"
+      },
+      {
+        "id": "LC2",
+        "name": "thruster_combined",
+        "force_per_thruster_N": 80,
+        "thruster_count": 6,
+        "applied_to": "D thruster cradles, worst-combined 2 surge + 2 sway + 2 heave"
+      },
+      {
+        "id": "LC3",
+        "name": "corner_impact",
+        "force_N": 500,
+        "direction": "at corner",
+        "applied_to": "any corner of A or B ring"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "for LC1, the handle H is fixed and the remainder of the frame is free; for LC2, the pressure-hull saddle E is fixed (reacting thruster net force through the saddle to the vehicle mass) and thruster cradles D carry the applied forces; for LC3, the opposite corner is fixed and the impact load is applied to the free corner",
+      "loads": "concentrated per case",
+      "bolted_joints": "A<->C, B<->C corner brackets modeled as stiffness-equivalent MPC/CBUSH pairs with bolt-shear post-check"
+    },
+    "objective": {
+      "minimize": "assembled_frame_mass_kg",
+      "design_heuristic": "target assembled frame mass <= 4 kg"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (A + B + C x6 + D x6 + E + F + G + H)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E|F|G|H)",
+        "instance_index",
+        "extrusion_profile",
+        "bolt_size_and_grade"
+      ],
+      "report_fields": [
+        "frame_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "connection_DCR_max",
+        "per_part_max_stress_MPa",
+        "bolt_utilization_max"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "forward_ring_frame",
+        "role": "rectangular hoop at the bow tying the four forward ends of the longitudinals; carries dome mount F and forward thruster cradle",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "800 x 500 hoop",
+          "cross_section_mm": "25 x 25 x 3 extrusion",
+          "corner_brackets": "4x Al 6061 machined brackets joining A to C"
+        },
+        "material_hint": "Al 6063-T6 extrusion + Al 6061-T6 brackets",
+        "speculation": false
+      },
+      {
+        "part_id": "B",
+        "name": "aft_ring_frame",
+        "role": "rectangular hoop at the stern tying the four aft ends of the longitudinals; carries aft thruster cradle",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "800 x 500 hoop",
+          "cross_section_mm": "25 x 25 x 3 extrusion",
+          "corner_brackets": "4x Al 6061 machined brackets joining B to C"
+        },
+        "material_hint": "Al 6063-T6 extrusion + Al 6061-T6 brackets",
+        "speculation": false
+      },
+      {
+        "part_id": "C",
+        "name": "longitudinal_tube",
+        "role": "longitudinal extrusion bar tying the forward and aft rings; six instances (top-port, top-stbd, bottom-port, bottom-stbd, midline-port, midline-stbd)",
+        "count_min": 6,
+        "geometric_constraints": {
+          "length_mm": 1500,
+          "cross_section_mm": "25 x 25 x 3 extrusion",
+          "attachment": "bolted at each end to corresponding A/B corner bracket"
+        },
+        "material_hint": "Al 6063-T6 extrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "thruster_cradle",
+        "role": "aluminum plate carrying the thruster bore, bolted to the adjacent longitudinals/ring; six instances one per face",
+        "count_min": 6,
+        "geometric_constraints": {
+          "nominal_size_mm": "100 x 100 x 6",
+          "bore_dia_mm": 76,
+          "bolt_count_to_frame": 4,
+          "bolt_size": "M6 A2-70 stainless"
+        },
+        "material_hint": "Al 6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "pressure_hull_saddle",
+        "role": "strap saddle + backplate carrying the 8 kg pressure hull via the two bottom longitudinals",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "300 x 150 x 8",
+          "clamp_dia_mm": 180,
+          "strap_count": 2,
+          "bolt_size": "M6 A2-70 stainless"
+        },
+        "material_hint": "Al 6061-T6 plate + stainless straps",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "dome_mount",
+        "role": "forward-facing plate bolted to A ring, carrying the camera / acoustic-array dome (~2 kg)",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "150 x 150 x 6",
+          "bolt_count": 4,
+          "bolt_size": "M5 A2-70 stainless"
+        },
+        "material_hint": "Al 6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "ballast_tray",
+        "role": "tray bolted to the bottom longitudinals carrying the battery pod (~4 kg) and removable ballast",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "400 x 200 x 20 (tray depth)",
+          "bolt_count_to_C": 6,
+          "bolt_size": "M6 A2-70 stainless"
+        },
+        "material_hint": "Al 5052-H32 sheet + 6061-T6 supports",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "top_lift_handle",
+        "role": "transverse handle bar bolted across the top longitudinals at mid-length; primary LC1 load-point",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "300 x 20 dia",
+          "bolt_count_to_C": 4,
+          "bolt_size": "M8 A2-70 stainless"
+        },
+        "material_hint": "Al 6063-T6 tube",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_length_mm": 1500,
+      "overall_width_mm": 800,
+      "overall_height_mm": 500,
+      "coordinate_system": "X forward (surge), Y port-starboard (sway), Z up (heave)",
+      "assembled_frame_mass_cap_kg": 4,
+      "vehicle_dry_mass_kg": 35,
+      "pool_depth_m": 5
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 107,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 107,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 143,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "frame_mass",
+        "limit_kg": 4,
+        "applies_to": [
+          "assembled_design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across bolted interfaces (IF1..IF7) <= 1.0 under the governing load case.",
+        "metric": "max_DCR across IF1..IF7",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Corner-bracket bolts (A<->C, B<->C) bolt utilization <= 1.0 under LC1 (worst-case handle lift).",
+        "metric": "max bolt utilization at IF1, IF2",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B31) for extrusions; solid/shell for cradles D and saddle E",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3 (LC1-LC3)"
+      ],
+      "connection_modeling": [
+        "corner brackets as rigid zone + stiffness-equivalent MPC joint",
+        "thruster cradle bolts as CBUSH pairs",
+        "saddle E as connected solid with strap clamp force applied"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A_forward_ring",
+        "C_longitudinal_tube (forward ends, 4x)"
+      ],
+      "mediated_by": "Al 6061 corner bracket + 4 M6 A2-70 bolts per corner",
+      "load_path": "LC1 lift and LC2 thruster reactions transmit between forward ring and longitudinals"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B_aft_ring",
+        "C_longitudinal_tube (aft ends, 4x)"
+      ],
+      "mediated_by": "Al 6061 corner bracket + 4 M6 bolts per corner",
+      "load_path": "aft-end closure of the cage; primary LC3 impact reaction if the aft corner is struck"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "D_thruster_cradle (6x)",
+        "A/B ring or C longitudinal"
+      ],
+      "mediated_by": "4 M6 bolts per cradle",
+      "load_path": "thruster reaction into the adjacent frame member; governs LC2"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "E_pressure_hull_saddle",
+        "C bottom longitudinals (2x)"
+      ],
+      "mediated_by": "bolted saddle + clamp straps",
+      "load_path": "carries the 8 kg pressure hull; becomes the fixed BC under LC2 thruster net-force check"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "F_dome_mount",
+        "A_forward_ring"
+      ],
+      "mediated_by": "4 M5 bolts",
+      "load_path": "camera/acoustic-array dead weight into forward ring"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "G_ballast_tray",
+        "C bottom longitudinals (2x)"
+      ],
+      "mediated_by": "6 M6 bolts",
+      "load_path": "battery + ballast dead weight into bottom longitudinals"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "H_top_lift_handle",
+        "C top longitudinals (2x)"
+      ],
+      "mediated_by": "4 M8 bolts",
+      "load_path": "primary LC1 handle-lift load into top longitudinals; governs R1"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "The frame is a bolted bar cage; max stresses concentrate at the corner brackets and the cradle/saddle bolt patterns. A single-body idealisation with welded joints would under-estimate stresses at these bolted nodes.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "SAUVC frames are always bolted cage assemblies for mission-pack serviceability; the single-body STEP in the brief was an FEA-only idealization.",
+    "speculation_caveats": "Longitudinal count (6) covers top, bottom, and midline rails; some teams use 4 (top+bottom only) or 8 (with diagonal ties).",
+    "exclusions_explained": {
+      "vibration_analysis": "Slow AUV.",
+      "thermal_analysis": "Pool ambient.",
+      "fluid_analysis": "Not applicable (no closed pressure volumes in frame).",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Extrusion sections sized well above slender ratios."
+    },
+    "original_sample_preserved_at": "benchmark/briefs/single/273_a33_sauvc_auv_frame.json"
+  },
+  "rulebook_citations": {}
+}

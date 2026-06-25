@@ -1,0 +1,398 @@
+{
+  "id": "335_i_eu3_esa_cansat_europe",
+  "source": {
+    "catalog_ref": "I-EU3",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/335_i_eu3_esa_cansat_europe.json",
+    "multipart_basis": "Design-specific decomposition reflecting the CanSat primary-structure assembly called out in the original brief (CFRP shell, PA12 nose cap, PA12 base plate with parachute eyelet, two PCB-mount bulkheads) plus a recovery/electronics subdivision consistent with ESERO guideline integration flow. No rulebook citations fabricated."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_primary_structure",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary structural assembly of a CanSat entry for ESA CanSat Europe 2025-26, compliant with the ESERO CanSat Competition Guidelines. The CanSat must fit within a cylindrical envelope of 115 mm height by 66 mm outer diameter; total wet mass must be exactly 350 g (-0/+10 g). The structure comprises a CFRP outer shell (wound 2-ply UD, nominal 0.8 mm wall), a 3D-printed PA12 top nose cap, a 3D-printed PA12 bottom base plate with parachute attachment eyelet, and two internal PCB-mount bulkheads at 30 mm and 75 mm from the base. Material properties: CFRP shell (E 70 GPa, tensile 600 MPa, density 1550 kg/m^3); PA12 (E 1.6 GPa, tensile 45 MPa, density 1010 kg/m^3). The CanSat deploys from a carrier rocket at approximately 1000 m AGL and descends under a parachute rated for minimum 1000 N deployment shock. Descent rate is 8-11 m/s per ESERO rulebook. Load cases: (LC1) launch qualification 20 g axial on 350 g wet mass (applied as distributed body force); (LC2) lateral qualification 5 g on 350 g; (LC3) parachute deployment shock: 1000 N axial at the base-plate eyelet (per rulebook minimum spec); (LC4) ground impact at 10 m/s descent rate: 15 g equivalent static deceleration on the base; (LC5) scrutineering pre-launch handling: 1 kg applied axially at the top nose cap (representing stack weight during integration). Pass/fail: (R1) max von Mises stress (or composite Tsai-Wu index for CFRP) must remain below material-appropriate limits: CFRP < 300 MPa (600 / 2.0 FoS), PA12 < 22.5 MPa (45 / 2.0 FoS), across LC1-LC5; (R2) eyelet pull-out: local stress in PA12 near the eyelet insert under LC3 must remain below 22.5 MPa; (R3) structural dry mass (shell + nose + base + bulkheads only, excluding PCBs, battery, parachute) must not exceed 120 g; (R4) first natural frequency must exceed 80 Hz to avoid coupling with carrier rocket motor burn; (R5) envelope compliance: no point of the structure may exceed the 66 mm x 115 mm envelope under any static load case (rigid check). Thermal, fluid, radiation, and buckling analyses not required for this basic structural benchmark. Deliverables: STEP AP242 assembly with shell, nose, base, two bulkheads as separate bodies; composite layup schedule; FEA report per load case; modal report; mass budget.\n\n--- ASSEMBLY RECONFIGURATION ---\nDelivered as a multi-part assembly reflecting the physical build: an aeroshell split into top (nose/aeroshell-top) and bottom (base aeroshell), a payload deck that indexes electronics stacks, a parachute canister integrated into the nose volume, a recovery bay occupied by the two PCB bulkheads, a battery bracket tying the heaviest inertial mass to the primary structure, and an antenna mount on the aeroshell top. Interfaces are screw-fastened at the aeroshell split-line, the payload deck is captured between the two PCB bulkheads, the battery bracket is bolted to the lower bulkhead, and the parachute canister feeds loads into the base-plate eyelet. Final FEM verification runs on the ASSEMBLED model only; per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case (LC3 parachute shock). All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design the primary structural assembly of a CanSat entry for ESA CanSat Europe 2025-26, compliant with the ESERO CanSat Competition Guidelines.\n\nEnvelope: cylindrical, 115 mm height x 66 mm outer diameter; total wet mass exactly 350 g (-0/+10 g). Structure: CFRP outer shell (wound 2-ply UD, nominal 0.8 mm wall), 3D-printed PA12 top nose cap, PA12 base plate with parachute attachment eyelet, two internal PCB-mount bulkheads at 30 mm and 75 mm from base.\n\nMaterials: CFRP shell (tensile 600 MPa); PA12 (tensile 45 MPa). CanSat deploys from carrier rocket at approximately 1000 m AGL; parachute rated for minimum 1000 N deployment shock; descent 8-11 m/s per ESERO rulebook.\n\nLoad cases: (LC1) launch qualification 20 g axial on 350 g wet mass; (LC2) lateral qualification 5 g on 350 g; (LC3) parachute deployment shock 1000 N axial at base-plate eyelet; (LC4) ground impact at 10 m/s: 15 g equivalent static deceleration on base; (LC5) scrutineering handling 1 kg applied axially at top nose cap.\n\nPass/fail: (R1) CFRP < 300 MPa (600/2.0 FoS), PA12 < 22.5 MPa (45/2.0 FoS), across LC1-LC5; (R2) eyelet pull-out PA12 stress under LC3 < 22.5 MPa; (R3) structural dry mass (shell + nose + base + bulkheads) <= 120 g; (R4) first natural frequency > 80 Hz; (R5) envelope compliance 66 mm x 115 mm under any static LC.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ESA CanSat Europe 2025-26 Primary Structure (multi-part assembly)",
+    "brief": "Compliant 66x115 mm 350 g CanSat with CFRP shell + PA12 nose/base, 20 g launch + 1000 N parachute shock. Decomposition: aeroshell top, aeroshell bottom, payload deck, parachute canister, recovery bay (two PCB bulkheads), battery bracket, antenna mount. FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "outer_diameter_mm": 66,
+      "height_mm": 115,
+      "shell_wall_mm": 0.8,
+      "internal_bulkheads_count": 2,
+      "bulkhead_positions_mm_from_base": [
+        30,
+        75
+      ]
+    },
+    "material": {
+      "shell": {
+        "name": "CFRP UD 2-ply",
+        "E_GPa": 70,
+        "tensile_MPa": 600,
+        "density_kg_m3": 1550
+      },
+      "nose_base": {
+        "name": "PA12 SLS",
+        "E_GPa": 1.6,
+        "tensile_MPa": 45,
+        "density_kg_m3": 1010
+      }
+    },
+    "mission": {
+      "deploy_altitude_m_AGL": 1000,
+      "descent_rate_mps": [
+        8,
+        11
+      ],
+      "parachute_min_shock_N": 1000
+    },
+    "mass_spec_g": {
+      "min": 350,
+      "max": 360
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_20g_axial",
+        "magnitude_g": 20
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_5g",
+        "magnitude_g": 5
+      },
+      {
+        "id": "LC3",
+        "name": "parachute_shock",
+        "magnitude_N": 1000
+      },
+      {
+        "id": "LC4",
+        "name": "ground_impact_15g",
+        "magnitude_g": 15
+      },
+      {
+        "id": "LC5",
+        "name": "handling_stack_load",
+        "magnitude_kg_axial_on_nose": 1
+      }
+    ],
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "structural_dry_mass_g",
+        "max_stress_CFRP_per_case_MPa",
+        "max_stress_PA12_per_case_MPa",
+        "first_natural_freq_Hz",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "aeroshell_top",
+        "role": "upper CFRP aeroshell section integrating nose cap form and antenna mount boss",
+        "count_min": 1,
+        "geometric_constraints": {
+          "outer_diameter_mm": 66,
+          "axial_span_mm_from_base": [75, 115],
+          "wall_thickness_mm": 0.8
+        },
+        "material_hint": "CFRP UD 2-ply co-cured with PA12 insert at nose cap ring",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "aeroshell_bottom",
+        "role": "lower CFRP aeroshell section terminating at the PA12 base plate with parachute eyelet",
+        "count_min": 1,
+        "geometric_constraints": {
+          "outer_diameter_mm": 66,
+          "axial_span_mm_from_base": [0, 75],
+          "wall_thickness_mm": 0.8,
+          "base_plate_material": "PA12 SLS",
+          "eyelet_feature": "through-thickness PA12 boss for parachute line"
+        },
+        "material_hint": "CFRP UD shell + PA12 SLS base plate (co-bonded)",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "payload_deck",
+        "role": "PCB mount deck that indexes the primary electronics stack between the two bulkheads",
+        "count_min": 1,
+        "geometric_constraints": {
+          "axial_position_mm_from_base": 52.5,
+          "diameter_mm_max": 62,
+          "thickness_mm": 2
+        },
+        "material_hint": "PA12 SLS",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "parachute_canister",
+        "role": "thin-walled canister that retains folded parachute within the upper volume and transfers 1000 N shock into the base eyelet via the recovery bay",
+        "count_min": 1,
+        "geometric_constraints": {
+          "internal_diameter_mm_max": 60,
+          "axial_span_mm_from_base": [75, 110],
+          "wall_thickness_mm": 0.6
+        },
+        "material_hint": "PA12 SLS, burst-disk style lid",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "recovery_bay_bulkheads",
+        "role": "two PCB-mount bulkheads at 30 mm and 75 mm from base that form the recovery bay and carry parachute shock load path",
+        "count_min": 2,
+        "geometric_constraints": {
+          "axial_positions_mm_from_base": [30, 75],
+          "diameter_mm": 62,
+          "thickness_mm": 2
+        },
+        "material_hint": "PA12 SLS",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "battery_bracket",
+        "role": "bracket retaining the battery (heaviest discrete inertial mass) against the lower bulkhead",
+        "count_min": 1,
+        "geometric_constraints": {
+          "axial_position_mm_from_base_near": 30,
+          "envelope_mm": "32 x 20 x 12",
+          "mount_pattern": "2x M2 to lower bulkhead"
+        },
+        "material_hint": "PA12 SLS",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "antenna_mount",
+        "role": "mast/boss on aeroshell top that positions the telemetry antenna clear of the CFRP shell",
+        "count_min": 1,
+        "geometric_constraints": {
+          "axial_position_mm_from_base_near": 112,
+          "diameter_mm_max": 10,
+          "mount_pattern": "single-screw clamp into PA12 insert"
+        },
+        "material_hint": "PA12 SLS with brass insert",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "outer_diameter_mm": 66,
+      "height_mm": 115,
+      "coordinate_system": "cylindrical; Z along longitudinal axis, Z=0 at base plate outer face"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "CFRP_max_stress",
+        "limit_MPa": 300,
+        "derivation": "600 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "PA12_max_stress",
+        "limit_MPa": 22.5,
+        "derivation": "45 / 2.0 FoS",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "eyelet_local_stress_PA12",
+        "limit_MPa": 22.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "structural_dry_mass",
+        "limit_g": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_freq",
+        "limit_Hz": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "envelope_protrusion",
+        "limit_mm": 0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "type": "structural_analysis",
+        "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces <= 1.0 under the governing load case (LC3 parachute shock).",
+        "metric": "max_DCR_across_IF1_to_IF6",
+        "threshold": 1.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "scope": "assembled_only",
+        "operator": "<="
+      },
+      {
+        "id": "R_asm2",
+        "type": "structural_analysis",
+        "description": "Aeroshell split-line (IF1: A-B) separation under LC3 must remain below 0.2 mm to preserve envelope compliance.",
+        "metric": "split_line_gap_mm",
+        "limit_mm": 0.2,
+        "applies_to": [
+          "LC3"
+        ],
+        "scope": "assembled_only",
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell for CFRP; TET10 for PA12 nose/base and deck/bulkheads",
+      "mesh_size_mm": 1.5,
+      "solver_hints": [
+        "ANSYS ACP + Mechanical",
+        "Abaqus Composite"
+      ],
+      "analysis_types": [
+        "linear static (x5)",
+        "modal (first 10 modes)"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bonded/screwed aeroshell split-line at Z=75 mm (3x M2 radial)",
+      "load_path": "axial + shear load path between upper and lower aeroshell halves; carries LC1 launch and LC3 parachute shock"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "screw-fastened PA12 bulkhead to CFRP shell inner wall via bonded inserts",
+      "load_path": "bulkheads react parachute shock from canister and launch inertia of battery/payload stack into shell"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "E",
+        "C"
+      ],
+      "mediated_by": "payload deck captured between upper and lower bulkheads via 4x M2 spacers",
+      "load_path": "PCB stack inertial load transferred into bulkheads via the deck"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "D",
+        "B"
+      ],
+      "mediated_by": "parachute canister bolted through upper bulkhead (E) into base-plate eyelet boss on B",
+      "load_path": "1000 N parachute shock from canister -> upper bulkhead -> shell -> eyelet boss"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "E",
+        "F"
+      ],
+      "mediated_by": "battery bracket bolted to lower bulkhead (2x M2)",
+      "load_path": "battery inertial mass under LC1/LC4 reacted through bracket into lower bulkhead"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "antenna mount clamped into PA12 insert co-molded in aeroshell top",
+      "load_path": "local handling load (LC5) and aeroloads into aeroshell top"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Parachute-shock load path (LC3) and envelope compliance (R5) are only meaningful on the assembled aeroshell + bulkheads + canister stack; eyelet pull-out (R2) requires the base-plate and lower bulkhead together; modal gate (R4) is an assembly-level frequency.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The brief explicitly enumerates CFRP shell, PA12 nose, PA12 base with eyelet, and two internal bulkheads as separate bodies; an integrated recovery canister, battery bracket, and antenna mount are standard CanSat subsystems and are captured here as distinct part families for assembly-level verification.",
+    "speculation_caveats": "parts[] counts and interfaces[] beyond the five explicitly-named bodies (shell, nose, base, two bulkheads) are design speculation consistent with the brief; no new rulebook text is invented.",
+    "original_sample_preserved_at": "benchmark/briefs/single/335_i_eu3_esa_cansat_europe.json"
+  },
+  "rulebook_citations": {}
+}

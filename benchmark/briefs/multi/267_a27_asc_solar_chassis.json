@@ -1,0 +1,443 @@
+{
+  "id": "267_a27_asc_solar_chassis",
+  "source": {
+    "catalog_ref": "A27",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/267_a27_asc_solar_chassis.json",
+    "multipart_basis": "ASC Single-Occupant solar vehicles are most often built as a CFRP/hybrid monocoque with a bolted-in 4130 chromoly roll hoop and discrete subassemblies (seat pan, firewall, suspension pickups, solar-array deck, footwell). The single-body brief lumps the cage+tub into one welded structure; this multipart decomposition separates the load-bearing shell halves from the rollover cage and the localised pickups that actually carry suspension and solar-array reactions. Speculative at the level of shell lay-up subdivision; all load magnitudes, tube OD/wall, and pass/fail thresholds are preserved."
+  },
+  "domain": "automotive_structural",
+  "part_class": "solar_vehicle_chassis_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the roll cage for a 2026 American Solar Challenge Single Occupant Class (SOC) vehicle, compliant with ASC 2026 Regulations Rev B. The cage surrounds a single upright driver; vehicle design mass with driver 350 kg. Required per ASC 2026 Rev B: primary roll hoop members 31.75 mm (1.25 in) OD x 2.0 mm wall (0.080 in) mild steel or 4130 chromoly tubing. Helmet clearance to any cage surface >= 50 mm; helmet top >= 50 mm below the top of the main roll hoop when the driver is secured. Material: 4130 chromoly normalized steel, E = 205 GPa, yield = 460 MPa, ultimate = 670 MPa, density = 7850 kg/m^3. Geometry: main hoop height 1300 mm, width at top 600 mm, wheelbase of vehicle 2500 mm (context). Cage anchors at 4 primary bolts M12 Grade 8.8 to the carbon chassis. Load cases per ASC 2026 Rev B regulations (derived from FIA-like rollover test): (R1) Vertical roof crush: 1.5 x vehicle mass x g = 1.5 x 350 x 9.81 = 5,150 N applied vertically at the top of the main hoop; max von Mises in tubes <= yield / 1.15 = 400 MPa; vertical deflection at load point <= 50 mm (maintain helmet clearance). (R2) Lateral load: 1.0 x vehicle mass x g = 3,433 N applied horizontally at the top of the main hoop; max deflection <= 50 mm; max von Mises <= 400 MPa. (R3) Longitudinal load: 0.6 x vehicle mass x g = 2,060 N at the top; max von Mises <= 400 MPa; max deflection <= 50 mm. (R4) Brake test: vehicle shall decelerate from 60 km/h (16.67 m/s) to rest with all 4 wheels locked. Brake-related loads are not transferred through the cage but the cage shall not interfere with brake-actuator packaging (geometric constraint). (R5) Cage mass <= 8 kg. (R6) Battery-energy cap per ASC 2026 Rev B Li-ion chemistry: pack energy <= 5.28 kWh (reference, non-structural). Primary verification: structural FEA (linear static for R1-R3). Vibration, thermal, fluid, radiation, buckling NOT required. Deliverables: STEP AP242 welded cage, weld map, and a report listing mass in kg, max deflection and max von Mises per load case.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe ASC SOC vehicle is delivered as a hybrid CFRP-monocoque + steel roll-hoop assembly, not a monolithic cage. Speculated families: (A) upper shell half (CFRP sandwich: canopy ring, rear fairing); (B) lower shell half (CFRP sandwich: floor pan with longitudinal hat stiffeners, wheel tubs); (C) main roll hoop (4130 chromoly 31.75 OD x 2.0 wall, 1300 mm tall, 600 mm wide at top -- the ONLY structure carrying LC1/LC2/LC3 roll-hoop loads to FEA rule-level); (D) seat pan / driver harness backplate (CFRP or Al sandwich, bonded to B); (E) firewall separating driver cell from battery/electronics (meets ASC Rev B 10.5 isolation); (F) suspension pickup inserts (4x front wishbone + 4x rear wishbone + 4x damper, Al 7075 bonded/bolted into B); (G) solar-array deck (non-structural composite panel bolted to A); (H) driver footwell / bulkhead (CFRP panel bonded to B, ties front of B to front pickups F). Interfaces: A<->B perimeter bonded + bolted secondary-bond flange; C<->B roll hoop anchors (4x M12 Grade 8.8 through-bolted into molded-in hardpoints -- the ASC primary anchor pattern); D<->B bonded to floor; E<->B bonded to rear bulkhead; F<->B bonded/bolted through local inserts; G<->A bolted (non-structural); H<->B bonded. FEM verification runs on the assembled model ONLY per fem_check_policy=assembled_only. The roll-hoop rule loads LC1/LC2/LC3 (5150/3433/2060 N at hoop top) are applied at C's top and load paths through C<->B (IF2) into the lower shell; shell per-part stress is reported but does not gate pass/fail. Inter-part DCR <= 1.0 under the governing case (worst of LC1/LC2/LC3). The hoop-tube OD (31.75 mm), wall (2.0 mm), anchor bolt count/grade (4x M12 8.8), deflection limits (50 mm), stress limit (400 MPa), and mass cap (8 kg for the cage-portion only C) are preserved verbatim.",
+  "short_prompt": "Design the roll cage for a 2026 American Solar Challenge Single Occupant Class (SOC) vehicle as a hybrid CFRP-monocoque + steel roll-hoop multi-part assembly, compliant with ASC 2026 Regulations Rev B. Vehicle design mass with driver 350 kg; wheelbase 2500 mm.\n\nPrimary roll hoop per ASC 2026 Rev B: 31.75 mm (1.25 in) OD x 2.0 mm (0.080 in) wall 4130 chromoly normalized (E = 205 GPa, yield = 460 MPa, ultimate = 670 MPa, density 7850 kg/m^3). Main hoop height 1300 mm, width at top 600 mm. Helmet clearance to any cage surface >= 50 mm; helmet top >= 50 mm below main hoop top. Cage anchors at 4 primary bolts M12 Grade 8.8 to the carbon chassis.\n\nLC1 vertical roof crush 1.5 x mass x g = 5150 N at hoop top; max deflection <= 50 mm; max von Mises <= yield / 1.15 = 400 MPa. LC2 lateral 1.0 x mass x g = 3433 N at hoop top; <= 50 mm and 400 MPa. LC3 longitudinal 0.6 x mass x g = 2060 N; <= 50 mm and 400 MPa. Cage mass <= 8 kg. Brake test: decelerate from 60 km/h (16.67 m/s) to rest with all 4 wheels locked. Pack energy <= 5.28 kWh Li-ion (reference).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "cfrp_laminate_failure_check",
+        "reason": "CFRP shell stresses are checked with laminate-level Tsai-Wu or max-strain criteria post-FEA; shell von Mises is not the governing metric for composites.",
+        "examples": [
+          "ESAComp",
+          "LAP"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "ASC 2026 SOC hybrid monocoque + 4130 roll cage (multi-part assembly)",
+    "brief": "CFRP upper/lower shell monocoque with a bolted-in 4130 chromoly 31.75 OD x 2.0 wall main roll hoop; 1.5/1.0/0.6 g rollover/lateral/longitudinal test loads gated against 50 mm deflection at the hoop top. Multi-part: upper shell (A), lower shell (B), main roll hoop (C), seat pan (D), firewall (E), suspension pickup inserts (F), solar-array deck (G), footwell bulkhead (H). FEM assembled-only; connection DCR <= 1.0.",
+    "geometric_constraints": {
+      "tube_OD_mm": 31.75,
+      "tube_wall_mm": 2.0,
+      "main_hoop_height_mm": 1300,
+      "main_hoop_width_top_mm": 600,
+      "helmet_clearance_mm_min": 50,
+      "anchor_bolts": {
+        "count": 4,
+        "size": "M12 Grade 8.8",
+        "pattern_note": "4 primary anchors tie the main hoop C into molded hardpoints in the lower shell B"
+      },
+      "wheelbase_mm_context": 2500,
+      "vehicle_design_mass_kg": 350
+    },
+    "material": {
+      "name": "AISI 4130 normalized (hoop) + CFRP sandwich (shell)",
+      "properties": {
+        "youngs_modulus_GPa": 205,
+        "yield_strength_MPa": 460,
+        "ultimate_tensile_strength_MPa": 670,
+        "density_kg_m3": 7850
+      },
+      "cfrp_hint": "Quasi-isotropic CFRP sandwich, E_in-plane ~55 GPa effective, honeycomb or foam core; checked by laminate analysis not von Mises",
+      "insert_material": "Al 7075-T6 at F suspension pickups and C hoop anchor hardpoints"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "roof_crush_1.5g",
+        "force_N": 5150,
+        "direction": "-Z at hoop top",
+        "deflection_limit_mm": 50,
+        "applied_to": "C main roll hoop top"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_1g",
+        "force_N": 3433,
+        "direction": "+Y at hoop top",
+        "deflection_limit_mm": 50,
+        "applied_to": "C main roll hoop top"
+      },
+      {
+        "id": "LC3",
+        "name": "longitudinal_0.6g",
+        "force_N": 2060,
+        "direction": "+X at hoop top",
+        "deflection_limit_mm": 50,
+        "applied_to": "C main roll hoop top"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "lower shell B supported at an idealized floor (distributed fixed over wheel-contact footprints) OR, when cage-only sub-model is analyzed, the 4 M12 anchor holes in B are fixed",
+      "loads": "point or distributed at hoop top (rigid steel pad simulating the rollover test platen)",
+      "bonded_joints": "A<->B perimeter bond modeled as tied surfaces; F inserts modeled with equivalent stiffness bond to B"
+    },
+    "objective": {
+      "minimize": "cage_mass_kg_for_part_C",
+      "design_heuristic": "part C (roll hoop only) <= 8 kg"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (A + B + C + D + E + F x12 + G + H)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E|F|G|H)",
+        "instance_index",
+        "laminate vs isotropic flag",
+        "anchor-bolt location"
+      ],
+      "report_fields": [
+        "cage_mass_kg (part C only)",
+        "assembly_mass_kg",
+        "max_deflection_LC1_mm",
+        "max_deflection_LC2_mm",
+        "max_deflection_LC3_mm",
+        "max_von_mises_LC1_MPa (tubes)",
+        "max_von_mises_LC2_MPa (tubes)",
+        "max_von_mises_LC3_MPa (tubes)",
+        "cfrp_max_failure_index_per_load_case",
+        "connection_DCR_max",
+        "per_part_max_stress_MPa"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "upper_shell_half",
+        "role": "aerodynamic canopy fairing and upper surface carrying the solar array deck G; secondary structural tie at perimeter bond",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_footprint_mm": "~4500 x 1800 projected",
+          "construction": "CFRP sandwich with foam or honeycomb core",
+          "thickness_mm_min": 10,
+          "bond_flange_width_mm_min": 25
+        },
+        "material_hint": "CFRP sandwich (quasi-isotropic lay-up)",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "lower_shell_half",
+        "role": "primary structural tub carrying the driver cell, the roll-hoop C anchor hardpoints, and all suspension pickup inserts F",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_footprint_mm": "~4500 x 1600 projected",
+          "construction": "CFRP sandwich with foam or honeycomb core + longitudinal hat stiffeners along the wheelbase",
+          "thickness_mm_min": 12,
+          "anchor_hardpoint_count": 4,
+          "hardpoint_material": "Al 7075-T6 bonded-in insert block"
+        },
+        "material_hint": "CFRP sandwich with Al hardpoints",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "main_roll_hoop",
+        "role": "primary rollover protection; carries LC1/LC2/LC3 loads per ASC Rev B rule",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tube_OD_mm": 31.75,
+          "tube_wall_mm": 2.0,
+          "tube_material": "4130 chromoly normalized",
+          "hoop_height_mm": 1300,
+          "hoop_width_top_mm": 600,
+          "anchors": "4x M12 Grade 8.8 through-bolted to B hardpoints",
+          "mass_kg_cap": 8
+        },
+        "material_hint": "AISI 4130 normalized",
+        "speculation": false
+      },
+      {
+        "part_id": "D",
+        "name": "seat_pan",
+        "role": "driver seat pan and harness backplate; non-structural to the rollover check but bonded to B",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "600 x 500 x 20",
+          "construction": "CFRP or Al sandwich"
+        },
+        "material_hint": "CFRP sandwich",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "firewall",
+        "role": "driver-side isolation from battery/electronics (ASC Rev B isolation); structurally ties rear bulkhead of B",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "600 x 500 x 8",
+          "construction": "CFRP sandwich or aluminum honeycomb panel",
+          "fire_rating": "meets ASC Rev B isolation (separate gate)"
+        },
+        "material_hint": "CFRP sandwich or Al honeycomb",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "suspension_pickup_insert",
+        "role": "discrete hardpoint receiving wishbone/damper loads and feeding them into the lower shell B",
+        "count_min": 12,
+        "geometric_constraints": {
+          "nominal_size_mm": "80 x 80 x 25",
+          "material": "Al 7075-T6 bonded into B",
+          "bolt_size": "M10 wishbone, M8 damper"
+        },
+        "material_hint": "Al 7075-T6",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "solar_array_deck",
+        "role": "non-structural composite panel carrying the solar array; bolted to A",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_footprint_mm": "~4000 x 1500",
+          "construction": "CFRP skin on foam core",
+          "bolt_count_min": 12
+        },
+        "material_hint": "CFRP panel",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "footwell_bulkhead",
+        "role": "forward driver-footwell bulkhead; ties front of B to front-suspension pickups F",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "600 x 400 x 10",
+          "construction": "CFRP sandwich"
+        },
+        "material_hint": "CFRP sandwich",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_length_mm": 4500,
+      "overall_width_mm": 1800,
+      "overall_height_mm": 1300,
+      "coordinate_system": "X forward, Y left-right, Z vertical",
+      "assembly_mass_hint_kg": "vehicle design mass including driver = 350; structural mass budget allocated team-wide; hoop C alone capped at 8 kg"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<=",
+        "scope_note": "applies to metallic parts C, F; CFRP parts use Tsai-Wu failure index <= 1.0 instead"
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "max_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3a",
+        "type": "structural_analysis",
+        "metric": "max_deflection",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3b",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 400,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "cage_mass",
+        "limit_kg": 8,
+        "applies_to": [
+          "part_C_main_roll_hoop"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across all inter-part interfaces (IF1..IF8) <= 1.0 under the governing load case (worst of LC1/LC2/LC3).",
+        "metric": "max_DCR across IF1..IF8",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Hoop-to-shell anchor bolts (IF2) shall not exceed utilization 1.0 under worst-case LC; governs the load path from the 4130 hoop into the CFRP tub.",
+        "metric": "max bolt utilization at IF2",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B32) for C tubes; shell (S4R) for shells A/B/D/E/G/H; solid for F inserts",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static (LC1, LC2, LC3)"
+      ],
+      "connection_modeling": [
+        "C-to-B anchors as bolt elements with preload and shear-tension check",
+        "A<->B perimeter bond as tied contact",
+        "F inserts as embedded solid with stiffness match"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A_upper_shell",
+        "B_lower_shell"
+      ],
+      "mediated_by": "perimeter structural adhesive bond + mechanical secondary-bond fasteners every ~150 mm",
+      "load_path": "upper-to-lower shear tie around canopy perimeter"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "C_main_roll_hoop",
+        "B_lower_shell"
+      ],
+      "mediated_by": "4x M12 Grade 8.8 bolts into Al 7075 hardpoints bonded into B",
+      "load_path": "PRIMARY rollover reaction: all of LC1/LC2/LC3 at hoop top flows through these 4 anchors into B"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "D_seat_pan",
+        "B_lower_shell"
+      ],
+      "mediated_by": "structural adhesive bond",
+      "load_path": "driver weight + harness reaction into floor"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "E_firewall",
+        "B_lower_shell_rear_bulkhead"
+      ],
+      "mediated_by": "structural adhesive bond",
+      "load_path": "ties rear bulkhead stiffness; negligible cage-rule load"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "F_suspension_pickup_insert (12x)",
+        "B_lower_shell"
+      ],
+      "mediated_by": "bonded-in Al 7075 block with bolted wishbone/damper connection",
+      "load_path": "suspension reactions into floor; not part of cage-rule LC but present in full vehicle analysis"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "G_solar_array_deck",
+        "A_upper_shell"
+      ],
+      "mediated_by": "bolted, gasketed (weather seal)",
+      "load_path": "array weight and aerodynamic lift into upper shell; non-structural to cage rule"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "H_footwell_bulkhead",
+        "B_lower_shell"
+      ],
+      "mediated_by": "structural adhesive bond",
+      "load_path": "ties front of B to front-suspension pickups; small share of LC3 longitudinal"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "C_main_roll_hoop_top",
+        "rollover_test_platen (external BC)"
+      ],
+      "mediated_by": "rigid steel pad (test fixture)",
+      "load_path": "point of load application for LC1/LC2/LC3"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "The ASC rollover loads are applied at the main hoop top but react into the CFRP tub through 4 bonded hardpoints; isolated hoop-only FEA mis-estimates the anchor stiffness and thus the hoop deflection. Full-assembly FEA is required to gate the 50 mm deflection limit correctly.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "ASC SOC vehicles are built as CFRP monocoques with bolted-in steel roll hoops; treating the whole thing as a welded tube assembly mis-represents the load path and the mass budget.",
+    "speculation_caveats": "Exact shell subdivision (left/right halves, canopy ring separate) and pickup insert count are team-specific. Counts here reflect a plausible mid-complexity SOC vehicle; no additional ASC rulebook clauses are cited.",
+    "exclusions_explained": {
+      "vibration_analysis": "Quasi-static rollover test.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Closed frame; not driving."
+    },
+    "original_sample_preserved_at": "benchmark/briefs/single/267_a27_asc_solar_chassis.json"
+  },
+  "rulebook_citations": {}
+}

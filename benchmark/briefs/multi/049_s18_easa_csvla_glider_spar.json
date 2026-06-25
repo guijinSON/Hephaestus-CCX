@@ -1,0 +1,296 @@
+{
+  "id": "049_s18_easa_csvla_glider_spar",
+  "source": {
+    "catalog_ref": "S18",
+    "year": 2018,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/049_s18_easa_csvla_glider_spar.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "vla_wing_main_spar",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the main wing spar for a Very Light Aeroplane (VLA) with MTOW 600 kg and 10.0 m wingspan per EASA CS-VLA Amendment 1 (2018), delivered as a multi-part assembly because the spar is a classic built-up wooden structure (upper and lower spruce caps bonded to plywood shear webs and cross-braced by equally-spaced ribs); the maneuver, gust, landing, and tip-deflection pass/fail all reference the coupled behavior of caps + webs + ribs. Applicable clauses: CS-VLA 337 (n +3.8 / -1.5), CS-VLA 303 (ultimate = 1.5 x limit), CS-VLA 341 (gust), CS-VLA 625 (1.15 fitting factor - applies to the root end-fitting which is out of scope here).\n\nAssembly layout. (A) Upper and lower spar caps: Sitka spruce, 80 mm wide x 20-40 mm thick (design variable), running full 5.0 m half-span at 30% chord. Two per half-span. (B) Plywood shear web: 2-ply birch plywood 6 mm each side of the spar cap sandwich, bonded to cap inner faces. (C) Ribs: 10 equally-spaced spanwise stations stabilizing the caps and webs against buckling and distributing airloads into the spar. (D) Root end fitting interface: 3-bolt titanium end-fitting (out of scope for this brief but noted as the boundary condition transferring spar loads into the fuselage).\n\nMaterial. Caps: Sitka spruce per MIL-HDBK-1B: E_L = 11 GPa, rho = 400 kg/m^3, F_bending_L = 65 MPa (tension), F_compression_L = 35 MPa, F_shear_perp_L = 7 MPa. Webs: birch plywood, E_in_plane = 8 GPa, F_shear = 10 MPa. Aircraft-grade minimums already include knockdown.\n\nService envelope. MTOW 600 kg; wing S ~ 12 m^2; n1 = +3.8, n3 = -1.5; ultimate 1.5x. CS-VLA 341 gust Ude at VC = 15.2 m/s; Pratt-formula gust load factor ~ 3.2 at VC (maneuver governs). Root bending moment at n = +3.8 with span CP eta ~ 0.4: M_root_limit = 3.8 * 5886 * 0.4 * 5.0 = 44,734 N*m. Root shear V_root_limit = 11,184 N. Ultimates: M_root = 67,101 N*m, V_root = 16,776 N.\n\nLoad cases. LC1 (pos maneuver ultimate n = +5.7): M_root = 67,101 N*m, V_root = 16,776 N. LC2 (neg maneuver ultimate n = -2.25): M_root = -26,487 N*m, V_root = -6,621 N. LC3 (gust ultimate n = 4.8): M_root = 56,500 N*m, V_root = 14,130 N. LC4 (landing per CS-VLA 473): local rear-spar moment 12,000 N*m. LC5 (tip deflection at limit maneuver): tip deflection <= 12 % semispan = 0.6 m.\n\nPass/fail criteria (all evaluated on the assembled spar caps + webs + ribs). (R1) Spar-cap longitudinal stress at LC1/LC3 ultimate <= 35 MPa compression / 65 MPa tension (compression governs). (R2) Plywood web shear stress at ultimate <= 10 MPa. (R3) Grain-perpendicular shear in caps at cap-to-web interface at ultimate <= 7 MPa. (R4) LC4 rear-spar local bending at ultimate <= 35 MPa compression / 65 MPa tension. (R5) LC5 tip deflection at limit (not ultimate) <= 0.6 m. (R6) Spar mass per side <= 9 kg (total 18 kg).\n\nAssembly policy. R1 and R4 are cap-stress checks that reference the composite section modulus of caps+webs. R2 depends on cap-web bond geometry. R3 is an explicit cap-to-web interface check. R5 (deflection) is an assembly stiffness quantity. No part evaluated in isolation has meaningful pass/fail.\n\nSolver and analysis expectations. Primary: composite-laminate FEM (shell + continuum shell) or Euler-Bernoulli beam for caps + plate-bending for webs with rib cross-sections as intermediate supports. Mesh 10 mm shells. Local cap buckling already embedded in F_compression_L; modal, thermal, fluid, ionizing-radiation, separate-buckling analyses NOT required.\n\nDeliverables. STEP AP242 of the assembled spar, total spar mass per side in kg, max spruce stress per LC (compression/tension/grain-perpendicular), web shear stress, tip deflection at limit, and pass/fail table per CS-VLA 303/337/341.",
+  "short_prompt": "Design the main wing spar of a Very Light Aeroplane (MTOW 600 kg, wingspan 10.0 m) per EASA CS-VLA Amendment 1 (2018), delivered as a built-up multi-part assembly: upper + lower Sitka spruce caps (80 mm wide x 20-40 mm thick, running full 5.0 m half-span at 30% chord) + birch plywood shear webs (2-ply 6 mm each side) + 10 equally-spaced ribs + a 3-bolt titanium root end-fitting (root fitting out of scope for this brief). Applicable clauses: CS-VLA 337 (n +3.8 / -1.5), CS-VLA 303 (ultimate = 1.5 x limit), CS-VLA 341 (gust Ude = 15.2 m/s at VC).\n\nMaterials. Sitka spruce (MIL-HDBK-1B): E_L = 11 GPa, rho = 400 kg/m^3, F_bending_L = 65 MPa, F_compression_L = 35 MPa, F_shear_perp_L = 7 MPa. Birch plywood: E = 8 GPa, F_shear = 10 MPa.\n\nRoot ref at n = +3.8, span CP eta ~ 0.4: M_root_limit = 44734 N*m; V_root_limit = 11184 N.\n\nLoad cases.\n- LC1 pos maneuver ultimate n = +5.7: M_root = 67101 N*m, V_root = 16776 N.\n- LC2 neg maneuver ultimate n = -2.25: M_root = -26487, V_root = -6621.\n- LC3 gust ultimate n = 4.8: M_root = 56500, V_root = 14130.\n- LC4 landing per CS-VLA 473: local rear-spar moment 12000 N*m.\n- LC5 tip deflection at limit: <= 12% semispan = 0.6 m.\n\nSpar mass per side <= 9 kg (total 18 kg).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Spruce-plywood main spar for Very Light Aeroplane per CS-VLA as multi-part assembly",
+    "brief": "600 kg VLA main spar built of spruce caps + plywood webs + 10 ribs; n +3.8/-1.5 limit, ultimate 1.5x; cap stress, web shear, tip deflection <= 12% semispan.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "spruce_spar_cap",
+        "role": "upper or lower spruce cap carrying wing bending moment",
+        "count_min": 2,
+        "geometric_constraints": {
+          "width_mm": 80,
+          "thickness_mm": {
+            "min": 20,
+            "max": 40
+          },
+          "length_mm": 5000,
+          "material": "Sitka spruce"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "plywood_shear_web",
+        "role": "birch plywood shear web bonded to cap inner faces carrying wing shear",
+        "count_min": 2,
+        "geometric_constraints": {
+          "ply_thickness_mm": 6,
+          "material": "birch plywood"
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "rib",
+        "role": "spanwise-station rib distributing airloads into spar and stabilizing caps/webs",
+        "count_min": 10,
+        "geometric_constraints": {
+          "chord_mm_root": 1500,
+          "chord_mm_tip": 1100,
+          "material": "wood or composite"
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "half_span_m": 5.0,
+      "spar_at_chord_pct": 30
+    },
+    "material": {
+      "spar_cap": {
+        "name": "Sitka spruce",
+        "E_L_GPa": 11,
+        "density_kg_m3": 400,
+        "F_tension_L_MPa": 65,
+        "F_compression_L_MPa": 35,
+        "F_shear_perp_MPa": 7
+      },
+      "web": {
+        "name": "birch plywood",
+        "E_in_plane_GPa": 8,
+        "F_shear_MPa": 10
+      }
+    },
+    "service_envelope": {
+      "n1_pos": 3.8,
+      "n3_neg": -1.5,
+      "ultimate_factor": 1.5,
+      "VC_m_s": 55,
+      "Ude_VC_m_s": 15.2,
+      "MTOW_kg": 600
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pos_maneuver_ultimate_n5.7",
+        "M_root_Nm": 67101,
+        "V_root_N": 16776
+      },
+      {
+        "id": "LC2",
+        "name": "neg_maneuver_ultimate_n-2.25",
+        "M_root_Nm": -26487,
+        "V_root_N": -6621
+      },
+      {
+        "id": "LC3",
+        "name": "pos_gust_ultimate",
+        "M_root_Nm": 56500,
+        "V_root_N": 14130
+      },
+      {
+        "id": "LC4",
+        "name": "landing_rear_spar_local",
+        "M_local_Nm": 12000
+      },
+      {
+        "id": "LC5",
+        "name": "tip_deflection_at_limit",
+        "tip_limit_m_max": 0.6
+      }
+    ],
+    "boundary_conditions": {
+      "root": "fixed through 3-bolt end fitting"
+    },
+    "objective": {
+      "minimize": "spar_mass",
+      "target_kg_max_per_side": 9
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (caps + webs + ribs)",
+      "body_metadata": [
+        "part_family (A|B|C)"
+      ],
+      "report_fields": [
+        "spar_mass_per_side_kg",
+        "cap_stress_compression_MPa",
+        "cap_stress_tension_MPa",
+        "web_shear_MPa",
+        "grain_perp_shear_MPa",
+        "tip_deflection_m"
+      ]
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "EASA CS-VLA Amendment 1",
+      "revision": "2018"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "spar_cap_longitudinal_stress_ultimate",
+        "limit_MPa": 35,
+        "derivation": "Compression-side F_compression_L for spruce (governing)",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "plywood_web_shear_stress_ultimate",
+        "limit_MPa": 10,
+        "derivation": "Birch plywood shear allowable",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "grain_perpendicular_shear_ultimate",
+        "limit_MPa": 7,
+        "derivation": "Spruce F_shear_perp_L",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "rear_spar_local_bending_under_landing",
+        "limit_MPa": 35,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "wing_tip_deflection_at_limit",
+        "limit_m": 0.6,
+        "derivation": "12% of semispan handling-quality proxy",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "spar_mass_per_side",
+        "limit_kg": 9,
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell or beam for caps + plate for webs",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "Nastran",
+        "ANSYS Mechanical",
+        "hand calc"
+      ],
+      "analysis_types": [
+        "linear static x4"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A spruce_spar_cap inner face",
+        "B plywood_shear_web side faces"
+      ],
+      "mediated_by": "structural epoxy bond",
+      "load_path": "shear transfer between caps and web; grain-perpendicular shear into caps"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B plywood_shear_web",
+        "C rib intermediate supports"
+      ],
+      "mediated_by": "bonded joint at rib station",
+      "load_path": "web panel buckling stabilization and airload distribution into spar"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A/B/C root end",
+        "external 3-bolt Ti root fitting"
+      ],
+      "mediated_by": "mechanical 3-bolt joint (out of scope)",
+      "load_path": "spar bending and shear reacted into fuselage"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Spar cap stresses (R1), web shear (R2), grain-perpendicular interface shear (R3), and tip deflection (R5) all reference the composite section formed by caps + webs with ribs as intermediate supports; isolated caps, webs, or ribs have no pass/fail."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "CS-VLA wooden-spar practice is built-up: caps resist bending, web resists shear, ribs distribute airload. The part_class 'vla_wing_main_spar' names an assembly whose allowables are all interface-dependent.",
+    "exclusions_explained": {
+      "vibration_analysis": "Flutter per CS-VLA 629 out of scope.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Lift reduced to bending.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Compression-cap local buckling handled via spruce compression allowable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Flutter and divergence per CS-VLA 629",
+      "Moisture-content durability of wood",
+      "CS-VLA 471 asymmetric landing"
+    ]
+  },
+  "eval_coverage": [
+    "CS-VLA 337 +3.8/-1.5 g maneuver on assembled spar",
+    "wood-material-specific allowables at cap-web interface",
+    "tip deflection handling-quality proxy across full assembly"
+  ]
+}

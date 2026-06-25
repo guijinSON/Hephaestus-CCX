@@ -1,0 +1,325 @@
+{
+  "id": "226_df10_nasa_lunabotics",
+  "source": {
+    "catalog_ref": "DF10",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/226_df10_nasa_lunabotics.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "regolith_excavation_robotic_structural",
+  "part_class": "lunabotics_chassis_and_arm_mount_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the chassis and excavation-arm mount of a regolith mining robot benchmark as a bolted/welded multi-part aluminum assembly consisting of the base chassis plate, two side rails, front cross-beam, rear cross-beam, four wheel drive mount brackets, the excavation arm mount plate (where the active digging mechanism attaches), and a regolith-deposit hopper bracket. Robot stowed envelope must fit within 1.5 m length x 0.75 m width x 0.75 m height at the start of the mission; total robot mass must not exceed 80 kg. Operational arena is a 7.38 m x 3.88 m lunar-analog regolith bin filled with BP-1 simulant (bulk density ~1500 kg/m^3, angle of internal friction 45 deg). Robot must autonomously traverse the arena, excavate >= 15 kg of BP-1 in a 15-minute mission, and deposit it into a collection bin. Chassis material: 6061-T6 aluminum extrusion + plate (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3). Excavation arm mount is the bolted interface plate where the active digging mechanism attaches; it must transmit the BP-1 digging reaction load into the chassis without bending the chassis out of kinematic alignment. Load cases: (LC1) BP-1 digging reaction: 500 N horizontal opposing motion + 300 N vertical downforce at the excavation arm tool tip, moment arm 0.4 m from arm-mount bolt pattern - total 680 N at mount with 260 N-m moment; (LC2) 15-minute duty cycle: 100 digging strokes per mission at 1 per 9 s, alternating loading between 0 and full LC1 at 0.11 Hz, 100 cycles; (LC3) traverse impact: 2 g vertical on one wheel crossing a BP-1 berm; (LC4) regolith-laden return: 15 kg BP-1 mass distributed on deposit hopper plus 80 kg robot at 1 g; (LC5) tip/tilt: 15 deg side slope with full regolith load; (LC6) dust-seal test: 5 kPa differential across bearing seals with BP-1 particulate loading. Pass/fail: (R1) max von Mises in chassis and mount <= 184 MPa (yield 276 / 1.5) across LC1-LC5; (R2) arm-mount bolt pattern distortion under LC1 <= 0.3 mm to preserve excavation kinematic accuracy; (R3) under LC2 fatigue, alternating stress at mount fillets <= 55 MPa (aluminum Kt=3 endurance at 10^5 cycles scaled by Miner); (R4) total robot mass <= 80 kg; (R5) stowed envelope compliance 1.5 x 0.75 x 0.75 m verified geometrically; (R6) first chassis torsional mode above 15 Hz. Verification is performed on the assembled chassis + arm-mount plate + hopper multi-body bolted model with representative bolt stiffness; per-part stress is reported but does not gate pass/fail. Deliverables: STEP, FEA per case, fatigue, modal, mass and envelope report.",
+  "short_prompt": "Design the chassis and excavation-arm mount of a regolith mining robot benchmark as a bolted/welded multi-part aluminum assembly.\n\nStowed envelope 1.5 m x 0.75 m x 0.75 m; robot mass <= 80 kg. Arena is a 7.38 m x 3.88 m BP-1 simulant bin (bulk density ~1500 kg/m^3, phi 45 deg). Mission excavates >= 15 kg of BP-1 in 15 minutes. Chassis 6061-T6 aluminum extrusion + plate (E 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3).\n\nLoad cases.\n- LC1 BP-1 digging: 500 N horizontal + 300 N vertical at tool tip, 0.4 m moment arm = 680 N at mount with 260 N-m moment.\n- LC2 duty cycle: 100 digging strokes at 1 per 9 s, alternating 0 to LC1 at 0.11 Hz, 100 cycles.\n- LC3 traverse: 2 g vertical on one wheel crossing a BP-1 berm.\n- LC4 regolith-laden return: 15 kg BP-1 on deposit hopper + 80 kg robot at 1 g.\n- LC5 tip/tilt: 15 deg side slope with full regolith load.\n- LC6 dust-seal: 5 kPa differential across bearing seals with BP-1 particulate.\n\nArm-mount bolt-pattern distortion under LC1 <= 0.3 mm; first chassis torsional mode > 15 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Lunabotics regolith mining robot chassis + arm mount (multi-part assembly)",
+    "brief": "80 kg, 1.5 x 0.75 x 0.75 m stowed BP-1 mining robot: base plate + 2 side rails + 2 cross-beams + 4 wheel mounts + arm-mount plate + hopper bracket.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "base_chassis_plate",
+        "role": "flat structural plate forming the robot's base / deck",
+        "count_min": 1,
+        "geometric_constraints": {
+          "stowed_envelope_m": {
+            "L": 1.5,
+            "W": 0.75,
+            "H": 0.75
+          }
+        },
+        "material_hint": "Al 6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side_rail",
+        "role": "left / right structural side rail extrusion",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "Al 6061-T6 extrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "cross_beam",
+        "role": "front / rear cross-beam tying the two side rails",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "Al 6061-T6 extrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "wheel_drive_mount_bracket",
+        "role": "one of four wheel drive mount brackets carrying the berm-crossing impact load",
+        "count_min": 4,
+        "geometric_constraints": {
+          "g_berm_impact": 2
+        },
+        "material_hint": "Al 6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "excavation_arm_mount_plate",
+        "role": "bolted interface plate transmitting digging reaction (500 N H + 300 N V + 260 N-m) into the chassis",
+        "count_min": 1,
+        "geometric_constraints": {
+          "F_H_N": 500,
+          "F_V_N": 300,
+          "moment_Nm": 260
+        },
+        "material_hint": "Al 6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "deposit_hopper_bracket",
+        "role": "bracket supporting the deposit hopper carrying 15 kg of BP-1",
+        "count_min": 1,
+        "geometric_constraints": {
+          "BP1_mass_kg": 15
+        },
+        "material_hint": "Al 6061-T6 plate",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "1.5 m L x 0.75 m W x 0.75 m H stowed",
+      "coordinate_system": "X forward along traverse, Y transverse, Z up"
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "youngs_modulus_GPa": 68.9,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2700,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "digging_reaction",
+        "F_H_N": 500,
+        "F_V_N": 300,
+        "moment_Nm": 260,
+        "arm_length_m": 0.4
+      },
+      {
+        "id": "LC2",
+        "name": "duty_cycle_100",
+        "amplitude_N": 680,
+        "freq_Hz": 0.11,
+        "cycles": 100
+      },
+      {
+        "id": "LC3",
+        "name": "berm_2g",
+        "g": 2
+      },
+      {
+        "id": "LC4",
+        "name": "regolith_laden",
+        "BP1_mass_kg": 15,
+        "robot_mass_kg": 80
+      },
+      {
+        "id": "LC5",
+        "name": "15deg_side_slope",
+        "g_lateral": 0.26
+      },
+      {
+        "id": "LC6",
+        "name": "dust_seal_test",
+        "dp_kPa": 5
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "base plate bolted to side rails and cross-beams; wheel drive mounts bolted to side rails; arm-mount plate bolted to base plate with representative bolt stiffness; hopper bracket bolted to rear cross-beam",
+      "support": "four wheel contact patches supported in LC1-LC5; dust-seal LC6 idealized at bearing interface"
+    },
+    "objective": "minimize chassis mass while passing yield, arm-mount distortion, fatigue, and modal gates within 80 kg budget",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "total_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "bolt_pattern_distortion_mm",
+        "fatigue_alt_stress_MPa",
+        "first_torsional_mode_Hz",
+        "stowed_envelope_compliance",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "arm_mount_bolt_pattern_distortion",
+        "limit_mm": 0.3,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "fatigue_alt_stress_at_fillet",
+        "limit_MPa": 55,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_robot_mass",
+        "limit_kg": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "stowed_envelope",
+        "limit_m": {
+          "L": 1.5,
+          "W": 0.75,
+          "H": 0.75
+        },
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 15,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "base plate bolted to side rails"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "cross-beams bolted to side rails"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "wheel drive mount brackets bolted to side rails"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "excavation arm mount plate bolted to base plate, transmitting digging reaction"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "C",
+        "F"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "deposit hopper bracket bolted to rear cross-beam"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Lunabotics mining robots have a bolted chassis with a dedicated arm-mount plate; digging reaction and fatigue load paths explicitly cross the arm-mount bolt pattern and must be modelled as a multi-body bolted assembly.",
+    "speculation_caveats": "Wheel mount count, hopper bracket placement, and side-rail extrusion profile are speculative; materials, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "benchmark/briefs/single/226_df10_nasa_lunabotics.json"
+  }
+}

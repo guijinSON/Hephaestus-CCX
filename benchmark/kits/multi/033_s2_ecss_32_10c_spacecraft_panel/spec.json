@@ -1,0 +1,536 @@
+{
+  "id": "033_s2_ecss_32_10c_spacecraft_panel",
+  "source": {
+    "catalog_ref": "S2",
+    "year": 2019,
+    "tier": "A+",
+    "original_sample": "benchmark/briefs/single/033_s2_ecss_32_10c_spacecraft_panel.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "sandwich_panel",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a rectangular aluminum-honeycomb sandwich equipment panel for a European telecom spacecraft bus, delivered as a multi-part assembly because the panel is the primary structural element but cannot be fabricated as a single monolithic body. The assembly consists of (A) the sandwich panel itself (two AA 2024-T3 face sheets bonded to an Al 5056 honeycomb core), (B) four aluminum edge-close-out frames that border the panel and carry the perimeter bolt pattern into the spacecraft primary cylinder, (C) eight potted threaded inserts that provide the equipment-box hard points, and (D) forty-eight M5 titanium perimeter fasteners that attach the edge frames to the primary cylinder. The governing standard is ECSS-E-ST-32-10C Rev.2 (15 May 2019). For qualification metallic hardware at design loads, ECSS Table 4-3 prescribes a design yield factor KY = 1.25 and a design ultimate factor KU = 1.25 applied on limit loads, with an additional model factor KM = 1.2 if analysis correlation is not demonstrated; this brief assumes a correlated FEM so KM = 1.0.\n\nGeometry. Panel planform 1200 mm x 800 mm. Total thickness 25.4 mm, face-sheet thickness 0.4 mm per face, core thickness 24.6 mm. The four long edges are supported by aluminum edge-close-out frames bolted to the spacecraft primary cylinder at 48 M5 titanium fasteners on a 100 mm pitch around the perimeter. Eight equipment-box hard points (potted inserts, each 20 mm diameter, 24.6 mm deep through the core) are distributed on a nominal 400 mm x 300 mm grid. Each hard point carries a lumped mass of 3 kg representing an avionics unit. Inserts are modeled per ECSS-E-HB-32-22A pull-out / shear allowables but that standard is out of scope for pass/fail here - only the face-sheet and core structural state is judged.\n\nMaterials. Face sheets: AA 2024-T3, E = 73.1 GPa, nu = 0.33, rho = 2780 kg/m^3, Fty = 290 MPa, Ftu = 435 MPa. Core: Al 5056 honeycomb 3/16-5056-.0007 nominal, effective shear strength L-direction 1.93 MPa, W-direction 1.17 MPa, bare compressive strength 2.55 MPa, density 36.8 kg/m^3.\n\nLoad cases. LC1 (quasi-static launch): simultaneous 12.5 g axial + 8 g lateral applied at each of the eight 3 kg equipment masses (total lumped mass 24 kg) with the perimeter fasteners fully fixed. LC2 (random vibration Miles-equivalent): 20 g out-of-plane applied to each equipment mass, enveloping a 0.2 g^2/Hz random input at the panel first mode (~80 Hz assumed). LC3 (thermoelastic): a uniform DeltaT of +80 C and -100 C between face sheets (front-sun / back-shade orbit case); only bending-stress margin is judged. LC4 (buckling): compressive in-plane load of 4000 N/m applied along the long edges.\n\nPass/fail criteria reproduce ECSS-E-ST-32-10C verbatim and are evaluated at assembly level. (R1) Face-sheet maximum von Mises stress at limit load times KY = 1.25 must not exceed Fty = 290 MPa, i.e. stress at limit must be <= 232 MPa. (R2) Face-sheet maximum von Mises stress at limit load times KU = 1.25 must not exceed Ftu = 435 MPa, i.e. stress at limit must be <= 348 MPa. (R3) Honeycomb core shear stress at limit load times KU = 1.25 must not exceed the L-direction allowable of 1.93 MPa, i.e. shear at limit must be <= 1.54 MPa. (R4) Global linear buckling eigenvalue under LC4 must be >= 1.25 (ECSS ultimate FoS for stability). (R5) Panel fundamental frequency with equipment masses attached must be >= 70 Hz. (R6) Panel areal density must not exceed 4.5 kg/m^2 including inserts and edge frame.\n\nAssembly policy. FEM checks run on the integrated assembly only: the panel, four edge frames, inserts, and 48 fasteners are imported as a single model with the perimeter fasteners providing the fixed boundary condition. Individual parts are not evaluated standalone because the structural state and fundamental frequency are coupled across all families.\n\nSolver and analysis expectations. Primary analysis is a sandwich-shell linear static FEM (ESL laminate or solid-face-sheet + solid-core) for LC1, LC2, LC3, LC4. A linear buckling eigenvalue must be computed for LC4 and a constrained modal analysis for R5. Thermal analysis is limited to imposing the uniform DeltaT; no transient heat-transfer solution is required. Fluid and radiation analyses are excluded.\n\nDeliverables. STEP AP242 of the complete assembly with each part family identified, areal density in kg/m^2, max face-sheet von Mises per case in MPa, max core shear per case in MPa, first buckling load factor for LC4, first five modes in Hz.",
+  "short_prompt": "Design an aluminum-honeycomb sandwich equipment panel for a European telecom spacecraft bus, delivered as a multi-part assembly. The panel is AA 2024-T3 face sheets bonded to an Al 5056 honeycomb core, carrying eight 3 kg equipment masses, with aluminum edge close-out frames bolted into the spacecraft primary cylinder. Design to ECSS-E-ST-32-10C Rev.2 (15 May 2019), assuming a correlated FEM (KM = 1.0) with KY = KU = 1.25 on limit loads.\n\nEnvelope: planform 1200 x 800 mm, total thickness 25.4 mm.\n\nLoad cases.\n- LC1 quasi-static launch: simultaneous 12.5 g axial + 8 g lateral at each 3 kg equipment mass.\n- LC2 random vibration Miles-equivalent: 20 g out-of-plane at each mass, enveloping 0.2 g^2/Hz at the ~80 Hz first mode.\n- LC3 thermoelastic: uniform DeltaT of +80 C / -100 C between face sheets.\n- LC4 in-plane compression: 4000 N/m along the long edges.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Aluminum-honeycomb equipment panel assembly per ECSS-E-ST-32-10C",
+    "brief": "1200x800x25.4 mm Al-sandwich panel assembly with edge frames, 8 inserts, 48 M5 Ti fasteners; ECSS KY=1.25/KU=1.25.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "sandwich_panel",
+        "role": "primary bending/shear-carrying plate; two AA 2024-T3 face sheets bonded to Al 5056 3/16-5056-.0007 honeycomb core",
+        "count_min": 1,
+        "geometric_constraints": {
+          "planform_mm": {
+            "x": 1200,
+            "y": 800
+          },
+          "total_thickness_mm": 25.4,
+          "face_sheet_thickness_mm": 0.4,
+          "core_thickness_mm": 24.6
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "edge_close_out_frame",
+        "role": "aluminum edge frame bonded/bolted along each of the four panel edges, forming the bolted interface with the spacecraft primary cylinder",
+        "count_min": 4,
+        "geometric_constraints": {
+          "length_mm_along_panel_edge": "matches panel edge (1200 or 800 mm)",
+          "fastener_pitch_mm": 100
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "potted_threaded_insert",
+        "role": "potted blind insert providing a single equipment-box hard point through the full 24.6 mm core depth",
+        "count_min": 8,
+        "geometric_constraints": {
+          "diameter_mm": 20,
+          "depth_mm": 24.6,
+          "grid_spacing_mm": {
+            "x": 400,
+            "y": 300
+          }
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "perimeter_fastener_M5_Ti",
+        "role": "M5 titanium bolt through edge frame into spacecraft primary cylinder interface",
+        "count_min": 48,
+        "geometric_constraints": {
+          "size": "M5 titanium",
+          "pitch_along_edge_mm": 100
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "planform_mm": {
+        "x": 1200,
+        "y": 800
+      },
+      "total_thickness_mm": 25.4,
+      "perimeter_fastener_count": 48,
+      "insert_count": 8
+    },
+    "material": {
+      "face_sheet": {
+        "name": "AA 2024-T3",
+        "E_GPa": 73.1,
+        "nu": 0.33,
+        "density_kg_m3": 2780,
+        "Fty_MPa": 290,
+        "Ftu_MPa": 435
+      },
+      "core": {
+        "name": "Al 5056 3/16-5056-.0007",
+        "shear_L_MPa": 1.93,
+        "shear_W_MPa": 1.17,
+        "compressive_MPa": 2.55,
+        "density_kg_m3": 36.8
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "quasi_static_launch",
+        "axial_g": 12.5,
+        "lateral_g": 8
+      },
+      {
+        "id": "LC2",
+        "name": "random_vib_miles_equiv",
+        "out_of_plane_g": 20,
+        "source_PSD_g2_Hz": 0.2,
+        "assumed_first_mode_Hz": 80
+      },
+      {
+        "id": "LC3",
+        "name": "thermoelastic",
+        "deltaT_C_hot": 80,
+        "deltaT_C_cold": -100,
+        "description": "front-sun / back-shade orbit"
+      },
+      {
+        "id": "LC4",
+        "name": "in_plane_compression",
+        "line_load_N_per_m": 4000,
+        "edge": "long edges"
+      }
+    ],
+    "boundary_conditions": {
+      "perimeter_fasteners": "fully fixed",
+      "hard_points": "lumped 3 kg each, rigid to face sheets"
+    },
+    "objective": {
+      "minimize": "areal_density",
+      "target_kg_m2_max": 4.5
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (panel + 4 edge frames + 8 inserts + 48 fasteners)",
+      "body_metadata": [
+        "part_family (A|B|C|D)",
+        "instance_index"
+      ],
+      "report_fields": [
+        "areal_density_kg_m2",
+        "face_sheet_max_von_mises_per_LC_MPa",
+        "core_max_shear_per_LC_MPa",
+        "first_buckling_load_factor_LC4",
+        "first_five_modes_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "ECSS-E-ST-32-10C Rev.2",
+      "revision": "15 May 2019"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "face_sheet_max_von_mises_at_limit",
+        "limit_MPa": 232,
+        "derivation": "Fty / KY = 290 / 1.25 (ECSS Table 4-3 metallic qualification yield)",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "face_sheet_max_von_mises_at_limit",
+        "limit_MPa": 348,
+        "derivation": "Ftu / KU = 435 / 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "core_max_shear_stress_at_limit",
+        "limit_MPa": 1.54,
+        "derivation": "tau_core_L / KU = 1.93 / 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 1.25,
+        "derivation": "ECSS-E-ST-32-10C Table 4-3 stability ultimate FoS",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "fundamental_natural_frequency",
+        "limit_Hz": 70,
+        "derivation": "Project decoupling gate",
+        "applies_to": [
+          "constrained_modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "areal_density",
+        "limit_kg_m2": 4.5,
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "ESL composite shell or solid face + solid core, with edge frame as shell and fasteners as tied/coupled pairs",
+      "mesh_size_mm_in_critical_regions": 10,
+      "solver_hints": [
+        "Nastran",
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x4 at assembly level",
+        "linear buckling LC4",
+        "constrained modal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A sandwich_panel edge",
+        "B edge_close_out_frame"
+      ],
+      "mediated_by": "structural bond + bolted clamp",
+      "load_path": "shear and in-plane bending from panel face sheets into edge frame"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B edge_close_out_frame",
+        "spacecraft primary cylinder (external)"
+      ],
+      "mediated_by": "D perimeter_fastener_M5_Ti",
+      "load_path": "fully fixed reaction at each of the 48 M5 fasteners (boundary condition for the assembly)"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A sandwich_panel",
+        "C potted_threaded_insert"
+      ],
+      "mediated_by": "potting compound + face-sheet coupling",
+      "load_path": "3 kg equipment-box inertial load into the panel at each of eight hard points"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Face-sheet stress, core shear, first mode, and buckling are all coupled across the panel, edge frames, and inserts. Evaluating any single part standalone would misrepresent the structural state and fundamental frequency."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "A sandwich panel carrying eight equipment boxes through potted inserts into a bolted edge-frame interface cannot be fabricated as a single monolithic body; the part families (panel, edge frame, insert, fastener) are distinct both in material and in fabrication process.",
+    "exclusions_explained": {
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Ionizing-radiation degradation not judged; only structural state.",
+      "thermal_transient": "Only uniform DeltaT imposed; transient orbital heat-transfer out of scope."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Insert pull-out / shear per ECSS-E-HB-32-22A",
+      "Bolt preload / slip per ECSS-E-ST-32-01C",
+      "Core fatigue under random vibration"
+    ]
+  },
+  "eval_coverage": [
+    "sandwich-specific face-sheet AND core allowables at assembly level",
+    "multiple ECSS FoS applied at identical limit state",
+    "thermoelastic DeltaT load case on full assembly",
+    "buckling + modal + static in one brief"
+  ],
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "face_sheet_max_von_mises_at_limit",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "face_sheet_max_von_mises_at_limit",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2",
+      "metric": "core_max_shear_stress_at_limit",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_BUCKLING",
+      "solver": "calculix",
+      "analysis_card": "*BUCKLE",
+      "physics_card": null,
+      "load_cases": [
+        "LC4"
+      ],
+      "deck_step": "generated_buckling_step",
+      "metric": "first_mode_load_factor",
+      "metric_source": "buckling eigenvalue block",
+      "outputs": [
+        "model.dat: eigenvalues"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_MODAL",
+      "solver": "calculix",
+      "analysis_card": "*FREQUENCY",
+      "physics_card": null,
+      "load_cases": [
+        "constrained_modal"
+      ],
+      "deck_step": "generated_modal_step",
+      "metric": "fundamental_natural_frequency",
+      "metric_source": "modal eigenfrequency block",
+      "outputs": [
+        "model.dat: eigenfrequencies"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_005",
+      "requirement_id": "R6",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "areal_density",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_006",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

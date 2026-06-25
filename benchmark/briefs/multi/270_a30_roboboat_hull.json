@@ -1,0 +1,457 @@
+{
+  "id": "270_a30_roboboat_hull",
+  "source": {
+    "catalog_ref": "A30",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/270_a30_roboboat_hull.json",
+    "multipart_basis": "RoboBoat catamaran pontoons are vacuum-infused sandwich shells closed by a bonded deck plate with internal bulkheads that make the hull compartmentalised (watertight integrity requirement in the handbook). A real pontoon is a bonded multi-part assembly, not a single closed shell. Decomposition is a port/starboard pair of side shells (this file covers one pontoon), a deck plate, internal watertight bulkheads, thruster mounts, a payload tray, a transom plate, and a bow cap. Speculative at the level of bulkhead count and thruster-mount location; load magnitudes, material, and pass/fail thresholds are preserved."
+  },
+  "domain": "marine_structural",
+  "part_class": "autonomous_surface_vehicle_hull_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a single-piece monolithic catamaran hull (one pontoon of a twin-hull design, mirrored for the other side) for a 2026 RoboBoat autonomous surface vehicle, compliant with the 2026 RoboBoat Team Handbook. Per handbook specs, total vehicle mass is capped at 50 kg (typical) and the bounding box for the complete vehicle is 2.0 m (length) x 1.2 m (width) x 0.6 m (height) with depth in water approximately 0.3 m. Each pontoon is 1.8 m long, 0.30 m wide at waterline, 0.35 m tall, made from vacuum-infused glass/polyester with a 12 mm Divinycell H60 foam core. Material: E-glass/polyester (skin); E1 = 25 GPa, E2 = 8 GPa, long-tensile strength 400 MPa, density 1900 kg/m^3; H60 PVC foam core; density 60 kg/m^3, out-of-plane compressive 0.75 MPa, out-of-plane shear 0.5 MPa. Skin layup: [0/90/+45/-45] x 2, 0.4 mm per ply, total 3.2 mm per skin, plus core. Load cases: (R1) Hydrostatic hogging: full vehicle weight (50 kg x 9.81 = 491 N) supported by single pontoon at midspan (worst hogging, waves throwing mass to one side); max skin fiber stress <= 400 / 3.0 = 133 MPa; max core shear <= 0.5 MPa; max midship deflection <= L/200 = 9 mm. (R2) Green-water impact: wave impact on the bow with equivalent static pressure 15 kPa over the first 300 mm x 300 mm of the hull; max fiber stress <= 133 MPa; no core delamination. (R3) Collision/docking impact: 500 N point load applied horizontally at any point on the hull waterline; max fiber stress <= 133 MPa; local indentation <= 5 mm. (R4) Hull pontoon mass (per side, structural only) <= 6 kg. (R5) Buoyancy reserve: swept volume of each pontoon must give reserve buoyancy >= 1.5 x total vehicle half-weight => pontoon displacement at 75% submerged >= 37.5 kg; geometric verification (not FEA). (R6) Dry hull shall survive external crush (hydrostatic 2 m depth, 20 kPa external differential) with linear buckling eigenvalue >= 3.0. Primary verification: laminate-composite structural FEA (linear static for R1-R3) + buckling (R6). Vibration, thermal, fluid, radiation NOT required (wave impact reduced to equivalent pressure). Deliverables: STEP AP242 pontoon, laminate schedule, and a report listing pontoon structural mass in kg, max fiber stress per case, max core shear, first buckling load factor, buoyancy reserve.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis entry covers the complete twin-hull catamaran assembly: port-side pontoon hull, starboard-side pontoon hull, and the shared deck superstructure that ties them. Speculated families: (A) port-side hull sandwich shell (full 1.8 m pontoon, sandwich laminate); (B) starboard-side hull sandwich shell (mirror of A); (C) deck plate / crossbeam panel bonded to the top of A and B, carrying the payload tray and distributing LC1 hogging; (D) watertight bulkheads (x3: bow, midship, stern) bonded into each hull, enforcing compartmentalisation and stiffening the hull against LC1/LC2 bending; (E) thruster mounts (x2 per pontoon = 4 total, CFRP or GRP pads bonded to the transom/aft region of A and B); (F) payload tray (non-structural composite panel bolted to C for sensors and mission modules); (G) transom plate closing the aft end of each pontoon and carrying thruster reaction; (H) bow cap closing the forward end of each pontoon and taking the LC2 slam pressure first. Interfaces: A+B<->C deck bond; A+B<->D bulkhead bonds (three per hull); A+B<->G transom bond; A+B<->H bow cap bond; C<->F payload bolted (non-structural); E<->A+B thruster pad bond + bolt. FEM verification runs on the assembled model ONLY per fem_check_policy=assembled_only. Load magnitudes, laminate schedule, core spec, mass cap (6 kg per pontoon structural), buoyancy reserve (37.5 kg per pontoon), and pass/fail thresholds are preserved verbatim.",
+  "short_prompt": "Design a catamaran twin-hull for a 2026 RoboBoat autonomous surface vehicle as a multi-part bonded assembly, compliant with the 2026 RoboBoat Team Handbook. Total vehicle mass capped at 50 kg; vehicle bounding box 2.0 m x 1.2 m x 0.6 m; draft approximately 0.3 m.\n\nEach pontoon is 1.8 m long, 0.30 m wide at waterline, 0.35 m tall, vacuum-infused E-glass/polyester with a 12 mm Divinycell H60 foam core. Skin: E1 = 25 GPa, E2 = 8 GPa, longitudinal tensile strength 400 MPa, density 1900 kg/m^3. Core H60: density 60 kg/m^3, out-of-plane compressive 0.75 MPa, shear 0.5 MPa. Skin layup [0/90/+45/-45] x 2, 0.4 mm per ply.\n\nLC1 hydrostatic hogging: 50 kg x 9.81 = 491 N at midspan of one pontoon; max skin fiber stress <= 400 / 3.0 = 133 MPa; max core shear <= 0.5 MPa; midship deflection <= L/200 = 9 mm. LC2 wave slam equivalent static 15 kPa over 300 x 300 mm patch on bow; stress <= 133 MPa; no core delamination. LC3 docking 500 N horizontal at waterline; <= 133 MPa; local indentation <= 5 mm. LC4 external crush 20 kPa (2 m depth); linear buckling eigenvalue >= 3.0. Pontoon structural mass <= 6 kg per side. Buoyancy reserve at 75% submerged >= 37.5 kg per pontoon.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "buoyancy_volume_integrator",
+        "reason": "R5 reserve buoyancy is a geometric CAD-volume calculation at 75% submergence, not an FEA result.",
+        "examples": [
+          "Rhino VolumeMassProperties",
+          "OpenFOAM setDomain"
+        ]
+      },
+      {
+        "tool": "laminate_first_ply_failure_post",
+        "reason": "Fiber-stress per-ply is a laminate theory post-processing step on top of FEA element results.",
+        "examples": [
+          "ANSYS ACP Post"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "RoboBoat 2026 catamaran twin-hull (multi-part bonded assembly)",
+    "brief": "E-glass/polyester + H60 PVC foam sandwich catamaran for 50 kg USV; passes hogging, wave slam, docking impact, external crush buckling. Multi-part: port-hull (A), starboard-hull (B), deck plate (C), watertight bulkheads (D x6 total), thruster mounts (E x4), payload tray (F), transom plates (G x2), bow caps (H x2). FEM assembled-only; DCR <= 1.0.",
+    "geometric_constraints": {
+      "pontoon_length_m": 1.8,
+      "pontoon_width_waterline_m": 0.3,
+      "pontoon_height_m": 0.35,
+      "vehicle_total_mass_kg_max": 50,
+      "vehicle_bounding_box_m": "2.0 x 1.2 x 0.6",
+      "skin_layup": "[0/90/+45/-45] x 2",
+      "ply_thickness_mm": 0.4,
+      "core_thickness_mm": 12,
+      "bulkhead_spacing_mm_hint": 600,
+      "watertight_compartments_per_hull": 4
+    },
+    "material": {
+      "skin": {
+        "name": "E-glass / polyester",
+        "E1_GPa": 25,
+        "E2_GPa": 8,
+        "long_tensile_strength_MPa": 400,
+        "density_kg_m3": 1900
+      },
+      "core": {
+        "name": "Divinycell H60",
+        "density_kg_m3": 60,
+        "compressive_strength_MPa": 0.75,
+        "shear_strength_MPa": 0.5
+      },
+      "adhesive": "methacrylate marine-grade structural adhesive; shear allowable ~18 MPa",
+      "thruster_pad_material": "CFRP or GRP laminate pad with stainless-steel through-bolts"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "hydrostatic_hogging",
+        "supported_force_N": 491,
+        "description": "all vehicle weight at midspan of one pontoon"
+      },
+      {
+        "id": "LC2",
+        "name": "wave_slam",
+        "slam_pressure_kPa": 15,
+        "patch_mm": "300 x 300"
+      },
+      {
+        "id": "LC3",
+        "name": "docking_collision",
+        "force_N": 500,
+        "direction": "horizontal at waterline"
+      },
+      {
+        "id": "LC4",
+        "name": "external_crush",
+        "external_pressure_kPa": 20
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "crossbeam attachment pads (on C deck) fixed to external frame; bulkheads D carry internal distributed loads",
+      "loads": "distributed hydrostatic, patch wave, point collision, uniform external pressure",
+      "bonded_joints": "A/B<->C, D<->A/B, G<->A/B, H<->A/B modeled as tied surfaces with adhesive post-check"
+    },
+    "objective": {
+      "minimize": "pontoon_mass_kg_per_side",
+      "design_heuristic": "<= 6 kg per pontoon structural"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (A + B + C + D x6 + E x4 + F + G x2 + H x2)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E|F|G|H)",
+        "instance_index",
+        "laminate_schedule_ref",
+        "watertight_compartment_id"
+      ],
+      "report_fields": [
+        "pontoon_structural_mass_kg (per side)",
+        "max_fiber_stress_LC1_MPa",
+        "max_fiber_stress_LC2_MPa",
+        "max_fiber_stress_LC3_MPa",
+        "max_core_shear_MPa",
+        "midspan_deflection_LC1_mm",
+        "local_indentation_LC3_mm",
+        "first_buckling_load_factor",
+        "buoyancy_reserve_kg",
+        "connection_DCR_max",
+        "per_part_max_fiber_stress"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "port_side_hull_shell",
+        "role": "port pontoon sandwich shell carrying hogging, slam, and docking loads",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 1800,
+          "waterline_width_mm": 300,
+          "height_mm": 350,
+          "construction": "sandwich ([0/90/+45/-45] x 2 outer skin, 12 mm H60, same inner skin)",
+          "form": "semi-displacement hull form with ~0.3 m draft"
+        },
+        "material_hint": "E-glass / polyester + Divinycell H60",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "starboard_side_hull_shell",
+        "role": "starboard pontoon sandwich shell (mirror of A)",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 1800,
+          "waterline_width_mm": 300,
+          "height_mm": 350,
+          "construction": "sandwich (as A)",
+          "mirror_of": "A"
+        },
+        "material_hint": "E-glass / polyester + Divinycell H60",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "deck_plate",
+        "role": "shared deck/crossbeam panel bonded atop A and B; distributes LC1 hogging and carries the payload tray",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "1800 x 1200 x 15 sandwich",
+          "construction": "same sandwich schedule as A/B",
+          "bond_flange_width_mm_min": 30
+        },
+        "material_hint": "E-glass / polyester + Divinycell H60",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "watertight_bulkhead",
+        "role": "internal transverse bulkhead stiffening hull and enforcing compartmentalisation",
+        "count_min": 6,
+        "geometric_constraints": {
+          "location_along_pontoon": "3 per hull (bow, midship, stern); 6 total across both hulls",
+          "nominal_size_mm": "300 x 350 x 8 (monolithic GRP)",
+          "bond": "fillet bonded to inner skin"
+        },
+        "material_hint": "E-glass / polyester monolithic laminate",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "thruster_mount",
+        "role": "pad bonded to aft outer skin carrying thruster housing and reaction",
+        "count_min": 4,
+        "geometric_constraints": {
+          "pad_size_mm": "120 x 120 x 10",
+          "location": "2 per pontoon at the aft quarter",
+          "bolt_count": 4,
+          "bolt_size": "M6 stainless"
+        },
+        "material_hint": "CFRP or GRP laminate pad",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "payload_tray",
+        "role": "non-structural composite panel bolted to C for sensors / mission modules",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "1000 x 800 x 10",
+          "bolt_count_min": 16,
+          "construction": "CFRP or GRP solid laminate"
+        },
+        "material_hint": "CFRP or GRP solid laminate",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "transom_plate",
+        "role": "aft closure plate of each pontoon; reacts thruster pull",
+        "count_min": 2,
+        "geometric_constraints": {
+          "nominal_size_mm": "300 x 350 x 10",
+          "construction": "monolithic GRP or sandwich",
+          "bond_flange_width_mm_min": 25
+        },
+        "material_hint": "E-glass / polyester monolithic",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "bow_cap",
+        "role": "forward closure cap taking LC2 slam pressure first",
+        "count_min": 2,
+        "geometric_constraints": {
+          "nominal_size_mm": "200 x 350 x 12",
+          "construction": "monolithic GRP with local ply build-up",
+          "bond": "bonded with structural adhesive and overlap lay-up"
+        },
+        "material_hint": "E-glass / polyester monolithic with ply build-up",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_length_m": 2.0,
+      "overall_width_m": 1.2,
+      "overall_height_m": 0.6,
+      "draft_m": 0.3,
+      "coordinate_system": "X forward, Y port-to-starboard, Z up",
+      "total_vehicle_mass_cap_kg": 50,
+      "pontoon_structural_mass_cap_kg": 6,
+      "buoyancy_reserve_per_pontoon_kg_min": 37.5
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_core_shear",
+        "limit_MPa": 0.5,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1c",
+        "type": "structural_analysis",
+        "metric": "midspan_deflection",
+        "limit_mm": 9,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_fiber_stress",
+        "limit_MPa": 133,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "pontoon_structural_mass",
+        "limit_kg": 6,
+        "applies_to": [
+          "per_pontoon_structural"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "buoyancy_reserve",
+        "limit_kg": 37.5,
+        "applies_to": [
+          "per_pontoon_design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 3.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across bonded interfaces (IF1..IF7) <= 1.0 under the governing load case.",
+        "metric": "max_DCR across IF1..IF7",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Hull-to-deck bond (IF1) and bulkhead bonds (IF2) adhesive shear utilization <= 1.0 under LC1 hogging.",
+        "metric": "max adhesive shear utilization at IF1, IF2",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "sandwich laminated shell + tied contact for bonds + solid for thruster pads E",
+      "mesh_size_mm_in_critical_regions": 20,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3 (LC1-LC3)",
+        "linear buckling eigenvalue (LC4)"
+      ],
+      "connection_modeling": [
+        "A/B-to-C deck bond as tied contact with adhesive shear post-check",
+        "bulkheads D bonded to hull inner skin as tied contact",
+        "bow cap H bonded with overlap region modeled as ply-extension"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A_port_hull + B_starboard_hull (top flange)",
+        "C_deck_plate"
+      ],
+      "mediated_by": "continuous structural adhesive bond along each hull top flange",
+      "load_path": "LC1 hogging reaction from the loaded pontoon into the deck and across to the opposite pontoon"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "D_bulkhead (3x per hull)",
+        "A or B inner skin"
+      ],
+      "mediated_by": "fillet bond lay-up",
+      "load_path": "stiffens hull against LC1 bending and LC2 slam; enforces watertight compartments"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "E_thruster_mount (4x)",
+        "A or B aft outer skin"
+      ],
+      "mediated_by": "bonded pad + 4 stainless M6 through-bolts",
+      "load_path": "thruster reaction into aft hull section"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "F_payload_tray",
+        "C_deck_plate"
+      ],
+      "mediated_by": "bolted (non-structural)",
+      "load_path": "payload weight into deck; negligible structural share"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "G_transom_plate (2x)",
+        "A or B aft end"
+      ],
+      "mediated_by": "bonded with structural adhesive",
+      "load_path": "closes aft end; reacts thruster pull-through and aft hogging shear"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "H_bow_cap (2x)",
+        "A or B forward end"
+      ],
+      "mediated_by": "bonded with overlap lay-up",
+      "load_path": "LC2 wave slam first enters H, transfers into A/B forward region"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "C_deck_plate",
+        "external crossbeam / vehicle frame"
+      ],
+      "mediated_by": "bolted (external interface)",
+      "load_path": "carries total vehicle weight into the twin-hull structure"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "A catamaran's behavior under hogging, slam, and crush buckling is governed by the bonded interfaces between hull skin, deck, bulkheads, and end caps; single-body FEA of one hull cannot capture the load-sharing between pontoons across the deck nor the bulkhead-spacing effect on LC4 buckling.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Watertight compartmentalisation (RoboBoat handbook) and the deck tying port and starboard hulls both require the hull to be a bonded assembly. Laminate-only single-body FEA misrepresents buckling and hogging load paths.",
+    "speculation_caveats": "Bulkhead count (3 per hull) and thruster-mount location (2 per hull) are plausible defaults; actual counts depend on team mission modules. No additional rulebook clauses are cited.",
+    "exclusions_explained": {
+      "vibration_analysis": "Low-speed ASV.",
+      "thermal_analysis": "Ambient.",
+      "fluid_analysis": "Wave-slam pre-reduced to equivalent pressure.",
+      "radiation_analysis": "Not applicable."
+    },
+    "original_sample_preserved_at": "benchmark/briefs/single/270_a30_roboboat_hull.json"
+  },
+  "rulebook_citations": {}
+}

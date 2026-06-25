@@ -1,0 +1,549 @@
+{
+  "id": "041_s10_stanag_4703_light_uas",
+  "source": {
+    "catalog_ref": "S10",
+    "year": 2014,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/041_s10_stanag_4703_light_uas.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "fixed_wing_uas_main_spar",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the main wing spar of a fixed-wing tactical unmanned aircraft with MTOW 140 kg, wingspan 5.2 m, governed by STANAG 4703 / AEP-83 Light UAS airworthiness (Edition A v1 2014). The spar is delivered as a multi-part assembly because a C-spar with composite caps + a thin shear web + discrete ribs + root-bolt load transfer is fundamentally a multi-body composite structure. The assembly consists of (A) upper and lower CFRP spar caps, (B) a CFRP shear web, (C) eight ribs spaced along the span, and (D) four M8 titanium root-attach bolts transferring load from the spar root to the fuselage root fitting.\n\nSTANAG 4703 Section 4 (Structure) prescribes a symmetric maneuvering envelope, gust-load envelope, ultimate factor of safety 1.5 over limit load, and minimum margin-of-safety >=0 at ultimate. Category II light UAS (5.7 < MTOW <= 150 kg).\n\nAircraft parameters. MTOW 140 kg (1373 N), wing area S = 2.5 m^2, cruise VC = 40 m/s EAS, dive VD = 55 m/s EAS, stall VS = 18 m/s EAS. Maneuvering envelope: n1 = +4.0, n3 = -2.0, Ude = 15.2 m/s at VC per STANAG 4703 Table B2.\n\nSpar geometry. Single-cell carbon/epoxy composite C-spar at 25% chord. Root half-span 2.6 m. Wing chord tapers from 550 mm at root to 330 mm at tip (taper 0.6). Spar caps w_c and t_c (design variables); web thickness t_w 4-12 mm range. Ribs at 8 equal-spaced stations. Spar joint at wing root carries 4 M8 titanium bolts in double shear.\n\nMaterial. IM7/8552 UD CFRP caps: E1 = 165 GPa, Xt = 2560 MPa, Xc = 1590 MPa. 8552/AS4 plain-weave QI web: tension 450 MPa, compression 380 MPa, shear 90 MPa. Composite knockdown 1.25.\n\nLoad cases at limit. LC1 (pos maneuver n=+4.0): M_x_lim = 5711 N*m, V_z_lim = 2746 N. LC2 (neg n=-2.0): M_x_lim = -2856, V_z_lim = -1373. LC3 (gust VC, equivalent n=3.5): M_x_lim = 5000, V_z_lim = 2400. LC4 (ground landing 3 g rear spar): 1500 N*m. Ultimate = 1.5 x limit.\n\nPass/fail criteria reproduce STANAG 4703 verbatim and are evaluated on the fully assembled spar. (R1) Spar-cap longitudinal stress <= Xt_eff = 2048 MPa tension, Xc_eff = 1272 MPa compression. (R2) Web shear stress <= S_eff = 72 MPa. (R3) Tsai-Wu or max-stress failure index <= 1.0. (R4) Root-bolt bearing stress <= 1425 MPa. (R5) Wing-tip deflection at limit LC1 <= 260 mm. (R6) Spar mass <= 3.5 kg.\n\nAssembly policy. Cap stresses, web shear, and root-bolt bearing are all coupled through a C-spar where the caps, web, and ribs must deform compatibly. FEM operates on the assembled spar structure. Individual caps or webs cannot be evaluated standalone.\n\nSolver and analysis expectations. Primary: composite laminate FEM (shell or continuum-shell) with Tsai-Wu or max-stress evaluation at each ply on the assembled spar. Closed-form beam-theory cross-check for spar-cap axial stress is recommended. Buckling of the web panels is NOT required. Modal, thermal, fluid, and radiation analyses are NOT required.\n\nDeliverables. STEP AP242 of the assembled spar (caps + web + ribs + root bolts), composite layup per cap and web, spar mass in kg, max ply stress and Tsai-Wu index per LC, root-bolt bearing stress, wing-tip deflection at LC1.",
+  "short_prompt": "Design the main wing spar of a fixed-wing tactical UAS (MTOW 140 kg, wingspan 5.2 m) per STANAG 4703 / AEP-83 Light UAS Edition A v1 2014, delivered as a multi-part C-spar assembly: upper and lower CFRP spar caps + CFRP shear web + eight ribs + four M8 titanium root-attach bolts. Ultimate FoS 1.5 on limit. Category II (5.7 < MTOW <= 150 kg).\n\nAircraft envelope. MTOW 140 kg (1373 N), S = 2.5 m^2, VC = 40 m/s EAS, VD = 55 m/s, VS = 18 m/s; n1 = +4.0, n3 = -2.0; gust Ude = 15.2 m/s at VC per STANAG 4703 Table B2. Root half-span 2.6 m; chord tapers 550 mm root to 330 mm tip; C-spar at 25% chord; web 4-12 mm; ribs at 8 stations; root joint 4 M8 Ti bolts in double shear.\n\nMaterials. IM7/8552 UD caps (E1 = 165 GPa, Xt = 2560 MPa, Xc = 1590 MPa). 8552/AS4 QI plain-weave web (tension 450 MPa, compression 380 MPa, shear 90 MPa). Composite knockdown 1.25 => Xt_eff = 2048 MPa, Xc_eff = 1272 MPa, web S_eff = 72 MPa.\n\nLoad cases at limit.\n- LC1 pos maneuver n = +4.0: M_x_lim = 5711 N*m, V_z_lim = 2746 N.\n- LC2 neg maneuver n = -2.0: -2856, -1373.\n- LC3 gust VC (equivalent n = 3.5): 5000, 2400.\n- LC4 ground landing 3 g rear spar: 1500 N*m.\n\nRoot-bolt bearing stress <= 1425 MPa; wing-tip deflection at limit LC1 <= 260 mm; spar mass <= 3.5 kg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Fixed-wing UAS main spar assembly per STANAG 4703 Category II",
+    "brief": "140 kg MTOW UAS CFRP C-spar assembly (caps + web + 8 ribs + 4 root bolts); n +4.0/-2.0; ultimate = 1.5 x limit; Tsai-Wu <= 1.0.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "CFRP_spar_cap",
+        "role": "unidirectional IM7/8552 cap carrying primary bending load (upper cap in compression under positive maneuver, lower cap in tension)",
+        "count_min": 2,
+        "geometric_constraints": {
+          "layup": "unidirectional IM7/8552",
+          "width_mm": "design variable w_c",
+          "thickness_mm": "design variable t_c"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "CFRP_shear_web",
+        "role": "plain-weave QI 8552/AS4 web carrying spanwise shear",
+        "count_min": 1,
+        "geometric_constraints": {
+          "layup": "quasi-isotropic 8552/AS4 plain weave",
+          "thickness_mm_range": [
+            4,
+            12
+          ]
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "internal_rib",
+        "role": "discrete rib stabilizing the cross-section at each of 8 spanwise stations",
+        "count_min": 8,
+        "geometric_constraints": {
+          "station_count": 8,
+          "location": "equal-spaced along half-span"
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "root_attach_bolt_M8_Ti",
+        "role": "M8 titanium bolt in double shear transferring root load into fuselage fitting",
+        "count_min": 4,
+        "geometric_constraints": {
+          "size": "M8 titanium",
+          "shear_mode": "double"
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "half_span_m": 2.6,
+      "root_chord_mm": 550,
+      "tip_chord_mm": 330,
+      "spar_at_chord_pct": 25
+    },
+    "material": {
+      "cap": {
+        "name": "IM7/8552 UD",
+        "E1_GPa": 165,
+        "E2_GPa": 8.8,
+        "G12_GPa": 5.0,
+        "Xt_MPa": 2560,
+        "Xc_MPa": 1590,
+        "Yt_MPa": 73,
+        "Yc_MPa": 185,
+        "S_MPa": 90,
+        "density_kg_m3": 1570
+      },
+      "web": {
+        "name": "8552/AS4 plain weave QI",
+        "tension_MPa": 450,
+        "compression_MPa": 380,
+        "shear_MPa": 90
+      }
+    },
+    "maneuver_envelope": {
+      "n1_pos": 4.0,
+      "n3_neg": -2.0,
+      "VC_m_s": 40,
+      "VD_m_s": 55,
+      "VS_m_s": 18,
+      "Ude_m_s_at_VC": 15.2
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pos_maneuver_n4",
+        "M_x_limit_Nm": 5711,
+        "V_z_limit_N": 2746
+      },
+      {
+        "id": "LC2",
+        "name": "neg_maneuver_n-2",
+        "M_x_limit_Nm": -2856,
+        "V_z_limit_N": -1373
+      },
+      {
+        "id": "LC3",
+        "name": "pos_gust_VC",
+        "M_x_limit_Nm": 5000,
+        "V_z_limit_N": 2400
+      },
+      {
+        "id": "LC4",
+        "name": "landing_3g_rear",
+        "M_x_limit_Nm": 1500
+      }
+    ],
+    "boundary_conditions": {
+      "root": "fixed via 4x M8 Ti bolts in double shear (D family reacting)"
+    },
+    "objective": {
+      "minimize": "spar_mass",
+      "target_kg_max": 3.5
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (2 caps + 1 web + 8 ribs + 4 bolts)",
+      "body_metadata": [
+        "part_family (A|B|C|D)",
+        "instance_index",
+        "layup_tag"
+      ],
+      "report_fields": [
+        "spar_mass_kg",
+        "max_ply_stress_per_LC_MPa",
+        "Tsai_Wu_index_per_LC",
+        "root_bolt_bearing_stress_MPa",
+        "wing_tip_deflection_LC1_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "STANAG 4703 / AEP-83 Ed A v1",
+      "revision": "2014-09-16"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "cap_longitudinal_stress_tension_ultimate",
+        "limit_MPa": 2048,
+        "derivation": "Xt / 1.25 composite knockdown on top of ultimate 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "web_shear_stress_ultimate",
+        "limit_MPa": 72,
+        "derivation": "S / 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "Tsai_Wu_or_max_stress_failure_index_ultimate",
+        "limit": 1.0,
+        "derivation": "Composite failure criterion per STANAG 4703 Section 4.2.1",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "root_bolt_bearing_stress_ultimate",
+        "limit_MPa": 1425,
+        "derivation": "1.5 * Ftu_Ti = 1.5 * 950",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "wing_tip_deflection_at_limit",
+        "limit_mm": 260,
+        "derivation": "b/20 rigidity proxy",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "spar_mass",
+        "limit_kg": 3.5,
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "composite shell or continuum shell on assembled spar",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard",
+        "Nastran composites"
+      ],
+      "analysis_types": [
+        "linear static x4 composite on full spar assembly"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A CFRP_spar_cap (upper/lower)",
+        "B CFRP_shear_web"
+      ],
+      "mediated_by": "co-cured or secondary-bonded joint",
+      "load_path": "shear flow from web into cap"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A+B spar structure",
+        "C internal_rib"
+      ],
+      "mediated_by": "bonded rib-to-cap/web joint",
+      "load_path": "cross-section stabilization and load-introduction"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A root-end cap + B root-end web",
+        "fuselage root fitting (external)"
+      ],
+      "mediated_by": "D root_attach_bolt_M8_Ti (x4)",
+      "load_path": "root shear and bending reaction into fuselage"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Cap stress, web shear, Tsai-Wu index, root-bolt bearing, and wing-tip deflection are all inherently assembly-level outcomes of a C-spar with ribs and root bolts."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "A CFRP C-spar is fabricated from multiple families (UD caps, woven web, discrete ribs, metallic root bolts); no single family carries the full load envelope.",
+    "exclusions_explained": {
+      "vibration_analysis": "Flutter out of scope.",
+      "thermal_analysis": "Ambient assumed.",
+      "fluid_analysis": "Lift already reduced to bending moments.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Web panel buckling excluded at this stage."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Flutter analysis per STANAG 4703 Section 4.4",
+      "Web panel buckling",
+      "Damage-tolerance / BVID per MIL-HDBK-17 Vol. 3"
+    ]
+  },
+  "eval_coverage": [
+    "STANAG 4703 maneuver + gust envelope on assembled spar",
+    "composite Tsai-Wu / max-stress at ply level",
+    "ultimate 1.5 + composite knockdown",
+    "root-bolt bearing"
+  ],
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3",
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3,LC4",
+      "metric": "cap_longitudinal_stress_tension_ultimate",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3",
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3,LC4",
+      "metric": "web_shear_stress_ultimate",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3",
+        "LC4"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3,LC4",
+      "metric": "Tsai_Wu_or_max_stress_failure_index_ultimate",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "root_bolt_bearing_stress_ultimate",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "wing_tip_deflection_at_limit",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_005",
+      "requirement_id": "R6",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "spar_mass",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_006",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

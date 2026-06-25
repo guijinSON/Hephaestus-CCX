@@ -1,0 +1,372 @@
+{
+  "id": "054_s23_milstd1522a_missile_tank",
+  "source": {
+    "catalog_ref": "S23",
+    "year": 1984,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/054_s23_milstd1522a_missile_tank.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_pressure_vessel",
+  "part_class": "missile_class_pressurized_tank",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a 300 mm diameter Al 6061-T6 TIG-welded pressurized tank per MIL-STD-1522A (1984), delivered as a multi-part assembly because MIL-STD-1522A explicitly treats weld regions at reduced allowable (0.85 weld efficiency) vs parent material, and the pass/fail checks apply to the assembled tank composed of a cylindrical body, two 2:1 ellipsoidal heads joined by TIG girth welds, and two outlet/vent bosses at the heads. Proof pressure = 1.5 x MEOP, burst = 2.5 x MEOP for metallic tanks, safe-life factor 4x cyclic, NDI minimum-detectable flaw per Table II.\n\nAssembly layout. (A) Cylindrical body: Al 6061-T6, 300 mm OD, 800 mm long, wall thickness 2.0-5.0 mm design variable, minimum manufacturing 2.0 mm. (B) Ellipsoidal heads (x2): Al 6061-T6, axial height 75 mm, 2:1 ratio, joined to (A) by circumferential TIG girth welds. (C) Outlet bosses: two 25 mm ID outlet bosses at each end, Al 6061-T6, TIG welded into the heads. (D) Vent boss: one 15 mm ID vent boss at the top ellipsoidal head, TIG welded in. Total internal volume ~60 L. Strap mounts are out of scope.\n\nMaterial. Al 6061-T6 per MMPDS S-basis: E = 68.9 GPa, nu = 0.33, rho = 2700 kg/m^3, Fty = 276 MPa, Ftu = 310 MPa, K_IC = 29 MPa*m^0.5. Weld efficiency eta_w = 0.85 at TIG girth and boss welds.\n\nOperating envelope. MEOP = 3.5 MPa. Proof = 5.25 MPa. Burst = 8.75 MPa. Service cycles = 50; safe-life factor 4 => analysis life 200 cycles. Temperature -180 C (LOX) to +50 C; analyzed at 20 C with cryogenic properties as downstream concern.\n\nLoad cases. LC1 (proof 5.25 MPa, room temperature). LC2 (burst 8.75 MPa). LC3 (MEOP 3.5 MPa + 10 g axial + 5 g lateral on 13 kg of LOX + dry tank). LC4 (leak-before-burst with a_i = 0.25 mm PT NDI). LC5 (fatigue 200 cycles at Delta sigma = 80 MPa, R = 0, Paris C = 1.8e-11, m = 3.0).\n\nPass/fail criteria (all on the assembled tank, parent and weld regions distinguished). (R1a) LC1 parent von Mises <= Fty = 276 MPa. (R1b) LC1 weld von Mises <= eta_w * Fty = 234.6 MPa. (R2a) LC2 parent von Mises <= Ftu = 310 MPa. (R2b) LC2 weld von Mises <= eta_w * Ftu = 263.5 MPa. (R3) LC3 combined MEOP + launch max von Mises at limit <= Fty/1.25 = 220.8 MPa. (R4) LC4 LBB: a_crit >= t_wall. (R5) LC5 cycles to through-wall >= 200. (R6) Dry tank mass <= 5.5 kg. (R7) NDI PT a_i declared <= 0.25 mm per MIL-STD-1522A Table II. (R8) Proof-pressure test plan documents >= 10 min hold at 5.25 MPa.\n\nAssembly policy. Weld-region checks (R1b, R2b) live only on the A-B girth weld and the A-C / B-C / B-D boss welds; parent checks (R1a, R2a) live on the continuous parent metal inboard of welds. R3 combined launch loads transfer through the entire assembled shell. R4 LBB depends on parent wall thickness, but NDI discipline (R7) applies to welds. No part evaluated in isolation has meaningful pass/fail.\n\nSolver and analysis expectations. Primary: axisymmetric elastic FEM for LC1-LC3 (R1, R2, R3); LEFM K-solution (Newman-Raju, NASGRO) for LC4 LBB; Paris-law integration for LC5. Buckling, modal, thermal-transient, fluid, ionizing-radiation NOT required.\n\nDeliverables. STEP AP242 of assembled tank, wall thickness in mm, dry mass in kg, max von Mises at proof/burst/launch for both parent and weld, LBB margin, and cycles-to-failure from Paris integration.",
+  "short_prompt": "Design a 300 mm diameter Al 6061-T6 TIG-welded pressurized tank per MIL-STD-1522A (1984), delivered as a multi-part assembly distinguishing parent vs weld regions (weld efficiency eta_w = 0.85 at TIG girth and boss welds). Assembly: cylindrical body (300 mm OD x 800 mm long, wall 2.0-5.0 mm design variable, min 2.0 mm) + two 2:1 ellipsoidal heads (axial height 75 mm) + two 25 mm ID outlet bosses + one 15 mm ID vent boss. Internal volume ~60 L. Strap mounts out of scope.\n\nMaterial. Al 6061-T6 per MMPDS S-basis: E = 68.9 GPa, nu = 0.33, rho = 2700 kg/m^3, Fty = 276 MPa, Ftu = 310 MPa, K_IC = 29 MPa*m^0.5.\n\nOperating envelope. MEOP 3.5 MPa; proof 5.25 MPa (1.5x MEOP); burst 8.75 MPa (2.5x MEOP); service 50 cycles, safe-life factor 4 => 200 cycles; -180 C to +50 C, analyzed at 20 C. Proof test hold >= 10 min at 5.25 MPa.\n\nLoad cases.\n- LC1 proof 5.25 MPa room temp.\n- LC2 burst 8.75 MPa.\n- LC3 MEOP 3.5 MPa + 10 g axial + 5 g lateral on 13 kg of LOX + dry tank.\n- LC4 leak-before-burst a_i = 0.25 mm PT NDI.\n- LC5 fatigue 200 cycles at Delta sigma = 80 MPa, R = 0, Paris C = 1.8e-11, m = 3.0.\n\nPass limits: parent LC1 <= 276 MPa, weld LC1 <= 234.6 MPa; parent LC2 <= 310 MPa, weld LC2 <= 263.5 MPa; LC3 limit <= 220.8 MPa; a_crit >= t_wall; dry mass <= 5.5 kg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "LEFM_K_solution",
+        "reason": "MIL-STD-1522A LBB requires K-solution evaluation.",
+        "examples": [
+          "NASGRO",
+          "hand calc Newman-Raju"
+        ]
+      },
+      {
+        "tool": "Paris_law_cycle_integration",
+        "reason": "Safe-life 4x cycles.",
+        "examples": [
+          "NASGRO",
+          "AFGROW",
+          "spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "60 L Al 6061 missile-class pressurized tank per MIL-STD-1522A as multi-part assembly",
+    "brief": "Al 6061 TIG-welded LOX/run tank (cylinder + 2 ellipsoidal heads + outlet/vent bosses), MEOP 3.5 MPa, proof 1.5x, burst 2.5x, 4x safe-life on 50 cycles; parent and weld allowables distinguished.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "cylindrical_body",
+        "role": "primary cylindrical pressure shell",
+        "count_min": 1,
+        "geometric_constraints": {
+          "OD_mm": 300,
+          "length_mm": 800,
+          "wall_thickness_mm": {
+            "min": 2.0,
+            "max": 5.0
+          },
+          "material": "Al 6061-T6"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "ellipsoidal_head",
+        "role": "2:1 ellipsoidal end cap joined to cylinder by TIG girth weld",
+        "count_min": 2,
+        "geometric_constraints": {
+          "axial_height_mm": 75,
+          "ellipsoidal_ratio": "2:1",
+          "material": "Al 6061-T6"
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "outlet_boss",
+        "role": "threaded outlet boss welded into an ellipsoidal head",
+        "count_min": 2,
+        "geometric_constraints": {
+          "ID_mm": 25,
+          "material": "Al 6061-T6"
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "vent_boss",
+        "role": "vent boss welded into the top head",
+        "count_min": 1,
+        "geometric_constraints": {
+          "ID_mm": 15,
+          "material": "Al 6061-T6"
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "OD_mm": 300,
+      "overall_length_mm": 950,
+      "internal_volume_L": 60
+    },
+    "material": {
+      "name": "Al 6061-T6 TIG-welded",
+      "Fty_MPa": 276,
+      "Ftu_MPa": 310,
+      "E_GPa": 68.9,
+      "density_kg_m3": 2700,
+      "K_IC_MPa_sqrt_m": 29,
+      "weld_efficiency": 0.85
+    },
+    "operating_envelope": {
+      "MEOP_MPa": 3.5,
+      "proof_MPa": 5.25,
+      "burst_MPa": 8.75,
+      "service_cycles": 50,
+      "safe_life_factor": 4,
+      "temperature_C": {
+        "min": -180,
+        "max": 50,
+        "analyzed_at_C": 20
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "proof",
+        "internal_MPa": 5.25
+      },
+      {
+        "id": "LC2",
+        "name": "burst",
+        "internal_MPa": 8.75
+      },
+      {
+        "id": "LC3",
+        "name": "MEOP_plus_launch",
+        "internal_MPa": 3.5,
+        "axial_g": 10,
+        "lateral_g": 5,
+        "inertial_mass_kg": 13
+      },
+      {
+        "id": "LC4",
+        "name": "LBB",
+        "a_i_mm": 0.25
+      },
+      {
+        "id": "LC5",
+        "name": "fatigue",
+        "cycles": 200,
+        "delta_sigma_MPa": 80,
+        "R": 0,
+        "paris_C": 1.8e-11,
+        "paris_m": 3.0
+      }
+    ],
+    "boundary_conditions": {
+      "strap_mounts": "out of scope"
+    },
+    "objective": {
+      "minimize": "dry_mass",
+      "target_kg_max": 5.5
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (cylinder + 2 heads + outlet bosses + vent boss)",
+      "body_metadata": [
+        "part_family (A|B|C|D)",
+        "weld_region_flag"
+      ],
+      "report_fields": [
+        "wall_thickness_mm",
+        "dry_mass_kg",
+        "parent_vm_proof_MPa",
+        "weld_vm_proof_MPa",
+        "parent_vm_burst_MPa",
+        "weld_vm_burst_MPa",
+        "LBB_margin",
+        "cycles_to_failure"
+      ]
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "MIL-STD-1522A",
+      "revision": "1984 (cancelled; superseded by MIL-STD-1540 and AFSPCMAN 91-710)"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "parent_max_von_mises_at_proof",
+        "limit_MPa": 276,
+        "derivation": "Fty at 1.5 x MEOP proof per MIL-STD-1522A",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "weld_max_von_mises_at_proof",
+        "limit_MPa": 234.6,
+        "derivation": "Fty * 0.85 weld efficiency",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2a",
+        "type": "structural_analysis",
+        "metric": "parent_max_von_mises_at_burst",
+        "limit_MPa": 310,
+        "derivation": "Ftu at 2.5 x MEOP burst per MIL-STD-1522A",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2b",
+        "type": "structural_analysis",
+        "metric": "weld_max_von_mises_at_burst",
+        "limit_MPa": 263.5,
+        "derivation": "Ftu * 0.85",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_at_MEOP_plus_launch",
+        "limit_MPa": 220.8,
+        "derivation": "Fty / 1.25",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "LBB_a_crit_vs_wall",
+        "limit": 1.0,
+        "derivation": "LBB: a_crit must exceed t_wall",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "cycles_to_through_wall_safe_life",
+        "limit_cycles": 200,
+        "derivation": "4x 50 service cycles",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "dry_mass",
+        "limit_kg": 5.5,
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "NDI_PT_a_i_declared_mm",
+        "limit_mm": 0.25,
+        "derivation": "MIL-STD-1522A Table II PT minimum",
+        "applies_to": [
+          "plan"
+        ],
+        "operator": "<=",
+        "note": "a_i used in LC5 must not exceed this NDI threshold"
+      },
+      {
+        "id": "R8",
+        "type": "structural_analysis",
+        "metric": "proof_pressure_test_duration_documented_min",
+        "limit_min": 10,
+        "derivation": "MIL-STD-1522A proof test plan",
+        "applies_to": [
+          "plan"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "axisymmetric or 3D TET10",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical",
+        "NASGRO"
+      ],
+      "analysis_types": [
+        "linear static pressure",
+        "LEFM K",
+        "Paris-law"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A cylindrical_body end",
+        "B ellipsoidal_head knuckle"
+      ],
+      "mediated_by": "TIG circumferential girth weld (eta_w = 0.85)",
+      "load_path": "hoop and axial membrane stress continuity; weld-region reduced allowable applies"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B ellipsoidal_head",
+        "C outlet_boss"
+      ],
+      "mediated_by": "TIG boss weld",
+      "load_path": "pressure load path out through outlet; stress concentration at boss opening"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B top ellipsoidal_head",
+        "D vent_boss"
+      ],
+      "mediated_by": "TIG boss weld",
+      "load_path": "vent line; stress concentration at boss opening"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Weld allowable (eta_w = 0.85) applies to the A-B girth and A-C/B-C/B-D boss welds; parent allowables apply elsewhere. Proof, burst, and launch stress fields span the assembled shell. LBB and safe-life both reference parent or weld material at the assembled geometry."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "MIL-STD-1522A explicitly distinguishes parent and weld allowables; the tank is by construction a welded assembly.",
+    "exclusions_explained": {
+      "vibration_analysis": "Enveloped by LC3 QS.",
+      "thermal_analysis": "Cryogenic LOX properties out of scope; room-temp analysis.",
+      "fluid_analysis": "LOX treated as lumped mass; no slosh.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Internal pressure stabilizes shell."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Cryogenic material property knockdown",
+      "Stress-corrosion in welds",
+      "Hydrostatic proof-test fixturing"
+    ]
+  },
+  "eval_coverage": [
+    "proof 1.5x + burst 2.5x factors on assembled tank",
+    "weld efficiency applied to weld region only",
+    "safe-life 4x with declared NDI a_i at welds"
+  ]
+}

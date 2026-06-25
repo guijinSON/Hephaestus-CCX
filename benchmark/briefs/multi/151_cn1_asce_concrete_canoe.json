@@ -1,0 +1,345 @@
+{
+  "id": "151_cn1_asce_concrete_canoe",
+  "source": {
+    "catalog_ref": "CN1",
+    "year": 2026,
+    "tier": "A+",
+    "original_sample": "benchmark/briefs/single/151_cn1_asce_concrete_canoe.json",
+    "multipart_basis": "Decomposition inferred from the original prompt that describes a prismatic hull shell with optional internal stiffening ribs at 500 mm spacing; real concrete canoes are cast-in-mould multi-section assemblies. No rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "civil_marine_structural",
+  "part_class": "concrete_canoe_hull_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the 6.0 m ASCE concrete canoe hull as a multi-part assembly, explicitly modeling the hull as the physical collection of cast cementitious shell panels, gunwale rail, transverse internal stiffening ribs, bow/stern end closures, and the fibre-mesh reinforcement layer that together form the monocoque cementitious hull. The original prompt permits internal stiffening ribs at 500 mm spacing and a continuous shell; this multipart decomposition exposes that internal structure for interface verification.\n\nThe assembly consists of six part families: (A) the main hull shell, a prismatic symmetric cross-section 6.0 m long with 760 mm gunwale beam, 320 mm keel depth, and a nominal 12 mm wall thickness; (B) optional transverse internal stiffening ribs at 500 mm spacing (up to 11 ribs across the 6 m length), each a cast-concrete rib of 25 mm thickness running around the inner shell perimeter; (C) the continuous gunwale rail, a cast-concrete cap along the top of the shell with 40 mm thickness for local stiffness and dock-impact confinement; (D) two end closures (bow + stern) that cap the ends of the prismatic hull; (E) the fibre-mesh reinforcement layer embedded in the shell wall (treated as an equivalent smeared orthotropic membrane layer per the original 'fibre mesh or equivalent' material hint); (F) the seat/deck attachment pads at the two paddler stations 1.5 m from each end, 0.40 m x 0.30 m cast-concrete pads integrated into the shell interior.\n\nGeometry inherits the original sample verbatim: hull length 6.0 m, beam at gunwale 760 mm, max depth 320 mm from gunwale to keel, min wall thickness 12 mm, optional rib spacing 500 mm, min freeboard 75 mm at any point under LC1.\n\nMaterial inherits verbatim: concrete mix with w/cm <= 0.45, unit weight 480-1920 kg/m^3, 28-day compressive strength >= 6.9 MPa, tensile strength >= 1.4 MPa, reinforcement = fibre mesh or equivalent. Ribs, gunwale, and end closures use the same concrete mix.\n\nLoads inherit verbatim: LC1 two-paddler patch loads (2 x 80 kg over 0.40 m x 0.30 m footprints at 1.5 m from each end) with freely floating hydrostatic buoyancy; LC2 swamped mid-span rescue lift (160 kg over 0.40 m x 0.30 m patch at midspan, hull supported only at its two end points); LC3 gunwale dock impact (400 N over 0.10 m x 0.10 m on the gunwale, opposite gunwale fixed).\n\nPass/fail criteria inherit verbatim from the original and apply at the assembly level: (R1) max principal tensile stress <= 1.4 MPa under any load case; (R2) max compressive stress <= 6.9 MPa under any load case; (R3) mid-span vertical deflection under LC2 <= 8 mm (span/750); (R4) min freeboard under LC1 >= 75 mm; (R5) first buckling load factor under LC2 >= 2.5. Added assembly-level targets under fem_check_policy.assembled_only: shell-rib bonded interface DCR and shell-gunwale bonded interface DCR must be reported; per-part stresses are reported for diagnostic purposes but do not gate pass/fail.\n\nVibration, thermal, fluid CFD, and radiation analyses are explicitly not required; buoyancy is applied as equivalent hydrostatic pressure per Archimedes. A hydrostatic buoyancy solver outside the linear-elastic FEA is required to resolve waterline and freeboard. Deliver STEP AP242 of the assembly with each body (shell, each rib, gunwale, each end closure, each seat pad) as a distinct solid tagged with part_family (A..F) and instance_index, plus a materials notebook listing the mix design and measured strengths and a structural report giving max principal tensile stress, max compressive stress, midspan deflection, min freeboard, first buckling load factor, assembly mass, and connection DCR at each shell-rib / shell-gunwale / shell-end-closure interface.",
+  "short_prompt": "Design an ASCE concrete canoe hull as a multi-part reinforced-concrete monocoque assembly (outer hull layup, bow and stern reinforcement patches, gunwale stiffeners, bulkheads).\n\nHull 6.0 m x 760 mm x 320 mm; nominal wall 12 mm; concrete mix w/cm <= 0.45 with fc >= 6.9 MPa and ft >= 1.4 MPa.\n\nLoad cases: LC1 static freeboard with two paddlers (freeboard >= 75 mm); LC2 midspan sag under race load (deflection <= 8 mm); LC3 gunwale edge impact.\n\nPass/fail: LC1 freeboard clears 75 mm; LC2 deflection <= 8 mm midspan; buckling LF >= 2.5; FEM at assembled level; reinforcement interface DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "hydrostatic_buoyancy_solver",
+        "reason": "Freeboard and waterline are determined by static Archimedes equilibrium of the hull against fresh water density 1000 kg/m^3, evaluated outside the linear-elastic FEA.",
+        "examples": [
+          "Rhino/Orca3D hydrostatics",
+          "MATLAB buoyancy script"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "6 m concrete canoe hull (multi-part assembly)",
+    "brief": "Multi-part concrete canoe hull: shell (A) + up to 11 ribs (B) + gunwale cap (C) + 2 end closures (D) + fibre-mesh reinforcement layer (E) + 2 seat pads (F). 6.0 m long x 760 mm beam x 320 mm depth, 12 mm min wall. Verified at assembly level against tensile <= 1.4 MPa, compressive <= 6.9 MPa, midspan deflection <= 8 mm (LC2), freeboard >= 75 mm (LC1), buckling factor >= 2.5 (LC2), and connection DCR <= 1.0 at all shell/rib/gunwale/end-closure interfaces.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "hull_shell",
+        "role": "prismatic symmetric cementitious shell 6.0 m long x 760 mm beam x 320 mm depth with 12 mm minimum wall thickness; primary monocoque load path for buoyancy, paddler patch loads, swamped lift, and dock impact",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_m": 6.0,
+          "beam_mm": 760,
+          "depth_mm": 320,
+          "min_wall_mm": 12
+        },
+        "material_hint": "fibre-mesh-reinforced cementitious mix per original prompt",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "transverse_stiffening_rib",
+        "role": "optional internal transverse rib at 500 mm spacing, 25 mm cast thickness around the inner shell perimeter; suppresses shell buckling under swamped lift and provides redundancy for fibre-mesh local tear",
+        "count_min": 0,
+        "count_note": "Up to 11 ribs across the 6 m span at 500 mm spacing per the original prompt's allowance; 0 if the team builds a pure shell design.",
+        "geometric_constraints": {
+          "spacing_mm": 500,
+          "thickness_mm": 25
+        },
+        "material_hint": "same concrete mix as shell",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "gunwale_rail",
+        "role": "continuous cast-concrete rail along the top of the shell (both sides), 40 mm thickness; provides local stiffness and distributes the 400 N dock-impact patch per LC3",
+        "count_min": 1,
+        "count_note": "Single continuous assembly of two parallel rails; modeled as 1-2 part instances depending on the manufacturing break",
+        "geometric_constraints": {
+          "length_m": 6.0,
+          "thickness_mm": 40
+        },
+        "material_hint": "same concrete mix as shell",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "end_closure",
+        "role": "bow and stern end-closure cast elements capping the prismatic hull; provide the two end-support nodes for LC2 swamped-lift supports",
+        "count_min": 2,
+        "geometric_constraints": {
+          "length_mm": 200,
+          "depth_mm": 320
+        },
+        "material_hint": "same concrete mix as shell",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "fibre_mesh_reinforcement",
+        "role": "embedded fibre-mesh reinforcement layer, modeled as a smeared equivalent orthotropic membrane layer within the shell wall per the original 'fibre mesh or equivalent' material hint",
+        "count_min": 1,
+        "geometric_constraints": {
+          "coverage": "full shell"
+        },
+        "material_hint": "alkali-resistant glass-fibre or PVA mesh equivalent, team-selected",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "seat_pad",
+        "role": "cast-concrete seat/deck pad integrated into the shell interior at each paddler station (1.5 m from each end), 0.40 m x 0.30 m footprint; distributes the 80 kg patch load into the shell",
+        "count_min": 2,
+        "geometric_constraints": {
+          "plan_m": [
+            0.4,
+            0.3
+          ]
+        },
+        "material_hint": "same concrete mix as shell",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "6000 x 760 x 320 mm (L x beam x depth)",
+      "coordinate_system": "canoe coordinates: +x along hull length from stern to bow, +y starboard, +z up from keel"
+    },
+    "material": {
+      "concrete_mix": "w/cm <= 0.45, unit weight 480-1920 kg/m3",
+      "reinforcement": "fibre mesh or equivalent",
+      "compressive_strength_MPa_min": 6.9,
+      "tensile_strength_MPa_min": 1.4,
+      "test_age_days": 28
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "two_paddler_floating",
+        "total_live_load_kg": 160,
+        "patch_footprint_m": [
+          0.4,
+          0.3
+        ],
+        "patch_locations": "1.5 m from each end",
+        "application": "patch pressure on seat pads + hydrostatic buoyancy"
+      },
+      {
+        "id": "LC2",
+        "name": "swamped_midspan_lift",
+        "live_load_kg": 160,
+        "patch_footprint_m": [
+          0.4,
+          0.3
+        ],
+        "application": "patch at mid-length, supports at two end-closure nodes only"
+      },
+      {
+        "id": "LC3",
+        "name": "sidewall_dock_impact",
+        "magnitude_N": 400,
+        "patch_footprint_m": [
+          0.1,
+          0.1
+        ],
+        "application": "gunwale patch, opposite gunwale fixed"
+      }
+    ],
+    "boundary_conditions": {
+      "LC1": "freely floating, buoyancy as hydrostatic pressure",
+      "LC2": "supports at two end-closure nodes only",
+      "LC3": "opposite gunwale edge fully fixed",
+      "shell_rib_interface": "bonded tie surface between shell inner face and each rib",
+      "shell_gunwale_interface": "bonded tie surface between shell top edge and gunwale rail",
+      "shell_end_closure_interface": "bonded tie surface between shell ends and end closures"
+    },
+    "objective": {
+      "primary": "pass all pass/fail criteria under assembled_only FEM check",
+      "secondary": "minimize assembly mass subject to minimum wall thickness"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "max_principal_tensile_stress_MPa",
+        "max_compressive_stress_MPa",
+        "midspan_deflection_mm",
+        "min_freeboard_mm",
+        "first_buckling_load_factor",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_principal_tensile_stress",
+        "limit_MPa": 1.4,
+        "derivation": "minimum tensile strength target",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_compressive_stress",
+        "limit_MPa": 6.9,
+        "derivation": "minimum 28-day compressive strength target",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "midspan_vertical_deflection",
+        "limit_mm": 8.0,
+        "derivation": "span/750 deflection limit for 6 m hull",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "min_freeboard",
+        "limit_mm": 75,
+        "derivation": "freeboard floor for loaded canoe",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "derivation": "panel snap-through guard for thin cementitious shell under mid-span lift",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6-assembly",
+        "type": "assembly_analysis",
+        "metric": "connection_DCR_all_interfaces",
+        "limit": 1.0,
+        "derivation": "shell-rib, shell-gunwale, and shell-end-closure bonded tie-surface allowable per concrete shear-friction / cold-joint capacity",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order shell (S8R) or solid-shell with through-thickness integration + bonded tie surfaces for ribs/gunwale",
+      "mesh_size_mm_in_critical_regions": 15,
+      "solver_hints": [
+        "Abaqus Standard",
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x3 cases)",
+        "linear buckling eigenvalue (LC2)"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "cold-joint bond between shell inner face and each transverse rib; transfers shell hoop buckling reaction + swamped-lift shear"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "cold-joint bond between shell top edge and gunwale rail; transfers 400 N dock-impact shear and gunwale confinement"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "cold-joint bond between shell bow/stern ends and end closures; provides the two LC2 support reactions"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "embedded fibre-mesh reinforcement tied to the shell concrete matrix; carries tensile membrane stress beyond concrete cracking threshold"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "cold-joint bond between shell inner floor and seat pads; transfers 80 kg paddler patch load into the shell"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Concrete canoes are cast-in-mould assemblies with optional transverse ribs, a separate gunwale cap, end closures, embedded reinforcement mesh, and seat pads; the multipart sidecar exposes those separately-cast elements as distinct solids for interface verification.",
+    "speculation_caveats": "Rib count (0-11), gunwale rail thickness, and end-closure dimensions are speculated. Fibre-mesh reinforcement is modeled as a smeared orthotropic membrane per the original prompt's 'fibre mesh or equivalent' material hint.",
+    "original_sample_preserved_at": "benchmark/briefs/single/151_cn1_asce_concrete_canoe.json"
+  }
+}

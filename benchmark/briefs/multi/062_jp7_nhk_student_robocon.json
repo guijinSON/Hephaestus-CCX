@@ -1,0 +1,254 @@
+{
+  "id": "062_jp7_nhk_student_robocon",
+  "source": {
+    "catalog_ref": "JP7",
+    "year": 2025,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/062_jp7_nhk_student_robocon.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "robotics_structural",
+  "part_class": "robot_drivetrain_frame",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the drivetrain frame of a student-robotics competition robot for a 2025 edition, delivered as a multi-part assembly because a drivetrain frame of this class is by construction a built-up aluminum-extrusion + laser-cut-sheet structure composed of a base rail frame, side uprights, a top cross-brace, wheel/motor mount plates, and handhold/gantry-lift interfaces. Self-weight vertical shock, tipping-recovery, and 4-point lifting pass/fail all reference the assembled frame geometry.\n\nThe robot must fit within a stowed-configuration envelope of approximately 1000 mm x 1000 mm x 1500 mm (L x W x H). The combined mass of all robots per team must not exceed 50 kg (if one robot, all mass budget applies; if manual+automatic robots, the combined mass must remain under 50 kg). The primary battery is limited to 24 V nominal. Any pneumatic actuators must operate at a gauge pressure no greater than 600 kPa (0.6 MPa) and must be supplied from a reservoir certified for that pressure.\n\nAssembly layout. (A) Base rail frame: rectangular extrusion base carrying drivetrain and acting as primary load path for self-weight and lifting. (B) Side upright: vertical extrusion columns rising from base to the top frame (>= 4 for a rectangular frame). (C) Top cross-brace: transverse extrusion tying the uprights at the top; reacts the horizontal tipping-recovery force. (D) Wheel/motor mount plate: laser-cut sheet bolted to the base rail, carrying wheel axles and drive motors. (E) Handhold / gantry-lift interface: 4 discrete handhold brackets (or gantry rail tabs) bonded/bolted at the top frame or uprights for tournament lifting.\n\nThe drivetrain frame must carry (a) the robot's own self-weight (40 kg assumed for a single-robot design) under a 2 g vertical shock equivalent (80 kg equivalent) with no permanent yield, (b) a 200 N horizontal tipping-recovery force applied at the top of the robot, (c) four-point lifting via hand-holds or a gantry interface where each hand-hold carries 20 kg under 1.5 g shock, representing tournament handling.\n\nAssembly policy. Mass cap (R1) and envelope (R2) are whole-frame geometric/mass checks. Self-weight 2 g yield (R3 / LC1) depends on base + upright + motor-mount coupling. Tipping-recovery (LC2) is the top cross-brace reacting into uprights into base - an assembled-frame load path. 4-point lifting (LC3) enters at the handhold brackets and redistributes through uprights into the base. No part evaluated alone has meaningful pass/fail.\n\nSolver and analysis expectations. Primary: linear static structural FEA for the frame under the three load cases. Pneumatic reservoir pressure certification and voltage rating are regulatory / component-specification checks (non-FEA). Vibration, thermal, fluid, and radiation analyses are explicitly NOT required at the mechanical design gate.\n\nDeliverables: STEP AP242 of the drivetrain frame, a mass budget, and a report listing total robot mass in kg, max von Mises stress per load case in MPa, and max frame deflection per load case in mm.",
+  "short_prompt": "Design the drivetrain frame of a student-robotics competition robot for a 2025 edition, delivered as a built-up multi-part assembly of aluminum extrusions and laser-cut sheet: base rail frame + >= 4 side uprights + top cross-brace + wheel/motor mount plates + 4 handhold/gantry-lift brackets. Stowed envelope ~1000 x 1000 x 1500 mm (LxWxH). Per-team combined robot mass <= 50 kg. Primary battery <= 24 V nominal. Pneumatics <= 600 kPa (0.6 MPa) from a reservoir certified at that pressure.\n\nLoad cases.\n- LC1 self-weight vertical shock: 40 kg frame under 2 g vertical (equivalent 80 kg) with no permanent yield.\n- LC2 tipping-recovery: 200 N horizontal at the top of the robot.\n- LC3 4-point lifting: each of 4 handholds carrying 20 kg under 1.5 g shock.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "component_certification_check",
+        "reason": "24 V battery and 600 kPa pneumatic cert are catalog / datasheet lookups, not simulation.",
+        "examples": [
+          "component datasheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student robotics drivetrain frame as multi-part assembly",
+    "brief": "Drivetrain frame fitting 1 m x 1 m x 1.5 m: base rail + side uprights + top cross-brace + wheel/motor mount plates + handhold/gantry tabs; total robot mass <= 50 kg, 24 V battery, pneumatic <= 600 kPa.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "base_rail_frame",
+        "role": "rectangular extrusion base forming primary lower load path",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "aluminum extrusion 20x20 / 30x30"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "side_upright",
+        "role": "vertical extrusion columns tying base to top frame",
+        "count_min": 4,
+        "geometric_constraints": {
+          "material": "aluminum extrusion"
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "top_cross_brace",
+        "role": "transverse extrusion at top reacting tipping-recovery force",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "aluminum extrusion"
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "wheel_motor_mount_plate",
+        "role": "laser-cut sheet carrying wheel axles and drive motors",
+        "count_min": 2,
+        "geometric_constraints": {
+          "material": "aluminum laser-cut sheet"
+        }
+      },
+      {
+        "part_id": "E",
+        "name": "handhold_bracket",
+        "role": "handhold or gantry-lift interface for tournament handling",
+        "count_min": 4,
+        "geometric_constraints": {
+          "material": "aluminum sheet or machined"
+        }
+      }
+    ],
+    "geometric_constraints": {
+      "envelope_mm": {
+        "L": 1000,
+        "W": 1000,
+        "H": 1500
+      },
+      "total_robot_mass_kg_max": 50,
+      "battery_V_max": 24,
+      "pneumatic_kPa_max": 600
+    },
+    "material": {
+      "typical": "aluminum extrusion 20x20 / 30x30 + laser-cut sheet",
+      "AL6063_T5_properties": {
+        "E_GPa": 68.9,
+        "yield_MPa": 145
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "self_weight_2g",
+        "magnitude_N": 785,
+        "description": "40 kg x 2 g vertical shock"
+      },
+      {
+        "id": "LC2",
+        "name": "tipping_recovery",
+        "magnitude_N": 200,
+        "description": "horizontal force at top"
+      },
+      {
+        "id": "LC3",
+        "name": "lifting_handhold",
+        "magnitude_N": 294,
+        "description": "20 kg x 1.5 g per handhold, 4 points"
+      }
+    ],
+    "boundary_conditions": {
+      "wheels": "fixed at contact for LC1, LC2",
+      "handholds": "fixed for LC3"
+    },
+    "objective": {
+      "minimize": "frame_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (base rail + uprights + top brace + mount plates + handholds)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E)"
+      ],
+      "report_fields": [
+        "total_robot_mass_kg",
+        "max_vm_stress_LC1_MPa",
+        "max_vm_stress_LC2_MPa",
+        "max_vm_stress_LC3_MPa",
+        "max_frame_deflection_mm"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "total_robot_mass_kg",
+        "limit_kg": 50,
+        "derivation": "Rulebook combined team robot mass",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "envelope_largest_dim_mm",
+        "limit_mm": 1500,
+        "derivation": "Stowed envelope max dim",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_vm_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 against yield",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam + shell",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x3"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A base_rail_frame",
+        "B side_upright"
+      ],
+      "mediated_by": "bolted extrusion corner bracket",
+      "load_path": "self-weight and lifting reactions between base and uprights"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B side_upright",
+        "C top_cross_brace"
+      ],
+      "mediated_by": "bolted corner bracket",
+      "load_path": "tipping-recovery horizontal force reacted from top into uprights into base"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A base_rail_frame",
+        "D wheel_motor_mount_plate"
+      ],
+      "mediated_by": "bolted t-slot joint",
+      "load_path": "wheel contact and drive reactions into base rail"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B side_upright / C top_cross_brace",
+        "E handhold_bracket"
+      ],
+      "mediated_by": "bolted/bonded bracket",
+      "load_path": "4-point lifting inertia enters frame at handholds and redistributes into uprights and base"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Envelope and mass cap are whole-frame geometric/mass checks. Self-weight vertical shock, tipping-recovery, and 4-point lifting yield checks all involve load paths spanning base rail, uprights, top cross-brace, and handhold brackets - assembly-scope quantities."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "A student-robotics drivetrain frame is intrinsically an extrusion + sheet-metal assembly; rulebook mass cap, envelope, tipping, and lifting all reference assembled geometry.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not in mechanical design gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    }
+  },
+  "eval_coverage": [
+    "envelope + mass cap on assembled frame",
+    "tipping recovery static via top cross-brace to base path",
+    "handling / lifting static at 4 handhold interfaces",
+    "component cert side-check"
+  ]
+}

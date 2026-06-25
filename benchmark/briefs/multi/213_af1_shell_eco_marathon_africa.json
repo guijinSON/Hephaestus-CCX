@@ -1,0 +1,300 @@
+{
+  "id": "213_af1_shell_eco_marathon_africa",
+  "source": {
+    "catalog_ref": "AF1",
+    "year": 2025,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/213_af1_shell_eco_marathon_africa.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "efficiency_vehicle_structural",
+  "part_class": "urbanconcept_rollbar_chassis_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the roll bar and supporting primary chassis of an UrbanConcept-class fuel-efficiency vehicle benchmark for an African-regional round as a welded / bolted multi-part assembly. Total vehicle mass without driver must not exceed 225 kg. Overall vehicle width must be between 1200 mm and 1300 mm, overall height between 1000 mm and 1300 mm, and wheelbase at least 1200 mm with track width at least 1000 mm. The assembly consists of the roll-bar main hoop (steel tubular hoop extending at least 5 cm above the driver's helmet), left and right chassis side rails, front cross-bulkhead, rear cross-bulkhead, floor crossmembers tying the side rails, and the harness anchor brackets (four of them, two outer, two inner). Roll bar mounted to the chassis at three attachment points (centerline and two bases), spanning the full width of the driver cell. Material: 4130 chromoly steel tubing (Young's modulus 205 GPa, Poisson 0.29, yield 435 MPa, ultimate 670 MPa, density 7850 kg/m^3), 1.0 inch (25.4 mm) OD x 0.065 inch (1.65 mm) wall minimum. Load cases (roll-bar 700 N triaxial gate): (LC1) roll-bar vertical: 700 N applied downward at the top of the bar while the three mounting points are fully fixed; (LC2) roll-bar longitudinal: 700 N applied forward at the same top point; (LC3) roll-bar lateral: 700 N applied sideways at the same top point; (LC4) driver-restraint attachment: simultaneous 3000 N on each of the four harness anchor points in the most adverse crash direction (forward + down 30 degrees). Pass/fail: (R1) under LC1-LC3 no point of the roll bar may deflect by more than 5 cm (50 mm) toward the helmet envelope, (R2) no tube element exceeds yield 435 MPa under any of LC1-LC4, (R3) harness anchor attachment under LC4 does not exceed 435 MPa at the weld, (R4) total chassis + roll-bar mass below 80 kg to stay within the 225 kg vehicle budget, (R5) first global torsional chassis mode above 12 Hz. Verification is performed on the assembled welded tubular model with representative weld stiffness and bolted attachment stiffness; per-part stress is reported but does not gate pass/fail. Deliverables: STEP with all members, FEA per load case on assembly, modal, and a mass summary allocating chassis / roll-bar / harness anchors.",
+  "short_prompt": "Design the roll bar and supporting primary chassis of an UrbanConcept-class fuel-efficiency vehicle for a Shell Eco-marathon African round as a welded / bolted multi-part assembly.\n\nTotal vehicle mass without driver <= 225 kg. Overall width 1200-1300 mm, height 1000-1300 mm, wheelbase >= 1200 mm, track >= 1000 mm. The roll-bar main hoop extends at least 5 cm above the driver's helmet. Material 4130 chromoly tubing (E 205 GPa, Poisson 0.29, yield 435 MPa, ultimate 670 MPa, density 7850 kg/m^3), 1.0 inch (25.4 mm) OD x 0.065 inch (1.65 mm) wall minimum.\n\nLoad cases (roll-bar 700 N triaxial gate).\n- LC1 vertical 700 N downward at the top of the bar.\n- LC2 longitudinal 700 N forward at the top point.\n- LC3 lateral 700 N sideways at the top point.\n- LC4 driver-restraint: 3000 N simultaneous on each of four harness anchors in most adverse direction.\n\nChassis + roll-bar mass below 80 kg; first global torsional chassis mode above 12 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "UrbanConcept efficiency-vehicle roll bar (multi-part welded assembly)",
+    "brief": "4130 chromoly UrbanConcept chassis: main roll-bar hoop + left/right side rails + front/rear bulkheads + floor crossmembers + harness anchor brackets, under 700 N triaxial gates.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "rollbar_main_hoop",
+        "role": "steel tubular hoop extending at least 5 cm above the driver helmet, mounted to the chassis at three points",
+        "count_min": 1,
+        "geometric_constraints": {
+          "above_helmet_cm_min": 5,
+          "tube_od_in_min": 1.0,
+          "tube_wall_in_min": 0.065
+        },
+        "material_hint": "4130 chromoly tube",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "chassis_side_rail",
+        "role": "left / right longitudinal chassis side rail forming the driver cell base",
+        "count_min": 2,
+        "geometric_constraints": {
+          "wheelbase_mm_min": 1200
+        },
+        "material_hint": "4130 chromoly tube",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "front_bulkhead",
+        "role": "forward cross-bulkhead tying the two side rails",
+        "count_min": 1,
+        "geometric_constraints": {},
+        "material_hint": "4130 chromoly tube",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "rear_bulkhead",
+        "role": "aft cross-bulkhead tying the two side rails and carrying the rear roll-bar mount base",
+        "count_min": 1,
+        "geometric_constraints": {},
+        "material_hint": "4130 chromoly tube",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "floor_crossmember",
+        "role": "cross-tube tying the side rails at the driver cell floor",
+        "count_min": 3,
+        "geometric_constraints": {},
+        "material_hint": "4130 chromoly tube",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "harness_anchor_bracket",
+        "role": "steel bracket welded into the chassis at each harness anchor point (four points)",
+        "count_min": 4,
+        "geometric_constraints": {
+          "per_point_F_N": 3000
+        },
+        "material_hint": "4130 chromoly plate",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "1200-1300 mm width x 1000-1300 mm height x wheelbase-dependent length",
+      "coordinate_system": "X forward, Y transverse, Z up"
+    },
+    "material": {
+      "name": "4130 chromoly steel",
+      "youngs_modulus_GPa": 205,
+      "poissons_ratio": 0.29,
+      "density_kg_m3": 7850,
+      "yield_strength_MPa": 435,
+      "ultimate_tensile_strength_MPa": 670
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "rollbar_vertical",
+        "F_N": 700,
+        "application": "top of roll bar, downward"
+      },
+      {
+        "id": "LC2",
+        "name": "rollbar_longitudinal",
+        "F_N": 700,
+        "application": "top, forward"
+      },
+      {
+        "id": "LC3",
+        "name": "rollbar_lateral",
+        "F_N": 700,
+        "application": "top, sideways"
+      },
+      {
+        "id": "LC4",
+        "name": "harness_anchors",
+        "F_N_per_point": 3000,
+        "application": "four harness anchors, forward+down 30 deg"
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "roll-bar hoop welded into side rails / rear bulkhead at three mount points; bulkheads and crossmembers welded into side rails; harness brackets welded into chassis with representative weld stiffness",
+      "support": "three roll-bar mount points fully fixed during LC1-LC3"
+    },
+    "objective": "keep chassis + roll bar mass under 80 kg while passing all 700 N triaxial and 3000 N harness gates",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "total_mass_kg",
+        "rollbar_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "max_rollbar_deflection_mm",
+        "first_torsional_mode_Hz",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_rollbar_deflection_toward_helmet",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress_rollbar",
+        "limit_MPa": 435,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "harness_weld_stress",
+        "limit_MPa": 435,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_chassis_plus_rollbar_mass",
+        "limit_kg": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 12,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "welded",
+      "load_path": "roll-bar base welded into side rails at two base mount points"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "welded",
+      "load_path": "roll-bar centerline mount welded into rear bulkhead"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "welded",
+      "load_path": "front bulkhead weld into side rails"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "welded",
+      "load_path": "rear bulkhead weld into side rails"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "floor crossmember weld into side rails"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "B",
+        "F"
+      ],
+      "mediated_by": "welded",
+      "load_path": "harness anchor bracket weld into chassis"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Shell Eco-Marathon UrbanConcept chassis is a welded tubular space-frame with roll-bar hoop, side rails, bulkheads, crossmembers, and harness anchors as distinct welded parts; triaxial roll-bar gates and harness weld gate are verified on the assembled tubular model.",
+    "speculation_caveats": "Member counts (floor crossmembers, bulkhead layout) are speculative; materials, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "benchmark/briefs/single/213_af1_shell_eco_marathon_africa.json"
+  }
+}

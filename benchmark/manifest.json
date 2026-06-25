@@ -1,0 +1,352 @@
+[
+  {
+    "kind": "single",
+    "id": "011_pt11_misumi_aluminum_frame_bracket",
+    "path": "benchmark/kits/single/011_pt11_misumi_aluminum_frame_bracket",
+    "spec": "benchmark/kits/single/011_pt11_misumi_aluminum_frame_bracket/spec.json",
+    "check": "benchmark/kits/single/011_pt11_misumi_aluminum_frame_bracket/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "026_pt26_fra_49cfr238_rail",
+    "path": "benchmark/kits/single/026_pt26_fra_49cfr238_rail",
+    "spec": "benchmark/kits/single/026_pt26_fra_49cfr238_rail/spec.json",
+    "check": "benchmark/kits/single/026_pt26_fra_49cfr238_rail/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "034_s3_nasa_5020b_bolted_joint",
+    "path": "benchmark/kits/single/034_s3_nasa_5020b_bolted_joint",
+    "spec": "benchmark/kits/single/034_s3_nasa_5020b_bolted_joint/spec.json",
+    "check": "benchmark/kits/single/034_s3_nasa_5020b_bolted_joint/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "038_s7_aisc_360_22_steel_column",
+    "path": "benchmark/kits/single/038_s7_aisc_360_22_steel_column",
+    "spec": "benchmark/kits/single/038_s7_aisc_360_22_steel_column/spec.json",
+    "check": "benchmark/kits/single/038_s7_aisc_360_22_steel_column/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "039_s8_fia_art253_rollcage",
+    "path": "benchmark/kits/single/039_s8_fia_art253_rollcage",
+    "spec": "benchmark/kits/single/039_s8_fia_art253_rollcage/spec.json",
+    "check": "benchmark/kits/single/039_s8_fia_art253_rollcage/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "050_s19_abs_hsc_hull_bottom_panel",
+    "path": "benchmark/kits/single/050_s19_abs_hsc_hull_bottom_panel",
+    "spec": "benchmark/kits/single/050_s19_abs_hsc_hull_bottom_panel/spec.json",
+    "check": "benchmark/kits/single/050_s19_abs_hsc_hull_bottom_panel/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "056_jp1_student_formula_japan",
+    "path": "benchmark/kits/single/056_jp1_student_formula_japan",
+    "spec": "benchmark/kits/single/056_jp1_student_formula_japan/spec.json",
+    "check": "benchmark/kits/single/056_jp1_student_formula_japan/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "061_jp6_coma_wars",
+    "path": "benchmark/kits/single/061_jp6_coma_wars",
+    "spec": "benchmark/kits/single/061_jp6_coma_wars/spec.json",
+    "check": "benchmark/kits/single/061_jp6_coma_wars/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "090_ng5_iso10328_p5_prosthetic_pylon",
+    "path": "benchmark/kits/single/090_ng5_iso10328_p5_prosthetic_pylon",
+    "spec": "benchmark/kits/single/090_ng5_iso10328_p5_prosthetic_pylon/spec.json",
+    "check": "benchmark/kits/single/090_ng5_iso10328_p5_prosthetic_pylon/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "093_ng8_build_change_seismic_retrofit",
+    "path": "benchmark/kits/single/093_ng8_build_change_seismic_retrofit",
+    "spec": "benchmark/kits/single/093_ng8_build_change_seismic_retrofit/spec.json",
+    "check": "benchmark/kits/single/093_ng8_build_change_seismic_retrofit/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "115_e5_chem_e_car_pressurized_reservoir",
+    "path": "benchmark/kits/single/115_e5_chem_e_car_pressurized_reservoir",
+    "spec": "benchmark/kits/single/115_e5_chem_e_car_pressurized_reservoir/spec.json",
+    "check": "benchmark/kits/single/115_e5_chem_e_car_pressurized_reservoir/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "126_hv2_hyperloop_pod_shell",
+    "path": "benchmark/kits/single/126_hv2_hyperloop_pod_shell",
+    "spec": "benchmark/kits/single/126_hv2_hyperloop_pod_shell/spec.json",
+    "check": "benchmark/kits/single/126_hv2_hyperloop_pod_shell/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "127_hv3_eurobot_robot_chassis",
+    "path": "benchmark/kits/single/127_hv3_eurobot_robot_chassis",
+    "spec": "benchmark/kits/single/127_hv3_eurobot_robot_chassis/spec.json",
+    "check": "benchmark/kits/single/127_hv3_eurobot_robot_chassis/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "134_hv10_fs_switzerland_wheel_hub",
+    "path": "benchmark/kits/single/134_hv10_fs_switzerland_wheel_hub",
+    "spec": "benchmark/kits/single/134_hv10_fs_switzerland_wheel_hub/spec.json",
+    "check": "benchmark/kits/single/134_hv10_fs_switzerland_wheel_hub/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "142_hv18_fsgp_solar_array_mount",
+    "path": "benchmark/kits/single/142_hv18_fsgp_solar_array_mount",
+    "spec": "benchmark/kits/single/142_hv18_fsgp_solar_array_mount/spec.json",
+    "check": "benchmark/kits/single/142_hv18_fsgp_solar_array_mount/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "186_sa3_kibocube",
+    "path": "benchmark/kits/single/186_sa3_kibocube",
+    "spec": "benchmark/kits/single/186_sa3_kibocube/spec.json",
+    "check": "benchmark/kits/single/186_sa3_kibocube/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "252_a12_asme_hpvc_rps",
+    "path": "benchmark/kits/single/252_a12_asme_hpvc_rps",
+    "spec": "benchmark/kits/single/252_a12_asme_hpvc_rps/spec.json",
+    "check": "benchmark/kits/single/252_a12_asme_hpvc_rps/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "291_i_ea6_robomaster_rmuc_2025_17mm_launcher",
+    "path": "benchmark/kits/single/291_i_ea6_robomaster_rmuc_2025_17mm_launcher",
+    "spec": "benchmark/kits/single/291_i_ea6_robomaster_rmuc_2025_17mm_launcher/spec.json",
+    "check": "benchmark/kits/single/291_i_ea6_robomaster_rmuc_2025_17mm_launcher/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "301_i_sa5_irc_2026_rover_manipulator_arm_link",
+    "path": "benchmark/kits/single/301_i_sa5_irc_2026_rover_manipulator_arm_link",
+    "spec": "benchmark/kits/single/301_i_sa5_irc_2026_rover_manipulator_arm_link/spec.json",
+    "check": "benchmark/kits/single/301_i_sa5_irc_2026_rover_manipulator_arm_link/check.py"
+  },
+  {
+    "kind": "single",
+    "id": "326_i_me6_teknofest_tarim_ugv_tool_arm",
+    "path": "benchmark/kits/single/326_i_me6_teknofest_tarim_ugv_tool_arm",
+    "spec": "benchmark/kits/single/326_i_me6_teknofest_tarim_ugv_tool_arm/spec.json",
+    "check": "benchmark/kits/single/326_i_me6_teknofest_tarim_ugv_tool_arm/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "033_s2_ecss_32_10c_spacecraft_panel",
+    "path": "benchmark/kits/multi/033_s2_ecss_32_10c_spacecraft_panel",
+    "spec": "benchmark/kits/multi/033_s2_ecss_32_10c_spacecraft_panel/spec.json",
+    "check": "benchmark/kits/multi/033_s2_ecss_32_10c_spacecraft_panel/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "041_s10_stanag_4703_light_uas",
+    "path": "benchmark/kits/multi/041_s10_stanag_4703_light_uas",
+    "spec": "benchmark/kits/multi/041_s10_stanag_4703_light_uas/spec.json",
+    "check": "benchmark/kits/multi/041_s10_stanag_4703_light_uas/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "046_s15_nasa_hdbk_7005_randomvib",
+    "path": "benchmark/kits/multi/046_s15_nasa_hdbk_7005_randomvib",
+    "spec": "benchmark/kits/multi/046_s15_nasa_hdbk_7005_randomvib/spec.json",
+    "check": "benchmark/kits/multi/046_s15_nasa_hdbk_7005_randomvib/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "049_s18_easa_csvla_glider_spar",
+    "path": "benchmark/kits/multi/049_s18_easa_csvla_glider_spar",
+    "spec": "benchmark/kits/multi/049_s18_easa_csvla_glider_spar/spec.json",
+    "check": "benchmark/kits/multi/049_s18_easa_csvla_glider_spar/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "055_s24_cmh17_cfrp_rotor_blade",
+    "path": "benchmark/kits/multi/055_s24_cmh17_cfrp_rotor_blade",
+    "spec": "benchmark/kits/multi/055_s24_cmh17_cfrp_rotor_blade/spec.json",
+    "check": "benchmark/kits/multi/055_s24_cmh17_cfrp_rotor_blade/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "222_df6_aiaa_uas",
+    "path": "benchmark/kits/multi/222_df6_aiaa_uas",
+    "spec": "benchmark/kits/multi/222_df6_aiaa_uas/spec.json",
+    "check": "benchmark/kits/multi/222_df6_aiaa_uas/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "224_df8_vfs_dbvf",
+    "path": "benchmark/kits/multi/224_df8_vfs_dbvf",
+    "spec": "benchmark/kits/multi/224_df8_vfs_dbvf/spec.json",
+    "check": "benchmark/kits/multi/224_df8_vfs_dbvf/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "242_a2_irec_copv_nitrogen_tank",
+    "path": "benchmark/kits/multi/242_a2_irec_copv_nitrogen_tank",
+    "spec": "benchmark/kits/multi/242_a2_irec_copv_nitrogen_tank/spec.json",
+    "check": "benchmark/kits/multi/242_a2_irec_copv_nitrogen_tank/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "064_jp9_aij_structural_design",
+    "path": "benchmark/kits/multi/064_jp9_aij_structural_design",
+    "spec": "benchmark/kits/multi/064_jp9_aij_structural_design/spec.json",
+    "check": "benchmark/kits/multi/064_jp9_aij_structural_design/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "232_df16_onr_neec",
+    "path": "benchmark/kits/multi/232_df16_onr_neec",
+    "spec": "benchmark/kits/multi/232_df16_onr_neec/spec.json",
+    "check": "benchmark/kits/multi/232_df16_onr_neec/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "058_jp3_noshiro_cansat_arliss",
+    "path": "benchmark/kits/multi/058_jp3_noshiro_cansat_arliss",
+    "spec": "benchmark/kits/multi/058_jp3_noshiro_cansat_arliss/spec.json",
+    "check": "benchmark/kits/multi/058_jp3_noshiro_cansat_arliss/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "208_oc8_ekka_farm_innovation",
+    "path": "benchmark/kits/multi/208_oc8_ekka_farm_innovation",
+    "spec": "benchmark/kits/multi/208_oc8_ekka_farm_innovation/spec.json",
+    "check": "benchmark/kits/multi/208_oc8_ekka_farm_innovation/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "147_hv23_ghc_iitm_hyperloop_pod_frame",
+    "path": "benchmark/kits/multi/147_hv23_ghc_iitm_hyperloop_pod_frame",
+    "spec": "benchmark/kits/multi/147_hv23_ghc_iitm_hyperloop_pod_frame/spec.json",
+    "check": "benchmark/kits/multi/147_hv23_ghc_iitm_hyperloop_pod_frame/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "350_i_eu13_igvc_2026_frame",
+    "path": "benchmark/kits/multi/350_i_eu13_igvc_2026_frame",
+    "spec": "benchmark/kits/multi/350_i_eu13_igvc_2026_frame/spec.json",
+    "check": "benchmark/kits/multi/350_i_eu13_igvc_2026_frame/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "057_jp2_kosen_dezacon_structural",
+    "path": "benchmark/kits/multi/057_jp2_kosen_dezacon_structural",
+    "spec": "benchmark/kits/multi/057_jp2_kosen_dezacon_structural/spec.json",
+    "check": "benchmark/kits/multi/057_jp2_kosen_dezacon_structural/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "095_ng10_cawst_ferrocement_tank",
+    "path": "benchmark/kits/multi/095_ng10_cawst_ferrocement_tank",
+    "spec": "benchmark/kits/multi/095_ng10_cawst_ferrocement_tank/spec.json",
+    "check": "benchmark/kits/multi/095_ng10_cawst_ferrocement_tank/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "230_df14_auvsi_robosub",
+    "path": "benchmark/kits/multi/230_df14_auvsi_robosub",
+    "spec": "benchmark/kits/multi/230_df14_auvsi_robosub/spec.json",
+    "check": "benchmark/kits/multi/230_df14_auvsi_robosub/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "085_kr16_drone_soccer",
+    "path": "benchmark/kits/multi/085_kr16_drone_soccer",
+    "spec": "benchmark/kits/multi/085_kr16_drone_soccer/spec.json",
+    "check": "benchmark/kits/multi/085_kr16_drone_soccer/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "207_oc7_anu_cubesat",
+    "path": "benchmark/kits/multi/207_oc7_anu_cubesat",
+    "spec": "benchmark/kits/multi/207_oc7_anu_cubesat/spec.json",
+    "check": "benchmark/kits/multi/207_oc7_anu_cubesat/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "219_df3_aiaa_space_lunar_base",
+    "path": "benchmark/kits/multi/219_df3_aiaa_space_lunar_base",
+    "spec": "benchmark/kits/multi/219_df3_aiaa_space_lunar_base/spec.json",
+    "check": "benchmark/kits/multi/219_df3_aiaa_space_lunar_base/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "067_jp12_jaxa_innovative_satellite",
+    "path": "benchmark/kits/multi/067_jp12_jaxa_innovative_satellite",
+    "spec": "benchmark/kits/multi/067_jp12_jaxa_innovative_satellite/spec.json",
+    "check": "benchmark/kits/multi/067_jp12_jaxa_innovative_satellite/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "333_i_eu1_esa_rexus_experiment_module",
+    "path": "benchmark/kits/multi/333_i_eu1_esa_rexus_experiment_module",
+    "spec": "benchmark/kits/multi/333_i_eu1_esa_rexus_experiment_module/spec.json",
+    "check": "benchmark/kits/multi/333_i_eu1_esa_rexus_experiment_module/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "094_ng9_ose_ceb_liberator_press",
+    "path": "benchmark/kits/multi/094_ng9_ose_ceb_liberator_press",
+    "spec": "benchmark/kits/multi/094_ng9_ose_ceb_liberator_press/spec.json",
+    "check": "benchmark/kits/multi/094_ng9_ose_ceb_liberator_press/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "214_af2_sasol_solar_challenge",
+    "path": "benchmark/kits/multi/214_af2_sasol_solar_challenge",
+    "spec": "benchmark/kits/multi/214_af2_sasol_solar_challenge/spec.json",
+    "check": "benchmark/kits/multi/214_af2_sasol_solar_challenge/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "081_kr6_ksae_baja_fsae",
+    "path": "benchmark/kits/multi/081_kr6_ksae_baja_fsae",
+    "spec": "benchmark/kits/multi/081_kr6_ksae_baja_fsae/spec.json",
+    "check": "benchmark/kits/multi/081_kr6_ksae_baja_fsae/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "256_a16_aisc_ssbc_steel_bridge",
+    "path": "benchmark/kits/multi/256_a16_aisc_ssbc_steel_bridge",
+    "spec": "benchmark/kits/multi/256_a16_aisc_ssbc_steel_bridge/spec.json",
+    "check": "benchmark/kits/multi/256_a16_aisc_ssbc_steel_bridge/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "325_i_me5_teknofest_auv_pressure_hull",
+    "path": "benchmark/kits/multi/325_i_me5_teknofest_auv_pressure_hull",
+    "spec": "benchmark/kits/multi/325_i_me5_teknofest_auv_pressure_hull/spec.json",
+    "check": "benchmark/kits/multi/325_i_me5_teknofest_auv_pressure_hull/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "291_i_ea6_robomaster_rmuc_2025_17mm_launcher",
+    "path": "benchmark/kits/multi/291_i_ea6_robomaster_rmuc_2025_17mm_launcher",
+    "spec": "benchmark/kits/multi/291_i_ea6_robomaster_rmuc_2025_17mm_launcher/spec.json",
+    "check": "benchmark/kits/multi/291_i_ea6_robomaster_rmuc_2025_17mm_launcher/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "201_oc1_arch_rover",
+    "path": "benchmark/kits/multi/201_oc1_arch_rover",
+    "spec": "benchmark/kits/multi/201_oc1_arch_rover/spec.json",
+    "check": "benchmark/kits/multi/201_oc1_arch_rover/check.py"
+  },
+  {
+    "kind": "multi",
+    "id": "246_a6_cubesat_1u_chassis",
+    "path": "benchmark/kits/multi/246_a6_cubesat_1u_chassis",
+    "spec": "benchmark/kits/multi/246_a6_cubesat_1u_chassis/spec.json",
+    "check": "benchmark/kits/multi/246_a6_cubesat_1u_chassis/check.py"
+  }
+]

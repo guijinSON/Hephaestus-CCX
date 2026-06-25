@@ -1,0 +1,327 @@
+{
+  "id": "148_hv24_teknofest_bnl_maglev_chassis",
+  "source": {
+    "catalog_ref": "HV24 (user-assigned national aerospace student benchmark + BNL MagLev collegiate/HS class)",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/148_hv24_teknofest_bnl_maglev_chassis.json",
+    "multipart_basis": "Decomposition inferred from the original prompt describing a central spine, two magnet-carrier rails, a payload cradle, and two bumper-stop plates; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "magnetic_levitation_vehicle",
+  "part_class": "maglev_small_vehicle_chassis_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the national aerospace student benchmark 2026 Tech-Demo + Brookhaven Lab MagLev Competition 2026 HS-class passive-magnet levitation vehicle chassis as a multi-part assembly, explicitly modeling the 6061-T6 aluminum chassis as the physical collection of separately-manufactured billet-machined components that are joined (screw-bonded, bolted, or press-fit) to form the small-vehicle platform. The original prompt treats the chassis as monolithic ('single billet-machined 6061-T6 part, no welds, no bolted-on tabs'); this multipart decomposition exposes the same structure as its constituent part families so the assembly-level interface verification can be exercised. A monolithic manufacturing path remains permissible but the CAD and FEA must be composed part-by-part for multipart verification.\n\nThe assembly consists of five part families: (A) the central spine, a 400 mm long x 60 mm wide x 20 mm tall billet that forms the main structural backbone; (B) two magnet-carrier rails running along the underside of the spine, each 400 mm long x 20 mm wide x 4 mm thick with an 18 mm wide x 5 mm deep channel that seats 20 N42 ceramic magnets at 20 mm pitch; (C) the integral payload cradle on top of the spine, a 100 mm long x 40 mm wide x 10 mm deep trough with 4 M4 tie-down clearance holes; (D) two bumper-stop plates at the front and rear, each 30 mm wide x 15 mm tall x 4 mm thick vertical plate; (E) the tie-down and interface fasteners (4 M4 for payload tie-down, plus the short stub screws that tie the rails and bumpers to the spine in a multipart build).\n\nGeometry inherits the original sample verbatim: spine 400x60x20 mm, two magnet-carrier rails 400x20x4 with 18x5 channel at 25 mm rail gap, payload cradle 100x40x10 with 4x 4.5 mm holes, bumpers 30x15x4 at both ends, overall bounding envelope 400 x 60 x 30 mm.\n\nMaterial inherits verbatim: 6061-T6 aluminum for all primary parts (E 68.9 GPa, nu 0.33, density 2700 kg/m^3, yield 276 MPa, UTS 310 MPa, endurance 97 MPa at 5e8 cycles). Fasteners are M4 grade-8.8 steel (standard for small-vehicle tie-downs; not specified by the original sample).\n\nLoads inherit verbatim: LC1 peak-descent run-out at the end of the 16 ft / 0.61 m drop track with 0.47 kg total vehicle mass, 3.46 m/s peak velocity, 3.5 N longitudinal + 2.3 N lateral at the bumpers with magnet-carrier rails constrained by distributed levitation forces; LC2 end-of-track bumper hit with 25 N impulse over 10 ms on the rear bumper (2.8 J absorbed by elastomer-bumper pad modeled as stiffness BC); LC3 0.3 m install drop shock with 553 N vertical on the payload cradle (elastomer pad on bench with 5 mm compression), chassis inverted constrained at bumpers.\n\nPass/fail criteria inherit verbatim from the original and apply at the assembly level: (R1) peak von Mises under LC1 <= 138 MPa (yield/2.0); (R2) peak von Mises under LC2/LC3 <= 184 MPa (yield/1.5 transient); (R3) first six natural frequencies (chassis + magnets + payload lumped mass) >= 40 Hz; (R4) chassis mass <= 0.35 kg; (R5) magnet-carrier rail channel flatness deviation under LC1 <= 0.2 mm; (R6) overall vehicle length <= 406 mm (BNL <=16 in). Added assembly-level targets under fem_check_policy.assembled_only: connection DCR at rail-spine, bumper-spine, and payload-spine interfaces must be reported; per-part stresses are reported for diagnostic purposes but do not gate pass/fail.\n\nThermal, fluid, buckling, and radiation analyses are not required. Deliver STEP AP242 of the assembly with each body (spine, each rail, each bumper, the payload cradle) as a distinct solid tagged with part_family (A..E) and instance_index, plus a report giving max von Mises per case, first six frequencies, rail-channel flatness deviation under LC1, vehicle length, assembly mass, and connection DCR at each interface.",
+  "short_prompt": "Design a TEKNOFEST BNL MagLev competition chassis as a multi-part aluminium assembly (base plate, longitudinal rails, cross-member, bolted bracket set).\n\nEnvelope 400 x 60 x 30 mm; total chassis mass <= 0.35 kg; track guidance flatness <= 0.2 mm; track length <= 406 mm. Material Al 6061-T6 yield 276 MPa.\n\nLoad cases: LC1 steady 3.5 N longitudinal + 2.3 N lateral (allowable <= 138 MPa); LC2 25 N 10 ms impulse bump (allowable <= 184 MPa); LC3 launch 553 N hold-down.\n\nPass/fail: stress <= 138 MPa (LC1) / <= 184 MPa (LC2); first resonant frequency >= 40 Hz; FEM at assembled level; bolt pattern DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark + BNL maglev small-vehicle chassis (multi-part assembly)",
+    "brief": "Multi-part 6061-T6 maglev chassis: spine (A) + 2 magnet-carrier rails (B) + payload cradle (C) + 2 bumper stops (D) + tie-down fasteners (E). Overall 400x60x30 mm, 0.35 kg budget. Verified at assembly level: peak von Mises <= 138 MPa (LC1) / 184 MPa (LC2, LC3), first six modes >= 40 Hz, rail-channel flatness deviation <= 0.2 mm under LC1, vehicle length <= 406 mm, connection DCR <= 1.0 at all rail/bumper/cradle interfaces.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "central_spine",
+        "role": "400 mm long x 60 mm wide x 20 mm tall 6061-T6 billet spine; structural backbone carrying bumper longitudinal/lateral loads into the rails and payload cradle",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 400,
+          "width_mm": 60,
+          "height_mm": 20
+        },
+        "material_hint": "6061-T6 aluminum",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "magnet_carrier_rail",
+        "role": "400 mm long x 20 mm wide x 4 mm thick rail with 18 mm x 5 mm channel seating 20 N42 ceramic magnets at 20 mm pitch; confined to the underside of the spine with the two rails at 25 mm gap",
+        "count_min": 2,
+        "geometric_constraints": {
+          "length_mm": 400,
+          "width_mm": 20,
+          "thickness_mm": 4,
+          "channel_mm": {
+            "width": 18,
+            "depth": 5
+          },
+          "magnet_count": 20,
+          "magnet_pitch_mm": 20,
+          "rail_gap_mm": 25
+        },
+        "material_hint": "6061-T6 aluminum",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "payload_cradle",
+        "role": "100 mm long x 40 mm wide x 10 mm deep trough on top of the spine with 4 M4 (4.5 mm clearance) tie-down holes; carries 50 g payload + 553 N install-drop shock",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 100,
+          "width_mm": 40,
+          "depth_mm": 10,
+          "tie_down_hole_count": 4,
+          "tie_down_hole_mm": 4.5
+        },
+        "material_hint": "6061-T6 aluminum",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "bumper_stop",
+        "role": "30 mm wide x 15 mm tall x 4 mm thick vertical plate at the front and rear of the spine; carries 3.5 N longitudinal + 2.3 N lateral under LC1 and 25 N 10 ms impulse under LC2",
+        "count_min": 2,
+        "geometric_constraints": {
+          "width_mm": 30,
+          "height_mm": 15,
+          "thickness_mm": 4
+        },
+        "material_hint": "6061-T6 aluminum",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "tie_down_and_interface_fastener",
+        "role": "M4 grade-8.8 steel tie-down screws for the 4-hole payload pattern plus optional stub screws that join rails/bumpers to the spine in a multipart build",
+        "count_min": 4,
+        "geometric_constraints": {
+          "bolt_sizes": [
+            "M4"
+          ]
+        },
+        "material_hint": "grade-8.8 steel",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "400 x 60 x 30 mm",
+      "coordinate_system": "vehicle coordinates: +x forward along track, +y starboard, +z up; origin at spine rear-bottom-center"
+    },
+    "material": {
+      "primary": {
+        "name": "Aluminum 6061-T6",
+        "youngs_modulus_GPa": 68.9,
+        "poissons_ratio": 0.33,
+        "density_kg_m3": 2700,
+        "yield_MPa": 276,
+        "ultimate_tensile_strength_MPa": 310,
+        "endurance_5e8_MPa": 97
+      }
+    },
+    "track_env": {
+      "length_m": 4.88,
+      "drop_m": 0.61,
+      "peak_velocity_m_s": 3.46,
+      "channel_mm": 63.5,
+      "magnet_pitch_mm": 25.4
+    },
+    "masses_g": {
+      "chassis": 350,
+      "magnets_total": 70,
+      "payload": 50,
+      "vehicle_total_limit": 500
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "peak_descent_runout",
+        "longitudinal_N": 3.5,
+        "lateral_N": 2.3
+      },
+      {
+        "id": "LC2",
+        "name": "end_bumper_hit",
+        "impulse_N": 25,
+        "duration_ms": 10
+      },
+      {
+        "id": "LC3",
+        "name": "install_drop_shock",
+        "vertical_N": 553
+      }
+    ],
+    "boundary_conditions": {
+      "magnet_rails": "distributed levitation-reaction force along the rail channels (LC1); rigid during LC2/LC3",
+      "bumper_loads": "3.5 N longitudinal + 2.3 N lateral on the rear bumper (LC1); 25 N 10 ms impulse on rear bumper (LC2); inverted chassis constrained at both bumpers (LC3)",
+      "payload_drop": "553 N vertical on payload cradle under LC3 with elastomer-pad stiffness BC",
+      "rail_spine_interface": "bonded contact or stub-screw tie between rails and spine (IF1)",
+      "bumper_spine_interface": "bonded contact or stub-screw tie between bumper plates and spine (IF2)",
+      "cradle_spine_interface": "bonded contact or integral pocket between payload cradle and spine (IF3)"
+    },
+    "objective": "primary: pass all six R-criteria under assembled_only FEM check. secondary: minimize assembly mass below 0.35 kg.",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "max_von_mises_per_case_MPa",
+        "first_six_freqs_Hz",
+        "rail_channel_flatness_deviation_mm",
+        "vehicle_length_mm",
+        "mass_g",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 138,
+        "derivation": "yield/2.0",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "yield/1.5 transient",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "first_six_natural_frequencies",
+        "limit_Hz": 40,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "mass",
+        "limit_kg": 0.35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "rail_channel_flatness_deviation",
+        "limit_mm": 0.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "vehicle_length",
+        "limit_mm": 406,
+        "derivation": "BNL <=16in",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7-assembly",
+        "type": "assembly_analysis",
+        "metric": "connection_DCR_all_interfaces",
+        "limit": 1.0,
+        "derivation": "rail-spine, bumper-spine, and cradle-spine interface demand-to-capacity per either bonded tie-surface allowable or M4 grade-8.8 bolt capacity",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tetrahedral (TET10) with tie-surface interfaces",
+      "mesh_size_mm_in_critical_regions": 1.5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3",
+        "modal with lumped magnet+payload"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "rail-to-spine tie on the underside; transfers levitation-reaction load (LC1) and rail-channel flatness requirement back into the spine"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "bumper-to-spine tie at both ends; transfers bumper longitudinal/lateral and 25 N impulse load"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "cradle-to-spine tie on the top face; transfers 553 N install-drop shock into the spine"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "C",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "4 M4 tie-down bolts holding the payload into the cradle; carry 2.3 N lateral + 553 N vertical payload retention"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Although the original prompt calls out billet-machined monolithic construction, the chassis is functionally composed of distinct sub-parts (spine, rails, cradle, bumpers) each with their own interface load paths; the multipart sidecar exposes those interfaces without altering the allowable monolithic manufacturing path.",
+    "speculation_caveats": "Inter-part fastener count/type for IF1-IF3 is a speculation placeholder because the original sample treats the chassis as one billet; fasteners E are modeled explicitly only for IF4 (tie-downs, which are called out in the original).",
+    "original_sample_preserved_at": "benchmark/briefs/single/148_hv24_teknofest_bnl_maglev_chassis.json"
+  }
+}

@@ -1,0 +1,433 @@
+{
+  "id": "171_md5_rice360",
+  "source": {
+    "catalog_ref": "MD5",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/171_md5_rice360.json",
+    "multipart_basis": "Decomposition mirrors Rice360-style bubble CPAP architecture: PP clamshell enclosure (top + bottom halves), oil-free diaphragm blower module, venturi oxygen blender block, humidifier reservoir chamber, pressure-relief / bubble-column limb, control PCB mount, battery compartment, and inlet/outlet gas port fittings."
+  },
+  "domain": "medical_device",
+  "part_class": "bubble_cpap_chassis_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a portable bubble CPAP (continuous positive airway pressure) device chassis targeting neonatal respiratory distress syndrome in LMIC clinical settings. The system must deliver continuous positive airway pressure in the 3-8 cmH2O range (294-785 Pa) at a neonatal flow of 5-10 L/min of blended air/oxygen mix, using the classic bubble-CPAP principle where expiratory limb is submerged in a water column to set pressure. The device chassis is a 250 mm x 180 mm x 220 mm polypropylene injection-molded enclosure housing an oil-free diaphragm blower (25 W electrical, 12 L/min max flow), a venturi oxygen blender, a humidifier chamber, and a pressure-relief valve, powered by a 12 VDC supply or a 12 V 5 Ah battery. BOM cost target is under $250 per unit. Pass/fail criteria: (R1) the bubble column must produce a CPAP pressure within +/- 0.5 cmH2O of the target 5 cmH2O at 8 L/min flow per WHO Technical Specification ref WHO/MCA/18.12, (R2) chassis max von Mises stress under a 1 m drop test (equivalent quasi-static 120 N impulse on the enclosure) must not exceed 20 MPa (PP yield 30 / SF 1.5), (R3) humidifier reservoir must maintain inspired gas temperature between 34-37 C with a 50 W heater at ambient 25 C in steady state, (R4) electrical power draw at 8 L/min, 5 cmH2O must not exceed 25 W to keep 5 Ah battery endurance at least 2 hours, and (R5) total device mass must not exceed 2.5 kg for WHO portable-device portability target. Thermal analysis is required for R3. Vibration, fluid CFD, and radiation analyses are not required; bubble-column pressure uses static column hydrostatics. Deliver a STEP AP242 assembly with chassis, blower, humidifier, valves, and battery bay as sub-bodies plus a verification report listing delivered CPAP pressure, chassis stress, humidifier steady-state temperature, electrical draw, and total mass.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a multi-part assembly rather than a single solid body. The decomposition comprises (A) pp_chassis_top_half, (B) pp_chassis_bottom_half, (C) diaphragm_blower_module, (D) venturi_o2_blender_block, (E) humidifier_reservoir, (F) bubble_column_limb, (G) control_pcb_mount, (H) battery_compartment, (I) gas_port_fittings. The final FEM verification runs on the ASSEMBLED model only — per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a portable bubble CPAP device chassis as a multi-part assembly (PP chassis top half, PP chassis bottom half, diaphragm blower module, venturi O2 blender block, humidifier reservoir, bubble column limb, control PCB mount, battery compartment, gas port fittings).\n\nChassis 250 mm x 180 mm x 220 mm; delivers CPAP 3-8 cmH2O (up to 785 Pa) at 5-10 L/min blended air/O2; diaphragm blower 25 W / 12 L/min; 12 V supply with 5 Ah battery.\n\nLoad cases: LC1 CPAP setpoint at 8 L/min per WHO/MCA/18.12; LC2 1 m drop (quasi-static 120 N impulse); LC3 humidifier thermal steady at 25 C ambient, target near 37 C with 50 W heater; LC4 electrical draw <= 25 W at setpoint.\n\nPass/fail: CPAP accuracy within spec; humidifier near 37 C; draw <= 25 W; total device mass <= 2.5 kg; FEM at assembled level; connection DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "bubble_column_hydrostatic",
+        "reason": "Bubble-CPAP pressure is the static hydrostatic head of the submerged expiratory limb (rho g h), not FEA.",
+        "examples": [
+          "manual hydrostatic spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Portable bubble CPAP chassis for LMIC neonatal use (multi-part assembly)",
+    "brief": "Design a 250 x 180 x 220 mm PP chassis for a portable bubble CPAP delivering 3-8 cmH2O at 5-10 L/min, under $250 BOM, with 50 W humidifier holding 34-37 C and 25 W max draw for 2 h on 5 Ah battery. [Multi-part assembly] chassis_top_half (x1), chassis_bottom_half (x1), diaphragm_blower_module (x1), venturi_o2_blender_block (x1), humidifier_reservoir (x1), bubble_column_limb (x1), control_pcb_mount (x1), battery_compartment (x1), gas_port_fittings (x4+). FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "chassis_mm": [
+        250,
+        180,
+        220
+      ],
+      "battery_V": 12,
+      "battery_Ah": 5
+    },
+    "material": {
+      "chassis": "Polypropylene, yield 30 MPa, E 1.5 GPa",
+      "humidifier_reservoir": "PP with PTFE wick"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "CPAP_pressure_setpoint",
+        "target_cmH2O": 5,
+        "tolerance_cmH2O": 0.5,
+        "flow_Lpm": 8
+      },
+      {
+        "id": "LC2",
+        "name": "drop_1m_equiv_static",
+        "magnitude_N": 120,
+        "application": "equivalent quasi-static on chassis"
+      },
+      {
+        "id": "LC3",
+        "name": "humidifier_thermal_steady",
+        "ambient_C": 25,
+        "target_C_band": [
+          34,
+          37
+        ],
+        "heater_W": 50
+      },
+      {
+        "id": "LC4",
+        "name": "electrical_draw_endurance",
+        "draw_W": 25,
+        "battery_Wh": 60,
+        "target_endurance_h": 2
+      }
+    ],
+    "boundary_conditions": {
+      "chassis": "placed on table, grip handle on top"
+    },
+    "objective": {
+      "primary": "meet WHO CPAP accuracy + thermal band",
+      "secondary": "minimize BOM cost and mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "CPAP_pressure_at_8Lpm_cmH2O",
+        "chassis_max_von_mises_MPa",
+        "humidifier_steady_state_C",
+        "electrical_draw_W",
+        "total_mass_kg",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "chassis_top_half",
+        "role": "upper clamshell PP enclosure half with grip handle and port openings",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            250,
+            180
+          ],
+          "height_mm": 110,
+          "wall_thickness_mm": 3
+        },
+        "material_hint": "Polypropylene, yield 30 MPa, E 1.5 GPa, injection molded",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "chassis_bottom_half",
+        "role": "lower clamshell PP enclosure half with foot pads and mount bosses",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            250,
+            180
+          ],
+          "height_mm": 110,
+          "wall_thickness_mm": 3
+        },
+        "material_hint": "Polypropylene, yield 30 MPa, E 1.5 GPa",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "diaphragm_blower_module",
+        "role": "oil-free diaphragm blower, 25 W / 12 L/min, mounted on vibration-isolated rubber bobbins",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_LxWxH_mm": [
+            100,
+            70,
+            60
+          ],
+          "mass_g": 350,
+          "mount_bobbin_count": 4
+        },
+        "material_hint": "aluminum housing with 12 VDC BLDC, vendor-integrated module",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "venturi_o2_blender_block",
+        "role": "passive venturi mixer blending O2 and room air to target FiO2",
+        "count_min": 1,
+        "geometric_constraints": {
+          "block_LxWxH_mm": [
+            60,
+            30,
+            30
+          ],
+          "throat_diameter_mm": 2.5,
+          "o2_inlet_bore_mm": 4
+        },
+        "material_hint": "POM or PP machined block, medical-grade",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "humidifier_reservoir",
+        "role": "heated PP chamber with PTFE wick holding 50-100 mL water, driven by 50 W heater plate",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_LxWxH_mm": [
+            120,
+            80,
+            60
+          ],
+          "water_capacity_mL": 100,
+          "heater_contact_area_cm2": 40
+        },
+        "material_hint": "PP reservoir with PTFE wick, stainless heater plate contact",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "bubble_column_limb",
+        "role": "submerged expiratory limb in transparent water column that sets CPAP pressure by hydrostatic head",
+        "count_min": 1,
+        "geometric_constraints": {
+          "column_height_mm": 150,
+          "column_inner_diameter_mm": 30,
+          "submersion_depth_mm_max": 10
+        },
+        "material_hint": "transparent PC tube with PP end caps; silicone expiratory tubing",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "control_pcb_mount",
+        "role": "PCB tray carrying 12 VDC controller, heater driver, and pressure sensor",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_LxW_mm": [
+            100,
+            80
+          ],
+          "standoff_count": 4,
+          "standoff_height_mm": 6
+        },
+        "material_hint": "PP standoffs molded into chassis, FR4 PCB",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "battery_compartment",
+        "role": "bay holding 12 V 5 Ah (60 Wh) Li-ion pack with retention and thermal isolation",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_LxWxH_mm": [
+            150,
+            50,
+            40
+          ],
+          "mass_supported_g": 700,
+          "vent_area_cm2": 4
+        },
+        "material_hint": "PP walls with flame-retardant liner, spring-loaded contact clips",
+        "speculation": true
+      },
+      {
+        "part_id": "I",
+        "name": "gas_port_fittings",
+        "role": "standardized gas inlet/outlet fittings (O2 in, air in, patient out, expiratory back) on enclosure wall",
+        "count_min": 4,
+        "geometric_constraints": {
+          "fitting_type": "22 mm conical + DISS O2",
+          "seal_id_mm": 22,
+          "panel_thread_mm": 30
+        },
+        "material_hint": "PC or POM medical-grade fittings with silicone o-rings",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "see original brief",
+      "coordinate_system": "inherit from original"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "CPAP_pressure_accuracy",
+        "limit_cmH2O_lower": 4.5,
+        "limit_cmH2O_upper": 5.5,
+        "derivation": "WHO/MCA/18.12 Technical Specification, 5 cmH2O +/- 0.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "chassis_max_von_mises",
+        "limit_MPa": 20,
+        "derivation": "PP yield 30 / 1.5",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "humidifier_inspired_gas_temperature",
+        "limit_C_lower": 34,
+        "limit_C_upper": 37,
+        "derivation": "WHO CPAP heated humidification window",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "electrical_draw_at_setpoint",
+        "limit_W": 25,
+        "derivation": "2 h endurance on 60 Wh battery",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_device_mass",
+        "limit_kg": 2.5,
+        "derivation": "WHO portability target",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across all inter-part interfaces (screws, snap-fits, bobbin mounts, gas-port threads) <= 1.0 under LC2 drop test.",
+        "metric": "max DCR across IF1..IFn",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Gas port fitting seal seats must retain > 20 kPa leak-free under LC2 drop test impulse.",
+        "metric": "min seal retention pressure kPa",
+        "threshold": 20,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for chassis, solid for humidifier",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "SolidWorks Simulation",
+        "ANSYS Mechanical"
+      ],
+      "analysis_types": [
+        "linear static drop",
+        "steady-state thermal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "clamshell halves joined by perimeter M3 screws into PP bosses; transmits drop impulse"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "diaphragm blower C rides on 4 rubber bobbins bolted to chassis bottom B, isolating vibration while transmitting mass during drop"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "venturi O2 blender block D is M3-bolted to boss on chassis bottom B"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "humidifier reservoir E clips and bolts to chassis bottom B; heater plate contacts reservoir wall"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "E",
+        "F"
+      ],
+      "mediated_by": "threaded",
+      "load_path": "bubble column limb F threads into humidifier reservoir E outlet; hydrostatic column sets CPAP pressure"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "B",
+        "G"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "control PCB mount G is M3-bolted onto 4 standoffs in chassis bottom B"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "B",
+        "H"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "battery compartment H press-fits into bay in chassis bottom B with spring clips"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "A",
+        "I"
+      ],
+      "mediated_by": "threaded",
+      "load_path": "gas port fittings I thread through openings in chassis top A with panel nut + o-ring seal"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Drop-test integrity, humidifier thermal steady state, and bubble-column pressure accuracy all involve multi-body interactions (blower on bobbins, heater-to-reservoir contact, column-to-reservoir thread). Per-part metrics do not capture the assembled device response.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A bubble CPAP device is inherently an assembly of blower, humidifier, O2 blender, bubble column, PCB, battery, and enclosure — modeling as a monolithic solid is not physically meaningful.",
+    "speculation_caveats": "parts[] counts and interfaces[] reflect Rice360 / WHO bubble CPAP architecture patterns but are speculative; not derived from a specific Rice360 rulebook.",
+    "original_sample_preserved_at": "benchmark/briefs/single/171_md5_rice360.json"
+  }
+}

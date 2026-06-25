@@ -1,0 +1,309 @@
+{
+  "id": "099_ng14_ewb_uk_eurocode_footbridge",
+  "source": {
+    "catalog_ref": "NG14",
+    "year": 2022,
+    "tier": "B",
+    "original_sample": "benchmark/briefs/single/099_ng14_ewb_uk_eurocode_footbridge.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "humanitarian_civil",
+  "part_class": "glulam_timber_footbridge_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design one representative 15 m clear-span simple-supported glulam-timber pedestrian footbridge compliant with the EWB-UK Technical Handbook (2022) and aligned to Eurocode 5 (EN 1995-1-1) and Eurocode 1 load codes for a low-resource rural setting. The bridge is an explicit multi-part assembly. It consists of (A) two parallel GL28h glulam timber main beams h = 600 mm b = 200 mm, 15 m long, simply supported on concrete abutments; (B) transverse cross-timber deck planks 50 mm thick forming the 1.2 m clear walkway, typically 150 mm wide on 400 mm centers along the 15 m span; (C) timber handrail framing on both sides (posts, top/mid rails, balusters) 1100 mm tall; (D) steel angle brackets and screw/bolt fasteners connecting deck planks and handrail posts to the main glulam beams and connecting the beam ends into abutment shoes; (E) elastomeric / steel shoe bearings at each beam end seated on the concrete abutments. Design pedestrian live load is 5.0 kN/m2 uniformly distributed per EN 1991-2 (footbridges), design wind pressure is 1.0 kN/m2 per simplified EN 1991-1-4 (exposure corresponding to rural inland, force coefficient 1.3 on solid envelope), plus self-weight of all parts. Design safety factors on material strength per Eurocode 5: gamma_M,glulam = 1.25, k_mod for medium-term load = 0.8, so design bending strength f_m,d = k_mod * f_m,k / gamma_M = 0.8 * 28.0 / 1.25 = 17.9 MPa for GL28h. Deflection limit L/300 = 15000/300 = 50 mm under live load (EN 1995-1-1 serviceability). The bridge includes a 1100 mm tall timber handrail on both sides (EN 1991-1-7 horizontal line load 1.0 kN/m on top rail). Deliverable is a multi-body CAD assembly of the glulam beams, deck planks, handrails, bracket / fastener set, and abutment bearings, suitable for linear static structural FEA per three Eurocode-aligned load combinations: LC1 pedestrian UDL + dead, LC2 wind + dead, LC3 pedestrian + wind + dead (accompanying combination). Interfaces: beam-to-deck is screwed or bolted through steel angle at each plank crossing; handrail post-to-deck-or-beam is bolted through angle bracket; beam end-to-abutment is seated on an elastomeric or steel bearing shoe. Vibration (EN 1995-2 Annex B), thermal, fluid, radiation, buckling analyses are NOT required in this baseline sample but lateral-torsional buckling of glulam beams is envelope-checked by Eurocode hand calc. Deliver STEP AP242 multi-body with one body per glulam beam, one body per plank, one body per handrail component, one body per bracket/fastener instance, and one body per bearing, each tagged with part_family and instance_index; report per-part max stress and assembly deflection. FEM pass/fail is set on the assembled model.",
+  "short_prompt": "Design a 15 m glulam pedestrian footbridge as a multi-part timber-steel assembly per EWB-UK Technical Handbook (2022) and Eurocode 5 EN 1995-1-1.\n\nMain beams GL28h 600 x 200 mm; transverse crossbeams and deck planks treated softwood; partial factors gamma_M = 1.25 and modification factor k_mod = 0.8 giving design bending resistance f_m,d = 17.9 MPa.\n\nLoad cases: LC1 pedestrian live 5.0 kN/m2 uniformly distributed per EN 1991-2; LC2 wind 1.0 kN/m2 lateral per EN 1991-1-4; LC3 handrail line load 1.0 kN/m; LC4 self-weight.\n\nPass/fail: deflection under live <= L/300 = 50 mm; timber member utilisation <= 1.0 with k_mod and gamma_M; connection DCR <= 1.0 at assembled level.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "15 m EWB-UK glulam footbridge to Eurocode 5 (multi-part assembly)",
+    "brief": "Multi-part 15 m glulam footbridge: two GL28h 600 x 200 mm glulam main beams, transverse 50 mm timber deck planks forming a 1.2 m walkway, timber handrails on both sides, steel angle brackets + screws at every interface, and bearing shoes on concrete abutments. Carries 5 kPa pedestrian + 1 kPa wind + rail line load with Eurocode 5 partial factors. FEM pass/fail is set on the assembled model.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "glulam_main_beam",
+        "role": "longitudinal GL28h glulam main beam carrying live + wind + dead over the 15 m clear span",
+        "count_min": 2,
+        "geometric_constraints": {
+          "cross_section_mm": [
+            200,
+            600
+          ],
+          "length_mm": 15000,
+          "spacing_mm": 1200,
+          "support_condition": "simply supported on abutments via bearing shoe"
+        },
+        "material_hint": "GL28h glulam, f_m,k = 28.0 MPa, gamma_M = 1.25, k_mod = 0.8",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "timber_deck_plank",
+        "role": "transverse deck plank forming the walking surface across the 1.2 m walkway",
+        "count_min": 36,
+        "geometric_constraints": {
+          "thickness_mm": 50,
+          "width_mm": 150,
+          "span_mm": 1200,
+          "on_center_spacing_mm": 400
+        },
+        "material_hint": "C24 solid softwood, f_m,k = 24 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "handrail_component",
+        "role": "timber handrail framing (post, top rail, mid rail, baluster) on both sides of the walkway; 1100 mm tall",
+        "count_min": 20,
+        "geometric_constraints": {
+          "handrail_height_mm": 1100,
+          "post_on_center_mm": 2000,
+          "top_rail_line_load_kN_m": 1.0
+        },
+        "material_hint": "C24 timber or light steel, team-selected",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "steel_bracket_and_fastener",
+        "role": "galvanized steel angle + screw/bolt connecting deck planks, handrail posts, and beam ends to the glulam main beams / abutments",
+        "count_min": 80,
+        "geometric_constraints": {
+          "angle_size": "L50x50x5 typical",
+          "fastener_size": "lag screw 8-10 mm or bolt 10-12 mm",
+          "count_note": "approximately one or two brackets per plank crossing, one per handrail post, one per beam end"
+        },
+        "material_hint": "hot-dip galvanized structural steel; stainless fasteners in wet exposure",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "beam_bearing_shoe",
+        "role": "elastomeric or steel bearing shoe at each glulam beam end seated on the concrete abutment",
+        "count_min": 4,
+        "geometric_constraints": {
+          "plan_mm": [
+            220,
+            300
+          ],
+          "thickness_mm": 25
+        },
+        "material_hint": "neoprene elastomeric pad or galvanized steel shoe",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox_mm": [
+        15400,
+        1800,
+        1800
+      ],
+      "coordinate_system": "x = span (15 m), y = transverse (1.2 m walkway + handrails), z = vertical"
+    },
+    "material": {
+      "glulam": {
+        "class": "GL28h",
+        "fm_k_MPa": 28.0,
+        "gamma_M": 1.25,
+        "k_mod": 0.8,
+        "fm_d_MPa": 17.9
+      },
+      "decking": {
+        "class": "C24 solid timber",
+        "fm_k_MPa": 24
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "pedestrian_UDL",
+        "magnitude_kPa": 5.0,
+        "application": "uniform on deck"
+      },
+      {
+        "id": "LC2",
+        "name": "wind",
+        "magnitude_kPa": 1.0,
+        "application": "lateral on envelope"
+      },
+      {
+        "id": "LC3",
+        "name": "dead_plus_handrail",
+        "application": "self-weight + handrail line load 1.0 kN/m"
+      }
+    ],
+    "boundary_conditions": {
+      "supports": "pinned + roller simple supports at abutments (via bearing shoes)",
+      "beam_to_deck": "screwed/bolted through D-family brackets at each plank crossing; model as coupled pair",
+      "handrail_to_deck_or_beam": "bolted through angle at post base; model as coupled",
+      "beam_end_to_abutment": "seated on E-family bearing shoe; pinned at one end, roller at the other"
+    },
+    "objective": {
+      "primary": "pass Eurocode 5 ULS + SLS on the assembled model"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "max_beam_bending_stress_MPa",
+        "max_beam_deflection_mm",
+        "deck_bending_stress_MPa",
+        "ULS_DC_ratio",
+        "SLS_DC_ratio",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "pedestrian_UDL_kPa",
+        "limit_kPa": 5.0,
+        "derivation": "EN 1991-2 footbridge UDL",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_beam_bending_stress_vs_fm_d",
+        "limit_MPa": 17.9,
+        "derivation": "k_mod * f_m,k / gamma_M = 0.8 * 28.0 / 1.25",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_beam_deflection_mm_under_live",
+        "limit_mm": 50,
+        "derivation": "L/300 = 15000/300 EN 1995-1-1 SLS",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "wind_design_pressure_kPa",
+        "limit_kPa": 1.0,
+        "derivation": "EN 1991-1-4 simplified rural",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "handrail_top_line_load_kN_per_m",
+        "limit_kN_m": 1.0,
+        "derivation": "EN 1991-1-7 pedestrian rail",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R-A1",
+        "type": "structural_analysis",
+        "metric": "assembled_model_pass_fail",
+        "derivation": "multipart acceptance is set on the assembled FEA; per-part stress is reported but not gated",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (main beams, handrail), shell (deck)",
+      "solver_hints": [
+        "SAP2000",
+        "RFEM (Eurocode post-proc)",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static ULS + SLS"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bonded/seated (bearing shoe under glulam beam end)",
+      "load_path": "vertical reaction + longitudinal thermal expansion into abutment"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "A"
+      ],
+      "mediated_by": "bolted/screwed (D-family angle + fasteners)",
+      "load_path": "pedestrian UDL from planks into glulam main beams"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C",
+        "B"
+      ],
+      "mediated_by": "bolted (D-family angle at post base)",
+      "load_path": "handrail horizontal line load + wind on railing into deck / rim"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "C",
+        "A"
+      ],
+      "mediated_by": "bolted (D-family angle to beam side face)",
+      "load_path": "alternate handrail-post anchorage path into glulam where post aligns with beam"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A 15 m glulam + timber pedestrian footbridge is fabricated as several glulam beams, dozens of cross planks, handrail framing on both sides, dozens of steel bracket-fastener pairs, and discrete bearing shoes at each abutment; a monolithic idealization loses the load path at every interface.",
+    "speculation_caveats": "Counts for deck planks (400 mm on-center over 15 m), handrail components (2 m post spacing), and bracket/fastener instances are inferred; the original sample names typical spacings but not individual part counts.",
+    "original_sample_preserved_at": "benchmark/briefs/single/099_ng14_ewb_uk_eurocode_footbridge.json"
+  }
+}

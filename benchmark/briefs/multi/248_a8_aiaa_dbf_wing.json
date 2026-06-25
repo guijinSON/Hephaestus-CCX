@@ -1,0 +1,280 @@
+{
+  "id": "248_a8_aiaa_dbf_wing",
+  "source": {
+    "catalog_ref": "A8",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/248_a8_aiaa_dbf_wing.json",
+    "multipart_basis": "Decomposition inferred from the canonical balsa / composite DBF wing architecture: one continuous main spar (UD carbon I-beam as specified in the original sample), approximately 12 rib stations distributed along the 1524 mm span (typical DBF spacing 100-130 mm), skin panels covering the upper and lower surfaces between spar and trailing edge, a secondary trailing-edge spar, servo-mounting brackets for the control surfaces, control-surface horns, and a wing-to-fuselage attachment fitting at centerline. The spar itself remains monolithic per the original prompt; all other parts are added to make the wing a flyable structure that can carry the 4 g pull-up and wingtip-hold loads."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "uav_wing_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a single-part monolithic main wing spar for a radio-controlled design/build/fly competition aircraft. The aircraft is limited to a maximum wingspan of 5 ft (1524 mm); the scoring rule multiplies empty weight by wingspan (rated aircraft cost). The wing is a tapered rectangular planform with root chord 350 mm, tip chord 250 mm, span 1524 mm (5 ft), dihedral 3 deg. The main spar is a single-piece I-beam running from wingtip to wingtip through the centerline; cross section 30 mm wide flanges x 3 mm flange thickness, web height 25 mm x 2 mm web thickness, uniform over the full span. Material: carbon/epoxy unidirectional prepreg (E = 135 GPa longitudinal, 10 GPa transverse, density 1600 kg/m^3, longitudinal tensile/compressive strength 1500 MPa, transverse 50 MPa). Mission-level loads: maximum take-off weight (MTOW) = 6.5 kg (aircraft + 4.0 kg payload); design limit load factor n_z = 4.0 g (standard structural demonstration/wing tip test). Primary load cases: (R1) 4 g symmetric pull-up with full payload: distributed lift equal to MTOW x 4 g = 255 N applied as elliptical spanwise load giving a root bending moment M_root = 0.5 * 255 * 0.4 * 0.762 = 39 N*m (approx); max fiber stress in spar flanges <= 1500 MPa / 3.0 = 500 MPa. (R2) Wing-tip structural demonstration: aircraft is held at the wingtips and shall support 2.5 x MTOW = 16.25 kg hanging from the fuselage without structural failure or permanent deformation; equivalent tip-load spar bending check: max von Mises <= 500 MPa. (R3) Takeoff distance: ground roll must not exceed 100 ft (30.5 m) with MTOW (non-structural, included for completeness). (R4) Spar mass <= 180 g. (R5) First wing bending natural frequency >= 25 Hz (hard-mounted at centerline) to avoid coupling with propeller 1P at typical motor RPM 4000 (66 Hz) within a 2x margin. Primary verification: structural FEA (linear static for R1, R2) + modal (R5). Thermal, fluid, radiation, and buckling explicitly NOT required at this gate. Deliverables: STEP AP242 spar, laminate schedule, and a report listing spar mass in g, max fiber stress per case in MPa, first modal frequency in Hz.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe deliverable is reconfigured as a full wing assembly around the monolithic carbon spar. Parts: the UD-carbon main spar (kept monolithic per the original brief), approximately 12 balsa/composite ribs spaced along the 1524 mm span, upper and lower skin panels, a secondary trailing-edge spar, control-surface servo mounting brackets, control-surface horns, and a centerline wing-to-fuselage attachment fitting. The main spar is the single part that governs R1 and R2. The ribs, skins, and trailing-edge spar transmit distributed lift into the main spar. The fuselage attachment fitting governs the root boundary condition for both R1/R2 static cases and R5 modal. FEM verification runs on the assembled wing only; per-part stress is reported but does not gate pass/fail. Rib-to-spar bond DCR, skin-to-rib bond DCR, and attachment-fitting bolt DCR must be <= 1.0 under the governing load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim.",
+  "short_prompt": "Design a main wing assembly for a radio-controlled design/build/fly competition aircraft, built around a monolithic carbon spar. Aircraft limited to wingspan 5 ft (1524 mm); scoring multiplies empty weight by wingspan.\n\nTapered rectangular planform: root chord 350 mm, tip chord 250 mm, span 1524 mm, dihedral 3 deg. Main spar is a single-piece I-beam wingtip to wingtip, flange 30 mm wide x 3 mm thick, web 25 mm high x 2 mm thick, uniform over the full span. Material: carbon/epoxy UD prepreg (E1 = 135 GPa, longitudinal strength 1500 MPa, density 1600 kg/m^3).\n\nMTOW = 6.5 kg (aircraft + 4.0 kg payload); design limit load factor 4.0 g. LC1: 4 g symmetric pull-up with distributed lift 255 N giving root bending moment 39 N*m; max fiber stress <= 500 MPa (1500 MPa / 3.0). LC2: wingtip structural demonstration supporting 2.5 x MTOW = 16.25 kg; max von Mises <= 500 MPa. Spar mass <= 180 g. First wing bending mode >= 25 Hz hard-mounted at centerline. Takeoff ground roll <= 100 ft (30.5 m).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Design/Build/Fly wing assembly with monolithic carbon spar (5 ft span)",
+    "brief": "5 ft span tapered wing built around a full-span UD-carbon I-beam spar + 12 ribs + upper/lower skins + trailing-edge spar + servo brackets + control horns + centerline attachment fitting. Carries 4 g pull-up at MTOW 6.5 kg and wingtip-hold 2.5x demonstration. First wing bending mode >= 25 Hz. Spar mass <= 180 g.",
+    "geometric_constraints": {
+      "span_mm": 1524,
+      "root_chord_mm": 350,
+      "tip_chord_mm": 250,
+      "dihedral_deg": 3,
+      "main_spar_flange_width_mm": 30,
+      "main_spar_flange_thickness_mm": 3,
+      "main_spar_web_height_mm": 25,
+      "main_spar_web_thickness_mm": 2,
+      "main_spar_taper": "uniform cross section across full span",
+      "main_spar_monolithic": true
+    },
+    "material": {
+      "name": "Carbon/epoxy unidirectional prepreg (main spar); balsa + glass-epoxy skins; aluminum or 3D-printed nylon brackets",
+      "properties": {
+        "E1_GPa": 135,
+        "E2_GPa": 10,
+        "longitudinal_strength_MPa": 1500,
+        "transverse_strength_MPa": 50,
+        "density_kg_m3": 1600
+      }
+    },
+    "load_cases": [
+      {"id": "LC1", "name": "4g_pull_up", "MTOW_kg": 6.5, "load_factor": 4.0, "root_moment_Nm": 39},
+      {"id": "LC2", "name": "wingtip_hold_2.5x", "equivalent_mass_kg": 16.25, "description": "aircraft held at wingtips, fuselage hanging"},
+      {"id": "LC3", "name": "modal"}
+    ],
+    "boundary_conditions": {
+      "mounting": "centerline wing-to-fuselage attachment fitting cantilevered at fuselage for structural; centerline hard-mounted for modal",
+      "loads": "elliptical spanwise lift applied via skins and ribs into main spar; wingtip-hold fixes both tips"
+    },
+    "objective": {"minimize": "spar_mass"},
+    "output_format": {
+      "geometry": ["STEP_AP242"],
+      "body_count": "multi-body",
+      "report_fields": [
+        "spar_mass_g",
+        "wing_assembly_mass_g",
+        "max_fiber_stress_LC1_MPa",
+        "max_fiber_stress_LC2_MPa",
+        "first_modal_frequency_Hz",
+        "bond_DCR",
+        "attachment_bolt_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index",
+        "rib_station_mm",
+        "laminate_schedule_ref"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "main_wing_spar",
+        "role": "primary bending member; continuous UD-carbon I-beam from wingtip to wingtip through centerline; carries root bending moment under LC1 and wingtip-hold under LC2; monolithic (single piece) per the original prompt",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 1524,
+          "flange_width_mm": 30,
+          "flange_thickness_mm": 3,
+          "web_height_mm": 25,
+          "web_thickness_mm": 2,
+          "layup": "UD carbon along span",
+          "monolithic": true
+        },
+        "material_hint": "Carbon/epoxy UD prepreg (E1 = 135 GPa)",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "wing_rib",
+        "role": "spanwise rib station that maintains the airfoil shape and transfers distributed lift from the skin into the main spar",
+        "count_min": 12,
+        "count_note": "Approximately 12 ribs on the 1524 mm span (127 mm spacing) is typical for DBF-class balsa/composite wings; teams may use more.",
+        "geometric_constraints": {
+          "chord_at_root_mm": 350,
+          "chord_at_tip_mm": 250,
+          "thickness_mm": 3,
+          "lightening_holes": "team-selected for mass target",
+          "spanwise_spacing_mm": 127
+        },
+        "material_hint": "Balsa or fiberglass/epoxy laminate",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "skin_panel",
+        "role": "upper or lower skin panel; carries shear and local pressure between ribs, conforms to the airfoil loft, and provides the external aerodynamic surface",
+        "count_min": 2,
+        "count_note": "Minimum 2 (upper + lower); teams often split further for construction access.",
+        "geometric_constraints": {
+          "coverage": "leading edge to trailing-edge spar, root to tip",
+          "thickness_mm": 0.8,
+          "layup": "one-ply +/-45 fiberglass over balsa substrate"
+        },
+        "material_hint": "Balsa + fiberglass/epoxy or Monokote over balsa",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "trailing_edge_spar",
+        "role": "secondary spar at approximately 70% chord; anchors control-surface hinges and closes the torque box with the main spar and skins",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 1524,
+          "cross_section_mm": "8 x 4 (typical DBF trailing-edge spar)",
+          "location_chord_fraction": 0.70
+        },
+        "material_hint": "Spruce or pultruded carbon rod",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "servo_mount_bracket",
+        "role": "local bracket bonded to the rib inboard of each control surface that captures the servo body and routes pushrod load into the wing structure",
+        "count_min": 2,
+        "count_note": "Minimum 2 (one aileron per side); flaps add two more.",
+        "geometric_constraints": {
+          "footprint_mm": "30 x 20",
+          "thickness_mm": 3,
+          "servo_interface": "team-selected (HS-85 class)"
+        },
+        "material_hint": "Plywood or 3D-printed PA12",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "control_surface_horn",
+        "role": "horn attached to each control surface (aileron / flap) that converts servo pushrod force into surface hinge moment",
+        "count_min": 2,
+        "count_note": "Minimum 2 (one aileron per side).",
+        "geometric_constraints": {
+          "horn_height_mm": 15,
+          "pushrod_hole_diameter_mm": 2,
+          "thickness_mm": 2
+        },
+        "material_hint": "Fiberglass/epoxy laminate or aluminum 6061-T6",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "wing_to_fuselage_attachment_fitting",
+        "role": "centerline fitting that couples the main spar into the fuselage; provides the cantilever root boundary for LC1/LC2 and the hard-mount for LC3; transmits root bending moment and shear into the fuselage",
+        "count_min": 1,
+        "geometric_constraints": {
+          "bolt_count": 4,
+          "bolt_size": "M5",
+          "bolt_pattern_mm": "40 x 40",
+          "footprint_mm": "60 x 40 bonded to spar web"
+        },
+        "material_hint": "7075-T6 aluminum plate",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "span_mm": 1524,
+      "chord_at_root_mm": 350,
+      "chord_at_tip_mm": 250,
+      "dihedral_deg": 3,
+      "coordinate_system": "X = chord (LE to TE), Y = span, Z = vertical"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {"id": "R1", "type": "structural_analysis", "metric": "max_fiber_stress", "limit_MPa": 500, "applies_to": ["LC1"], "operator": "<="},
+      {"id": "R2", "type": "structural_analysis", "metric": "max_fiber_stress", "limit_MPa": 500, "applies_to": ["LC2"], "operator": "<="},
+      {"id": "R3", "type": "structural_analysis", "metric": "takeoff_ground_roll", "limit_m": 30.5, "applies_to": ["mission"], "operator": "<=", "note": "non-structural; flight performance"},
+      {"id": "R4", "type": "structural_analysis", "metric": "spar_mass", "limit_g": 180, "applies_to": ["design"], "operator": "<="},
+      {"id": "R5", "type": "vibration_analysis", "metric": "first_modal_frequency", "limit_Hz": 25, "applies_to": ["LC3"], "operator": ">="},
+      {
+        "id": "R_asm1",
+        "description": "Bond DCR at every rib-to-spar joint, skin-to-rib joint, and skin-to-trailing-edge-spar joint shall be <= 1.0 under LC1 (4 g pull-up). Adhesive shear capacity is the governing limit.",
+        "metric": "max_bond_DCR across IF1, IF2, IF3",
+        "threshold": 1.0,
+        "operator": "<=",
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "4x M5 attachment-fitting bolt DCR shall be <= 1.0 under LC1 root bending moment (39 N*m) plus LC2 tip-hold reaction.",
+        "metric": "max_attachment_bolt_DCR",
+        "threshold": 1.0,
+        "operator": "<=",
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "laminated shell for spar and skins; beam for trailing-edge spar; solid for brackets and attachment fitting",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": ["ANSYS ACP", "Abaqus"],
+      "analysis_types": [
+        "linear static (LC1, LC2) on assembled wing",
+        "modal (LC3) on assembled wing"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": ["A_main_wing_spar", "B_wing_rib"],
+      "mediated_by": "epoxy bond at each rib-spar intersection",
+      "load_path": "distributed lift from ribs into main spar shear web"
+    },
+    {
+      "id": "IF2",
+      "between": ["B_wing_rib", "C_skin_panel"],
+      "mediated_by": "epoxy bond at each rib-skin interface",
+      "load_path": "aerodynamic pressure from skin into ribs"
+    },
+    {
+      "id": "IF3",
+      "between": ["B_wing_rib", "D_trailing_edge_spar"],
+      "mediated_by": "epoxy bond at each rib trailing-edge notch",
+      "load_path": "shear and torque from skin into trailing-edge spar"
+    },
+    {
+      "id": "IF4",
+      "between": ["B_wing_rib", "E_servo_mount_bracket"],
+      "mediated_by": "epoxy bond + 2x M2 screws",
+      "load_path": "servo pushrod reaction into rib"
+    },
+    {
+      "id": "IF5",
+      "between": ["D_trailing_edge_spar", "F_control_surface_horn"],
+      "mediated_by": "bonded horn base with M2 retaining screws",
+      "load_path": "control-surface hinge moment into trailing-edge spar"
+    },
+    {
+      "id": "IF6",
+      "between": ["A_main_wing_spar", "G_wing_to_fuselage_attachment_fitting"],
+      "mediated_by": "4x M5 bolts through spar web with backing plate",
+      "load_path": "root bending moment (39 N*m at LC1) and tip-hold reaction (LC2) into fuselage"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "The 4 g pull-up and wingtip-hold cases couple the spar, ribs, skin, and root attachment; lift is distributed across the full assembly. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The original monolithic-spar prompt defines only the primary bending member; a flyable DBF wing that can carry the 4 g pull-up and satisfy R5 modal is inherently an assembly of spar + ribs + skins + trailing-edge spar + servo hardware + root attachment. The spar itself remains monolithic per the original requirement.",
+    "speculation_caveats": "Rib count (12), skin thickness, trailing-edge-spar location, and servo hardware are team-selected; the spar cross-section and the 1524 mm span are anchored to the original sample.",
+    "original_sample_preserved_at": "benchmark/briefs/single/248_a8_aiaa_dbf_wing.json"
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "id": "011_pt11_misumi_aluminum_frame_bracket",
+  "source": {
+    "catalog_ref": "PT11",
+    "year": 2024,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/011_pt11_misumi_aluminum_frame_bracket.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "industrial_machinery",
+  "part_class": "aluminum_extrusion_90deg_joint_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a bolted multi-body aluminum extrusion 90-degree corner joint assembly consisting of: (A) one vertical 40x40x600 mm aluminum extrusion (HFS8-4040-equivalent, 8-mm slot); (B) one horizontal 40x40x400 mm aluminum extrusion (HFS8-4040-equivalent) cantilevered from the vertical; (C) two or more large reinforcing corner brackets (HBLFSNB8-class); (D) pre-assembly M8 T-nuts (HNTT8-8-equivalent, 8-mm slot) seated in the extrusion slots; (E) M8 bolts clamping the brackets to the T-nuts. Extrusion material 6063-T5 (yield 170 MPa, Young's modulus 68.9 GPa, density 2700 kg/m^3, Ix = Iy = 90000 mm^4 per catalog).\n\nCatalog 2024 per-bracket allowables for the HBLFSNB8-class large reinforcing corner bracket with two M8 pre-assembly T-nuts in each leg: static 1470 N (150 kgf), dynamic 490 N (50 kgf), allowable bending moment 29.4 N*m. Per-T-nut pull-out 2400 N (8-mm-slot catalog short-thread). Service payload at the free tip of the horizontal extrusion: vertical 300 N + horizontal 150 N, fatigue life >= 1e6 cycles at the dynamic load.\n\nPass/fail on the assembled model: (R1) per-bracket static force <= 1470 N under LC1; with two brackets at 40 mm effective moment arm the vertical-only demand per bracket is ~1500 N so the agent must add brackets / upsize or shorten the cantilever; (R2) per-bracket dynamic force <= 490 N for fatigue; (R3) per-bracket bending moment <= 29.4 N*m (demand 60 N*m/2 = 60 N*m is over catalog, must add brackets or gusset); (R4) horizontal extrusion tip deflection at cantilever tip <= L/300 = 1.33 mm at static service load; (R5) extrusion max bending stress <= 170 / 2.0 = 85 MPa; (R6) per-T-nut pull-out load <= 2400 / 2.0 = 1200 N; (R_asm1) assembly-scope connection DCR on every bracket-to-extrusion interface (bracket allowable load + bracket allowable moment + T-nut pull-out, envelope) <= 1.0 under LC1.\n\nManufacturing: cut 40x40 extrusions to length; install M8 T-nuts into each slot; mount brackets with M8 bolts; verify per-bracket reaction by test vs catalog. The final FEM check runs on the fully assembled model (vertical extrusion + horizontal extrusion + >=2 brackets + T-nuts + M8 bolts) with beam elements for the extrusions, solid elements at brackets, and contact / friction at each bracket-extrusion faying face. Per-part stress is reported but assembly-level passing requires all catalog-limit DCRs and the stiffness constraint to hold simultaneously.\n\nDeliverables: STEP AP242 of the 90-deg corner joint assembly with the two extrusions, all brackets, all T-nuts, and all M8 bolts as distinct bodies tagged with part_family and instance_index; report with per-bracket reaction force and moment, extrusion tip deflection, max extrusion stress, per-T-nut pull-out, per-part max stress, assembly-level connection DCR, and selection justification.",
+  "short_prompt": "Design a bolted multi-body aluminum-extrusion 90-degree corner joint delivered as an assembly: a vertical 40x40x600 mm extrusion and a cantilevered horizontal 40x40x400 mm extrusion (HFS8-4040-equivalent, 8 mm slot), joined by >= 2 large reinforcing corner brackets (HBLFSNB8-class) with pre-assembly M8 T-nuts (HNTT8-8-equivalent) and M8 bolts. Extrusion 6063-T5 (yield 170 MPa, E = 68.9 GPa, rho = 2700 kg/m^3, Ix = Iy = 90000 mm^4).\n\nCatalog 2024 per HBLFSNB8-class bracket with two M8 pre-assembly T-nuts per leg: static 1470 N (150 kgf); dynamic 490 N (50 kgf); allowable bending moment 29.4 N*m. Per-T-nut pull-out 2400 N (8-mm-slot short-thread).\n\nService payload at the horizontal tip: 300 N vertical + 150 N horizontal; fatigue life >= 1e6 cycles at dynamic load.\n\nPass limits: per-bracket static <= 1470 N; per-bracket dynamic <= 490 N; per-bracket moment <= 29.4 N*m (baseline demand of ~60 N*m per bracket exceeds this, so brackets must be added or a gusset introduced); tip deflection <= L/300 = 1.33 mm; extrusion bending stress <= 170/2.0 = 85 MPa; per-T-nut pull-out <= 2400/2.0 = 1200 N.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "connection_integrity"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "frame_stiffness_calculator",
+        "reason": "Aluminum extrusion tip deflection is a closed-form cantilever formula using catalog Ix.",
+        "examples": [
+          "Excel worksheet",
+          "Python beam module"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "40x40 aluminum-extrusion 90-deg corner joint with reinforcing bracket (multi-part assembly)",
+    "brief": "Multi-body aluminum-extrusion corner: two HFS8-4040-equivalent extrusions + >=2 HBLFSNB8-class brackets + M8 T-nuts + M8 bolts. Must meet per-bracket catalog load/moment limits plus L/300 tip deflection at 300 N + 150 N tip payload. Final FEM check runs on the assembled model.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "vertical_extrusion",
+        "role": "vertical HFS8-4040-equivalent aluminum extrusion fixed at the base",
+        "count_min": 1,
+        "geometric_constraints": {
+          "section": "HFS8-4040",
+          "length_mm": 600
+        },
+        "material_hint": "6063-T5",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "horizontal_extrusion",
+        "role": "horizontal HFS8-4040-equivalent aluminum extrusion cantilever that carries the tip payload",
+        "count_min": 1,
+        "geometric_constraints": {
+          "section": "HFS8-4040",
+          "length_mm": 400
+        },
+        "material_hint": "6063-T5",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "corner_bracket",
+        "role": "HBLFSNB8-class large reinforcing corner bracket that transfers moment from horizontal to vertical extrusion",
+        "count_min": 2,
+        "geometric_constraints": {
+          "family": "Large reinforcing corner bracket (HBLFSNB8-class)",
+          "allowable_static_N": 1470,
+          "allowable_dynamic_N": 490,
+          "allowable_moment_Nm": 29.4
+        },
+        "material_hint": "catalog bracket (steel or aluminum per catalog)",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "t_nut",
+        "role": "HNTT8-8-equivalent pre-assembly M8 T-nut seated in the 8-mm slot",
+        "count_min": 8,
+        "geometric_constraints": {
+          "slot_mm": 8,
+          "thread": "M8",
+          "pullout_N_catalog": 2400
+        },
+        "material_hint": "catalog steel T-nut",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "m8_bolt",
+        "role": "M8 bolt clamping bracket to T-nut",
+        "count_min": 8,
+        "geometric_constraints": {
+          "thread": "M8"
+        },
+        "material_hint": "catalog class 8.8 or better",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "approximately 440 x 40 x 640 mm L-frame envelope (400 horizontal + 40 extrusion thickness x 600 vertical)",
+      "coordinate_system": "Vertical extrusion along Z from base, horizontal extrusion along X at top of vertical"
+    },
+    "material": {
+      "extrusion": {
+        "name": "6063-T5",
+        "yield_MPa": 170,
+        "youngs_modulus_GPa": 68.9,
+        "Ix_mm4": 90000
+      }
+    },
+    "catalog_limits": {
+      "bracket_static_N": 1470,
+      "bracket_dynamic_N": 490,
+      "bracket_allowable_moment_Nm": 29.4,
+      "tnut_pullout_N": 2400
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "service",
+        "tip_vertical_N": 300,
+        "tip_horizontal_N": 150
+      }
+    ],
+    "boundary_conditions": {
+      "vertical_extrusion_base": "fully fixed",
+      "payload": "applied at horizontal extrusion tip",
+      "inter_part_fastener_stiffness": "bracket clamps extrusion slot via M8 bolt + T-nut; contact + friction at bracket-extrusion faying face"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "per_bracket_force_N",
+        "per_bracket_moment_Nm",
+        "tip_deflection_mm",
+        "max_extrusion_stress_MPa",
+        "per_tnut_pullout_N",
+        "connection_DCR",
+        "per_part_max_stress",
+        "selection_justification"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "per_bracket_force_static",
+        "limit_N": 1470,
+        "derivation": "Large reinforcing bracket catalog static allowable (HBLFSNB8-class)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "per_bracket_force_dynamic",
+        "limit_N": 490,
+        "derivation": "Large reinforcing bracket catalog dynamic allowable (HBLFSNB8-class)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "per_bracket_bending_moment",
+        "limit_Nm": 29.4,
+        "derivation": "Large reinforcing bracket allowable bending moment (HBLFSNB8-class)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "horizontal_extrusion_tip_deflection",
+        "limit_mm": 1.33,
+        "derivation": "L/300 with L = 400 mm",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "max_extrusion_bending_stress",
+        "limit_MPa": 85,
+        "derivation": "yield / 2.0 = 170 / 2.0 (industrial extrusion catalog frame SF)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "per_tnut_pullout_load",
+        "limit_N": 1200,
+        "derivation": "2400 / 2.0 (8-mm-slot T-nut catalog / SF 2.0)",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "type": "connection_integrity",
+        "metric": "connection_DCR",
+        "limit": 1.0,
+        "derivation": "assembly-scope DCR on every bracket-to-extrusion interface, enveloping bracket force, bracket moment, and T-nut pull-out",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      }
+    ],
+    "governing_standard": "Industrial aluminum extrusion technical reference (2024)",
+    "recommended_fea_setup": {
+      "element_type": "beam for extrusions + solid for brackets",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "FreeCAD FEM"
+      ],
+      "analysis_types": [
+        "linear static + catalog-limit check"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "bracket leg clamps vertical extrusion via M8 bolt + T-nut in slot"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "bracket leg clamps horizontal extrusion via M8 bolt + T-nut in slot"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "M8 bolt passes through bracket hole and threads into T-nut"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "T-nut seats in vertical extrusion 8-mm slot; pull-out resisted by slot walls"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "T-nut seats in horizontal extrusion 8-mm slot; pull-out resisted by slot walls"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A 40x40 aluminum-extrusion corner joint is fundamentally a multi-body system (two extrusions + brackets + T-nuts + M8 bolts) whose per-bracket reaction force and moment require explicit bodies; a single-body monolithic model cannot represent bracket load sharing against catalog limits.",
+    "speculation_caveats": "Bracket count >= 2 per the original prompt; T-nut and M8 bolt counts (8 each) are the minimum for two brackets with two legs x two T-nuts. Agent may upsize brackets or add more pairs per the catalog-limit check.",
+    "original_sample_preserved_at": "benchmark/briefs/single/011_pt11_misumi_aluminum_frame_bracket.json"
+  }
+}

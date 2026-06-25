@@ -1,0 +1,445 @@
+{
+  "id": "261_a21_fsg_tsac_enclosure",
+  "source": {
+    "catalog_ref": "A21",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/261_a21_fsg_tsac_enclosure.json",
+    "multipart_basis": "FSG TSAC enclosures are fabricated as bolted/welded multi-panel aluminum boxes. Decomposition reflects canonical accumulator container practice: structural base plate carrying cell module pickups, four side walls, an HV interconnect feedthrough plate, busbar mounting rails that internally carry cell-module reaction into the walls, cable gland plates for the HV/LV harness exits, a ventilation grate cover, a removable top cover, and the eight chassis mounting feet. Speculative at the level of exact panel layout; load magnitudes, material, and pass/fail thresholds are preserved from the single-body brief."
+  },
+  "domain": "automotive_structural",
+  "part_class": "student_ev_battery_enclosure_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the Tractive System Accumulator Container (TSAC) enclosure for a student-built electric open-wheel race vehicle. Accumulator total mass (cells + BMS + hardware inside the container) = 80 kg; tractive system DC voltage nominal 400 V (must be <= 600 V DC per governing structural-demonstration rules). Container is a single monolithic TIG-welded aluminum alloy 5083-H116 box (E = 72 GPa, yield = 215 MPa, ultimate = 305 MPa, density = 2660 kg/m^3). Overall outer bounding box 650 mm (X, forward) x 450 mm (Y) x 400 mm (Z); wall thickness to be sized (typical 3 mm for side walls, 4 mm for base). Mounted to chassis at 8 locations using M10 Grade 8.8 bolts on a pattern that distributes load paths. Requirements: (R1) Forward inertial loading: 40 g forward applied to the full 80 kg battery mass = 40 x 80 x 9.81 = 31,400 N distributed through the cell module mounting points into the container structure; max von Mises in container walls and welds <= yield / 1.1 = 195 MPa (weld-zone factor). (R2) Lateral (side) inertial loading: 20 g x 80 kg x 9.81 = 15,700 N; max von Mises <= 195 MPa. (R3) Vertical (up and down) inertial loading: 20 g x 80 kg x 9.81 = 15,700 N; max von Mises <= 195 MPa. (R4) No single container fastener, anchor, or weld may fail under the ultimate load of the worst-case case (1.0 x its case load, since the 40 g / 20 g numbers are already ultimate); fastener shear + tension check via VDI 2230 proxy; utilization < 1.0. (R5) Container mass (excluding cells) <= 15 kg. (R6) The container must electrically isolate the tractive system; no structural bolt penetrates the insulating liner. (R7) First modal frequency hard-mounted at the 8 bolt holes >= 40 Hz (avoid 2x chassis mode ~25 Hz). Primary verification: linear static FEA for R1-R3, bolt check for R4, modal for R7. Vibration, thermal, fluid, radiation NOT required (thermal runaway is a separate safety gate). Deliverables: STEP AP242 welded container (treated as a single FEA body), weld map, and a report listing container mass in kg, max von Mises per load case in MPa, bolt utilization, first modal frequency in Hz.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a multi-part welded/bolted aluminum assembly rather than a single monolithic shell. Speculated part families for a TSAC container: (A) structural base plate carrying eight chassis mounting feet and the cell-module pickup pattern; (B) four side walls (long-forward, long-rear, left, right); (C) removable top cover bolted into a perimeter seal rail; (D) HV interconnect feedthrough plate (high-voltage connector bulkhead on the rear wall, electrically isolated); (E) internal busbar mounting rails that carry cell-module reaction into the long walls; (F) cable gland plates on the LV/comms side; (G) ventilation grate / pressure-relief cover satisfying the rulebook venting path; (H) chassis mounting feet (x8) with M10 Grade 8.8 bolt bosses. Interfaces: base<->walls (TIG fillet weld); walls<->walls corner seam (TIG fillet); top cover<->walls (bolted with EPDM gasket, electrically isolated); feedthrough plate<->rear wall (bolted with insulating O-ring); busbar rails<->walls (bolted threaded inserts); gland plate<->side wall (bolted); vent cover<->top cover (bolted); feet<->base (TIG fillet or bolted-through with internal backing plate). FEM verification runs on the assembled model ONLY per fem_check_policy=assembled_only; per-part von Mises is reported but does not gate pass/fail. Inter-part connection DCR <= 1.0 under the worst of LC1/LC2/LC3. Load magnitudes, material properties, mass cap (15 kg total container), and pass/fail thresholds are preserved verbatim from the monolithic brief.",
+  "short_prompt": "Design the Tractive System Accumulator Container (TSAC) enclosure for a student-built electric open-wheel race vehicle as a multi-part welded + bolted aluminum assembly. Accumulator total mass (cells + BMS + hardware inside) = 80 kg; tractive system DC voltage nominal 400 V (<= 600 V DC per governing structural-demonstration rules).\n\nMaterial: Al 5083-H116 welded (E = 72 GPa, yield = 215 MPa, ultimate = 305 MPa, density 2660 kg/m^3). Outer bounding box 650 mm (X forward) x 450 mm (Y) x 400 mm (Z); typical wall 3 mm side, 4 mm base. Mounted to chassis at 8 locations using M10 Grade 8.8 bolts.\n\nLC1 forward inertial 40 g on 80 kg = 31,400 N distributed through cell module mounting points; max von Mises in walls and welds <= yield / 1.1 = 195 MPa (weld-zone factor). LC2 lateral 20 g x 80 kg = 15,700 N; max von Mises <= 195 MPa. LC3 vertical 20 g x 80 kg = 15,700 N; max von Mises <= 195 MPa. Bolt utilization via VDI 2230 proxy < 1.0. Container mass (excluding cells) <= 15 kg. Electrical isolation: no structural bolt penetrates the insulating liner. First modal frequency hard-mounted at 8 bolt holes >= 40 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "VDI_2230_bolt_check",
+        "reason": "Fastener utilization under combined shear + tension is a VDI 2230 calculation done outside FEA.",
+        "examples": [
+          "VDI 2230 spreadsheets",
+          "Femap BOLT CHECK"
+        ]
+      },
+      {
+        "tool": "weld_throat_check",
+        "reason": "TIG fillet welds at base-to-wall and wall-to-wall seams are sized by AWS D1.2 / FSAE accumulator-rule weld-zone factor (yield/1.1). Weld throat utilization is computed from FEA line-reactions, not from continuum stress.",
+        "examples": [
+          "AWS D1.2 hand-calc",
+          "Ansys Weld Extraction"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student EV tractive-system battery enclosure (multi-part welded/bolted assembly)",
+    "brief": "5083-H116 welded+bolted accumulator container for 80 kg tractive system; survives 40 g forward / 20 g side / 20 g vertical inertial loads. Multi-part assembly: base plate (A), four side walls (B1-B4), removable top cover (C), HV feedthrough plate (D), internal busbar mounting rails (E), cable gland plates (F), ventilation/pressure-relief cover (G), chassis mounting feet (H x8). FEM at assembled level only; connection DCR <= 1.0 under governing LC.",
+    "geometric_constraints": {
+      "outer_bounding_box_mm": "650 x 450 x 400 (X forward x Y x Z)",
+      "mount_bolts": {
+        "count": 8,
+        "size": "M10 Grade 8.8",
+        "pattern_note": "distributed so that LC1 40 g forward load shares among no fewer than 4 of the 8 feet"
+      },
+      "battery_mass_kg": 80,
+      "tractive_system_voltage_max_V": 600,
+      "wall_thickness_hint_mm": {
+        "base": 4,
+        "side_walls": 3,
+        "top_cover": 3
+      },
+      "electrical_isolation": "no structural bolt penetrates the internal insulating liner (R6); HV feedthrough uses an insulating O-ring and isolated ground path"
+    },
+    "material": {
+      "name": "Al 5083-H116 welded",
+      "properties": {
+        "youngs_modulus_GPa": 72,
+        "yield_strength_MPa": 215,
+        "ultimate_tensile_strength_MPa": 305,
+        "density_kg_m3": 2660
+      },
+      "weld_zone_allowable_MPa": 195,
+      "gasket_material": "EPDM or equivalent closed-cell, non-structural (contributes no stiffness in FEA)"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "forward_40g",
+        "force_N": 31400,
+        "direction": "+X (forward) on battery mass",
+        "distribution": "coupled to interior cell-module mounting pickups on the base plate (A) and busbar rails (E)"
+      },
+      {
+        "id": "LC2",
+        "name": "lateral_20g",
+        "force_N": 15700,
+        "direction": "+Y (side)",
+        "distribution": "coupled to interior cell-module pickups; reacted primarily by long walls B1/B2"
+      },
+      {
+        "id": "LC3",
+        "name": "vertical_20g",
+        "force_N": 15700,
+        "direction": "+/-Z",
+        "distribution": "coupled to interior cell-module pickups; reacted primarily by base A and top cover C with gasket non-structural"
+      },
+      {
+        "id": "LC4",
+        "name": "modal",
+        "description": "hard-mounted at 8 foot bolt holes, first modal frequency target >= 40 Hz"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "8 foot bolt holes on part H (chassis mounting feet) fixed in all 6 DOF (chassis is rigid relative to container for this check)",
+      "internal_mass": "80 kg battery pack lumped and RBE3-coupled to cell-mount interior surfaces on A and E",
+      "gasket_handling": "gasket E between C and B1-B4 modeled as a contact pair with zero tensile capacity (compression only); no stiffness contribution"
+    },
+    "objective": {
+      "minimize": "container_mass_kg",
+      "design_heuristic": "target total mass <= 15 kg excluding cells"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (A + B1-B4 + C + D + E-rails + F-gland plates + G + H x8)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E|F|G|H)",
+        "instance_index",
+        "as-built thickness",
+        "weld-seam vs bolted-joint flag"
+      ],
+      "report_fields": [
+        "container_mass_kg",
+        "max_von_mises_LC1_MPa",
+        "max_von_mises_LC2_MPa",
+        "max_von_mises_LC3_MPa",
+        "bolt_utilization_max",
+        "first_modal_frequency_Hz",
+        "assembly_deflection_max_mm",
+        "connection_DCR_max",
+        "per_part_max_stress_MPa",
+        "weld_throat_utilization_max"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "base_plate",
+        "role": "structural floor carrying the cell-module mounting pattern and transferring all inertial loads from the battery into the 8 chassis mounting feet",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_footprint_mm": "650 x 450",
+          "thickness_mm": 4,
+          "material_hint": "Al 5083-H116",
+          "cell_module_pickup_count": 8,
+          "interface_to_feet": "welded fillet or through-bolted with internal backing"
+        },
+        "material_hint": "Al 5083-H116 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side_wall_panel",
+        "role": "vertical sidewall; four instances (forward, rear, left, right) forming the enclosure box and carrying in-plane shear under LC1 and LC2",
+        "count_min": 4,
+        "geometric_constraints": {
+          "forward_rear_panel_mm": "650 x 400 x 3",
+          "left_right_panel_mm": "450 x 400 x 3",
+          "corner_joint": "TIG fillet weld at vertical seams between adjacent walls",
+          "top_edge_feature": "gasket rail with threaded inserts for top-cover bolts"
+        },
+        "material_hint": "Al 5083-H116 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "top_cover",
+        "role": "removable lid providing service access and closing the pressure-relief / venting path",
+        "count_min": 1,
+        "geometric_constraints": {
+          "footprint_mm": "650 x 450",
+          "thickness_mm": 3,
+          "perimeter_bolt_count_min": 12,
+          "sealing": "EPDM gasket seated on B-family top rail"
+        },
+        "material_hint": "Al 5083-H116 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "hv_interconnect_feedthrough_plate",
+        "role": "bulkhead penetration carrying the HV connector and maintaining electrical isolation to R6",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "120 x 120 x 4",
+          "isolation": "insulating O-ring + non-conductive sleeve around all bolt penetrations",
+          "mounts_on": "B-rear wall"
+        },
+        "material_hint": "Al 5083-H116 plate with insulating liner",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "busbar_mounting_rail",
+        "role": "internal longitudinal rails that carry the cell-module reaction loads into the long walls and keep busbars clear of the wall interior surfaces",
+        "count_min": 2,
+        "geometric_constraints": {
+          "cross_section_mm": "25 x 25 x 3 hollow or solid rectangular",
+          "length_mm": 620,
+          "attachment": "bolted to B-left and B-right via threaded inserts; no weld (to preserve insulating liner)"
+        },
+        "material_hint": "Al 6061-T6 extrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "cable_gland_plate",
+        "role": "LV/comms harness exits; bolted plate with IP-rated gland fittings",
+        "count_min": 2,
+        "geometric_constraints": {
+          "nominal_size_mm": "80 x 60 x 3",
+          "mounts_on": "B-side wall or D-feedthrough region",
+          "gland_count_min": 3
+        },
+        "material_hint": "Al 5083-H116 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "ventilation_grate_cover",
+        "role": "pressure-relief / vent path cover on the top cover; passes the FSAE-rule venting requirement without forming an electrical path",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "120 x 120 x 3",
+          "open_area_fraction_min": 0.4,
+          "mounts_on": "C-top cover"
+        },
+        "material_hint": "Al 5083-H116 perforated plate",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "chassis_mounting_foot",
+        "role": "load-path foot welded or through-bolted to the base plate; carries the M10 8.8 chassis bolt and distributes container inertial reactions into the chassis node",
+        "count_min": 8,
+        "geometric_constraints": {
+          "bolt": "M10 Grade 8.8",
+          "foot_thickness_mm_min": 6,
+          "bolt_hole_edge_distance_mm_min": 15,
+          "distribution": "two per corner area, placed so that no fewer than 4 feet carry load simultaneously under LC1"
+        },
+        "material_hint": "Al 5083 or 7075 machined block",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "outer_bbox_mm": "650 x 450 x 400",
+      "coordinate_system": "X forward (vehicle), Y left-right, Z vertical",
+      "container_mass_cap_kg": 15,
+      "interior_clear_volume_note": "must accommodate the 80 kg pack, BMS, and busbars without wall interference"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 195,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 195,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 195,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "bolt_utilization",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "container_mass",
+        "limit_kg": 15,
+        "applies_to": [
+          "assembled_design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R7",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 40,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces (IF1..IF8) <= 1.0 under the governing load case (worst of LC1/LC2/LC3).",
+        "metric": "max_DCR across IF1..IF8",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Weld-seam throat utilization at base-to-wall and wall-to-wall TIG fillets <= 1.0 using weld-zone allowable 195 MPa.",
+        "metric": "max weld throat utilization",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell or solid-shell for plates; beam or solid for busbar rails and feet",
+      "mesh_size_mm_in_critical_regions": 5,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static x3 (LC1, LC2, LC3)",
+        "modal (LC4) hard-mounted at 8 foot holes"
+      ],
+      "connection_modeling": [
+        "TIG fillet welds as tied contact with throat-size capacity check post-process",
+        "top-cover bolts and feedthrough bolts as stiffness-equivalent CBUSH or MPC pairs",
+        "gasket as compression-only contact, non-structural"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A_base_plate",
+        "B_side_wall (each of 4)"
+      ],
+      "mediated_by": "TIG fillet weld, continuous around base perimeter",
+      "load_path": "battery inertial reaction into base then into walls; primary LC1/LC2 shear path"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B_side_wall_i",
+        "B_side_wall_i+1"
+      ],
+      "mediated_by": "TIG fillet weld at vertical corner seams",
+      "load_path": "corner shear tie; prevents wall opening under LC1 forward load"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C_top_cover",
+        "B_side_wall top rail"
+      ],
+      "mediated_by": "perimeter bolts (>=12) with EPDM gasket, compression-only contact",
+      "load_path": "LC3 +Z uplift into top cover, back through bolts to walls"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "D_hv_feedthrough_plate",
+        "B_rear_wall"
+      ],
+      "mediated_by": "bolted with insulating O-ring and non-conductive sleeves",
+      "load_path": "HV connector reaction into rear wall; preserves electrical isolation R6"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "E_busbar_mounting_rail",
+        "B_long_wall (left/right)"
+      ],
+      "mediated_by": "bolted threaded inserts (no weld to preserve insulating liner)",
+      "load_path": "cell-module reaction into long walls; primary LC2 lateral path"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "F_cable_gland_plate",
+        "B_side_wall"
+      ],
+      "mediated_by": "bolted, gasketed",
+      "load_path": "harness strain reaction (minor) into side wall"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "G_ventilation_grate_cover",
+        "C_top_cover"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "negligible structural; maintains venting aperture"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "H_chassis_mounting_foot",
+        "A_base_plate"
+      ],
+      "mediated_by": "TIG fillet weld or through-bolt with internal backing plate",
+      "load_path": "primary reaction path from container to chassis; governs LC1 forward and bolt check R4"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "TSAC containers are multi-panel welded+bolted assemblies; the governing stress states arise at the weld toes and bolted interfaces between panels. Single-panel FEA would mis-estimate load sharing between base, walls, cover, and feet. Per-part stress is reported for diagnostics but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Real FSAE/FSG accumulator containers are TIG-welded aluminum boxes closed by a bolted top cover with insulated HV feedthroughs; the 'monolithic' framing in the original brief is a modeling simplification, not a manufacturing reality.",
+    "speculation_caveats": "Exact wall partition, busbar-rail count, gland-plate placement, and foot geometry are team-specific. Counts and dimensions here are plausible defaults for a 650x450x400 mm container; no FSG rulebook clauses are cited beyond what the single-body brief already carries.",
+    "exclusions_explained": {
+      "thermal_analysis": "Thermal runaway and venting are covered under a separate safety gate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Box walls in bending; buckling not driving mode."
+    },
+    "original_sample_preserved_at": "benchmark/briefs/single/261_a21_fsg_tsac_enclosure.json"
+  },
+  "rulebook_citations": {}
+}

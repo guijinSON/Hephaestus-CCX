@@ -1,0 +1,354 @@
+{
+  "id": "214_af2_sasol_solar_challenge",
+  "source": {
+    "catalog_ref": "AF2",
+    "year": 2024,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/214_af2_sasol_solar_challenge.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "solar_ev_structural",
+  "part_class": "challenger_monocoque_rollcage_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary driver-cell monocoque and roll-cage structure of a Challenger-class cross-country solar-EV benchmark targeting the 6 m^2 silicon array sub-class as a multi-part assembly. The assembly consists of the 4130 chromoly tubular main hoop / roll cage, the CFRP sandwich driver-cell floor, the CFRP sandwich front bulkhead panel, the CFRP sandwich side-intrusion panels (left + right), the aluminum honeycomb core between the skins, the roof solar array mounting frame carrying the 6 m^2 array, the 5-point harness anchor brackets (5 anchors), and the steel cage-to-monocoque attachment fittings. Vehicle overall length must not exceed 5 m, width must not exceed 2.2 m, height must not exceed 1.8 m per road-law annex. Total vehicle mass excluding driver must not exceed 500 kg. The solar array footprint must be <= 6.0 m^2 projected horizontal area of silicon cells. Roll cage material: 4130 chromoly steel tubing (Young's modulus 205 GPa, Poisson 0.29, yield 435 MPa, ultimate 670 MPa, density 7850 kg/m^3), minimum outer diameter 31.75 mm x wall 1.65 mm. Driver cell monocoque is carbon/epoxy sandwich with quasi-isotropic 1.5 mm CFRP skins (E = 55 GPa, strength 600 MPa), 20 mm aluminum honeycomb core (E3 = 0.8 GPa, shear strength 1.2 MPa, density 50 kg/m^3). Load cases (cross-country solar-EV structural inheritance): (LC1) main hoop vertical 6 kN + lateral 5 kN + longitudinal 9 kN simultaneously at the top of the hoop with base fixed; (LC2) front bulkhead: 6000 N axial applied at the bulkhead centerline representing front-impact equivalent load; (LC3) side intrusion: 7000 N normal to the side-impact structure at mid-height; (LC4) harness/belt anchor: 13,500 N at each of the 5-point harness anchors per FIA 8854/98-equivalent at the most adverse angle; (LC5) roof solar array downforce + aerodynamic lift: aero lift 800 N uniformly distributed over the 6 m^2 array footprint at 100 km/h race speed. Pass/fail: (R1) no tube or laminate element exceeds yield/first-ply-failure across LC1-LC4 (435 MPa steel, 600 MPa CFRP), (R2) deflection of main hoop top toward helmet under LC1 below 50 mm, (R3) CFRP skin strain under LC5 below 0.4%, (R4) core shear below 0.8 MPa under LC5, (R5) first global torsional mode above 10 Hz. Verification is performed on the assembled steel-cage + CFRP-monocoque + honeycomb-core multi-body model with representative bolted / bonded interface stiffness; per-part stress is reported but does not gate pass/fail. Deliverables: STEP with all bodies, layup table, FEA per case on assembly, modal report, and full mass budget separating cage / skin / core / array.",
+  "short_prompt": "Design the primary driver-cell monocoque and roll-cage structure of a Challenger-class cross-country solar-EV targeting the 6 m^2 silicon array sub-class, as a multi-part assembly.\n\nEnvelope: length <= 5 m, width <= 2.2 m, height <= 1.8 m. Total vehicle mass excluding driver <= 500 kg. Solar array footprint <= 6.0 m^2 projected. Roll cage 4130 chromoly tubing (E 205 GPa, Poisson 0.29, yield 435 MPa, ultimate 670 MPa, density 7850 kg/m^3) at minimum OD 31.75 mm x wall 1.65 mm. Driver cell is carbon/epoxy sandwich with quasi-isotropic 1.5 mm CFRP skins (E 55 GPa, strength 600 MPa) over 20 mm aluminum honeycomb core (E3 0.8 GPa, shear 1.2 MPa, density 50 kg/m^3).\n\nLoad cases.\n- LC1 main hoop: 6 kN vertical + 5 kN lateral + 9 kN longitudinal simultaneously at top of hoop.\n- LC2 front bulkhead: 6000 N axial at bulkhead centerline.\n- LC3 side intrusion: 7000 N normal at mid-height.\n- LC4 harness: 13,500 N at each of 5 anchors per FIA 8854/98-equivalent.\n- LC5 roof array aero lift: 800 N over 6 m^2 footprint at 100 km/h.\n\nCFRP skin strain under LC5 < 0.4%; core shear < 0.8 MPa; first torsional mode > 10 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Challenger-class solar EV monocoque + roll cage (multi-part assembly)",
+    "brief": "Challenger-class 6 m^2 solar EV: chromoly roll cage + CFRP floor + front bulkhead + side-intrusion panels + honeycomb core + roof array mount + 5 harness anchors + cage attachment fittings.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "roll_cage_tube",
+        "role": "4130 chromoly main hoop and cage members forming the driver head-protection envelope",
+        "count_min": 1,
+        "geometric_constraints": {
+          "helmet_clearance_mm_min": 50,
+          "tube_od_mm_min": 31.75,
+          "tube_wall_mm_min": 1.65
+        },
+        "material_hint": "4130 chromoly tube",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "driver_cell_floor_panel",
+        "role": "CFRP sandwich floor panel of the monocoque",
+        "count_min": 1,
+        "geometric_constraints": {
+          "skin_thickness_mm": 1.5,
+          "core_thickness_mm": 20
+        },
+        "material_hint": "CFRP QI skin + Al honeycomb core",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "front_bulkhead_panel",
+        "role": "CFRP sandwich panel at the front bulkhead reacting LC2 axial",
+        "count_min": 1,
+        "geometric_constraints": {},
+        "material_hint": "CFRP QI skin + Al honeycomb core",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "side_intrusion_panel",
+        "role": "left / right side-intrusion structure panel reacting LC3 lateral load",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "CFRP QI skin + Al honeycomb core",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "honeycomb_core",
+        "role": "20 mm aluminum honeycomb core bonded between sandwich skins",
+        "count_min": 1,
+        "geometric_constraints": {
+          "core_thickness_mm": 20
+        },
+        "material_hint": "Aluminum honeycomb",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "roof_array_mount_frame",
+        "role": "frame carrying the 6 m^2 silicon solar array on the roof",
+        "count_min": 1,
+        "geometric_constraints": {
+          "array_m2_max": 6.0
+        },
+        "material_hint": "4130 tube or CFRP channel",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "harness_anchor_bracket",
+        "role": "bracket at each of the five 5-point-harness anchors",
+        "count_min": 5,
+        "geometric_constraints": {
+          "F_N_per_anchor": 13500
+        },
+        "material_hint": "4130 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "cage_to_monocoque_fitting",
+        "role": "fitting tying steel cage to CFRP monocoque through a bonded / bolted interface",
+        "count_min": 4,
+        "geometric_constraints": {},
+        "material_hint": "4130 / Ti plate",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "5.0 m x 2.2 m x 1.8 m",
+      "coordinate_system": "X forward along vehicle longitudinal, Y transverse, Z up"
+    },
+    "material": {
+      "cage": {
+        "name": "4130 chromoly steel",
+        "youngs_modulus_GPa": 205,
+        "yield_MPa": 435,
+        "ultimate_MPa": 670,
+        "density_kg_m3": 7850
+      },
+      "skin": {
+        "name": "CFRP QI",
+        "E_GPa": 55,
+        "strength_MPa": 600,
+        "skin_thickness_mm": 1.5
+      },
+      "core": {
+        "name": "Al honeycomb",
+        "E3_GPa": 0.8,
+        "shear_strength_MPa": 1.2,
+        "density_kg_m3": 50,
+        "thickness_mm": 20
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "main_hoop",
+        "F_V_kN": 6,
+        "F_L_kN": 5,
+        "F_long_kN": 9,
+        "application": "top of hoop"
+      },
+      {
+        "id": "LC2",
+        "name": "front_bulkhead",
+        "F_N": 6000,
+        "application": "bulkhead centerline"
+      },
+      {
+        "id": "LC3",
+        "name": "side_intrusion",
+        "F_N": 7000,
+        "application": "SIS mid-height"
+      },
+      {
+        "id": "LC4",
+        "name": "harness_anchors",
+        "F_N_per_anchor": 13500,
+        "application": "5-point harness, adverse angle"
+      },
+      {
+        "id": "LC5",
+        "name": "aero_lift",
+        "F_N": 800,
+        "distribution": "6 m^2 array UDL at 100 km/h"
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "roll cage welded internally and bolted/bonded to CFRP monocoque via steel fittings; honeycomb core adhesively bonded between skins; harness anchor brackets bolted/welded to cage; roof array frame bolted to cage",
+      "support": "hoop base mounts fixed in LC1; monocoque attachment points fixed in LC2 and LC3"
+    },
+    "objective": "minimize total mass while meeting all triaxial, harness, aero, and modal gates",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "total_mass_kg",
+        "cage_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "skin_strain_pct",
+        "core_shear_MPa",
+        "first_torsional_mode_Hz",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_cage_stress",
+        "limit_MPa": 435,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_hoop_deflection_toward_helmet",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "skin_strain",
+        "limit_pct": 0.4,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "core_shear",
+        "limit_MPa": 0.8,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 10,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "H"
+      ],
+      "mediated_by": "welded",
+      "load_path": "cage tube welded to attachment fitting"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "H"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "floor panel bonded / bolted to attachment fitting"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "B",
+        "E"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "floor skin bonded to honeycomb core"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "C",
+        "B"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "front bulkhead bonded / bolted to floor panel"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "D",
+        "B"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "side intrusion panel bonded / bolted to floor panel"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "welded",
+      "load_path": "harness anchor bracket welded / bolted to cage"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "roof array frame bolted to cage"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Challenger-class solar EVs combine a welded steel roll cage with a CFRP sandwich monocoque bonded across multiple panels; triaxial hoop loads, front bulkhead, side intrusion, harness, and roof array loads each react across a different interface of this assembly.",
+    "speculation_caveats": "Panel count, cage topology, and fitting count are speculative; materials, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "benchmark/briefs/single/214_af2_sasol_solar_challenge.json"
+  }
+}

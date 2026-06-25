@@ -1,0 +1,364 @@
+{
+  "id": "182_sp6_ptc_creo",
+  "source": {
+    "catalog_ref": "SP6",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/182_sp6_ptc_creo.json",
+    "multipart_basis": "Decomposition mirrors a co-molded ratcheting-screwdriver handle: ABS structural core, TPE Shore A 65 grip overmold, distal ratchet housing, internal pawl, internal ratchet gear, shaft / spindle, 1/4-inch hex bit holder, and rear end cap."
+  },
+  "domain": "consumer_product",
+  "part_class": "ratcheting_screwdriver_body_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a redesigned injection-molded ratcheting screwdriver body as an open-source consumer-product DFM benchmark, targeting a consumer hardware-store DIY segment. The screwdriver body consists of a handle (150 mm long x 35 mm max diameter), a ratcheting mechanism housing, and a 6.35 mm (1/4 inch) hex bit holder at the distal end. The handle is co-molded with a hard ABS (yield 45 MPa, E 2.3 GPa, density 1050 kg/m^3) core and a TPE grip over-mold (Shore A 65). Internal ratcheting mechanism is a metal pawl + gear assembly and is treated as rigid in this competition (designer-specified off-the-shelf). The tool must deliver up to 5 N-m of torque to the driver bit with a maximum user grip force of 100 N applied around the TPE grip. Pass/fail criteria: (R1) max von Mises stress in the ABS core when 5 N-m torque is applied at the bit with the user gripping at 100 N axial + 20 N-m grip moment must not exceed 30 MPa (ABS yield 45 / SF 1.5), (R2) handle twist (angular deflection between grip and bit) under 5 N-m torque must not exceed 2 degrees to preserve driving feel, (R3) drop test from 1 m onto a hard surface (equivalent 250 N quasi-static impulse) must not crack the ABS core, (R4) handle part must demold with a single line of draw with a minimum draft angle of 1 degree on all vertical faces per DFM best practice, and (R5) total handle assembly mass (ABS core + TPE overmold, excluding metal mechanism) must not exceed 80 g. Vibration, thermal, fluid, and radiation analyses are not required. Deliver a STEP AP242 assembly with ABS core, TPE grip, and bit holder as sub-bodies plus a verification report listing max von Mises, handle twist angle, drop result, DFM draft check, and total mass.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a multi-part assembly rather than a single solid body. The decomposition comprises (A) abs_handle_core, (B) tpe_grip_overmold, (C) ratchet_housing, (D) ratchet_gear, (E) pawl, (F) drive_spindle, (G) hex_bit_holder, (H) rear_end_cap. The final FEM verification runs on the ASSEMBLED model only — per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a redesigned injection-molded ratcheting screwdriver body as an open-source consumer-product DFM benchmark.\n\nThe body consists of a handle (150 mm long x 35 mm max diameter), a ratcheting mechanism housing, and a 6.35 mm (1/4 inch) hex bit holder at the distal end. The handle is co-molded with a hard ABS (yield 45 MPa, E 2.3 GPa, density 1050 kg/m^3) core and a TPE grip over-mold (Shore A 65). Internal ratcheting mechanism is a metal pawl + gear assembly treated as rigid.\n\nThe tool must deliver up to 5 N-m of torque to the driver bit with a maximum user grip force of 100 N applied around the TPE grip.\n\nLoad cases: LC1 max torque 5 N-m applied at the bit with the user gripping at 100 N axial + 20 N-m grip moment; LC2 drop test from 1 m onto a hard surface (equivalent 250 N quasi-static impulse).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "injection_molding_DFM_check",
+        "reason": "Draft angles, wall thickness uniformity, and parting-line checks are a DFM rule-set, not FEA.",
+        "examples": [
+          "Plastic Advisor",
+          "Moldflow rule check"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Ratcheting screwdriver handle DFM benchmark (multi-part assembly)",
+    "brief": "Design a co-molded ABS + TPE ratcheting screwdriver handle (150 mm x 35 mm) driving 5 N-m torque to a 1/4-inch bit, passing ABS stress, twist, drop, 1-degree DFM draft, and 80 g mass. [Multi-part assembly] abs_handle_core (x1), tpe_grip_overmold (x1), ratchet_housing (x1), ratchet_gear (x1), pawl (x1), drive_spindle (x1), hex_bit_holder (x1), rear_end_cap (x1). FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "handle_length_mm": 150,
+      "handle_max_dia_mm": 35,
+      "bit_interface": "1/4-inch hex",
+      "draft_angle_min_deg": 1.0
+    },
+    "material": {
+      "core": "ABS, yield 45 MPa, E 2.3 GPa",
+      "grip": "TPE Shore A 65"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "max_torque",
+        "torque_Nm": 5,
+        "grip_force_N": 100,
+        "grip_moment_Nm": 20
+      },
+      {
+        "id": "LC2",
+        "name": "drop_1m",
+        "impulse_N": 250
+      }
+    ],
+    "boundary_conditions": {
+      "bit_end": "reaction torque at driver bit",
+      "grip": "distributed grip force on TPE"
+    },
+    "objective": {
+      "primary": "pass stress + twist + drop + DFM",
+      "secondary": "minimize handle mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "core_max_von_mises_MPa",
+        "handle_twist_deg",
+        "drop_result",
+        "min_draft_angle_deg",
+        "total_handle_mass_g",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "abs_handle_core",
+        "role": "structural ABS core carrying torque from grip to ratchet housing; primary stress body for R1 and R2",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 150,
+          "max_diameter_mm": 30,
+          "central_bore_mm": 10,
+          "draft_angle_deg": 1.0
+        },
+        "material_hint": "ABS, yield 45 MPa, E 2.3 GPa, density 1050 kg/m^3, injection molded with 1 deg draft",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "tpe_grip_overmold",
+        "role": "Shore A 65 TPE grip overmolded on ABS core for user grip traction and distributed load",
+        "count_min": 1,
+        "geometric_constraints": {
+          "wall_thickness_mm": 2.5,
+          "length_mm": 110,
+          "outer_diameter_mm": 35
+        },
+        "material_hint": "TPE Shore A 65, co-molded with chemical bond to ABS substrate",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "ratchet_housing",
+        "role": "distal metal housing containing ratchet gear + pawl; provides rigid bearing for spindle",
+        "count_min": 1,
+        "geometric_constraints": {
+          "outer_diameter_mm": 22,
+          "length_mm": 25,
+          "wall_thickness_mm": 2
+        },
+        "material_hint": "Zinc die-cast or steel housing, yield >= 200 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "ratchet_gear",
+        "role": "internal toothed gear engaged by pawl; transmits torque in drive direction, freewheels in reverse",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tooth_count": 20,
+          "pitch_diameter_mm": 16,
+          "face_width_mm": 5
+        },
+        "material_hint": "Hardened steel (4140 or similar), Rc >= 40",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "pawl",
+        "role": "spring-loaded pawl engaging ratchet gear D; switch selects direction",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_mm": 8,
+          "thickness_mm": 2,
+          "spring_force_N": 3
+        },
+        "material_hint": "Hardened steel pawl with torsion spring",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "drive_spindle",
+        "role": "steel shaft coaxial with handle, rigidly coupled to ratchet gear and hex bit holder; transmits 5 N-m",
+        "count_min": 1,
+        "geometric_constraints": {
+          "diameter_mm": 8,
+          "length_mm": 40,
+          "torque_rating_Nm": 10
+        },
+        "material_hint": "4140 steel shaft, yield 650 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "hex_bit_holder",
+        "role": "1/4-inch hex socket at distal end with magnetic or ball-detent retention for bits",
+        "count_min": 1,
+        "geometric_constraints": {
+          "socket_in": 0.25,
+          "depth_mm": 10,
+          "retention_type": "ball_detent"
+        },
+        "material_hint": "Hardened steel with ball detent, Rc >= 55",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "rear_end_cap",
+        "role": "rear closure sealing the handle cavity and providing palm surface",
+        "count_min": 1,
+        "geometric_constraints": {
+          "diameter_mm": 28,
+          "thickness_mm": 3,
+          "snap_fit_tabs": 3
+        },
+        "material_hint": "ABS end cap, snap-fit into core A",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "see original brief",
+      "coordinate_system": "inherit from original"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "core_max_von_mises",
+        "limit_MPa": 30,
+        "derivation": "ABS yield 45 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "handle_twist_angle",
+        "limit_deg": 2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "drop_peak_stress",
+        "limit_MPa": 45,
+        "derivation": "ABS yield 45 MPa (no crack proxy)",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "min_draft_angle",
+        "limit_deg": 1,
+        "derivation": "Plastic Advisor DFM",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_handle_mass",
+        "limit_g": 80,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across all inter-part interfaces (co-mold bond, press-fit, snap-fit, gear-pawl engagement) <= 1.0 under LC1 5 N-m torque.",
+        "metric": "max DCR across IF1..IFn",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "ABS-core to ratchet-housing press-fit interface must transfer full 5 N-m without slip; min static friction torque margin >= 1.5.",
+        "metric": "press-fit torque SF",
+        "threshold": 1.5,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order tet",
+      "mesh_size_mm_in_critical_regions": 1,
+      "solver_hints": [
+        "generic parametric-CAD simulation",
+        "Ansys Discovery"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear static drop",
+        "DFM rule check"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "TPE grip B is chemically bonded to ABS core A during two-shot molding; transmits distributed grip torque into core"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "ratchet housing C is press-fit + retained by internal ribs in ABS core A; transfers 5 N-m reaction torque"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "ratchet gear D rotates on bearing bore inside housing C; bearing reaction is contact-mediated"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "D",
+        "E"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "pawl E engages gear D tooth; load transfer by tooth-contact force during drive direction"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "D",
+        "F"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "drive spindle F is press-fit / keyed into ratchet gear D; transmits full output torque"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "F",
+        "G"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "hex bit holder G is press-fit onto spindle F with retaining pin; delivers 5 N-m to bit"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "A",
+        "H"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "rear end cap H snap-fits into ABS core A, enclosing cavity; minimal load path"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Handle twist, torque transfer through the co-molded ABS/TPE and press-fit ratchet housing, and drop integrity can only be validated on the assembled model; per-part metrics are reported but do not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A ratcheting screwdriver is a two-shot plastic handle plus a steel ratchet mechanism, bit holder, and rear cap — inherently multi-body.",
+    "speculation_caveats": "parts[] counts and interfaces[] reflect typical ratcheting-screwdriver architecture but are speculative; not derived from a specific PTC Creo competition brief.",
+    "original_sample_preserved_at": "benchmark/briefs/single/182_sp6_ptc_creo.json"
+  }
+}

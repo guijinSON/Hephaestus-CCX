@@ -1,0 +1,323 @@
+{
+  "id": "159_cn9_sme_nssga_aggregate",
+  "source": {
+    "catalog_ref": "CN9",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/159_cn9_sme_nssga_aggregate.json",
+    "multipart_basis": "The original sample specifies body_count=assembly with 'pedestal with rebar cage as sub-bodies'. Multipart decomposition formalizes the concrete pedestal block, longitudinal rebar, transverse stirrup/tie rebar, crusher anchor bolts, and the Winkler soil-spring boundary as distinct part families."
+  },
+  "domain": "civil_mining_structural",
+  "part_class": "crusher_foundation_pedestal_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the SME CN9 Aggregate Competition jaw crusher foundation pedestal as a multi-part assembly, explicitly modeling the 4.5 m x 3.0 m x 1.8 m reinforced concrete block as the physical collection of the concrete pedestal body, ASTM A615 Grade 60 longitudinal rebar mat, transverse stirrup/tie rebar, crusher anchor bolt assemblies, and the machine base-frame pad that interfaces the crusher to the pedestal top. The original prompt already calls out 'deliver STEP AP242 solid body of the pedestal with rebar cage as sub-bodies'; this multipart sidecar formalizes that decomposition.\n\nThe assembly consists of five part families: (A) the concrete pedestal body, a rectangular 4.5 m long x 3.0 m wide x 1.8 m deep block of normal-weight reinforced concrete fc' 27.6 MPa; (B) longitudinal rebar mats in the top and bottom faces of the pedestal (and side faces for shrinkage/temperature), ASTM A615 Grade 60 with team-selected bar size and spacing to satisfy ACI 318-19 Chapter 22 moment/shear DCR; (C) transverse stirrup/tie rebar that confines the longitudinal mat and provides shear reinforcement for the overhung surcharge + machine loads; (D) anchor-bolt assemblies at the crusher footprint pattern (typical 8-16 anchor bolts on the jaw-crusher base pad) that transmit the 735 kN dead + 90 kN vertical dynamic + 30 kN horizontal dynamic forces from the crusher base into the pedestal; (E) the crusher base-frame pad (steel plate or cast leveling pad) that distributes the machine base footprint load into the pedestal top.\n\nGeometry inherits the original sample verbatim: pedestal 4.5 m x 3.0 m x 1.8 m, feed opening 1100 x 800 mm (jaw-crusher footprint centered on pedestal).\n\nMaterial inherits verbatim: concrete fc' 27.6 MPa; rebar ASTM A615 Grade 60 (Fy 414 MPa); soil allowable bearing 250 kPa with subgrade modulus 40 MPa. Anchor bolts are typically ASTM F1554 Grade 55 (added by the multipart sidecar for concreteness; not specified by the original).\n\nLoads inherit verbatim: LC1 crusher dead 735 kN centered; LC2 vertical dynamic 90 kN amplitude at 4.17 Hz; LC3 horizontal dynamic 30 kN amplitude at 4.17 Hz; LC4 hopper surcharge 1570 kN at one end.\n\nPass/fail criteria inherit verbatim from the original and apply at the assembly level: (R1) peak soil bearing pressure under 1.2D + 1.6L + 1.0E combination <= 250 kPa; (R2) max rebar DCR per ACI 318-19 Chapter 22 <= 1.0 across all load cases; (R3) pedestal-top vertical velocity amplitude at 4.17 Hz <= 5.0 mm/s rms per DIN 4150-3; (R4) first natural frequency of the pedestal-soil system >= 1.5x 4.17 Hz (>= 6.255 Hz) or <= 0.5x 4.17 Hz (<= 2.085 Hz). Added assembly-level targets under fem_check_policy.assembled_only: anchor-bolt pullout/shear DCR and rebar-to-concrete bond development DCR must be reported; per-part stresses are reported for diagnostic purposes but do not gate pass/fail.\n\nThermal, fluid, and radiation analyses are not required; buckling is not required. Forced harmonic analysis (vibration) is required for LC2/LC3 harmonic machine forces. A machine-foundation lumped-parameter stiffness calculator (DIN 4024 / Richart) is required outside the FEA for the natural-frequency check. Deliver STEP AP242 of the assembly with each body (concrete pedestal, each rebar mat, each stirrup run, each anchor bolt, base-frame pad) as a distinct solid tagged with part_family (A..E) and instance_index, plus a structural report listing peak bearing pressure, rebar DCR, pedestal-top vertical velocity amplitude, first natural frequency, assembly mass, and anchor-bolt / rebar-bond DCR.",
+  "short_prompt": "Design the SME CN9 jaw-crusher RC foundation pedestal as a multi-part assembly (concrete pedestal body, longitudinal rebar mats, transverse stirrup/tie rebar, anchor bolts, machine base-frame pad).\n\nPedestal 4.5 m x 3.0 m x 1.8 m; concrete fc' 27.6 MPa; rebar ASTM A615 Grade 60 (Fy 414 MPa); soil allowable bearing 250 kPa, subgrade modulus 40 MPa; anchor bolts ASTM F1554 Grade 55; feed opening 1100 x 800 mm.\n\nLoad cases: LC1 crusher dead 735 kN centred; LC2 vertical dynamic 90 kN amplitude at 4.17 Hz; LC3 horizontal dynamic 30 kN amplitude at 4.17 Hz; LC4 hopper surcharge 1570 kN at one end.\n\nPass/fail: peak soil bearing <= 250 kPa; rebar DCR <= 1.0 per ACI 318-19 Chapter 22; pedestal-top vertical velocity <= 5.0 mm/s rms per DIN 4150-3; first natural frequency >= 6.255 Hz OR <= 2.085 Hz (DIN 4024 around 4.17 Hz); FEM at assembled level; anchor + rebar-bond DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "machine_foundation_lumped_stiffness",
+        "reason": "Soil-foundation lumped-parameter stiffness and damping per DIN 4024/Richart is a closed-form block-on-halfspace model used alongside FEA for the natural-frequency check.",
+        "examples": [
+          "Richart/Lysmer lumped-parameter",
+          "DIN 4024 spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Jaw crusher RC foundation pedestal 4.5 x 3.0 x 1.8 m (multi-part assembly)",
+    "brief": "Multi-part RC pedestal for 75 t jaw crusher: concrete block (A) + longitudinal rebar mat (B) + stirrups/ties (C) + anchor bolts (D) + machine base pad (E). 4.5 x 3.0 x 1.8 m. 90 kN vertical + 30 kN horizontal dynamic at 4.17 Hz plus 160 t hopper surcharge. Verified at assembly level: soil bearing <= 250 kPa, ACI 318-19 rebar DCR <= 1.0, DIN 4150-3 vertical velocity <= 5.0 mm/s, natural freq >= 6.255 Hz or <= 2.085 Hz, anchor/bond DCR <= 1.0.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "concrete_pedestal_body",
+        "role": "4.5 m long x 3.0 m wide x 1.8 m deep reinforced concrete block; carries crusher dead + dynamic + surcharge loads and distributes them into the soil via the 4.5 x 3.0 m footprint",
+        "count_min": 1,
+        "geometric_constraints": {
+          "length_m": 4.5,
+          "width_m": 3.0,
+          "depth_m": 1.8
+        },
+        "material_hint": "normal-weight concrete fc' 27.6 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "longitudinal_rebar_mat",
+        "role": "ASTM A615 Grade 60 longitudinal rebar mat in the top and bottom faces of the pedestal (and optional side faces); provides flexural reinforcement against the hopper surcharge overturning moment",
+        "count_min": 2,
+        "count_note": "2 mats minimum (top + bottom); side mats optional per team design",
+        "geometric_constraints": {
+          "bar_grade": "ASTM A615 Grade 60 Fy 414 MPa",
+          "bar_size": "#8 or team-selected",
+          "spacing_mm": "team-selected to satisfy ACI 318-19 DCR"
+        },
+        "material_hint": "ASTM A615 Grade 60",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "transverse_stirrup_tie",
+        "role": "transverse stirrups/ties confining the longitudinal rebar mat and providing shear reinforcement; spaced per ACI 318-19 Chapter 22 shear design",
+        "count_min": 20,
+        "geometric_constraints": {
+          "bar_size": "#4 or smaller",
+          "pitch_mm": "200-400 team-selected"
+        },
+        "material_hint": "ASTM A615 Grade 60",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "crusher_anchor_bolt",
+        "role": "anchor bolt assembly at the jaw-crusher base pad; transmits 735 kN dead + 90 kN vertical dynamic + 30 kN horizontal dynamic forces into the pedestal through pullout, shear, and bending reactions",
+        "count_min": 8,
+        "count_note": "typical jaw-crusher base pad uses 8-16 anchor bolts per manufacturer spec",
+        "geometric_constraints": {
+          "bolt_size": "1 inch or M24 typical"
+        },
+        "material_hint": "ASTM F1554 Grade 55",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "crusher_base_frame_pad",
+        "role": "steel or grouted leveling pad between the crusher base frame and the pedestal top; distributes the machine base-frame footprint load into the pedestal",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_mm": [
+            1100,
+            800
+          ]
+        },
+        "material_hint": "ASTM A572 Gr 50 plate or non-shrink grout",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "4.5 x 3.0 x 1.8 m",
+      "coordinate_system": "pedestal coordinates: +x along 4.5 m length, +y along 3.0 m width, +z up from bottom"
+    },
+    "material": {
+      "concrete": {
+        "fc_prime_MPa": 27.6
+      },
+      "rebar": "ASTM A615 Grade 60, Fy 414 MPa",
+      "soil": {
+        "allowable_bearing_kPa": 250,
+        "subgrade_modulus_MPa": 40
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "crusher_dead",
+        "magnitude_kN": 735,
+        "application": "centered on pedestal top"
+      },
+      {
+        "id": "LC2",
+        "name": "vertical_dynamic",
+        "amplitude_kN": 90,
+        "frequency_Hz": 4.17,
+        "application": "vertical harmonic at crusher pad"
+      },
+      {
+        "id": "LC3",
+        "name": "horizontal_dynamic",
+        "amplitude_kN": 30,
+        "frequency_Hz": 4.17,
+        "application": "horizontal harmonic at crusher pad"
+      },
+      {
+        "id": "LC4",
+        "name": "hopper_surcharge",
+        "magnitude_kN": 1570,
+        "application": "at one end of pedestal"
+      }
+    ],
+    "boundary_conditions": {
+      "soil": "lumped vertical + horizontal + rocking springs per DIN 4024 or Winkler base",
+      "rebar_to_concrete_interface": "bonded/embedded tie (IF1)",
+      "stirrup_to_longitudinal_interface": "pinned (IF2)",
+      "anchor_bolt_to_concrete_interface": "cast-in anchor (IF3)",
+      "crusher_pad_to_pedestal_interface": "grouted/bolted (IF4)"
+    },
+    "objective": {
+      "primary": "pass bearing, ACI DCR, vibration, and resonance checks under assembled_only FEM check",
+      "secondary": "minimize concrete volume"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "peak_bearing_pressure_kPa",
+        "max_rebar_DCR",
+        "pedestal_top_velocity_mm_s",
+        "first_natural_frequency_Hz",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "peak_soil_bearing_pressure",
+        "limit_kPa": 250,
+        "derivation": "site allowable bearing",
+        "applies_to": [
+          "LC1",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_rebar_DCR",
+        "limit": 1.0,
+        "derivation": "ACI 318-19 Chapter 22",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "vibration_analysis",
+        "metric": "pedestal_top_vertical_velocity_rms",
+        "limit_mm_s": 5.0,
+        "derivation": "DIN 4150-3 machinery limit",
+        "applies_to": [
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency_margin",
+        "limit_Hz_lower": 2.085,
+        "limit_Hz_upper": 6.255,
+        "rule": "f1 >= 1.5 * 4.17 Hz (>=6.255 Hz) OR f1 <= 0.5 * 4.17 Hz (<=2.085 Hz)",
+        "derivation": "DIN 4024 resonance separation around 4.17 Hz forcing",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "custom"
+      },
+      {
+        "id": "R5-assembly",
+        "type": "assembly_analysis",
+        "metric": "connection_DCR_anchors_and_rebar_bond",
+        "limit": 1.0,
+        "derivation": "ACI 318-19 Chapter 17 anchor-to-concrete + Chapter 25 rebar development DCR",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "solid concrete with embedded reinforcement, Winkler soil",
+      "mesh_size_mm_in_critical_regions": 150,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus Standard",
+        "SAP2000"
+      ],
+      "analysis_types": [
+        "linear static",
+        "modal",
+        "harmonic response"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "rebar-to-concrete bond along the longitudinal mat; develops flexural tension reinforcement for the surcharge overturning moment"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "stirrup tied to longitudinal bars; confines concrete and carries shear reinforcement"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "cast-in anchor bolt embedded in the pedestal top; transmits crusher dead + dynamic + horizontal loads via pullout and shear"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "grouted leveling pad / steel base frame interface between the crusher base and the pedestal top"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "D",
+        "E"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "anchor bolt through the machine base-frame pad clamps the crusher foot to the pedestal"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "RC machine foundations are always cast concrete + rebar + anchor-bolt assemblies; the multipart sidecar formalizes that into a concrete block, rebar mats, stirrups, and anchor bolts.",
+    "speculation_caveats": "Exact rebar size/spacing and anchor-bolt count are team-selected to satisfy ACI 318-19 DCR and manufacturer anchor pattern.",
+    "original_sample_preserved_at": "benchmark/briefs/single/159_cn9_sme_nssga_aggregate.json"
+  }
+}

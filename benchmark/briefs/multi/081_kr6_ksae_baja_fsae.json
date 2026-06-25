@@ -1,0 +1,462 @@
+{
+  "id": "081_kr6_ksae_baja_fsae",
+  "source": {
+    "catalog_ref": "KR6",
+    "year": 2025,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/081_kr6_ksae_baja_fsae.json",
+    "multipart_basis": "Decomposition inferred from the conventional SAE Baja / KSAE Baja space-frame rulebook topology: a single-driver tubular roll cage is a weldment of 15-20 named tube members (primary hoops + primary members + secondary members) plus joint gussets, suspension-pickup tabs, engine-mount tabs, firewall, seat-back mount, and pedal-box mount. The count and function of each member follow the rulebook's defined member taxonomy (RRH, FBH, SIM, FBM, LFS, etc.). No rulebook citations are added beyond those present in the original sample."
+  },
+  "domain": "automotive_structural",
+  "part_class": "baja_roll_cage_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the roll-cage (space frame) of a single-seat off-road collegiate vehicle. The engine is a commercially available single-cylinder 10 HP (7.46 kW) 4-stroke; the frame must fully enclose the driver within a cage of circular steel tubing. Primary roll-cage members must be AISI 1018 DOM or AISI 4130 Chromoly steel tubing with minimum outside diameter 25.4 mm (1 inch) and minimum wall 3.05 mm (0.120 inch); AISI 4130 permits 1.65 mm (0.065 inch) wall when heat-treated per rulebook. The cage must pass an in-plane side-impact equivalent static load of 5.0 G lateral applied at the side-impact member, a front impact 4.0 G forward load applied at the front-bulkhead tube, a rear impact 4.0 G rearward load, and a roll-over test: the cage must support 6.0 G vertical at the roof node with no plastic yield. The driver template (95th-percentile male torso/helmet) must fit inside the cage with at least 75 mm clearance to all tubes. Suspension attachment points must withstand a 3.5 G bump at the wheel hub (wheel mass approx 8 kg, so 275 N at the hub plus leverage). Primary verification is linear static structural FEA (beam elements for tubes, solid elements at fishmouth joints). A linear buckling eigenvalue check on the cage under the roll-over 6 G case is required with minimum load factor 1.5. Vibration, thermal, fluid, and radiation analyses are explicitly NOT required. Deliverables: STEP AP242 of the frame, a material certificate (tube OD/wall/alloy/heat-treat), and a report listing cage mass in kg, max tube stress per case in MPa, max deflection at driver helmet location in mm, and first buckling load factor.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe roll cage is a welded tubular space frame composed of named primary and secondary members: Rear Roll Hoop (RRH, x1), Front Bulkhead (FBH, x1), Front Bulkhead Support (FBHS, x2), Roll Hoop Overhead Members (RHO, x2), Side Impact Member (SIM, x2, left + right), Lower Frame Side (LFS, x2), Fore-Aft Bracing (FAB, x2), plus secondary members forming the Under-Seat Member (USM, x1-2) and Lateral Cross Members (LCM, x2-4). Joint gussets are welded at fishmouth joints where three or more primary tubes meet. Suspension pickup tabs (x8) carry A-arm and shock mounts at the four corners. Engine mount tabs (x4) carry the engine case. A firewall shear panel separates driver from engine. A seat-back bracket and a pedal-box mount close the driver cell. Load paths: LC1 side impact -> SIM -> RRH and FBH via RHO and LFS; LC2 front impact -> FBH -> FBHS -> LFS; LC3 rear impact -> RRH -> FAB -> LFS; LC4 rollover -> RRH top -> RHO -> FBH; LC5 bump -> suspension pickup tab -> LFS. The final FEM verification runs on the ASSEMBLED model only; per-part stress is reported but does not gate pass/fail. Inter-member weld joint demand-to-capacity ratio (DCR, per AWS D1.1 / D17.1 or SAE Baja allowables) must be <= 1.0 under the governing load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original brief are preserved verbatim.",
+  "short_prompt": "Design a KSAE Baja / FSAE tubular-steel spaceframe chassis as a multi-part welded-tube assembly. Primary tubing 25.4 mm OD x 3.05 mm wall 1018 DOM; driver clearance >= 75 mm to any primary tube.\n\nLoad cases: LC1 5.0 G side impact; LC2 4.0 G front/rear impact; LC3 6.0 G rollover; LC4 3.5 G wheel-hub load.\n\nPass/fail: no yield under any LC; buckling load factor >= 1.5 on primary hoops. FEM at assembled level; weld DCR <= 1.0 at all node clusters.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "University off-road vehicle roll-cage (multi-member welded tubular space frame)",
+    "brief": "Design a single-seat off-road tubular space frame as an assembly of named primary + secondary members (RRH, FBH, FBHS, RHO, SIM, LFS, FAB, USM, LCM) plus joint gussets, 8 suspension pickup tabs, 4 engine mount tabs, firewall, seat-back and pedal-box mounts. 25.4 mm OD x 3.05 mm wall 1018 DOM (or 4130 with 1.65 mm heat-treated). Survive 5/4/4/6 G impact + rollover + 3.5 G hub bump. Buckling LF >= 1.5 under rollover. FEM at assembled level; weld joint DCR <= 1.0.",
+    "geometric_constraints": {
+      "primary_tube_OD_mm": 25.4,
+      "primary_tube_wall_mm_DOM1018": 3.05,
+      "primary_tube_wall_mm_4130_min": 1.65,
+      "driver_template_clearance_mm_min": 75,
+      "wheelbase_mm_approx": 1650,
+      "track_width_mm_approx": 1250,
+      "cage_topology": "space frame with 2 main hoops (RRH + FBH), 2 RHO top members connecting them, SIM at driver waist height, LFS at floor level, FAB diagonals",
+      "primary_member_count_min": 10,
+      "secondary_member_count_min": 4
+    },
+    "material": {
+      "tube_options": [
+        "AISI 1018 DOM",
+        "AISI 4130 Chromoly"
+      ],
+      "1018_DOM": {
+        "yield_MPa": 370,
+        "ultimate_MPa": 440
+      },
+      "4130": {
+        "yield_MPa": 460,
+        "ultimate_MPa": 560
+      },
+      "weld_derating": "heat-affected zone at TIG welds on 4130 derated per SAE Baja rulebook; 1018 DOM requires no heat-treat",
+      "gusset_material": "same grade as parent tube, min 3.0 mm plate"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "side_impact_5g",
+        "magnitude_g": 5.0,
+        "direction": "lateral (applied at SIM)",
+        "description": "equivalent static 5 G from full gross vehicle mass into side-impact member"
+      },
+      {
+        "id": "LC2",
+        "name": "front_impact_4g",
+        "magnitude_g": 4.0,
+        "direction": "forward (applied at FBH)",
+        "description": "equivalent static 4 G at front bulkhead tube"
+      },
+      {
+        "id": "LC3",
+        "name": "rear_impact_4g",
+        "magnitude_g": 4.0,
+        "direction": "rearward (applied at RRH bottom)",
+        "description": "equivalent static 4 G at rear roll hoop bottom"
+      },
+      {
+        "id": "LC4",
+        "name": "rollover_6g",
+        "magnitude_g": 6.0,
+        "direction": "vertical at roof node (top of RRH / intersection with RHO)"
+      },
+      {
+        "id": "LC5",
+        "name": "bump_at_hub",
+        "magnitude_g": 3.5,
+        "description": "8 kg wheel at 3.5 g = 275 N at hub plus suspension leverage into pickup tab"
+      }
+    ],
+    "boundary_conditions": {
+      "suspension_pickups": "fixed translation (Ux=Uy=Uz=0) at each of the 4 corner suspension pickup tabs for in-plane impact cases; rotation free to model A-arm pivot",
+      "rollover_test": "roof node loaded vertically while all 4 pickup tabs pinned",
+      "hub_bump": "loads applied at each A-arm pickup tab per wheel on a per-corner basis"
+    },
+    "objective": {
+      "minimize": "cage_mass",
+      "design_heuristic": "Use 1018 DOM for primary hoops to avoid heat-treat certification, 4130 only where mass savings justify the paperwork."
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (one body per named tube member + gussets + tabs)",
+      "body_metadata": [
+        "part_family (A-H)",
+        "member_designation (RRH|FBH|FBHS|RHO|SIM|LFS|FAB|USM|LCM)",
+        "instance_index",
+        "tube_grade_and_wall"
+      ],
+      "report_fields": [
+        "cage_mass_kg",
+        "max_tube_stress_LC1_MPa",
+        "max_tube_stress_LC2_MPa",
+        "max_tube_stress_LC3_MPa",
+        "max_tube_stress_LC4_MPa",
+        "helmet_location_deflection_mm",
+        "first_buckling_load_factor",
+        "weld_joint_DCR_max",
+        "per_member_max_stress_MPa"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "rear_roll_hoop_RRH",
+        "role": "primary hoop that wraps behind the driver from floor to floor, peaking above the helmet; the principal rollover protection member and the rear anchor for RHO and FAB",
+        "count_min": 1,
+        "geometric_constraints": {
+          "OD_mm": 25.4,
+          "wall_mm_min": 3.05,
+          "bend_radius_mm_min": 76.2,
+          "peak_height_mm_above_seat": 254,
+          "shape": "single continuous tube, bent in-plane (or with a single compound bend)"
+        },
+        "material_hint": "AISI 1018 DOM or 4130 heat-treated",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "front_bulkhead_and_supports",
+        "role": "front bulkhead hoop (FBH, x1) plus its two diagonal supports (FBHS, x2) that form the front of the driver cell and absorb LC2 front impact",
+        "count_min": 3,
+        "count_note": "1 FBH + 2 FBHS",
+        "geometric_constraints": {
+          "FBH_OD_mm": 25.4,
+          "FBH_wall_mm_min": 3.05,
+          "FBHS_OD_mm": 25.4,
+          "FBHS_wall_mm_min": 3.05,
+          "FBH_position": "forward of pedal box, top above steering wheel",
+          "FBHS_angle_deg_range": [
+            30,
+            60
+          ]
+        },
+        "material_hint": "AISI 1018 DOM",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "roll_hoop_overhead_and_side_impact_members",
+        "role": "2 RHO members connecting the top of the RRH to the top of the FBH (forming the roof of the cage) and 2 SIM members at driver waist height on each side (left + right); together these carry LC1 side impact and LC4 rollover load paths",
+        "count_min": 4,
+        "count_note": "2 RHO + 2 SIM",
+        "geometric_constraints": {
+          "OD_mm": 25.4,
+          "wall_mm_min": 3.05,
+          "RHO_length_mm_range": [
+            800,
+            1100
+          ],
+          "SIM_height_above_floor_mm_range": [
+            300,
+            450
+          ],
+          "SIM_clearance_to_driver_torso_mm_min": 75
+        },
+        "material_hint": "AISI 1018 DOM",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "lower_frame_side_and_fore_aft_bracing",
+        "role": "2 LFS members forming the lower rails at floor level running full length of the cage, plus 2 FAB fore-aft diagonal braces connecting LFS ends to RRH base; carry LC3 rear impact into rear suspension and react LC5 bump loads",
+        "count_min": 4,
+        "count_note": "2 LFS + 2 FAB",
+        "geometric_constraints": {
+          "OD_mm": 25.4,
+          "wall_mm_min": 3.05,
+          "LFS_length_mm_approx": 1650,
+          "FAB_angle_deg_range": [
+            25,
+            45
+          ]
+        },
+        "material_hint": "AISI 1018 DOM",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "secondary_cross_members",
+        "role": "secondary tubes closing the cage: under-seat member (USM, x1-2) and lateral cross members (LCM, x2-4) that tie LFS-to-LFS across the floor and at seat-back height; reduce torsion and carry firewall/seat/pedal-box reaction",
+        "count_min": 3,
+        "count_note": "1 USM + 2 LCM minimum",
+        "geometric_constraints": {
+          "OD_mm_min": 25.4,
+          "wall_mm_min": 1.65,
+          "secondary_tube_allowance": "rulebook permits smaller OD/wall for non-primary members",
+          "orientation": "transverse (y-axis)"
+        },
+        "material_hint": "AISI 1018 DOM (secondary wall allowance)",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "joint_gusset",
+        "role": "plate gusset welded into a fishmouth joint where 3 or more primary tubes meet; locally stiffens the joint and reduces stress concentration under LC1/LC4",
+        "count_min": 6,
+        "geometric_constraints": {
+          "plate_thickness_mm_min": 3.0,
+          "plate_material": "same grade as parent tubes",
+          "weld_leg_mm_min": 4.0,
+          "application_points": [
+            "RRH-to-RHO-to-LFS cluster",
+            "FBH-to-FBHS-to-LFS cluster"
+          ]
+        },
+        "material_hint": "AISI 1018 plate (or 4130 plate matching parent tube grade)",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "suspension_pickup_tab",
+        "role": "machined or laser-cut plate tab welded to LFS / RRH bottom that carries A-arm, shock, or trailing-arm mounting bolts; reacts LC5 hub bump loads into the cage",
+        "count_min": 8,
+        "count_note": "Approximately 2 tabs per corner x 4 corners = 8 minimum",
+        "geometric_constraints": {
+          "plate_thickness_mm_min": 5.0,
+          "bolt_hole_mm": "M10 or 3/8 inch Grade 8",
+          "weld_size_mm": 5.0,
+          "tolerance_ref": "per rulebook suspension-mount datasheet (inherited from original)"
+        },
+        "material_hint": "AISI 1018 or 4130 plate; Grade 8 bolts",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "engine_firewall_and_driver_cell_mounts",
+        "role": "4 engine-mount tabs welded to the rear LFS and FAB that carry the 10 HP single-cylinder engine, plus firewall shear panel separating engine from driver, plus seat-back bracket and pedal-box mount tabs; none of these carry primary impact load but all are required for rulebook compliance",
+        "count_min": 4,
+        "count_note": "4 engine mount tabs minimum; firewall, seat bracket, and pedal mount are treated as one sub-family",
+        "geometric_constraints": {
+          "engine_mount_plate_thickness_mm_min": 5.0,
+          "firewall_sheet_thickness_mm_min": 0.5,
+          "firewall_material": "aluminum or steel sheet, fire-resistant",
+          "driver_cell_closure": "required per rulebook to isolate driver from engine"
+        },
+        "material_hint": "Al or steel sheet firewall; steel tabs",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "wheelbase_mm_approx": 1650,
+      "track_width_mm_approx": 1250,
+      "cage_envelope_LxWxH_mm_approx": [
+        2300,
+        1400,
+        1200
+      ],
+      "driver_template_SAE_95th_percentile": true,
+      "driver_clearance_mm_min": 75
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "tube_OD_mm",
+        "limit_mm": 25.4,
+        "derivation": "Off-road cage primary tube min",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "=="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_tube_stress_MPa",
+        "limit_fraction_of_yield": 0.67,
+        "derivation": "SF 1.5 yield for primary loads",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "helmet_location_deflection_mm",
+        "limit_mm": 25,
+        "derivation": "Driver envelope protection",
+        "applies_to": [
+          "LC1",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor_LC4",
+        "limit": 1.5,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "type": "structural_analysis",
+        "metric": "weld_joint_DCR_max",
+        "limit": 1.0,
+        "derivation": "Every welded tube-to-tube fishmouth joint and every tab-to-tube weld must satisfy DCR <= 1.0 under the governing load case. Governing cases: LC1 at SIM-to-RRH and SIM-to-FBH nodes; LC4 at RRH-RHO-FBH roof nodes; LC5 at G-tab-to-LFS welds.",
+        "applies_to": [
+          "IF1",
+          "IF2",
+          "IF3",
+          "IF4",
+          "IF5",
+          "IF6",
+          "IF7"
+        ],
+        "operator": "<=",
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "type": "structural_analysis",
+        "metric": "driver_template_clearance_LC1_mm",
+        "limit_mm": 75,
+        "derivation": "Under LC1 side-impact, the deformed cage envelope must still maintain >= 75 mm clearance to the SAE 95th-percentile driver template.",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": ">=",
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B31) for tubes + solid (C3D10) at fishmouth joints and gussets; shell for firewall",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static x5",
+        "linear buckling (LC4)"
+      ],
+      "contact_modeling": "tied constraint at every weld bead; beam-to-solid connector at joint transitions"
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "TIG fishmouth weld RRH-to-RHO at roof node",
+      "load_path": "LC4 rollover vertical load at roof node distributes from RRH top into both RHO members"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "TIG fishmouth weld FBH-to-RHO and FBH-to-SIM at front roof corner",
+      "load_path": "LC2 front impact reacts forward into FBH; LC1 side impact propagates from SIM forward into FBH"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "TIG fishmouth weld SIM-to-LFS at waist/lower corner",
+      "load_path": "LC1 side impact transferred from SIM down into LFS (then to suspension pickups)"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "TIG fishmouth weld RRH base to LFS rear end + FAB diagonal welded into same cluster",
+      "load_path": "LC3 rear impact from RRH base transfers to LFS via FAB diagonals"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "D",
+        "E"
+      ],
+      "mediated_by": "TIG fillet weld cross-member (USM/LCM) to LFS at floor level",
+      "load_path": "Torsion and LCM-to-LFS reaction under LC1 asymmetric side impact; floor shear under LC4"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "F",
+        "A"
+      ],
+      "mediated_by": "gusset plate welded into fishmouth cluster (RRH-RHO-LFS or FBH-FBHS-LFS)",
+      "load_path": "Reduces peak stress at joint under LC1, LC2, LC4; also load-shares with adjacent primary members"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "G",
+        "D"
+      ],
+      "mediated_by": "fillet weld (5 mm leg) between suspension pickup tab G and LFS D",
+      "load_path": "LC5 hub bump: 275 N at hub x moment arm goes through A-arm bolt into tab, shear-welded into LFS"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "The roll cage is a welded space frame where every joint is a load-sharing node; isolated per-member checks cannot verify rollover load redistribution, driver-template clearance under deformation, or weld joint DCR at multi-tube clusters. Per-member stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A SAE Baja roll cage is rulebook-defined as an assembly of named primary and secondary tubes (RRH, FBH, FBHS, RHO, SIM, LFS, FAB, USM, LCM). It cannot be modeled as a single part because the dimensional and material rules apply per named member (e.g. 1018 DOM 3.05 mm wall on primary vs 1.65 mm allowed on secondary) and the rulebook inspects each fishmouth joint individually.",
+    "speculation_caveats": "Exact bend radii, tube lengths, and gusset geometry are speculative; the 15-20 named-member count and their topology follow the Baja rulebook's space-frame taxonomy.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not in gate.",
+      "thermal_analysis": "Not applicable.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable."
+    },
+    "original_sample_preserved_at": "benchmark/briefs/single/081_kr6_ksae_baja_fsae.json"
+  },
+  "eval_coverage": [
+    "off-road cage tube dimensional compliance",
+    "side/front/rear impact + rollover",
+    "driver template clearance",
+    "cage buckling",
+    "multi-member welded space frame with named primary + secondary tubes",
+    "weld joint DCR per fishmouth node",
+    "suspension pickup tab local load path"
+  ]
+}

@@ -1,0 +1,354 @@
+{
+  "id": "227_df11_nasa_xhab",
+  "source": {
+    "catalog_ref": "DF11",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/227_df11_nasa_xhab.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "deep_space_hab_structural",
+  "part_class": "xhab_stowage_rack_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a crew-accessible stowage rack for a deep-space habitat stowage benchmark as a multi-part bolted rack assembly consisting of the 6061-T6 extruded corner-post frame, the honeycomb sandwich side walls (left + right), the honeycomb sandwich back wall, the honeycomb sandwich top and bottom panels, two pivoting quarter-turn-latched doors, three internal shelves dividing the four CTB bays, and the four corner-post hard-dock bolts interfacing to the habitat standoff. Rack outer envelope 1050 mm H x 530 mm W x 813 mm D, compliant with International Standard Payload Rack (ISPR) footprint; it must host four 406 mm x 330 mm x 254 mm cargo transfer bags (CTBs), each fully loaded to 27.2 kg per NASA-STD-3001. Rack hosts two pivoting crew-facing doors latched by paired Nomex-reinforced quarter-turn fasteners. Material: Aluminum 2024-T3 honeycomb panel (skin E = 73 GPa, face-sheet thickness 0.8 mm, core 25 mm Al honeycomb density 32 kg/m^3 with out-of-plane compression 1.5 MPa and shear 0.85 MPa, total panel areal density 5 kg/m^2) for walls + shelves; frame uses Al 6061-T6 extrusion. Environment: launched in SLS Block 1 cargo section under 9 g axial + 2 g lateral quasi-static + random vibration per NASA-HDBK-7005 spacecraft PSD, operated in-hab at 1 atm / 22 C nominal. Load cases: (LC1) launch quasi-static: 4 x 27.2 kg = 108.8 kg CTB mass inside rack + 35 kg rack mass, apply 9 g axial + 2 g lateral simultaneous; (LC2) random vib qual per NASA-HDBK-7005 (6.9 Grms from 20-2000 Hz, 2 min/axis); (LC3) crew operational load: 300 N vertical on an open door (crew stabilizing); (LC4) ECLSS hose routing reaction: 150 N lateral on the routing clip at top of rack; (LC5) thermal: rack surfaces 10-40 C nominal, during de-stow 5 C temporary exposure at exterior door; (LC6) hard-dock preload: frame bolts into habitat standoff at four corner posts with 5 kN preload each. Pass/fail: (R1) max von Mises in frame Al 6061-T6 under LC1 <= 184 MPa (yield 276 / 1.5); (R2) honeycomb panel face-sheet strain under LC1 <= 0.3%; (R3) core shear under LC1 <= 0.57 MPa (0.85 / 1.5); (R4) random-vib 3-sigma stress <= 184 MPa; (R5) first natural frequency of loaded rack above 35 Hz to stay above primary launch vehicle excitation band; (R6) rack dry mass <= 35 kg. Verification is performed on the assembled frame + sandwich panels + doors + shelves model with representative bolted/bonded interface stiffness; per-part stress is reported but does not gate pass/fail. Deliverables: STEP, quasi-static FEA, random-vib analysis, modal (10 modes), thermal FEA, mass report.",
+  "short_prompt": "Design a crew-accessible stowage rack for a deep-space habitat stowage benchmark as a multi-part bolted rack assembly (6061-T6 corner-post frame + honeycomb sandwich walls + pivoting doors + internal shelves + hard-dock bolts).\n\nOuter envelope 1050 mm H x 530 mm W x 813 mm D (ISPR footprint), hosting four 406 x 330 x 254 mm CTBs at 27.2 kg each per NASA-STD-3001. Panels are Al 2024-T3 honeycomb (skin E 73 GPa, 0.8 mm faces, 25 mm core at 32 kg/m^3 with 1.5 MPa out-of-plane compression and 0.85 MPa shear, areal density 5 kg/m^2); frame Al 6061-T6 extrusion. Environment: SLS Block 1 cargo, in-hab at 1 atm / 22 C nominal.\n\nLoad cases.\n- LC1 launch quasi-static: (4 x 27.2 kg = 108.8 kg CTB + 35 kg rack) at 9 g axial + 2 g lateral simultaneous.\n- LC2 random vib qual per NASA-HDBK-7005 (6.9 Grms from 20-2000 Hz, 2 min/axis).\n- LC3 crew stabilize: 300 N vertical on an open door.\n- LC4 ECLSS hose: 150 N lateral at routing clip on top of rack.\n- LC5 thermal: 10-40 C nominal, 5 C temporary exterior exposure during de-stow.\n- LC6 hard-dock: four corner-post bolts at 5 kN preload each.\n\nFirst natural frequency of loaded rack > 35 Hz; rack dry mass <= 35 kg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis",
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "XHab stowage rack (multi-part bolted assembly)",
+    "brief": "ISPR-footprint stowage rack: 6061-T6 corner-post frame + 2 side walls + back wall + top + bottom + 2 doors + 3 shelves + 4 hard-dock bolts, for four 27.2 kg CTBs.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "corner_post_frame",
+        "role": "6061-T6 extruded four-corner-post frame forming the rack primary structure",
+        "count_min": 1,
+        "geometric_constraints": {
+          "rack_mm": {
+            "H": 1050,
+            "W": 530,
+            "D": 813
+          }
+        },
+        "material_hint": "Al 6061-T6 extrusion",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side_wall_panel",
+        "role": "left / right honeycomb sandwich side wall panel",
+        "count_min": 2,
+        "geometric_constraints": {
+          "skin_mm": 0.8,
+          "core_mm": 25
+        },
+        "material_hint": "Al 2024-T3 skin + Al honeycomb core",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "back_wall_panel",
+        "role": "honeycomb sandwich rear wall panel",
+        "count_min": 1,
+        "geometric_constraints": {
+          "skin_mm": 0.8,
+          "core_mm": 25
+        },
+        "material_hint": "Al 2024-T3 skin + Al honeycomb core",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "top_bottom_panel",
+        "role": "honeycomb sandwich top and bottom closing panels",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "Al 2024-T3 skin + Al honeycomb core",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "crew_door",
+        "role": "pivoting quarter-turn-latched crew door",
+        "count_min": 2,
+        "geometric_constraints": {
+          "F_N_crew": 300
+        },
+        "material_hint": "Al 2024-T3 skin + Al honeycomb core",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "internal_shelf",
+        "role": "horizontal shelf dividing the four CTB bays",
+        "count_min": 3,
+        "geometric_constraints": {
+          "CTB_mass_kg": 27.2
+        },
+        "material_hint": "Al 2024-T3 skin + Al honeycomb core",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "hard_dock_bolt",
+        "role": "corner-post bolt attaching rack to habitat standoff at 5 kN preload",
+        "count_min": 4,
+        "geometric_constraints": {
+          "preload_N": 5000
+        },
+        "material_hint": "A286 / Ti fastener",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "1050 mm H x 530 mm W x 813 mm D ISPR footprint",
+      "coordinate_system": "+Z vertical in hab, +X door-normal, +Y transverse"
+    },
+    "material": {
+      "frame": {
+        "name": "Aluminum 6061-T6 extrusion",
+        "E_GPa": 68.9,
+        "yield_MPa": 276,
+        "ultimate_MPa": 310,
+        "density_kg_m3": 2700
+      },
+      "panel_skin": {
+        "name": "Aluminum 2024-T3",
+        "E_GPa": 73,
+        "thickness_mm": 0.8
+      },
+      "panel_core": {
+        "name": "Al honeycomb",
+        "core_thickness_mm": 25,
+        "density_kg_m3": 32,
+        "out_of_plane_compression_MPa": 1.5,
+        "shear_MPa": 0.85
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "launch_qs",
+        "g_axial": 9,
+        "g_lateral": 2
+      },
+      {
+        "id": "LC2",
+        "name": "random_vib",
+        "profile": "NASA-HDBK-7005 6.9 Grms 20-2000 Hz, 2 min/axis"
+      },
+      {
+        "id": "LC3",
+        "name": "crew_door_300N",
+        "F_N": 300
+      },
+      {
+        "id": "LC4",
+        "name": "eclss_hose",
+        "F_N": 150
+      },
+      {
+        "id": "LC5",
+        "name": "thermal",
+        "range_C": [
+          5,
+          40
+        ]
+      },
+      {
+        "id": "LC6",
+        "name": "dock_preload",
+        "F_N_per_post": 5000
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "honeycomb sandwich panels bolted + bonded to extruded corner-post frame; doors hinged + quarter-turn latched to frame; internal shelves bolted into side walls; hard-dock bolts preloaded at four corner posts with representative bolt stiffness",
+      "support": "four corner-post hard-dock bolts fixed to habitat standoff in LC1-LC6"
+    },
+    "objective": "minimize dry mass under 35 kg while passing yield, face-sheet strain, core shear, random-vib, and modal gates",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "rack_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "panel_skin_strain_pct",
+        "core_shear_MPa",
+        "first_10_modes_Hz",
+        "rms_stress_MPa",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "frame_max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC3",
+          "LC4",
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "face_sheet_strain",
+        "limit_pct": 0.3,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "core_shear",
+        "limit_MPa": 0.57,
+        "derivation": "honeycomb shear 0.85 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "random_vib_3sigma_stress",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_natural_frequency",
+        "limit_Hz": 35,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "rack_dry_mass",
+        "limit_kg": 35,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC6"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "side wall panels bolted + bonded into corner-post frame"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "back wall panel bolted + bonded into corner-post frame"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "top and bottom panels bolted + bonded into corner-post frame"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "hinged",
+      "load_path": "crew doors hinged + latched to corner-post frame"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "B",
+        "F"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "internal shelves bolted into side wall panels"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "hard-dock bolts preloaded through corner-post frame into habitat standoff"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "ISPR-footprint stowage racks combine an extruded corner-post frame with bonded/bolted honeycomb sandwich walls, doors, shelves, and hard-dock bolts; launch 9g quasi-static and random-vib load paths explicitly cross frame/panel/door interfaces and must be modelled as a multi-body rack.",
+    "speculation_caveats": "Shelf count, door latch layout, and hard-dock bolt grade are speculative; materials, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "benchmark/briefs/single/227_df11_nasa_xhab.json"
+  }
+}

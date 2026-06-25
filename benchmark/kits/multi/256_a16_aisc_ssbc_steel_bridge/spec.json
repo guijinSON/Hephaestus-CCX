@@ -1,0 +1,659 @@
+{
+  "id": "256_a16_aisc_ssbc_steel_bridge",
+  "source": {
+    "catalog_ref": "A16",
+    "year": 2025,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/256_a16_aisc_ssbc_steel_bridge.json",
+    "multipart_basis": "Decomposition inferred from a through-truss bridge of the collegiate AISC-style type: top-chord HSS members, bottom-chord HSS members, diagonal web HSS members, vertical post HSS members, deck stringers / floor beams, transverse cross-frames, gusset plates at each welded joint, abutment pads at the two supports, and bolted splice plates at the member-length breaks required by the original sample's 1.2 m transportation limit. The original brief explicitly says the bridge 'shall be assembled from members no longer than 1.2 m' and that 'bolted splice locations must carry the full R1 load' \u2014 this forces a 20+ member decomposition."
+  },
+  "domain": "civil_structural",
+  "part_class": "steel_bridge_primary_truss_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a single-piece structural-steel bridge truss for a collegiate bridge-design event. The bridge shall span a nominal 20 ft (6.10 m) clear gap and carry a maximum applied vertical load of 2,500 lb (11,120 N) over the decking at the worst-case loading location. Exactly two stringers carry the decking loads. Overall bridge envelope: 6.5 m long (to allow support bearings outside the 20 ft span), 1.0 m wide (stringer-to-stringer), 0.7 m tall. Bridge is a through-truss welded from A500 Grade B steel hollow structural sections (HSS). Material: ASTM A500 Grade B steel, E = 200 GPa, yield = 315 MPa, ultimate = 400 MPa, density = 7850 kg/m^3. Primary members: top chord HSS 50 x 50 x 3 mm, bottom chord HSS 50 x 50 x 3 mm, diagonal web HSS 40 x 40 x 3 mm, transverse floor beams HSS 40 x 40 x 3 mm. Nodes are welded (modeled as rigid connections). Load cases: (R1) Service load: 2500 lb (11,120 N) concentrated at mid-span on both stringers simultaneously; maximum midspan vertical deflection of the loaded stringers <= span/500 = 6100 / 500 = 12.2 mm. (R2) Stress pass/fail: under R1, maximum von Mises stress in any member <= yield / 1.67 (LRFD phi 0.9 / gamma 1.5 equivalent) = 189 MPa. (R3) Linear buckling: under factored load 1.5 x 11,120 = 16,680 N, the first buckling eigenvalue (compressive chord / diagonal buckling) shall be >= 2.5. (R4) Bridge total mass (stiffness / lightness scoring): aim for minimum; hard cap mass <= 120 kg. (R5) Lateral sway under a horizontal rubbing load of 50 lb (222 N) applied at mid-span top chord <= 12 mm. (R6) Construction constraint: the bridge shall be assembled from members no longer than 1.2 m (transportation constraint) - this is a geometry rule not analysis, but bolted splice locations must carry the full R1 load. Primary verification: structural FEA (linear static) + linear buckling. Vibration, thermal, fluid, radiation explicitly NOT required. Deliverables: STEP AP242 welded assembly (treated as a single structural idealization for FEA), member schedule, and a report listing total mass, maximum midspan deflection, max von Mises stress, first buckling load factor, lateral sway.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe deliverable is reconfigured as a 20+ member welded through-truss assembly consistent with the original 6.5 m x 1.0 m x 0.7 m envelope and the explicit 1.2 m max member length (R6). Parts: top-chord HSS members, bottom-chord HSS members, diagonal web HSS members, vertical post HSS members, two deck stringers (the specifically named stringers that carry the 2500 lb service load), transverse cross-frames tying the two stringer lines, welded gusset plates at every truss node, two abutment pads (pin + roller supports), and bolted splice plates at every member-length break (required by R6). FEM verification runs on the assembled bridge only; per-part stress is reported but does not gate pass/fail. Splice-plate bolt DCR, gusset-plate weld DCR, and abutment-pad reactions must be verified at assembled level. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim.",
+  "short_prompt": "Design a structural-steel through-truss bridge for a collegiate bridge-design event as a multi-member welded + bolted assembly. The bridge spans a 20 ft (6.10 m) clear gap and carries a maximum applied vertical load of 2500 lb (11,120 N) over decking at the worst-case loading location, with exactly two stringers.\n\nOverall envelope: 6.5 m long, 1.0 m wide, 0.7 m tall. Material: ASTM A500 Grade B steel (E = 200 GPa, yield = 315 MPa, ultimate = 400 MPa, density 7850 kg/m^3). Primary members: top/bottom chord HSS 50 x 50 x 3 mm; diagonal web, verticals, floor beams HSS 40 x 40 x 3 mm. Welded nodes modeled as rigid.\n\nLC1 service: 11,120 N concentrated at mid-span on both stringers; midspan vertical deflection <= L/500 = 12.2 mm. LC2 stress: max von Mises <= 189 MPa (315 / 1.67). LC3 linear buckling under factored 1.5 x 11,120 = 16,680 N: first eigenvalue >= 2.5. LC lateral: 50 lb (222 N) horizontal rubbing at mid-span top chord; sway <= 12 mm. Bridge mass <= 120 kg.\n\nConstruction constraint: members no longer than 1.2 m (transportation); bolted splice locations must carry the full R1 load.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Collegiate steel through-truss bridge assembly (20 ft clear span, 20+ members)",
+    "brief": "HSS steel through-truss 20 ft clear span assembled from top/bottom chords + diagonals + verticals + stringers + cross-frames + gussets + abutment pads + bolted splice plates (required by max-1.2 m member rule R6). 2 stringers, 11.12 kN vertical load, deflection <= L/500, buckling factor >= 2.5.",
+    "geometric_constraints": {
+      "clear_span_m": 6.1,
+      "envelope_length_m": 6.5,
+      "width_m": 1.0,
+      "height_m": 0.7,
+      "stringer_count": 2,
+      "top_chord_HSS_mm": "50 x 50 x 3",
+      "bottom_chord_HSS_mm": "50 x 50 x 3",
+      "diagonals_HSS_mm": "40 x 40 x 3",
+      "verticals_HSS_mm": "40 x 40 x 3",
+      "floor_beams_HSS_mm": "40 x 40 x 3",
+      "max_member_length_m": 1.2,
+      "bolted_splice_required_at_member_breaks": true
+    },
+    "material": {
+      "name": "ASTM A500 Grade B steel",
+      "properties": {
+        "youngs_modulus_GPa": 200,
+        "yield_strength_MPa": 315,
+        "ultimate_tensile_strength_MPa": 400,
+        "density_kg_m3": 7850
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "service_vertical",
+        "force_N": 11120,
+        "direction": "vertical at midspan on both stringers"
+      },
+      {
+        "id": "LC2",
+        "name": "buckling_factored",
+        "force_N": 16680,
+        "direction": "vertical at midspan"
+      },
+      {
+        "id": "LC3",
+        "name": "lateral_sway",
+        "force_N": 222,
+        "direction": "horizontal at mid-span top chord"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "pinned at one abutment pad, roller at the other (simple span)",
+      "loads": "concentrated vertical at midspan on the two stringers; horizontal rubbing load at mid-span top chord"
+    },
+    "objective": {
+      "minimize": "mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "total_mass_kg",
+        "max_midspan_deflection_mm",
+        "max_von_mises_MPa",
+        "first_buckling_load_factor",
+        "lateral_sway_mm",
+        "splice_bolt_DCR",
+        "gusset_weld_DCR",
+        "per_part_max_stress",
+        "member_length_compliance"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index",
+        "member_length_mm",
+        "splice_location_id"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "top_chord_HSS_member",
+        "role": "longitudinal compression chord along the top of each side truss; individual member <= 1.2 m, spliced at intermediate panel points; primary compressive member governing R3 buckling",
+        "count_min": 6,
+        "count_note": "Minimum 6 on a ~6.5 m bridge with <= 1.2 m member limit: 3 segments per side x 2 sides. Teams with more panels use more.",
+        "geometric_constraints": {
+          "HSS_mm": "50 x 50 x 3",
+          "max_length_mm": 1200,
+          "orientation": "longitudinal top",
+          "count_per_side": 3
+        },
+        "material_hint": "ASTM A500 Grade B HSS",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "bottom_chord_HSS_member",
+        "role": "longitudinal tension chord along the bottom of each side truss; individual member <= 1.2 m, spliced at intermediate panel points; carries the reaction from the two stringers",
+        "count_min": 6,
+        "count_note": "Same 3x2 arrangement as top chord.",
+        "geometric_constraints": {
+          "HSS_mm": "50 x 50 x 3",
+          "max_length_mm": 1200,
+          "orientation": "longitudinal bottom",
+          "count_per_side": 3
+        },
+        "material_hint": "ASTM A500 Grade B HSS",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "diagonal_web_HSS_member",
+        "role": "diagonal web member that converts vertical panel shear into top-chord compression and bottom-chord tension; every panel of each side truss has at least one diagonal; all diagonals <= 1.2 m",
+        "count_min": 6,
+        "count_note": "Pratt / Warren arrangement with 3 diagonals per side = 6 minimum; 8 is common.",
+        "geometric_constraints": {
+          "HSS_mm": "40 x 40 x 3",
+          "max_length_mm": 1200,
+          "orientation": "diagonal within side truss plane"
+        },
+        "material_hint": "ASTM A500 Grade B HSS",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "vertical_post_HSS_member",
+        "role": "vertical post at each panel point of each side truss; carries the panel reaction from the floor beam and stabilizes the top chord against out-of-plane buckling",
+        "count_min": 4,
+        "count_note": "Minimum 2 per side (at midspan and one intermediate) = 4 total; many teams use 6-8.",
+        "geometric_constraints": {
+          "HSS_mm": "40 x 40 x 3",
+          "max_length_mm": 700,
+          "orientation": "vertical within side truss plane"
+        },
+        "material_hint": "ASTM A500 Grade B HSS",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "deck_stringer",
+        "role": "one of exactly two stringers that span the 6.10 m clear gap and receive the 11,120 N service load at midspan; welded / bolted to the cross-frames and transmits floor-beam reaction into the side trusses",
+        "count_min": 2,
+        "count_note": "Exactly 2, per the original prompt's 'stringer_count: 2'.",
+        "geometric_constraints": {
+          "HSS_mm": "40 x 40 x 3",
+          "length_mm": 6100,
+          "spacing_mm": 1000,
+          "max_segment_length_mm": 1200,
+          "splice_count": 5
+        },
+        "material_hint": "ASTM A500 Grade B HSS",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "transverse_cross_frame",
+        "role": "transverse floor beam / cross-frame that ties the two stringer lines together at each panel point and carries the decking reaction into the two side trusses",
+        "count_min": 4,
+        "count_note": "Minimum 4 (one at each side-truss panel point); more are typical.",
+        "geometric_constraints": {
+          "HSS_mm": "40 x 40 x 3",
+          "length_mm": 1000,
+          "orientation": "transverse, spanning stringer-to-stringer"
+        },
+        "material_hint": "ASTM A500 Grade B HSS",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "gusset_plate",
+        "role": "welded gusset plate at each truss node; develops the intersecting HSS member forces through fillet welds and is the governing location for R_asm weld DCR",
+        "count_min": 8,
+        "count_note": "Minimum 8 (4 panel points per side x 2 sides); 12-16 is typical for a 3-panel through-truss.",
+        "geometric_constraints": {
+          "thickness_mm": 6,
+          "plan_dimensions_mm": "200 x 200",
+          "edge_radius_mm": 15,
+          "weld_type": "all-around fillet to each framing HSS"
+        },
+        "material_hint": "ASTM A572 Gr 50 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "abutment_pad",
+        "role": "end bearing pad at the pin or roller support; reacts the full 11,120 N vertical reaction at the abutment and provides the boundary condition for LC1-LC3",
+        "count_min": 2,
+        "count_note": "Exactly 2 (pin + roller) per the simple-span idealization.",
+        "geometric_constraints": {
+          "thickness_mm": 20,
+          "plan_dimensions_mm": "150 x 100",
+          "bearing_type": "pin (one end) or roller (other end)"
+        },
+        "material_hint": "ASTM A572 Gr 50 plate + PTFE sliding layer on the roller end",
+        "speculation": true
+      },
+      {
+        "part_id": "I",
+        "name": "bolted_splice_plate",
+        "role": "double-lap splice plate pair at every chord / stringer / diagonal member-length break required by R6 (max member length 1.2 m); original brief states 'bolted splice locations must carry the full R1 load'; governs R_asm1 splice-bolt DCR",
+        "count_min": 8,
+        "count_note": "Minimum 8 splice-plate pairs (4 per side for chord splices + deck-stringer splices). Teams with more member breaks use more.",
+        "geometric_constraints": {
+          "plate_thickness_mm": 6,
+          "plan_dimensions_mm": "80 x 80",
+          "bolt_pattern": "4x M16 Grade 8.8 per splice",
+          "orientation": "double-lap across spliced HSS member"
+        },
+        "material_hint": "ASTM A572 Gr 50 plate + A325 / 8.8 high-strength bolts",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "length_m": 6.5,
+      "width_m": 1.0,
+      "height_m": 0.7,
+      "coordinate_system": "X = span, Y = transverse, Z = vertical",
+      "clear_span_m": 6.1
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_midspan_deflection",
+        "limit_mm": 12.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 189,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.5,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "total_mass",
+        "limit_kg": 120,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "lateral_sway",
+        "limit_mm": 12,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Splice-plate bolt DCR at every bolted splice location (required by R6 member-length <= 1.2 m rule) shall be <= 1.0 under LC1 service load. Matches the original prompt: 'bolted splice locations must carry the full R1 load.'",
+        "metric": "max_splice_bolt_DCR across IF3",
+        "threshold": 1.0,
+        "operator": "<=",
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Gusset-plate weld DCR at every truss-node gusset shall be <= 1.0 under LC1 service load and LC2 factored load.",
+        "metric": "max_weld_DCR across IF1, IF2, IF4",
+        "threshold": 1.0,
+        "operator": "<=",
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.geometric_constraints",
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[2].geometric_constraints",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints",
+          "prompt.parts[4].count_min",
+          "prompt.parts[4].geometric_constraints",
+          "prompt.parts[5].count_min",
+          "prompt.parts[5].geometric_constraints",
+          "prompt.parts[6].count_min",
+          "prompt.parts[6].geometric_constraints",
+          "prompt.parts[7].count_min",
+          "prompt.parts[7].geometric_constraints",
+          "prompt.parts[8].count_min",
+          "prompt.parts[8].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam (B32) for HSS members, shell for gusset plates, solid for abutment pads and splice plates",
+      "mesh_size_mm_in_critical_regions": 25,
+      "solver_hints": [
+        "SAP2000",
+        "ANSYS Mechanical",
+        "Abaqus Standard"
+      ],
+      "analysis_types": [
+        "linear static on assembled bridge",
+        "linear buckling on assembled bridge"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A_top_chord_HSS_member + C_diagonal_web_HSS_member + D_vertical_post_HSS_member",
+        "G_gusset_plate"
+      ],
+      "mediated_by": "fillet weld from each framing HSS onto the gusset",
+      "load_path": "intersecting-member forces at each upper panel point develop into the gusset"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B_bottom_chord_HSS_member + C_diagonal_web_HSS_member + D_vertical_post_HSS_member",
+        "G_gusset_plate"
+      ],
+      "mediated_by": "fillet weld from each framing HSS onto the gusset",
+      "load_path": "intersecting-member forces at each lower panel point develop into the gusset"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "chord/stringer/diagonal member segments",
+        "I_bolted_splice_plate"
+      ],
+      "mediated_by": "4x M16 Grade 8.8 bolts in double-lap shear at each splice",
+      "load_path": "full member axial + moment continuity across the 1.2 m member-length break required by R6; must carry LC1 per the original prompt"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "E_deck_stringer",
+        "F_transverse_cross_frame"
+      ],
+      "mediated_by": "fillet weld at each panel point",
+      "load_path": "stringer reaction into cross-frame and then into the two side trusses"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "B_bottom_chord_HSS_member end segment",
+        "H_abutment_pad"
+      ],
+      "mediated_by": "fillet weld of pin detail (one end) or sliding PTFE face on roller (other end)",
+      "load_path": "full reaction from simple-span idealization (pin + roller) into the external supports"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "R1-R5 are whole-bridge checks (midspan deflection, max member stress across all members, first buckling eigenvalue, total mass, lateral sway); R6 forces a multi-member decomposition via the 1.2 m member rule. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The original prompt explicitly requires member length <= 1.2 m on a 6.5 m bridge (R6), which mandates bolted splices, and says 'bolted splice locations must carry the full R1 load' \u2014 making the bridge inherently a 20+ member welded + bolted assembly, not a single idealized truss.",
+    "speculation_caveats": "Exact panel count, gusset plan dimensions, splice-plate bolt count, and abutment-pad footprint are speculative; HSS sizes, span, max-member-length rule, and load magnitudes are anchored to the original sample.",
+    "original_sample_preserved_at": "benchmark/briefs/single/256_a16_aisc_ssbc_steel_bridge.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R_asm1",
+      "R_asm2"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.geometric_constraints",
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[2].geometric_constraints",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints",
+      "prompt.parts[4].count_min",
+      "prompt.parts[4].geometric_constraints",
+      "prompt.parts[5].count_min",
+      "prompt.parts[5].geometric_constraints",
+      "prompt.parts[6].count_min",
+      "prompt.parts[6].geometric_constraints",
+      "prompt.parts[7].count_min",
+      "prompt.parts[7].geometric_constraints",
+      "prompt.parts[8].count_min",
+      "prompt.parts[8].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "max_midspan_deflection",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1"
+      ],
+      "deck_step": "generated_static_step:LC1",
+      "metric": "max_von_mises_stress",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_BUCKLING",
+      "solver": "calculix",
+      "analysis_card": "*BUCKLE",
+      "physics_card": null,
+      "load_cases": [
+        "LC2"
+      ],
+      "deck_step": "generated_buckling_step",
+      "metric": "first_mode_load_factor",
+      "metric_source": "buckling eigenvalue block",
+      "outputs": [
+        "model.dat: eigenvalues"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "total_mass",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC3",
+      "metric": "lateral_sway",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm1_005",
+      "requirement_id": "R_asm1",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "max_splice_bolt_DCR across IF3",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_asm2_006",
+      "requirement_id": "R_asm2",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "assembly"
+      ],
+      "deck_step": "generated_static_step:assembly",
+      "metric": "max_weld_DCR across IF1, IF2, IF4",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_007",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

@@ -1,0 +1,347 @@
+{
+  "id": "042_s11_ecss_q_70_02c_tvac_outgas",
+  "source": {
+    "catalog_ref": "S11",
+    "year": 2008,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/042_s11_ecss_q_70_02c_tvac_outgas.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_thermal_structural",
+  "part_class": "tvac_outgas_specimen_fixture",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a thermal-vacuum outgassing specimen fixture per ECSS-Q-ST-70-02C (2008), delivered as a multi-part assembly because the pass/fail temperature setpoints, the CTE-driven thermal stress, and the pump-down differential all involve coupled load paths between the anodized aluminum oven block, the OFHC copper collector, the aluminum specimen boats, and the PTFE insulator feet that thermally decouple the fixture from the TVAC chassis. The fixture screens space materials for Total Mass Loss (TML) and Collected Volatile Condensable Materials (CVCM) over a 24-hour test at oven 125 +/- 1 C and collector 25 +/- 1 C with chamber pressure <= 1e-5 mbar.\n\nAssembly layout. (A) Oven block: 200 mm x 150 mm x 40 mm anodized Al 6082-T6 with three 15 mm diameter x 20 mm deep cylindrical specimen cavities; houses a resistive heater and three Type K thermocouples at cavity bottoms. (B) Specimen boats (x3): 14 mm OD x 18 mm tall open cylinders, 0.1 mm wall, Al 1100, each holding 100-300 mg dry test article in a corresponding oven cavity. (C) Collector plate: polished OFHC Cu disc 30 mm diameter x 3 mm thick, clamped by a thermoelectric cooler 25 mm above the oven block face, separated by a chicaned baffle per ECSS-Q-ST-70-02C Fig. 5-1. (D) PTFE insulator feet (x4): 8 mm diameter x 10 mm tall cylinders under the oven block that thermally isolate it from the TVAC chassis and carry the pump-down differential. Overall envelope 250 mm x 200 mm x 100 mm.\n\nMaterials. Oven: Al 6082-T6, E = 70 GPa, k = 170 W/m*K, rho = 2700 kg/m^3. Collector: OFHC Cu, E = 117 GPa, k = 390 W/m*K, Fty annealed = 70 MPa. Boat: Al 1100, k = 220 W/m*K. Feet: PTFE. Thermocouples: Type K, +/- 1 C accuracy.\n\nOperating envelope. Oven setpoint 125 +/- 1 C at each cavity. Collector setpoint 25 +/- 1 C. Chamber pressure <= 1e-5 mbar. Test duration 24 h. TML = (m_before - m_after) / m_before; CVCM = (m_collector_after - m_collector_before) / m_specimen_before, three replicates.\n\nLoad cases (thermal + structural). LC1 (steady-state): 125 C oven / 25 C collector under vacuum radiation-only boundary; every cavity within 125 +/- 1 C and collector within 25 +/- 1 C. LC2 (warm-up transient): 20 C ambient to setpoints in <= 2 hours. LC3 (thermal-stress transient): CTE mismatch between Cu collector and Al oven block; max Cu von Mises must stay below Fty_Cu = 70 MPa. LC4 (pump-down differential): 0.1 MPa transient across fixture feet and clamp without permanent deformation.\n\nPass/fail criteria (all evaluated on the assembled fixture). (R1) All three cavity temperatures within 125 +/- 1 C at LC1. (R2) Collector within 25 +/- 1 C at LC1. (R3) Warm-up to within +/- 1 C of both setpoints <= 2 h. (R4) Cu collector max von Mises in LC3 < 70 MPa. (R5) Feet and clamp max von Mises in LC4 < Fty_Al / 1.25 = 220.8 MPa. (R6) Chicaned baffle geometry per ECSS-Q-ST-70-02C Fig. 5-1 (binary). (R7) Fixture total mass <= 2.5 kg.\n\nAssembly policy. R1-R3 cannot be evaluated on the oven block alone; they require the assembled oven + baffle + collector radiation geometry with PTFE feet isolation. R4 requires the Cu collector bonded to the oven block thermally through its clamp. R5 requires the pump-down load path from oven block through PTFE feet to chassis interface. Pass/fail is assembly-level throughout.\n\nSolver and analysis expectations. Primary: coupled steady-state + transient thermal FEM with radiation and conduction (no convection in vacuum). TET10 at 2 mm in cavity walls and collector. LC3 is a one-way thermal-stress solve; LC4 is linear static pressure differential. Vibration, fluid flow, ionizing-radiation FEA, and buckling NOT required; thermal radiation heat transfer IS part of LC1-LC2.\n\nDeliverables. STEP AP242 of assembled fixture, steady-state temperature contour, warm-up time in hours, peak Cu collector stress in MPa during LC3, feet/clamp von Mises at LC4, and total fixture mass in kg.",
+  "short_prompt": "Design a thermal-vacuum outgassing specimen fixture per ECSS-Q-ST-70-02C (2008), delivered as a multi-part assembly to screen space materials for TML and CVCM over 24 h at oven 125 +/- 1 C and collector 25 +/- 1 C with chamber pressure <= 1e-5 mbar. Assembly: anodized Al 6082-T6 oven block (200 x 150 x 40 mm with three 15 mm x 20 mm deep cavities, a resistive heater, Type K thermocouples) + three Al 1100 specimen boats (14 mm OD x 18 mm, 0.1 mm wall, 100-300 mg each) + polished OFHC Cu collector (30 mm dia x 3 mm, TEC-cooled 25 mm above the oven with a chicaned baffle per Fig. 5-1) + four PTFE insulator feet (8 x 10 mm). Overall 250 x 200 x 100 mm.\n\nMaterials. Oven Al 6082-T6 (E = 70 GPa, k = 170 W/m*K, rho = 2700 kg/m^3). Collector OFHC Cu (E = 117 GPa, k = 390 W/m*K, Fty annealed = 70 MPa). Boat Al 1100 (k = 220 W/m*K). Feet PTFE. Thermocouples +/- 1 C.\n\nLoad cases.\n- LC1 steady-state 125 C oven / 25 C collector under vacuum radiation-only.\n- LC2 warm-up 20 C to setpoints in <= 2 h.\n- LC3 thermal-stress CTE mismatch Cu vs Al.\n- LC4 pump-down differential 0.1 MPa across feet and clamp.\n\nPass limits: all cavities 125 +/- 1 C; collector 25 +/- 1 C; Cu max von Mises < 70 MPa; feet/clamp von Mises < Fty_Al / 1.25 = 220.8 MPa; total fixture mass <= 2.5 kg.",
+  "verification": {
+    "primary": "thermal_analysis",
+    "secondary": [
+      "structural_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "geometric_compliance_check",
+        "reason": "Chicaned baffle geometry is a binary standard-compliance check.",
+        "examples": [
+          "hand check",
+          "CAD model comparison"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "TVAC outgassing specimen fixture per ECSS-Q-ST-70-02C as multi-part assembly",
+    "brief": "Al oven block + OFHC Cu collector + Al specimen boats + PTFE feet TVAC fixture meeting 125C/25C setpoints at 1e-5 mbar, 24 h duration, warm-up <=2 h, assembly-level thermal-structural pass/fail.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "oven_block",
+        "role": "anodized Al 6082-T6 heater block hosting three specimen cavities and Type K thermocouples",
+        "count_min": 1,
+        "geometric_constraints": {
+          "size_mm": {
+            "x": 200,
+            "y": 150,
+            "z": 40
+          },
+          "cavity_count": 3,
+          "cavity_diameter_mm": 15,
+          "cavity_depth_mm": 20,
+          "material": "Al 6082-T6"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "specimen_boat",
+        "role": "thin-wall Al 1100 cup holding 100-300 mg test article in an oven cavity",
+        "count_min": 3,
+        "geometric_constraints": {
+          "OD_mm": 14,
+          "height_mm": 18,
+          "wall_mm": 0.1,
+          "material": "Al 1100"
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "collector_plate",
+        "role": "polished OFHC Cu disc clamped by TEC at 25 C that collects condensable volatiles",
+        "count_min": 1,
+        "geometric_constraints": {
+          "diameter_mm": 30,
+          "thickness_mm": 3,
+          "gap_to_block_mm": 25,
+          "material": "OFHC Cu"
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "ptfe_insulator_foot",
+        "role": "thermal insulator foot decoupling oven block from TVAC chassis and carrying pump-down differential",
+        "count_min": 4,
+        "geometric_constraints": {
+          "diameter_mm": 8,
+          "height_mm": 10,
+          "material": "PTFE"
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "envelope_mm": {
+        "x": 250,
+        "y": 200,
+        "z": 100
+      }
+    },
+    "material": {
+      "oven": {
+        "name": "Al 6082-T6",
+        "E_GPa": 70,
+        "k_W_mK": 170,
+        "density_kg_m3": 2700
+      },
+      "collector": {
+        "name": "OFHC Cu",
+        "E_GPa": 117,
+        "k_W_mK": 390,
+        "Fty_MPa_annealed": 70
+      },
+      "boat": {
+        "name": "Al 1100",
+        "k_W_mK": 220
+      },
+      "insulator_feet": {
+        "name": "PTFE"
+      }
+    },
+    "operating_envelope": {
+      "oven_setpoint_C": 125,
+      "oven_tol_C": 1,
+      "collector_setpoint_C": 25,
+      "collector_tol_C": 1,
+      "pressure_mbar_max": 1e-05,
+      "duration_h": 24,
+      "specimen_mass_mg": {
+        "min": 100,
+        "max": 300
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "steady_state_thermal",
+        "oven_C": 125,
+        "collector_C": 25,
+        "env": "vacuum"
+      },
+      {
+        "id": "LC2",
+        "name": "warm_up_transient",
+        "from_C": 20,
+        "to_C": 125,
+        "time_budget_h": 2.0
+      },
+      {
+        "id": "LC3",
+        "name": "CTE_thermal_stress_transient"
+      },
+      {
+        "id": "LC4",
+        "name": "pump_down_differential",
+        "dp_MPa": 0.1
+      }
+    ],
+    "boundary_conditions": {
+      "chamber_wall": "radiative sink 25 C",
+      "oven_input": "electrical heater at block"
+    },
+    "objective": {
+      "minimize": "fixture_mass",
+      "target_kg_max": 2.5
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (oven + boats + collector + feet)",
+      "body_metadata": [
+        "part_family (A|B|C|D)"
+      ],
+      "report_fields": [
+        "cavity_temperature_C",
+        "collector_temperature_C",
+        "warm_up_time_h",
+        "Cu_collector_max_vm_MPa",
+        "feet_max_vm_MPa",
+        "fixture_mass_kg"
+      ]
+    }
+  },
+  "requirements": {
+    "governing_standard": {
+      "name": "ECSS-Q-ST-70-02C",
+      "revision": "2008"
+    },
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "thermal_analysis",
+        "metric": "cavity_steady_state_temperature",
+        "limit_C": {
+          "min": 124,
+          "max": 126
+        },
+        "derivation": "ECSS-Q-ST-70-02C 125 +/- 1 C",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R2",
+        "type": "thermal_analysis",
+        "metric": "collector_steady_state_temperature",
+        "limit_C": {
+          "min": 24,
+          "max": 26
+        },
+        "derivation": "ECSS-Q-ST-70-02C 25 +/- 1 C",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "within"
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "warm_up_time_to_setpoint",
+        "limit_h": 2.0,
+        "derivation": "24 h at setpoint within 26 h total test window",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "Cu_collector_max_von_mises_CTE",
+        "limit_MPa": 70,
+        "derivation": "Fty OFHC Cu annealed",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "feet_and_clamp_max_von_mises",
+        "limit_MPa": 220.8,
+        "derivation": "Fty_Al 276 / 1.25",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "baffle_geometry_compliance",
+        "limit": 1,
+        "derivation": "ECSS-Q-ST-70-02C Fig. 5-1 chicane pattern",
+        "applies_to": [
+          "geometry"
+        ],
+        "operator": "==",
+        "note": "binary"
+      },
+      {
+        "id": "R7",
+        "type": "structural_analysis",
+        "metric": "fixture_mass",
+        "limit_kg": 2.5,
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 for thermal + structural",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": [
+        "ANSYS Mechanical Thermal",
+        "Abaqus Standard",
+        "Thermal Desktop"
+      ],
+      "analysis_types": [
+        "steady-state thermal",
+        "transient thermal 24h",
+        "one-way thermal-stress",
+        "linear static pressure"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A oven_block cavity wall",
+        "B specimen_boat outer surface"
+      ],
+      "mediated_by": "loose fit inside cavity with thermocouple contact",
+      "load_path": "conductive + radiative heat transfer from block to boat to specimen"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A oven_block top face via baffle",
+        "C collector_plate bottom face"
+      ],
+      "mediated_by": "25 mm vacuum gap with chicaned baffle per ECSS-Q-ST-70-02C Fig. 5-1",
+      "load_path": "radiative heat exchange + volatile transport for CVCM"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A oven_block bottom face",
+        "D ptfe_insulator_foot top face"
+      ],
+      "mediated_by": "bolted/clamped joint",
+      "load_path": "thermal isolation to chassis + pump-down differential reaction"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Cavity temperature (R1), collector temperature (R2), and warm-up time (R3) all depend on the radiation geometry between oven block, boats, baffle, and collector; Cu thermal stress (R4) depends on CTE mismatch at the oven-collector clamp; R5 depends on the pump-down load path through the PTFE feet. No part evaluated in isolation has meaningful pass/fail."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "The ECSS-Q-ST-70-02C fixture is specified as a radiation-coupled oven/collector assembly; outgas transport and CVCM measurement require the chicaned-baffle geometry between A and C, and thermal decoupling requires D.",
+    "exclusions_explained": {
+      "vibration_analysis": "Not applicable; TVAC fixture is static.",
+      "fluid_analysis": "No convection in vacuum.",
+      "radiation_analysis": "Ionizing-radiation FEA not applicable; thermal radiation heat transfer IS included in R1-R3.",
+      "buckling_analysis": "Not applicable."
+    },
+    "out_of_scope_but_real_world_needed": [
+      "Microbalance calibration traceability",
+      "Specimen prep per ECSS-Q-ST-70-02C Section 7",
+      "TVAC pump-down rate controls"
+    ]
+  },
+  "eval_coverage": [
+    "steady-state + transient thermal on assembled oven+collector+boats+feet",
+    "thermal-structural one-way coupling at assembly level",
+    "vacuum differential pressure through feet interface",
+    "ECSS-specific geometric compliance of assembled baffle"
+  ]
+}

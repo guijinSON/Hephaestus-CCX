@@ -1,0 +1,217 @@
+{
+  "id": "295_i_ea10_cuadc_2025_logistics_uav_wing_spar",
+  "source": {
+    "catalog_ref": "I-EA10",
+    "year": 2025,
+    "tier": "B+",
+    "language_note": "Rulebook Chinese; values restated in SI.",
+    "needs_rulebook_fetch": false,
+    "original_sample": "benchmark/briefs/single/295_i_ea10_cuadc_2025_logistics_uav_wing_spar.json",
+    "multipart_basis": "Decomposition inferred from a CUADC 2025 methanol-engine logistics UAV wing structure (main spar + rear spar + compression/tension ribs + root joint fitting + tip cap + aileron hinges + skin panels). No rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_uav_structural",
+  "part_class": "wing_main_spar_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the main wing structural assembly for a CUADC 2025 methanol-engine logistics UAV (6.5 cc methanol, MTOW ~12 kg, cruise 20 m/s, span 2.4 m) as a multi-part bolted/bonded assembly rather than a single-piece spar. The assembly consists of: the main pultruded CFRP rectangular-section main spar (40 x 20 mm external, 3 mm wall cap, full 2400 mm span through a 100 mm fuselage carry-through with 4 x M6 bolts in an 80 x 30 mm pattern); a rear spar running parallel to the main spar at the rear of the torsion box; a set of compression ribs at rib stations; tension ribs near the payload station; a root-joint fuselage fitting; a wingtip cap; aileron hinge brackets; and skin panels bonded to the spars and ribs. Ribs attach at 8 stations spaced 300 mm apart; payload drop bay imposes a 2 kg point load at station 3 from the root (900 mm outboard) on each wing. Material is pultruded CFRP (Ex = 130 GPa, Ey = 9 GPa, Gxy = 5 GPa, nu_xy = 0.3, density 1500 kg/m^3, tensile allowable 1500 MPa, compressive 900 MPa, ILSS 45 MPa). Load cases: LC1 1 g cruise 60 N per wing lift (elliptical); LC2 3 g pull-up 180 N per wing; LC3 payload-drop transient 20 g on 2 kg payload at the 900 mm station; LC4 aerodynamic torsion 4 Nm/m distributed; LC5 tip ground-handling 50 N at wingtip. Pass/fail: (R1) LC1/LC2/LC4/LC5 max composite stress <= 1000 MPa; (R2) LC3 peak dynamic stress <= 1250 MPa; (R3) LC2 tip deflection <= 80 mm; (R4) LC2 first-mode buckling >= 4.0; (R5) spar mass <= 450 g; (R6) LC4 tip twist <= 2 deg. Primary verification: linear static FEA (LC1, LC2, LC4, LC5), linear buckling (LC2), transient (LC3). Vibration modal, thermal, fluid, radiation not required. Deliverables: STEP AP242 assembly + report.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe wing is decomposed into: (A) one main pultruded CFRP rectangular-section main spar (40 x 20 mm external, 2400 mm span); (B) one rear spar (secondary, smaller section, 2400 mm span) at the rear of the torsion box; (C) 10 compression ribs at ~240 mm pitch along each half-span (CFRP laminate, 2 mm thick); (D) 2 tension ribs at the payload station (laminate with metal reinforcement); (E) one root-joint fuselage fitting (aluminium lug carrying the 4x M6 carry-through bolts and transferring moments into the fuselage); (F) two wingtip caps (one per tip); (G) 4 aileron hinge brackets on the rear spar (2 per aileron, both wings); (H) upper and lower skin panels (CFRP laminate, bonded to spars and ribs forming the D-box torsion cell); (I) M6/M3 fastener set. Interfaces: IF1 main-spar to rear-spar joined through compression ribs; IF2 ribs bonded + bolted to main spar; IF3 ribs bonded + bolted to rear spar; IF4 skin panels bonded to spar caps and ribs (D-box); IF5 root fitting bolted (4x M6) to main-spar web and to fuselage; IF6 aileron hinge brackets bolted to rear spar; IF7 wingtip caps bonded to both spars at tips. FEM verification runs on the ASSEMBLED multi-body model only — per-part stress is reported but does not gate pass/fail. Inter-part connection DCR must be <= 1.0 under the governing load case (LC2 3 g pull-up). All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design the main wing structural assembly for a CUADC 2025 methanol-engine logistics UAV (6.5 cc methanol, MTOW ~12 kg, cruise 20 m/s, span 2.4 m) as a multi-part bolted/bonded assembly.\n\nEnvelope: main pultruded CFRP rectangular-section spar 40 x 20 mm external, 3 mm wall cap, full 2400 mm span through a 100 mm fuselage carry-through with 4x M6 bolts on 80 x 30 mm pattern. Ribs at 8 stations spaced 300 mm; 2 kg payload point load at station 3 (900 mm outboard).\n\nMaterial: pultruded CFRP (tensile allowable 1500 MPa, compressive 900 MPa, ILSS 45 MPa).\n\nLoad cases: LC1 1 g cruise 60 N per wing; LC2 3 g pull-up 180 N per wing; LC3 payload-drop transient 20 g on 2 kg payload at 900 mm station; LC4 aerodynamic torsion 4 Nm/m distributed; LC5 tip ground-handling 50 N at wingtip.\n\nPass/fail: (R1) LC1/LC2/LC4/LC5 composite stress <= 1000 MPa; (R2) LC3 peak dynamic <= 1250 MPa; (R3) LC2 tip deflection <= 80 mm; (R4) LC2 buckling eigenvalue >= 4.0; (R5) spar mass <= 450 g; (R6) LC4 tip twist <= 2 deg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "CUADC 2025 methanol logistics UAV wing (multi-part spar/rib/skin assembly)",
+    "brief": "Pultruded CFRP wing structure: main spar + rear spar + 10 compression ribs per half-span + 2 tension ribs + root fitting + 2 wingtip caps + 4 aileron hinge brackets + bonded D-box skin panels. FEM verification at assembled level only; connection DCR <= 1.0 under LC2 governing 3 g pull-up.",
+    "geometric_constraints": {
+      "span_mm": 2400,
+      "section_outer_mm": { "h": 40, "w": 20 },
+      "wall_thickness_max_mm": 3,
+      "rib_spacing_mm": 300,
+      "payload_station_from_root_mm": 900,
+      "carry_through_length_mm": 100,
+      "carry_through_bolts": 4,
+      "bolt_size": "M6",
+      "bolt_pattern_mm": { "x": 80, "y": 30 }
+    },
+    "material": {
+      "name": "pultruded CFRP",
+      "Ex_GPa": 130,
+      "Ey_GPa": 9,
+      "Gxy_GPa": 5,
+      "density_kg_m3": 1500,
+      "tension_MPa": 1500,
+      "compression_MPa": 900,
+      "ILSS_MPa": 45
+    },
+    "load_cases": [
+      { "id": "LC1", "name": "1g_cruise", "per_wing_lift_N": 60 },
+      { "id": "LC2", "name": "3g_maneuver", "per_wing_lift_N": 180 },
+      { "id": "LC3", "name": "payload_drop_transient", "shock_g": 20, "payload_kg": 2 },
+      { "id": "LC4", "name": "pitching_torsion", "moment_Nm_per_m": 4 },
+      { "id": "LC5", "name": "tip_ground_handling", "tip_force_N": 50 }
+    ],
+    "boundary_conditions": {
+      "mounting": "root fitting fully fixed (4x M6 carry-through); tip free",
+      "loads": "elliptical lift distribution on each half-span, payload point load at 900 mm station, aerodynamic pitching torsion, or tip handling force"
+    },
+    "objective": { "minimize": "spar_mass" },
+    "output_format": {
+      "geometry": ["STEP_AP242"],
+      "body_count": "multi-body",
+      "report_fields": [
+        "spar_mass_g",
+        "max_stress_per_case_MPa",
+        "tip_deflection_LC2_mm",
+        "buckling_factor_LC2",
+        "tip_twist_LC4_deg",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": ["part_family", "instance_index"]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "main_spar",
+        "role": "pultruded CFRP rectangular-section main spar carrying wing bending (full 2400 mm span)",
+        "count_min": 1,
+        "geometric_constraints": { "length_mm": 2400, "section_mm": "40 x 20 hollow", "wall_mm": 3 },
+        "material_hint": "pultruded CFRP rectangular tube",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "rear_spar",
+        "role": "secondary spar at rear of torsion box carrying trailing-edge loads and aileron hinges",
+        "count_min": 1,
+        "geometric_constraints": { "length_mm": 2400, "section_mm": "25 x 15 hollow", "wall_mm": 2 },
+        "material_hint": "pultruded CFRP rectangular tube",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "compression_rib",
+        "role": "CFRP laminate compression rib at ~240 mm pitch along each half-span",
+        "count_min": 10,
+        "geometric_constraints": { "pitch_mm": 240, "chord_mm": 260, "thickness_mm": 2 },
+        "material_hint": "CFRP laminate",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "tension_rib",
+        "role": "tension rib at the 900 mm payload station carrying the 2 kg payload point load and LC3 transient",
+        "count_min": 2,
+        "geometric_constraints": { "chord_mm": 260, "thickness_mm": 3, "aluminium_insert": true },
+        "material_hint": "CFRP laminate + Al insert",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "root_joint_fitting",
+        "role": "aluminium root-joint fuselage fitting carrying the 4x M6 carry-through bolts and transferring moments into fuselage",
+        "count_min": 1,
+        "geometric_constraints": { "length_mm": 100, "bolt_pattern_mm": "80 x 30", "bolts": "4 x M6" },
+        "material_hint": "7075-T6 aluminium lug",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "wingtip_cap",
+        "role": "closing cap at each wingtip (bonded)",
+        "count_min": 2,
+        "geometric_constraints": { "chord_mm": 200, "thickness_mm": 2 },
+        "material_hint": "CFRP laminate",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "aileron_hinge_bracket",
+        "role": "aileron hinge bracket on rear spar (2 per aileron, both wings)",
+        "count_min": 4,
+        "geometric_constraints": { "footprint_mm": "30 x 20 x 4", "hinge_ID_mm": 4 },
+        "material_hint": "7075-T6 aluminium",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "skin_panel",
+        "role": "upper and lower CFRP skin panels bonded to spar caps and ribs forming the D-box torsion cell",
+        "count_min": 2,
+        "geometric_constraints": { "thickness_mm": 0.6, "chord_mm": 260, "span_mm": 2400 },
+        "material_hint": "CFRP laminate",
+        "speculation": true
+      },
+      {
+        "part_id": "I",
+        "name": "fastener_set",
+        "role": "M6 carry-through bolts + M3 rib/hinge bolts + structural adhesive",
+        "count_min": 40,
+        "geometric_constraints": { "threads": ["M3", "M6"], "grade": "A2-70" },
+        "material_hint": "A2-70 stainless + epoxy",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "2400 mm span x ~260 mm chord x ~40 mm thickness",
+      "coordinate_system": "+Y spanwise (root to tip), +X chord (leading to trailing), +Z up"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      { "id": "R1", "type": "structural_analysis", "metric": "max_composite_stress", "limit_MPa": 1000, "applies_to": ["LC1", "LC2", "LC4", "LC5"], "operator": "<=" },
+      { "id": "R2", "type": "structural_analysis", "metric": "peak_dynamic_stress", "limit_MPa": 1250, "applies_to": ["LC3"], "operator": "<=" },
+      { "id": "R3", "type": "structural_analysis", "metric": "tip_deflection", "limit_mm": 80, "applies_to": ["LC2"], "operator": "<=" },
+      { "id": "R4", "type": "buckling_analysis", "metric": "first_mode_load_factor", "limit": 4.0, "applies_to": ["LC2"], "operator": ">=" },
+      { "id": "R5", "type": "structural_analysis", "metric": "spar_mass", "limit_g": 450, "applies_to": ["design"], "operator": "<=" },
+      { "id": "R6", "type": "structural_analysis", "metric": "tip_twist", "limit_deg": 2, "applies_to": ["LC4"], "operator": "<=" },
+      { "id": "R_asm1", "description": "Connection demand-to-capacity ratio (DCR) across all inter-part interfaces <= 1.0 under the governing load case (LC2 3 g pull-up).", "metric": "max DCR across IF1..IF7", "threshold": 1.0, "scope": "assembled_only" }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "layered shell (skin/ribs) + solid (root fitting)",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "CalculiX"
+      ],
+      "analysis_types": [
+        "linear static (x4)",
+        "linear buckling (LC2)",
+        "transient (LC3)"
+      ]
+    }
+  },
+  "interfaces": [
+    { "id": "IF1", "between": ["A", "C"], "mediated_by": "bonded (epoxy) + bolted (2x M3 per rib)", "load_path": "aerodynamic + payload load from ribs into main-spar caps" },
+    { "id": "IF2", "between": ["B", "C"], "mediated_by": "bonded + bolted (2x M3 per rib)", "load_path": "trailing-edge load from ribs into rear spar" },
+    { "id": "IF3", "between": ["A", "D"], "mediated_by": "bonded + bolted (4x M3)", "load_path": "LC3 payload-drop 20 g shock from tension rib into main spar" },
+    { "id": "IF4", "between": ["A", "H"], "mediated_by": "bonded (structural adhesive)", "load_path": "D-box torsion shear flow from skin into spar caps" },
+    { "id": "IF5", "between": ["A", "E"], "mediated_by": "bolted (4x M6 at 80 x 30 pattern)", "load_path": "wing-root bending moment + shear into fuselage root fitting" },
+    { "id": "IF6", "between": ["B", "G"], "mediated_by": "bolted (2x M3 per bracket)", "load_path": "aileron hinge moments into rear spar" },
+    { "id": "IF7", "between": ["A", "F"], "mediated_by": "bonded", "load_path": "tip closure for torsion cell continuity" }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. The LC2 wing-root bending crosses rib-to-spar bonds, skin bonds, and the 4x M6 root fitting; assembly-level DCR is required, per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A CFRP logistics UAV wing of this class is built from main + rear spar + discrete ribs + bonded D-box skin + aluminium root fitting + wingtip closures + aileron hinge brackets, not a single monolithic spar; the bending + torsion + payload-drop transient loads flow across bonded and bolted joints that must be modelled as a multi-body assembly.",
+    "speculation_caveats": "Rib count (~10 compression + 2 tension per wing), skin panel count (2 per wing), and aileron-hinge count (4) are programmatic speculation consistent with the rib-spacing and span constraints; spar geometry, loads, material, and pass/fail thresholds inherit the original brief verbatim.",
+    "original_sample_preserved_at": "benchmark/briefs/single/295_i_ea10_cuadc_2025_logistics_uav_wing_spar.json"
+  },
+  "rulebook_citations": []
+}

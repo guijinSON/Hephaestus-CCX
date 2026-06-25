@@ -1,0 +1,344 @@
+{
+  "id": "215_af3_baja_sae_south_africa",
+  "source": {
+    "catalog_ref": "AF3",
+    "year": 2026,
+    "tier": "B",
+    "original_sample": "benchmark/briefs/single/215_af3_baja_sae_south_africa.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "off_road_atv_structural",
+  "part_class": "welded_baja_roll_cage_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the Roll Cage (roll hoop + supporting primary structure) of a single-seat off-road all-terrain vehicle (ATV) collegiate benchmark as a welded multi-member tube structure. The assembly consists of the main rear roll hoop, the front bracing hoop, left + right side-impact members, fore-aft roof / longitudinal ties, rear cross-bracing, secondary members / gussets, engine mount bracket, and the four front lower A-arm pickup brackets. Material: AISI 1018 DOM steel or equivalent per standard table with yield 365 MPa, ultimate 440 MPa, Young's modulus 205 GPa, Poisson 0.29, density 7850 kg/m^3. Primary tubing is minimum 1.00 inch (25.4 mm) OD x 0.120 inch (3.05 mm) wall, or 1.25 inch OD x 0.065 inch wall with equivalent Roll-Cage Equivalent Material (RCEM) bending stiffness EI >= 387 lb-in^2 and bending yield strength >= 19450 lb (86 kN). Secondary members minimum 1.00 inch OD x 0.035 inch wall. Vehicle wheelbase must be between 60 and 72 inches; overall width must not exceed 64 inches. Single-seat cockpit must accommodate a 95th-percentile male with helmet, with at least 3 inch (76 mm) clearance from helmet to nearest cage tube. Engine is a 10 hp OHV single-cylinder spec powerplant, engine mount must transmit engine reaction torque to the frame. Load cases: (LC1) front impact: 6 g (15000 N on 250 kg vehicle+driver) applied axially at the front bumper plane with rear wheels fixed; (LC2) side impact: 4 g (10000 N) lateral at driver's shoulder height; (LC3) roll-over: 3 g vertical + 2 g lateral simultaneous at the top of the main hoop; (LC4) rock impact: point load 2500 N at the side impact structure mid-span; (LC5) fatigue: 1 million cycles of +/- 2 kN vertical hits at the front lower A-arm pickup representing endurance course. Pass/fail: (R1) max von Mises below yield 365 MPa across LC1-LC4, (R2) cage intrusion toward helmet envelope under LC1-LC3 below 50 mm, (R3) RCEM bending-strength equivalence >= 19450 lb at all primary tubes, (R4) fatigue alternating stress at welds below 100 MPa (BS 7608 Class D), (R5) total cage mass below 40 kg. Verification is performed on the assembled welded tubular model with representative weld stiffness; per-part stress is reported but does not gate pass/fail. Deliverables: STEP with all members, SES (Structural Equivalency Spreadsheet) analog, FEA per load case on assembly, fatigue summary, and mass report.",
+  "short_prompt": "Design the Roll Cage of a single-seat off-road ATV collegiate benchmark as a welded multi-member tube structure.\n\nMaterial AISI 1018 DOM (yield 365 MPa, ultimate 440 MPa, E 205 GPa, Poisson 0.29, density 7850 kg/m^3). Primary tubing minimum 1.00 inch (25.4 mm) OD x 0.120 inch (3.05 mm) wall, or 1.25 inch OD x 0.065 inch wall with RCEM bending stiffness EI >= 387 lb-in^2 and bending yield >= 19450 lb (86 kN). Wheelbase 60-72 inch, width <= 64 inch, helmet clearance >= 3 inch (76 mm). Engine is a 10 hp OHV single spec powerplant.\n\nLoad cases.\n- LC1 front impact: 6 g (15000 N on 250 kg vehicle+driver) axial at front bumper plane.\n- LC2 side impact: 4 g (10000 N) lateral at driver's shoulder height.\n- LC3 roll-over: 3 g vertical + 2 g lateral simultaneous at top of main hoop.\n- LC4 rock impact: 2500 N point load at side-impact mid-span.\n- LC5 fatigue: 1 million cycles of +/- 2 kN vertical at the front lower A-arm pickup.\n\nCage intrusion under LC1-LC3 below 50 mm; fatigue weld stress below 100 MPa (BS 7608 Class D); total cage mass below 40 kg.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Off-road ATV collegiate roll cage (welded multi-member assembly)",
+    "brief": "1018 DOM chromoly Baja-style roll cage as welded assembly of main hoop, front hoop, side-impact members, longitudinals, bracing, engine mount, and A-arm pickup brackets.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "main_rear_hoop",
+        "role": "primary rear roll hoop protecting driver head envelope",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tube_od_in_min": 1.0,
+          "tube_wall_in_min": 0.12
+        },
+        "material_hint": "AISI 1018 DOM primary tube",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "front_bracing_hoop",
+        "role": "forward hoop providing front-impact bracing",
+        "count_min": 1,
+        "geometric_constraints": {
+          "helmet_clearance_in_min": 3
+        },
+        "material_hint": "AISI 1018 DOM primary tube",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "side_impact_member",
+        "role": "left / right SIS member reacting LC2 side impact at shoulder height",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "AISI 1018 DOM primary tube",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "longitudinal_tie",
+        "role": "roof / fore-aft longitudinal tie between front and rear hoops",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "AISI 1018 DOM primary tube",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "rear_brace",
+        "role": "rear diagonal / cross-brace tying main hoop to rear chassis",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "AISI 1018 DOM primary tube",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "secondary_member",
+        "role": "secondary (1.0 in OD x 0.035 in wall) members / gussets adding stiffness without RCEM primary role",
+        "count_min": 4,
+        "geometric_constraints": {
+          "tube_od_in_min": 1.0,
+          "tube_wall_in_min": 0.035
+        },
+        "material_hint": "AISI 1018 DOM secondary tube",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "engine_mount_bracket",
+        "role": "bracket transmitting engine reaction torque into cage",
+        "count_min": 1,
+        "geometric_constraints": {},
+        "material_hint": "steel plate",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "a_arm_pickup_bracket",
+        "role": "front lower A-arm pickup bracket reacting LC5 endurance fatigue load",
+        "count_min": 4,
+        "geometric_constraints": {
+          "fatigue_F_N_amp": 2000
+        },
+        "material_hint": "steel plate",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "wheelbase 60-72 in, width <= 64 in",
+      "coordinate_system": "X forward, Y transverse, Z up"
+    },
+    "material": {
+      "name": "AISI 1018 DOM steel",
+      "youngs_modulus_GPa": 205,
+      "poissons_ratio": 0.29,
+      "density_kg_m3": 7850,
+      "yield_strength_MPa": 365,
+      "ultimate_tensile_strength_MPa": 440
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "front_impact_6g",
+        "F_N": 15000
+      },
+      {
+        "id": "LC2",
+        "name": "side_impact_4g",
+        "F_N": 10000
+      },
+      {
+        "id": "LC3",
+        "name": "rollover",
+        "vertical_g": 3,
+        "lateral_g": 2
+      },
+      {
+        "id": "LC4",
+        "name": "rock_impact",
+        "F_N": 2500,
+        "application": "side impact structure mid-span"
+      },
+      {
+        "id": "LC5",
+        "name": "fatigue_1e6",
+        "F_N_amp": 2000,
+        "application": "front lower A-arm pickup"
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "all primary and secondary members welded at nodes with representative BS 7608 Class D weld stiffness; engine mount bracket welded; A-arm pickup brackets welded with fatigue-critical fillet welds",
+      "support": "rear wheels fixed in LC1; main hoop base fixed in LC3"
+    },
+    "objective": "pass RCEM equivalent gates and intrusion gates with cage mass under 40 kg",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "cage_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "helmet_intrusion_mm",
+        "rcem_bending_lb",
+        "weld_alt_stress_MPa",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 365,
+        "derivation": "1018 DOM yield",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "cage_intrusion_toward_helmet",
+        "limit_mm": 50,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "rcem_bending_strength",
+        "limit_lb": 19450,
+        "derivation": "RCEM bending-strength",
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "weld_alt_stress",
+        "limit_MPa": 100,
+        "derivation": "BS 7608 Class D",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "cage_mass",
+        "limit_kg": 40,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "welded",
+      "load_path": "longitudinal ties welded into main hoop"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "D"
+      ],
+      "mediated_by": "welded",
+      "load_path": "longitudinal ties welded into front hoop"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "welded",
+      "load_path": "SIS members welded into main hoop"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "welded",
+      "load_path": "SIS members welded into front hoop"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "rear brace welded into main hoop"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "welded",
+      "load_path": "secondary gussets welded into primary members"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "welded",
+      "load_path": "engine mount welded to cage"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "E",
+        "H"
+      ],
+      "mediated_by": "welded",
+      "load_path": "A-arm pickup bracket fatigue-critical weld to rear brace"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Baja-style roll cages are inherently welded tubular assemblies of primary hoops, side-impact members, longitudinal ties, braces, and secondary gussets; RCEM and BS 7608 weld-fatigue gates explicitly require a multi-member welded model.",
+    "speculation_caveats": "Number of secondary members, longitudinal ties, and brace topology are team-selectable; materials, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "benchmark/briefs/single/215_af3_baja_sae_south_africa.json"
+  }
+}

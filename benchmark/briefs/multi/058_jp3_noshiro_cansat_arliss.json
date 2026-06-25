@@ -1,0 +1,267 @@
+{
+  "id": "058_jp3_noshiro_cansat_arliss",
+  "source": {
+    "catalog_ref": "JP3",
+    "year": 2025,
+    "tier": "A+",
+    "original_sample": "benchmark/briefs/single/058_jp3_noshiro_cansat_arliss.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_structure",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary structural chassis of a CanSat to fit a 350 ml beverage-can envelope (OD 66 mm x height 130 mm) and survive 20 G deployment shock in all three axes, delivered as a multi-part assembly because the CanSat chassis is by design a built-up structure composed of an outer shell with an RF window, internal decks hosting FR4 PCBs, captive component mounts for electronics/battery, and a parachute pack interface - all of which participate in the shock pass/fail, component-displacement, and modal-decoupling checks.\n\nAssembly layout. (A) Outer shell: Al 6061-T6 sheet/machined cylindrical shell approx 66 mm OD x 130 mm tall with at least one RF window/slot for the 430 MHz antenna (no full conductive enclosure allowed around antenna). (B) Internal decks: FR4 PCB decks stacked inside the shell, holding GPS, IMU, power, flight computer. (C) Captive component mounts: bracketry retaining battery, parachute pack, or paraglider/wheel axle depending on class, ensuring < 2 mm shift under 20 G. (D) Deployer interface: carrier-rocket deployer rail or ejection-spring interface at the aft end. (E) Antenna window: RF-transparent panel (FR4/plastic) covering the slot for the 430 MHz antenna.\n\nMaterial. Al 6061-T6 (E = 68.9 GPa, Fty = 276 MPa, rho = 2700 kg/m^3); FR4 for decks; polymer / FR4 for RF window.\n\nLoad cases. LC1 (axial 20 G deployment shock). LC2 (lateral Y 20 G). LC3 (lateral Z 20 G).\n\nPass/fail criteria (assembly-level). (R1) Envelope fit <= 66 mm OD. (R2) Envelope height <= 130 mm. (R3) Total mass <= 1050 g (Open class cap). (R4) Max internal component displacement under LC1/LC2/LC3 <= 2.0 mm. (R5) First modal frequency >= 100 Hz (rocket motor burn decouple).\n\nAssembly policy. Envelope fit (R1, R2) is a whole-chassis geometric check on the assembled stack; mass budget (R3) sums all part families; component displacement (R4) depends on captive-mount stiffness and shell-deck coupling; first mode (R5) is the assembled-chassis modal quantity. No part evaluated alone has meaningful pass/fail.\n\nSolver and analysis expectations. Primary: linear static FEM for 20 G loads (R4) with shell elements for outer shell, shell for PCB decks, and RBE2/lumped-mass for electronics. Free-free or deployer-constrained modal for R5. Thermal, fluid, ionizing-radiation NOT required.\n\nDeliverables. STEP AP242 of CanSat chassis assembly, mass budget per family, total mass in g, max bracket stress at 20 G axial in MPa, max component displacement in mm, and first modal frequency in Hz.",
+  "short_prompt": "Design the primary structural chassis of a CanSat to fit a 350 ml beverage-can envelope (OD 66 mm x height 130 mm) and survive 20 G deployment shock in all three axes, delivered as a multi-part assembly: Al 6061-T6 outer shell (E = 68.9 GPa, Fty = 276 MPa, rho = 2700 kg/m^3) with an RF window/slot for a 430 MHz antenna + FR4 PCB internal decks (GPS, IMU, power, flight computer) + captive component mounts (battery, parachute pack, paraglider/wheel) + deployer interface + RF-transparent antenna window.\n\nLoad cases.\n- LC1 axial 20 G deployment shock.\n- LC2 lateral Y 20 G.\n- LC3 lateral Z 20 G.\n\nPass limits: OD <= 66 mm; height <= 130 mm; total mass <= 1050 g (Open class cap); max internal component displacement under LC1/LC2/LC3 <= 2.0 mm; first modal frequency >= 100 Hz (rocket motor burn decouple).",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Small-form-factor CanSat structural chassis as multi-part assembly",
+    "brief": "350 ml beverage-can envelope CanSat: Al outer shell + FR4 decks + captive component mounts + deployer interface + RF window; 20 G deployment shock, <1050 g, 430 MHz telemetry.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "outer_shell",
+        "role": "Al 6061-T6 cylindrical outer shell enclosing the internal stack",
+        "count_min": 1,
+        "geometric_constraints": {
+          "OD_mm_max": 66,
+          "height_mm_max": 130,
+          "material": "Al 6061-T6"
+        }
+      },
+      {
+        "part_id": "B",
+        "name": "internal_deck",
+        "role": "FR4 PCB deck hosting avionics / battery",
+        "count_min": 2,
+        "geometric_constraints": {
+          "material": "FR4"
+        }
+      },
+      {
+        "part_id": "C",
+        "name": "captive_mount",
+        "role": "bracket retaining battery / parachute pack / paraglider riser or wheel axle",
+        "count_min": 3,
+        "geometric_constraints": {
+          "material": "Al 6061-T6 or polymer"
+        }
+      },
+      {
+        "part_id": "D",
+        "name": "deployer_interface",
+        "role": "carrier-rocket deployer rail / ejection-spring interface at the aft end",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "Al 6061-T6"
+        }
+      },
+      {
+        "part_id": "E",
+        "name": "antenna_window",
+        "role": "RF-transparent window/panel covering the 430 MHz antenna slot",
+        "count_min": 1,
+        "geometric_constraints": {
+          "material": "FR4 / polymer"
+        }
+      }
+    ],
+    "assembly_envelope": {
+      "envelope_diameter_mm_max": 66,
+      "envelope_height_mm_max": 130,
+      "RF_window_required": true,
+      "antenna_band_MHz": 430
+    },
+    "material": {
+      "typical": "Al 6061-T6 sheet/machined plus FR4 decks",
+      "properties_Al6061T6": {
+        "youngs_modulus_GPa": 68.9,
+        "yield_strength_MPa": 276,
+        "density_kg_m3": 2700
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "deployment_shock_X",
+        "magnitude_g": 20,
+        "direction": "axial"
+      },
+      {
+        "id": "LC2",
+        "name": "deployment_shock_Y",
+        "magnitude_g": 20,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC3",
+        "name": "deployment_shock_Z",
+        "magnitude_g": 20,
+        "direction": "lateral"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "carrier-rocket deployer rail / ejection spring interface fixed"
+    },
+    "objective": {
+      "minimize": "mass",
+      "total_mass_g_max": 1050
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (shell + decks + mounts + deployer + window)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E)"
+      ],
+      "report_fields": [
+        "total_mass_g",
+        "max_bracket_stress_MPa",
+        "max_component_displacement_mm",
+        "first_modal_frequency_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "envelope_fit",
+        "limit_mm": 66,
+        "derivation": "350 ml beverage can OD",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "envelope_height_mm",
+        "limit_mm": 130,
+        "derivation": "350 ml beverage can height",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "total_mass_g",
+        "limit_g": 1050,
+        "derivation": "Open class mass cap",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "max_component_displacement_mm_at_20g",
+        "limit_mm": 2.0,
+        "derivation": "Captive-mount rigidity requirement",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency_Hz",
+        "limit_Hz": 100,
+        "derivation": "Decouple from rocket motor burn frequency",
+        "applies_to": [
+          "assembly"
+        ],
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell + solid",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "NX Nastran"
+      ],
+      "analysis_types": [
+        "linear static (20 G x3)",
+        "modal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A outer_shell inner wall",
+        "B internal_deck edge"
+      ],
+      "mediated_by": "standoffs or slots",
+      "load_path": "deck inertia reacted into shell under 20 G"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B internal_deck / A shell",
+        "C captive_mount"
+      ],
+      "mediated_by": "bolted/bonded brackets",
+      "load_path": "battery/parachute inertia constrained to < 2 mm shift"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A outer_shell aft",
+        "D deployer_interface"
+      ],
+      "mediated_by": "bolted/bonded joint",
+      "load_path": "carrier-rocket deployment shock input"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A outer_shell slot",
+        "E antenna_window"
+      ],
+      "mediated_by": "bonded/gasketed frame",
+      "load_path": "non-structural; ensures RF transparency at 430 MHz"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Envelope fit, mass, component displacement under deployment shock, and first modal frequency all reference the assembled shell + decks + mounts + deployer. No part evaluated alone has meaningful pass/fail."
+  },
+  "notes": {
+    "why_multi_part_is_inherent": "CanSat structural chassis is the assembly containing electronics, battery, parachute, and payload with captive mounts; the rulebook mass cap and deployment-shock checks are whole-assembly metrics.",
+    "exclusions_explained": {
+      "thermal_analysis": "Short flight, no explicit thermal gradient target in rules.",
+      "fluid_analysis": "Parachute dynamics treated by kinematic sizing, not CFD.",
+      "radiation_analysis": "Sub-orbital flight, not applicable."
+    }
+  },
+  "eval_coverage": [
+    "tight envelope fit across assembled stack",
+    "20 G deployment shock with captive mounts",
+    "first modal frequency above burn band on full chassis",
+    "RF window requirement at shell-window interface"
+  ]
+}

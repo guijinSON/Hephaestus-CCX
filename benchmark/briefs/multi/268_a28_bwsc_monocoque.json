@@ -1,0 +1,483 @@
+{
+  "id": "268_a28_bwsc_monocoque",
+  "source": {
+    "catalog_ref": "A28",
+    "year": 2025,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/268_a28_bwsc_monocoque.json",
+    "multipart_basis": "BWSC Cruiser Class monocoques are built from male/female molds as bonded CFRP sandwich shell halves with discrete hardpoint inserts and bonded bulkheads. The single-body brief treats the whole tub as one laminate; this multipart decomposition splits it into upper and lower shell halves, front/rear bulkheads, side-impact beams, the main-hoop interface pads, the four seatbelt hardpoint inserts per seat, and the chassis mount inserts. Speculative at the level of ply-schedule partition; all load magnitudes, material properties, and Tsai-Wu / core-shear / mass / modal thresholds are preserved."
+  },
+  "domain": "automotive_structural",
+  "part_class": "solar_vehicle_carbon_monocoque_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the passenger-cell carbon-fiber monocoque for a 2025 Bridgestone World Solar Challenge Cruiser Class vehicle, compliant with international solar-car benchmark 2025 Regulations v1.0. Vehicle gross mass with 2 occupants and battery 500 kg. Solar array area <= 6 m^2. Battery energy <= 11 MJ (3.056 kWh). Monocoque is a carbon/epoxy prepreg sandwich laminate with Nomex honeycomb core; outer skin [45 / 0 / -45 / 90]s laid up as 0.25 mm plies, core thickness 20 mm, inner skin [45 / 0 / -45 / 90]s. Material: carbon/epoxy T700S/epoxy (E1 = 135 GPa, E2 = 10 GPa, strength L = 1500 MPa, T = 50 MPa, density 1600 kg/m^3); Nomex honeycomb core density 48 kg/m^3, out-of-plane compressive strength 2.4 MPa, out-of-plane shear strength 1.2 MPa. Monocoque bounding 2500 mm (length) x 1600 mm (width) x 1100 mm (height). Integral 2-point anchor pads for roll bar stubs, 4 seat belt anchorages per seat. Crashworthiness / international solar-car benchmark 2025 required load cases: (R1) Rollover: vehicle shall support 1.0 x vehicle mass x g = 1.0 x 500 x 9.81 = 4,905 N applied at the top of the roll bar stubs (the monocoque transfers this into the A-pillar/roof structure); max laminate Tsai-Wu index <= 1.0 and core shear stress <= 1.2 MPa. (R2) Side impact: 3 g lateral applied at seat belt anchor heights on both seats, 3 x 500 x 9.81 = 14,715 N total distributed 50/50 to the two seats; max Tsai-Wu index <= 1.0. (R3) Frontal: 10 g forward applied to the full 500 kg at the front-bulkhead plane, 49,050 N; max Tsai-Wu <= 1.0; peak deceleration at occupant centerline <= 25 g (not a monocoque stress check but a crash simulation output). (R4) Occupant-belt loads per FMVSS 210 analog: 13.5 kN pulled on upper lap belt and 13.5 kN pulled on shoulder belt simultaneously at each seat; max Tsai-Wu at anchor interface <= 1.0. (R5) Monocoque mass <= 50 kg. (R6) First modal frequency hard-mounted at 4 chassis mount points >= 30 Hz. Primary verification: laminate-composite structural FEA (linear static for R1, R2, R4; explicit dynamics recommended for R3). Secondary: modal for R6. Thermal, fluid, radiation NOT required. Deliverables: STEP AP242 outer mold-line + laminate schedule, and a report listing monocoque mass in kg, max Tsai-Wu per load case, core shear stress in MPa, first modal frequency in Hz.\n\n--- ASSEMBLY RECONFIGURATION ---\nBWSC Cruiser Class monocoques are manufactured as a bonded assembly of sandwich shell halves with discrete hardpoint inserts; the single-body framing is a ply-schedule simplification, not a manufacturing reality. Speculated families: (A) upper shell half (CFRP sandwich canopy + roof) containing the (J) roll-hoop interface pads; (B) lower shell half (CFRP sandwich floor + side pods) containing the seatbelt hardpoints and chassis-mount inserts; (C) front bulkhead (CFRP sandwich, crash-loaded by LC3); (D) rear bulkhead (CFRP sandwich, closes cell aft of battery); (E) side-impact structure left+right (CFRP beam laminates bonded to B side walls -- primary LC2 path); (F) seatbelt anchor hardpoints (8 total: 4 per seat x 2 seats, Al 7075 or Ti bonded-in insert); (G) chassis mount inserts (4x, Al 7075 bonded-in, support modal LC5); (H) harness/occupant hardpoint reinforcement pads (local ply drop-offs); (J) main roll-hoop interface pad (laminate ramp + titanium insert at A-B joint line, carries LC1). Interfaces: A<->B perimeter bond (continuous structural adhesive); C<->A+B bonded at forward split line (carries LC3); D<->A+B bonded aft; E<->B bonded along sides; F<->B bonded-in inserts at belt anchor points; G<->B bonded-in at chassis-mount positions; H<->B localized ply doublers; J<->A+B roll-hoop interface. FEM verification runs on the assembled model ONLY per fem_check_policy=assembled_only; per-part Tsai-Wu is reported but the governing check is at the assembled level. Inter-part DCR across bonded interfaces <= 1.0 using adhesive peel+shear allowables. Ply schedule, material properties, load magnitudes, Tsai-Wu<=1.0 thresholds, core shear allowable (1.2 MPa), mass cap (50 kg) and modal floor (30 Hz) are preserved verbatim from the single-body brief.",
+  "short_prompt": "Design the passenger-cell carbon-fiber monocoque for a 2025 Bridgestone World Solar Challenge Cruiser Class vehicle as a multi-part bonded assembly, compliant with international solar-car benchmark 2025 Regulations v1.0. Vehicle GVM with 2 occupants and battery 500 kg; solar array area <= 6 m^2; battery energy <= 11 MJ (3.056 kWh).\n\nCarbon/epoxy prepreg sandwich with Nomex honeycomb core: outer skin [45/0/-45/90]s 0.25 mm plies, 20 mm core, inner skin [45/0/-45/90]s. T700S/epoxy (E1 = 135 GPa, E2 = 10 GPa, L strength 1500 MPa, T 50 MPa, density 1600 kg/m^3). Nomex core density 48 kg/m^3, out-of-plane compressive 2.4 MPa, shear 1.2 MPa. Bounding 2500 x 1600 x 1100 mm. Integral 2-point roll bar anchors; 4 seatbelt anchors per seat.\n\nLC1 rollover 1.0 x mass x g = 4905 N at roll bar stub tops; max Tsai-Wu <= 1.0, core shear <= 1.2 MPa. LC2 side 3 g = 14,715 N at belt anchor heights (50/50 across 2 seats); Tsai-Wu <= 1.0. LC3 frontal 10 g = 49,050 N at front bulkhead; Tsai-Wu <= 1.0; peak occupant decel <= 25 g. LC4 belts per FMVSS 210 analog 13.5 kN lap + 13.5 kN shoulder simultaneously; Tsai-Wu <= 1.0. Mass <= 50 kg. First modal frequency hard-mounted at 4 chassis mounts >= 30 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "explicit_dynamics",
+        "reason": "Frontal 10 g crash sim for occupant-decel (R3) is an explicit dynamics problem.",
+        "examples": [
+          "LS-DYNA",
+          "Abaqus Explicit",
+          "Radioss"
+        ]
+      },
+      {
+        "tool": "laminate_tsai_wu_post",
+        "reason": "Tsai-Wu indices are computed per ply post-FEA from element results, not by an FEA solver's built-in von-Mises machinery.",
+        "examples": [
+          "ANSYS ACP Post",
+          "ESAComp"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "BWSC 2025 Cruiser Class CFRP monocoque (multi-part bonded assembly)",
+    "brief": "T700S/epoxy + Nomex honeycomb sandwich passenger cell, 500 kg GVM; passes rollover, side impact, frontal 10 g, belt anchor FMVSS 210 analog. Multi-part: upper shell (A), lower shell (B), front bulkhead (C), rear bulkhead (D), side-impact structures (E x2), belt hardpoints (F x8), chassis mount inserts (G x4), harness reinforcement pads (H), main-hoop interface pad (J). FEM assembled-only; DCR <= 1.0.",
+    "geometric_constraints": {
+      "bounding_box_mm": "2500 x 1600 x 1100",
+      "outer_skin_layup": "[45/0/-45/90]s",
+      "inner_skin_layup": "[45/0/-45/90]s",
+      "ply_thickness_mm": 0.25,
+      "core_thickness_mm": 20,
+      "occupants": 2,
+      "solar_array_area_m2_max": 6,
+      "battery_energy_MJ_max": 11
+    },
+    "material": {
+      "skin": {
+        "name": "T700S carbon/epoxy",
+        "E1_GPa": 135,
+        "E2_GPa": 10,
+        "long_strength_MPa": 1500,
+        "trans_strength_MPa": 50,
+        "density_kg_m3": 1600
+      },
+      "core": {
+        "name": "Nomex honeycomb",
+        "density_kg_m3": 48,
+        "out_of_plane_compressive_strength_MPa": 2.4,
+        "out_of_plane_shear_strength_MPa": 1.2
+      },
+      "insert_material": "Al 7075-T6 (F, G) or Ti-6Al-4V at J",
+      "adhesive": "structural film adhesive (e.g. Hysol EA 9696), peel 5 kN/m, shear 35 MPa"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "rollover_1g",
+        "force_N": 4905,
+        "direction": "-Z at roll bar stubs",
+        "applied_to": "J main-hoop interface pad"
+      },
+      {
+        "id": "LC2",
+        "name": "side_impact_3g",
+        "force_N": 14715,
+        "direction": "+Y at belt anchors",
+        "applied_to": "E side-impact structures + F belt hardpoints"
+      },
+      {
+        "id": "LC3",
+        "name": "frontal_10g",
+        "force_N": 49050,
+        "direction": "-X at front bulkhead",
+        "applied_to": "C front bulkhead",
+        "peak_occupant_decel_g_max": 25
+      },
+      {
+        "id": "LC4",
+        "name": "belt_loads_FMVSS_210",
+        "lap_belt_N": 13500,
+        "shoulder_belt_N": 13500,
+        "applied_to": "F belt hardpoints (4 per seat x 2 seats)"
+      },
+      {
+        "id": "LC5",
+        "name": "modal",
+        "description": "hard-mounted at G chassis mount inserts; first modal frequency >= 30 Hz"
+      }
+    ],
+    "boundary_conditions": {
+      "mounting": "4 chassis mount points on G fixed",
+      "loads": "point or distributed at belt anchors F, roll bar stubs J, and front bulkhead C",
+      "bonded_joints": "A<->B, C-to-shells, D-to-shells, E-to-B, inserts F/G/J all modeled as tied surfaces with adhesive check post-process"
+    },
+    "objective": {
+      "minimize": "monocoque_mass_kg",
+      "design_heuristic": "target assembled mass <= 50 kg"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body (A + B + C + D + E x2 + F x8 + G x4 + H + J)",
+      "body_metadata": [
+        "part_family (A|B|C|D|E|F|G|H|J)",
+        "instance_index",
+        "laminate_schedule_ref",
+        "insert_material_and_bolt"
+      ],
+      "report_fields": [
+        "monocoque_mass_kg",
+        "tsai_wu_LC1",
+        "tsai_wu_LC2",
+        "tsai_wu_LC3",
+        "tsai_wu_LC4",
+        "max_core_shear_stress_MPa",
+        "first_modal_frequency_Hz",
+        "connection_DCR_max",
+        "per_part_max_tsai_wu",
+        "adhesive_peel_util_max",
+        "adhesive_shear_util_max"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "upper_shell_half",
+        "role": "canopy + roof carrying rollover load path J and upper perimeter of belt anchors F",
+        "count_min": 1,
+        "geometric_constraints": {
+          "projected_footprint_mm": "~2500 x 1600",
+          "construction": "CFRP sandwich (outer skin [45/0/-45/90]s, 20 mm Nomex core, inner skin [45/0/-45/90]s)",
+          "opening_for_canopy_mm": "1800 x 900",
+          "bond_flange_width_mm_min": 30
+        },
+        "material_hint": "T700S/epoxy + Nomex honeycomb",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "lower_shell_half",
+        "role": "floor + side pods carrying seatbelt hardpoints, chassis-mount inserts, and side-impact structures; primary LC2 and LC4 path",
+        "count_min": 1,
+        "geometric_constraints": {
+          "projected_footprint_mm": "~2500 x 1600",
+          "construction": "CFRP sandwich (same schedule as A) with local ply build-ups under F/G inserts",
+          "bond_flange_width_mm_min": 30
+        },
+        "material_hint": "T700S/epoxy + Nomex honeycomb",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "front_bulkhead",
+        "role": "forward bulkhead that receives the LC3 10 g frontal load and distributes it into A+B shells",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "1400 x 900 x sandwich (20 mm core)",
+          "ply_build_up": "doubled skin plies at footwell region (16 plies)",
+          "crush_mode": "progressive skin buckling into honeycomb crush"
+        },
+        "material_hint": "T700S/epoxy + Nomex honeycomb",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "rear_bulkhead",
+        "role": "rear bulkhead closing the passenger cell aft of the battery",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_size_mm": "1500 x 900 x sandwich (20 mm core)",
+          "penetrations_for": "battery harness, rear-suspension pickups"
+        },
+        "material_hint": "T700S/epoxy + Nomex honeycomb",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "side_impact_structure",
+        "role": "CFRP beam laminates bonded to B side walls; primary LC2 side-impact path",
+        "count_min": 2,
+        "geometric_constraints": {
+          "length_mm": 1800,
+          "cross_section_mm": "120 x 80 channel",
+          "construction": "solid CFRP laminate or sandwich with local ply build-up"
+        },
+        "material_hint": "T700S/epoxy",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "seatbelt_anchor_hardpoint",
+        "role": "bonded-in insert receiving FMVSS 210 analog 13.5 kN belt loads",
+        "count_min": 8,
+        "geometric_constraints": {
+          "nominal_size_mm": "60 x 60 x 15",
+          "material": "Al 7075-T6 bonded into B with film adhesive",
+          "bolt_interface": "M10 lap + M10 shoulder per anchor"
+        },
+        "material_hint": "Al 7075-T6",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "chassis_mount_insert",
+        "role": "bonded-in insert carrying the 4-point chassis mount for modal LC5 and ground-handling loads",
+        "count_min": 4,
+        "geometric_constraints": {
+          "nominal_size_mm": "100 x 100 x 20",
+          "material": "Al 7075-T6 bonded into B",
+          "bolt_interface": "M12 Grade 10.9"
+        },
+        "material_hint": "Al 7075-T6",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "harness_reinforcement_pad",
+        "role": "local ply doublers where the occupant harness attaches, distributing F insert loads into the surrounding skin",
+        "count_min": 8,
+        "geometric_constraints": {
+          "pad_area_mm2_min": 20000,
+          "additional_plies": 6,
+          "construction": "CFRP additional plies laid up on B inner skin"
+        },
+        "material_hint": "T700S/epoxy additional plies",
+        "speculation": true
+      },
+      {
+        "part_id": "J",
+        "name": "main_hoop_interface_pad",
+        "role": "laminate ramp + titanium insert at the A-B joint line where the roll-bar stubs anchor; carries LC1",
+        "count_min": 2,
+        "geometric_constraints": {
+          "insert_size_mm": "80 x 80 x 25",
+          "insert_material": "Ti-6Al-4V",
+          "ply_build_up": "titanium bonded into A+B with local laminate ramp (12+ plies)"
+        },
+        "material_hint": "Ti-6Al-4V + T700S/epoxy",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_length_mm": 2500,
+      "overall_width_mm": 1600,
+      "overall_height_mm": 1100,
+      "coordinate_system": "X forward, Y left-right, Z vertical",
+      "monocoque_mass_cap_kg": 50
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1a",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_max_index",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R1b",
+        "type": "structural_analysis",
+        "metric": "max_core_shear_stress",
+        "limit_MPa": 1.2,
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_max_index",
+        "limit": 1.0,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_max_index",
+        "limit": 1.0,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "tsai_wu_max_index",
+        "limit": 1.0,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<"
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "monocoque_mass",
+        "limit_kg": 50,
+        "applies_to": [
+          "assembled_design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "vibration_analysis",
+        "metric": "first_modal_frequency",
+        "limit_Hz": 30,
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across bonded interfaces (IF1..IF9) <= 1.0 under worst-case load, using adhesive peel and shear allowables (5 kN/m peel, 35 MPa shear).",
+        "metric": "max_DCR across IF1..IF9",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Insert-to-skin bond (F, G, J) shall not exceed peel or shear allowable under LC1/LC2/LC4.",
+        "metric": "max adhesive peel/shear utilization at F/G/J",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "laminated shell (e.g. S4R with composite layup) + solid for inserts F/G/J",
+      "mesh_size_mm_in_critical_regions": 15,
+      "solver_hints": [
+        "ANSYS ACP",
+        "Abaqus Standard / Explicit"
+      ],
+      "analysis_types": [
+        "linear static (LC1, LC2, LC4)",
+        "explicit dynamics (LC3)",
+        "modal (LC5)"
+      ],
+      "connection_modeling": [
+        "A<->B perimeter bond as tied contact with cohesive zone optional",
+        "bonded inserts F/G/J as tied solid-to-shell with adhesive peel+shear post-check",
+        "honeycomb core as separate solid or via sandwich-shell formulation"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A_upper_shell",
+        "B_lower_shell"
+      ],
+      "mediated_by": "continuous perimeter structural adhesive bond (Hysol EA 9696 or equivalent)",
+      "load_path": "all rollover LC1 at J is shared between A and B through this seam"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "C_front_bulkhead",
+        "A+B_shells"
+      ],
+      "mediated_by": "bonded with perimeter adhesive and local ply wrap",
+      "load_path": "LC3 10 g frontal load distributed from C into A and B"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "D_rear_bulkhead",
+        "A+B_shells"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "rear cell closure; minor share of LC3 rebound"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "E_side_impact_structure (left/right)",
+        "B_lower_shell"
+      ],
+      "mediated_by": "bonded along sill line",
+      "load_path": "LC2 side-impact path into B floor"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "F_seatbelt_hardpoint (8x)",
+        "B_lower_shell"
+      ],
+      "mediated_by": "bonded-in Al 7075 insert with film adhesive",
+      "load_path": "LC4 13.5+13.5 kN belt loads into B"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "G_chassis_mount_insert (4x)",
+        "B_lower_shell"
+      ],
+      "mediated_by": "bonded-in Al 7075 insert",
+      "load_path": "chassis mount BC for LC5 modal and ground-handling loads"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "H_reinforcement_pad",
+        "B_lower_shell inner skin"
+      ],
+      "mediated_by": "co-cured ply doublers",
+      "load_path": "distributes F insert loads into surrounding skin"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "J_main_hoop_interface_pad",
+        "A_upper_shell + B_lower_shell"
+      ],
+      "mediated_by": "bonded Ti-6Al-4V insert with local laminate ramp",
+      "load_path": "LC1 rollover 4.9 kN from roll-bar stubs into shells"
+    },
+    {
+      "id": "IF9",
+      "between": [
+        "A_upper_shell + B_lower_shell",
+        "C_front_bulkhead/D_rear_bulkhead (bulkhead tie)"
+      ],
+      "mediated_by": "structural adhesive + ply overlap",
+      "load_path": "shear tie between shell perimeter and bulkheads maintains cell integrity under LC2"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "The monocoque is a bonded assembly; load paths at bonded flanges, discrete inserts, and bulkhead-to-shell junctions can only be correctly resolved with multi-body FEA. Single-body laminate FEA cannot assess the adhesive peel/shear that gates real-world failure.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Real BWSC monocoques are demolded as upper and lower halves, then bonded with secondary-bonded bulkheads and bonded-in hardpoint inserts; the ply schedule alone does not capture the bonded-interface stress state.",
+    "speculation_caveats": "Exact split-line geometry, ply build-up map, and insert material selection are team-specific. Counts here reflect typical 2-seat Cruiser practice; no additional regulation clauses are cited.",
+    "exclusions_explained": {
+      "thermal_analysis": "Cabin and array thermal separate.",
+      "fluid_analysis": "Not applicable.",
+      "radiation_analysis": "Not applicable.",
+      "buckling_analysis": "Sandwich panel skins evaluated via Tsai-Wu."
+    },
+    "original_sample_preserved_at": "benchmark/briefs/single/268_a28_bwsc_monocoque.json"
+  },
+  "rulebook_citations": {}
+}

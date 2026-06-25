@@ -1,0 +1,486 @@
+{
+  "id": "069_jp14_unisec_hybrid_rocket",
+  "source": {
+    "catalog_ref": "JP14",
+    "year": 2025,
+    "tier": "A+",
+    "original_sample": "benchmark/briefs/single/069_jp14_unisec_hybrid_rocket.json",
+    "multipart_basis": "Decomposition inferred from UNISEC/student hybrid-rocket practice: ogive nose cone, payload bay tube, recovery bay with bulkhead, N2O oxidizer tank shell with aft/forward domes, injector/bulkhead, combustion chamber with fuel-grain liner, graphite nozzle, fin can with 3-4 fins, and motor mount/thrust plate. Load magnitudes, material properties, and pass/fail thresholds inherit verbatim from the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "hybrid_rocket_airframe_and_oxidizer_tank_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the airframe and oxidizer (N2O) tank of a student hybrid rocket for a university hybrid-rocket benchmark. The oxidizer tank is filled with self-pressurizing nitrous oxide (N2O) and must be rated for a maximum expected operating pressure of 6 MPa (60 bar) with a burst safety factor of 2.0 (burst pressure >= 12 MPa per ASME-style pressure-vessel practice for student rockets). The airframe body tube ID is 100 mm and total rocket length approximately 2.5 m. The rocket targets an apogee in the 1-2 km range with a GLOW (gross lift-off weight) of approximately 10 kg. The airframe must survive (a) peak axial thrust of approximately 400 N during motor burn (peak G at burnout approximately 20 g axial), (b) a lateral gust of 10 g, and (c) recovery deployment shock of 15 g axial. Recovery descent rate under main parachute must be at least 1 m/s descent and no faster than 10 m/s (competition cap) to protect ground personnel. The N2O tank must undergo a hydrostatic proof test at 1.5 x MEOP = 9 MPa with no permanent deformation and no leakage before flight. Tank material is typically 6061-T6 aluminum (yield 276 MPa) or a CFRP-wrapped aluminum liner. For the 6 MPa MEOP in a 100 mm ID Al 6061-T6 tank, hoop stress = P*r/t must stay below 276/1.25 = 221 MPa (yield FoS 1.25), so minimum wall t >= (6 * 50) / 221 = 1.36 mm; add ultrasonic-thickness margin and set 2.0 mm nominal. Primary verification is structural FEA (linear static on airframe + tank) plus a pressure-vessel check at proof pressure 9 MPa. Vibration modal analysis on the airframe should confirm the first longitudinal mode is above 50 Hz to decouple from motor burn oscillations. Thermal, fluid (combustion chamber CFD not needed at structural gate), and radiation analyses are explicitly NOT required at this design gate. Deliverables: STEP AP242 of the airframe + tank, a mass budget, and a report listing tank wall thickness in mm, hoop stress at 6 MPa in MPa, first longitudinal mode in Hz, airframe buckling load factor at 20 g axial, and proof-test residual deformation in mm.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis rocket is delivered as a stacked-stage multi-part assembly built around 100 mm body tubes. The speculative part decomposition, listed nose-to-tail, is: (A) ogive nose cone, (B) payload/avionics bay tube with forward bulkhead, (C) recovery bay coupler and bulkhead carrying the main-parachute shock load, (D) N2O oxidizer tank shell with aft/forward domes, (E) tank-to-chamber injector bulkhead, (F) combustion chamber housing with fuel-grain casing liner, (G) graphite nozzle housed in an aluminium retainer, (H) fin can with 3-4 trapezoidal fins bonded or bolted to aft body, and (I) motor-mount thrust plate bolted to the fin can. Inter-family interfaces: nose-cone-to-payload-bay press_fit with shear pins, payload-bay-to-recovery-bay threaded, tank-to-coupler bolted through bulkhead, tank-domes-to-shell welded, chamber-to-injector threaded, nozzle-to-chamber press_fit with retainer, fin-can-to-motor-mount bolted. FEM verification runs on the ASSEMBLED model only — per-part stress is reported but does not gate pass/fail. Inter-part DCR at tank-dome weld, tank-bulkhead bolts, and fin-can joints must be ≤ 1.0 under MEOP + 20 g axial combined load. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design the airframe and N2O oxidizer tank of a student hybrid rocket for a university hybrid-rocket benchmark, delivered as a stacked-stage multi-part assembly around a 100 mm body tube: ogive nose cone + payload/avionics bay tube with forward bulkhead + recovery bay coupler and bulkhead + N2O tank shell with aft/forward domes + tank-to-chamber injector bulkhead + combustion chamber housing + graphite nozzle in an aluminum retainer + fin can with 3-4 fins + motor-mount thrust plate. Total length ~2.5 m; GLOW ~10 kg; target apogee 1-2 km.\n\nTank: self-pressurizing N2O, MEOP 6 MPa (60 bar), burst SF 2.0 => burst >= 12 MPa. Material typically 6061-T6 (yield 276 MPa), hoop stress <= 276/1.25 = 221 MPa gives minimum wall t >= (6 * 50)/221 = 1.36 mm with 2.0 mm nominal. Hydrostatic proof at 1.5 x MEOP = 9 MPa with no permanent deformation and no leakage.\n\nLoad cases.\n- LC1 peak axial thrust ~400 N during burn (peak ~20 g axial at burnout).\n- LC2 lateral gust 10 g.\n- LC3 recovery deployment shock 15 g axial.\n\nRecovery descent under main parachute between 1 m/s and 10 m/s. Airframe first longitudinal mode > 50 Hz. Inter-part DCR at tank-dome weld, tank-bulkhead bolts, and fin-can joints <= 1.0 under MEOP + 20 g axial combined.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis",
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "pressure_vessel_code_check",
+        "reason": "ASME-style hoop stress and burst SF are analytical code checks paired with the FEA.",
+        "examples": [
+          "ASME BPVC Section VIII hand calc"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Student hybrid rocket: airframe + N2O tank (multi-part assembly)",
+    "brief": "Design a 100 mm ID, 2.5 m long hybrid rocket as an assembly of nose cone, payload bay, recovery bay, N2O tank shell with domes, injector bulkhead, combustion chamber, nozzle, fin can, and motor mount. N2O tank at 6 MPa MEOP, burst SF 2, 9 MPa proof test, apogee 1-2 km, GLOW ~ 10 kg. FEM verification at assembled level only; connection DCR ≤ 1.0 under governing load case.",
+    "geometric_constraints": {
+      "body_tube_ID_mm": 100,
+      "rocket_length_m_approx": 2.5,
+      "GLOW_kg_approx": 10,
+      "apogee_km_range": [
+        1,
+        2
+      ]
+    },
+    "material": {
+      "tank": "Al 6061-T6 or CFRP-wrapped Al liner",
+      "Al6061_T6": {
+        "E_GPa": 68.9,
+        "yield_MPa": 276
+      }
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "tank_MEOP",
+        "magnitude_MPa": 6,
+        "description": "N2O self-pressurization"
+      },
+      {
+        "id": "LC2",
+        "name": "tank_proof",
+        "magnitude_MPa": 9,
+        "description": "1.5 x MEOP hydrostatic proof"
+      },
+      {
+        "id": "LC3",
+        "name": "tank_burst",
+        "magnitude_MPa": 12,
+        "description": "2 x MEOP burst check"
+      },
+      {
+        "id": "LC4",
+        "name": "airframe_axial_burnout",
+        "magnitude_g": 20,
+        "direction": "axial"
+      },
+      {
+        "id": "LC5",
+        "name": "lateral_gust",
+        "magnitude_g": 10,
+        "direction": "lateral"
+      },
+      {
+        "id": "LC6",
+        "name": "recovery_shock",
+        "magnitude_g": 15,
+        "direction": "axial"
+      }
+    ],
+    "boundary_conditions": {
+      "tank": "bulkhead fixed",
+      "airframe": "motor mount fixed during burn"
+    },
+    "objective": {
+      "minimize": "dry_mass"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "report_fields": [
+        "tank_wall_thickness_mm",
+        "hoop_stress_at_6MPa_MPa",
+        "first_long_mode_Hz",
+        "buckling_load_factor_LC4",
+        "proof_test_residual_mm",
+        "assembly_deflection_mm",
+        "connection_DCR",
+        "per_part_max_stress_MPa",
+        "tank_dome_weld_SF"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "ogive nose cone",
+        "role": "aerodynamic fairing at rocket top, separates under drogue recovery",
+        "count_min": 1,
+        "geometric_constraints": {
+          "base_diameter_mm": 100,
+          "length_mm_range": [
+            200,
+            300
+          ],
+          "wall_thickness_mm_range": [
+            2.0,
+            4.0
+          ]
+        },
+        "material_hint": "CFRP layup or ABS 3D-printed shell",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "payload/avionics bay tube",
+        "role": "houses altimeter, GPS telemetry, batteries; provides separation plane for drogue deployment",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tube_od_mm": 102,
+          "tube_id_mm": 100,
+          "length_mm_range": [
+            300,
+            500
+          ],
+          "wall_thickness_mm_range": [
+            1.5,
+            2.5
+          ]
+        },
+        "material_hint": "CFRP wound tube or filament-wound fibreglass",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "recovery bay bulkhead with coupler",
+        "role": "anchors parachute shock cord, transfers 15 g deployment shock into airframe via eyebolt",
+        "count_min": 2,
+        "geometric_constraints": {
+          "bulkhead_diameter_mm": 100,
+          "plate_thickness_mm_range": [
+            4,
+            8
+          ],
+          "eyebolt_hole_diameter_mm": 8
+        },
+        "material_hint": "Al 7075-T6 plate with welded eyebolt, kevlar shock cord",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "N2O oxidizer tank shell with domes",
+        "role": "self-pressurizing N2O pressure vessel, holds 6 MPa MEOP, must pass 9 MPa proof and 12 MPa burst",
+        "count_min": 1,
+        "geometric_constraints": {
+          "tank_id_mm": 100,
+          "wall_thickness_mm_min": 2.0,
+          "wall_thickness_mm_nominal": 2.0,
+          "tank_length_mm_range": [
+            500,
+            900
+          ],
+          "dome_shape": "2:1 elliptical or hemispherical"
+        },
+        "material_hint": "Al 6061-T6 seamless tube with welded end domes; yield 276 MPa, FoS 1.25",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "injector bulkhead",
+        "role": "partitions tank aft dome from combustion chamber; carries main injector orifice plate",
+        "count_min": 1,
+        "geometric_constraints": {
+          "bulkhead_diameter_mm": 100,
+          "plate_thickness_mm_range": [
+            6,
+            12
+          ],
+          "orifice_count_range": [
+            4,
+            16
+          ],
+          "orifice_diameter_mm_range": [
+            1.5,
+            3.5
+          ]
+        },
+        "material_hint": "Al 6061-T6 machined, sealed with Viton O-ring",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "combustion chamber housing with fuel-grain liner",
+        "role": "contains HTPB/paraffin fuel grain, withstands chamber pressure approx 4-6 MPa",
+        "count_min": 1,
+        "geometric_constraints": {
+          "chamber_id_mm": 80,
+          "chamber_wall_thickness_mm_range": [
+            3.0,
+            5.0
+          ],
+          "length_mm_range": [
+            300,
+            600
+          ],
+          "liner_thickness_mm_range": [
+            3,
+            6
+          ]
+        },
+        "material_hint": "Al 6061-T6 chamber with phenolic or graphite liner",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "graphite nozzle in aluminium retainer",
+        "role": "accelerates combustion products, sets throat area and expansion ratio",
+        "count_min": 1,
+        "geometric_constraints": {
+          "throat_diameter_mm_range": [
+            12,
+            25
+          ],
+          "exit_diameter_mm_range": [
+            35,
+            70
+          ],
+          "retainer_wall_thickness_mm_range": [
+            4,
+            8
+          ]
+        },
+        "material_hint": "graphite throat insert in Al 6061-T6 retainer",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "fin can with 3-4 trapezoidal fins",
+        "role": "provides aerodynamic stability and reacts lateral gust loads into body",
+        "count_min": 3,
+        "geometric_constraints": {
+          "fin_root_chord_mm_range": [
+            150,
+            250
+          ],
+          "fin_tip_chord_mm_range": [
+            60,
+            120
+          ],
+          "fin_thickness_mm_range": [
+            3,
+            6
+          ],
+          "fin_sweep_deg_range": [
+            20,
+            45
+          ]
+        },
+        "material_hint": "G10 fibreglass or CFRP laminate, bonded and bolted to aft body",
+        "speculation": true
+      },
+      {
+        "part_id": "I",
+        "name": "motor-mount thrust plate",
+        "role": "transfers peak 400 N thrust / 20 g axial into fin can and airframe",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plate_diameter_mm": 100,
+          "plate_thickness_mm_range": [
+            5,
+            10
+          ],
+          "bolt_circle_diameter_mm": 80
+        },
+        "material_hint": "Al 7075-T6 machined, bolted to fin can with M5 bolts",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox_mm": {
+        "diameter": 102,
+        "length": 2500
+      },
+      "coordinate_system": "origin at nose tip, X along rocket axis toward nozzle"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "hoop_stress_at_MEOP_MPa",
+        "limit_MPa": 221,
+        "derivation": "Al 6061-T6 yield 276 / FoS 1.25",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "proof_test_residual_deformation_mm",
+        "limit_mm": 0.1,
+        "derivation": "No permanent deformation after 9 MPa proof",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "burst_pressure_SF",
+        "limit": 2.0,
+        "derivation": "Burst >= 2 x MEOP",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor_LC4",
+        "limit": 1.5,
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_long_mode_Hz",
+        "limit_Hz": 50,
+        "applies_to": [
+          "design"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_asm1",
+        "description": "DCR at tank dome-to-shell welds, tank-bulkhead bolted interface, and fin-can thrust-plate bolts ≤ 1.0 under combined LC1+LC4 (MEOP plus 20 g axial).",
+        "metric": "max DCR across IF1..IF8",
+        "threshold": 1.0,
+        "scope": "assembled_only",
+        "operator": "<="
+      },
+      {
+        "id": "R_asm2",
+        "description": "Tank-shell-to-dome circumferential weld must maintain SF >= 1.5 on ultimate against burst pressure 12 MPa, evaluated on assembled model with weld-reduction factor.",
+        "metric": "tank_dome_weld_SF_on_ultimate",
+        "threshold": 1.5,
+        "scope": "assembled_only",
+        "operator": ">="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell (tank) + shell/solid (airframe)",
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling",
+        "modal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "Nose cone seats into payload-bay coupler with 2-4 plastic shear pins, separates under drogue event"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "threaded",
+      "load_path": "Payload bay threads onto recovery-bay bulkhead; shock cord eyebolt anchors 15 g deployment shock"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "Recovery bulkhead bolts to forward tank dome via bolt circle; transfers axial thrust back to tank"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "D",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "Tank aft dome welded circumferentially to tank shell; injector bulkhead bolted to dome flange"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "E",
+        "F"
+      ],
+      "mediated_by": "threaded",
+      "load_path": "Injector bulkhead threaded into combustion chamber housing, sealed with O-ring"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "F",
+        "G"
+      ],
+      "mediated_by": "press_fit",
+      "load_path": "Graphite nozzle press-fit into Al retainer; retainer bolted to aft chamber flange"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "F",
+        "H"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "Fin can bonded with epoxy to aft body tube around combustion chamber; transfers fin lateral loads into body"
+    },
+    {
+      "id": "IF8",
+      "between": [
+        "H",
+        "I"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "Motor-mount thrust plate bolted to fin can inner ring with M5 bolts; carries 400 N peak thrust"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Rocket structural integrity depends on tank-bulkhead-coupler interactions and fin-can thrust-plate load transfer; per-part pressure-vessel hand calcs verify R1-R3 but the airframe buckling, modal, and combined-load DCR checks only make sense on the assembled model.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Student hybrid rockets are built as stacked removable stages for servicing, grain-recasting, and recovery packing; monolithic body construction is impractical at this scale and precludes the required pressure-vessel code inspection of the N2O tank.",
+    "speculation_caveats": "parts[] counts, materials, and dimensional ranges reflect typical UNISEC/NOSHIRO/Space Camp designs and are not drawn from a specific rulebook. Chamber and nozzle throat sizing are illustrative; actual values follow motor-specific design.",
+    "original_sample_preserved_at": "benchmark/briefs/single/069_jp14_unisec_hybrid_rocket.json"
+  }
+}

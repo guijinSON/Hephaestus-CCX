@@ -1,0 +1,397 @@
+{
+  "id": "174_md8_asme_ishow",
+  "source": {
+    "catalog_ref": "MD8",
+    "year": 2026,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/174_md8_asme_ishow.json",
+    "multipart_basis": "Decomposition mirrors double-wall milk-chilling tank construction: 304 SS inner vessel, polyurethane foam insulation ring, outer stainless/painted-steel skin, hinged insulated lid, evaporator coil pack, compressor-condenser unit bay, drain valve + drip tray + lid hinge."
+  },
+  "domain": "medical_public_health",
+  "part_class": "milk_chilling_tank_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a smallholder electric milk-chilling tank for a medtech/public-health deployment, targeting a 100 L batch of freshly milked cow milk at 35 C that must be cooled to 4 C within 3 hours and held at 4 C +/- 1 C for up to 24 hours at a site ambient of 30 C. The tank is a cylindrical 304 stainless steel double-wall vessel with 100 L internal volume, internal dimensions diameter 450 mm x height 620 mm, 1.5 mm inner wall thickness, 50 mm polyurethane foam insulation between walls (thermal conductivity 0.024 W/m-K), a 1.0 mm outer skin, and a hermetic compressor-condenser unit of 500 W cooling capacity at 30 C ambient. The tank carries 100 kg of milk (density 1030 kg/m^3) plus self-weight and must also withstand a 50 kg operator-lean load on the lid. Pass/fail criteria per Grade A / WHO milk-chilling guideline: (R1) max von Mises stress in the 304 SS inner tank under full 100 L milk load plus 500 N lid load must not exceed 137 MPa (yield 205 / SF 1.5), (R2) transient thermal analysis must demonstrate cooling from 35 C to 4 C in at most 180 minutes at the center of the milk volume against 30 C ambient with the 500 W compressor (this is the governing process requirement), (R3) steady-state standby heat leak with compressor off must not exceed 20 W through the insulation so that the tank rises less than 1 C per hour when disconnected, (R4) compressor duty cycle to hold 4 C +/- 1 C over 24 h must not exceed 50% to ensure electrical budget at ~250 W average and 6 kWh/day, and (R5) the drip tray + lid hinge must survive a 1000-cycle fatigue test at 50 kg opening force with stress below 100 MPa. Thermal analysis is required for R2, R3, R4 (transient cooling, standby leak, and duty cycle). Vibration, fluid CFD, and radiation analyses are not required. Deliver a STEP AP242 assembly of the tank with inner + outer walls, insulation, lid, and compressor bay as sub-bodies plus a verification report listing structural stress, 35 C to 4 C cooling time, standby heat leak, compressor duty cycle, and hinge fatigue stress.\n\n--- ASSEMBLY RECONFIGURATION ---\nThis design is delivered as a multi-part assembly rather than a single solid body. The decomposition comprises (A) inner_304ss_vessel, (B) pu_foam_insulation, (C) outer_skin, (D) insulated_lid, (E) evaporator_coil_pack, (F) compressor_condenser_unit, (G) drip_tray_lid_hinge, (H) drain_valve_fitting. The final FEM verification runs on the ASSEMBLED model only — per-part stress is reported but does not gate pass/fail. Inter-part connection demand-to-capacity ratio (DCR) must be <= 1.0 under the governing load case. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim; assembly-scope criteria are added.",
+  "short_prompt": "Design a smallholder electric milk-chilling tank targeting a 100 L batch of freshly milked cow milk at 35 C cooled to 4 C within 3 hours and held at 4 C +/- 1 C for up to 24 hours at a site ambient of 30 C.\n\nThe tank is a cylindrical 304 stainless steel double-wall vessel with 100 L internal volume, internal dimensions diameter 450 mm x height 620 mm, 1.5 mm inner wall thickness, 50 mm polyurethane foam insulation (thermal conductivity 0.024 W/m-K), a 1.0 mm outer skin, and a hermetic compressor-condenser unit of 500 W cooling capacity at 30 C ambient.\n\nThe tank carries 100 kg of milk (density 1030 kg/m^3) plus self-weight and must also withstand a 50 kg operator-lean load on the lid.\n\nLoad cases: LC1 full milk + operator lean (100 kg milk + 500 N lid load); LC2 cooling transient 35 C to 4 C in at most 180 minutes at 30 C ambient with the 500 W compressor; LC3 standby heat leak not exceeding 20 W; LC4 compressor duty cycle to hold 4 C +/- 1 C over 24 h not exceeding 50% for a ~250 W average and 6 kWh/day budget; LC5 drip tray + lid hinge 1000-cycle fatigue at 50 kg opening force.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "vapor_compression_refrig_cycle",
+        "reason": "Compressor cooling capacity at 30 C ambient is read from manufacturer performance curves, not FEA.",
+        "examples": [
+          "Embraco/Danfoss performance curves",
+          "Coolpack cycle simulator"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Smallholder 100 L electric milk-chilling tank (multi-part assembly)",
+    "brief": "Design a 100 L 304 SS double-wall milk chiller with 50 mm PU foam insulation and 500 W compressor that cools 35 C milk to 4 C in <= 180 min at 30 C ambient, with <= 20 W standby leak and <= 50% compressor duty cycle. [Multi-part assembly] inner_304ss_vessel (x1), pu_foam_insulation (x1), outer_skin (x1), insulated_lid (x1), evaporator_coil_pack (x1), compressor_condenser_unit (x1), drip_tray_lid_hinge (x1), drain_valve_fitting (x1). FEM verification at assembled level only; connection DCR <= 1.0 under governing load case.",
+    "geometric_constraints": {
+      "internal_volume_L": 100,
+      "internal_dia_mm": 450,
+      "internal_height_mm": 620,
+      "inner_wall_thickness_mm": 1.5,
+      "insulation_thickness_mm": 50,
+      "outer_wall_thickness_mm": 1.0
+    },
+    "material": {
+      "inner_wall": "304 SS, yield 205 MPa, E 193 GPa",
+      "insulation": "PU foam, k 0.024 W/m-K",
+      "outer_wall": "304 SS or powder-coated steel"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "full_milk_plus_operator",
+        "milk_kg": 100,
+        "operator_lean_N": 500
+      },
+      {
+        "id": "LC2",
+        "name": "cooling_transient",
+        "initial_C": 35,
+        "target_C": 4,
+        "ambient_C": 30,
+        "target_time_min_max": 180,
+        "compressor_W": 500
+      },
+      {
+        "id": "LC3",
+        "name": "standby_leak",
+        "delta_T_C": 26,
+        "target_leak_W_max": 20
+      },
+      {
+        "id": "LC4",
+        "name": "duty_cycle_24h",
+        "setpoint_C": 4,
+        "tolerance_C": 1,
+        "target_duty_max_pct": 50
+      },
+      {
+        "id": "LC5",
+        "name": "hinge_fatigue",
+        "cycles": 1000,
+        "force_per_cycle_N": 490
+      }
+    ],
+    "boundary_conditions": {
+      "tank_exterior": "natural convection at 30 C ambient",
+      "compressor_evaporator": "inside inner wall, boundary heat extraction"
+    },
+    "objective": {
+      "primary": "pass cooling + hold + structural + hinge",
+      "secondary": "minimize electrical energy per 100 L batch"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "report_fields": [
+        "inner_tank_max_von_mises_MPa",
+        "cooling_time_35_to_4C_min",
+        "standby_heat_leak_W",
+        "compressor_duty_cycle_pct",
+        "hinge_fatigue_stress_MPa",
+        "connection_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "inner_304ss_vessel",
+        "role": "primary milk-contact vessel resisting hydrostatic milk load + operator lean + hosting evaporator coil",
+        "count_min": 1,
+        "geometric_constraints": {
+          "inner_dia_mm": 450,
+          "height_mm": 620,
+          "wall_thickness_mm": 1.5
+        },
+        "material_hint": "304 SS, yield 205 MPa, E 193 GPa, Grade A food-contact finish",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "pu_foam_insulation",
+        "role": "50 mm foam-in-place polyurethane annulus between inner and outer walls; dominant thermal resistance",
+        "count_min": 1,
+        "geometric_constraints": {
+          "ring_inner_dia_mm": 453,
+          "ring_outer_dia_mm": 553,
+          "height_mm": 630,
+          "thickness_mm": 50
+        },
+        "material_hint": "Closed-cell PU foam, k 0.024 W/m-K, density 40 kg/m^3",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "outer_skin",
+        "role": "1 mm stainless or powder-coated steel outer skin enclosing foam and providing exterior surface",
+        "count_min": 1,
+        "geometric_constraints": {
+          "outer_dia_mm": 555,
+          "height_mm": 640,
+          "wall_thickness_mm": 1.0
+        },
+        "material_hint": "304 SS or mild steel powder-coated, thickness 1.0 mm",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "insulated_lid",
+        "role": "double-wall hinged lid carrying operator 500 N lean load and sealing thermal envelope",
+        "count_min": 1,
+        "geometric_constraints": {
+          "diameter_mm": 480,
+          "total_thickness_mm": 50,
+          "foam_thickness_mm": 40
+        },
+        "material_hint": "304 SS skins top/bottom with PU foam core, silicone gasket rim",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "evaporator_coil_pack",
+        "role": "refrigerant evaporator coil bonded to outside of inner vessel A for heat extraction",
+        "count_min": 1,
+        "geometric_constraints": {
+          "coil_length_m": 12,
+          "tube_outer_diameter_mm": 9.5,
+          "contact_area_m2": 0.5
+        },
+        "material_hint": "Copper tube bonded with thermal epoxy to inner vessel outer wall",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "compressor_condenser_unit",
+        "role": "500 W hermetic vapor-compression condenser unit mounted in compressor bay below tank",
+        "count_min": 1,
+        "geometric_constraints": {
+          "envelope_LxWxH_mm": [
+            400,
+            300,
+            250
+          ],
+          "mass_kg": 15,
+          "cooling_capacity_W": 500
+        },
+        "material_hint": "Hermetic steel shell, vendor-integrated Embraco/Danfoss compressor",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "drip_tray_lid_hinge",
+        "role": "stainless hinge + drip tray governing R5 1000-cycle fatigue at 490 N opening force",
+        "count_min": 1,
+        "geometric_constraints": {
+          "pin_diameter_mm": 8,
+          "bracket_thickness_mm": 3,
+          "arm_length_mm": 50
+        },
+        "material_hint": "304 SS weldment hinge, Sa min 250 MPa for 1000-cycle endurance",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "drain_valve_fitting",
+        "role": "sanitary drain valve at bottom of inner vessel for milk discharge and CIP drain",
+        "count_min": 1,
+        "geometric_constraints": {
+          "nominal_bore_mm": 25,
+          "thread": "1 in tri-clamp",
+          "seat_material": "EPDM"
+        },
+        "material_hint": "316 SS tri-clamp valve with EPDM seat, food-grade",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "see original brief",
+      "coordinate_system": "inherit from original"
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "inner_tank_max_von_mises",
+        "limit_MPa": 137,
+        "derivation": "304 yield 205 / 1.5",
+        "applies_to": [
+          "LC1"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "thermal_analysis",
+        "metric": "cooling_time_35_to_4C",
+        "limit_min": 180,
+        "derivation": "Grade A dairy chilling requirement",
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "standby_heat_leak",
+        "limit_W": 20,
+        "derivation": "<1 C/hour rise with compressor off",
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "thermal_analysis",
+        "metric": "compressor_duty_cycle",
+        "limit_pct": 50,
+        "derivation": "electrical budget 6 kWh/day",
+        "applies_to": [
+          "LC4"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "hinge_fatigue_stress",
+        "limit_MPa": 100,
+        "derivation": "1000-cycle endurance for 304 SS weldment",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_asm1",
+        "description": "Connection DCR across all inter-part interfaces (welds, foam bond, lid hinge, evaporator bond, drain tri-clamp) <= 1.0 under LC1 governing load.",
+        "metric": "max DCR across IF1..IFn",
+        "threshold": 1.0,
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Evaporator coil-to-inner-vessel thermal bond must provide contact conductance >= 300 W/m2-K to achieve LC2 cooling time.",
+        "metric": "coil-to-vessel contact conductance W/m2-K",
+        "threshold": 300,
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "shell for tank walls, solid for hinge",
+      "mesh_size_mm_in_critical_regions": 3,
+      "solver_hints": [
+        "ANSYS Mechanical",
+        "Abaqus",
+        "SolidWorks Flow Simulation"
+      ],
+      "analysis_types": [
+        "linear static",
+        "transient thermal",
+        "steady-state thermal"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "PU foam B is injected in place around inner vessel A, bonded by adhesion; transmits outer support and thermal resistance"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "PU foam B bonds to outer skin C during foam-in-place; outer skin supports and encloses foam"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "evaporator coil E is bonded to exterior of inner vessel A with thermal epoxy; extracts heat flux for LC2/LC4"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "C",
+        "D"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "insulated lid D is hinged via pin joint on outer skin C rim"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "C",
+        "G"
+      ],
+      "mediated_by": "welded",
+      "load_path": "drip tray + hinge bracket G is TIG-welded to outer skin C; carries LC5 fatigue cycles"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "C",
+        "F"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "compressor-condenser unit F is bolted into lower bay frame integrated with outer skin C"
+    },
+    {
+      "id": "IF7",
+      "between": [
+        "A",
+        "H"
+      ],
+      "mediated_by": "welded",
+      "load_path": "drain valve fitting H is orbital-welded to bottom of inner vessel A with sanitary boss"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Double-wall thermal path, foam bond integrity, evaporator contact conductance, and lid hinge fatigue all require assembled-model evaluation; per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A double-wall refrigerated milk tank is inherently an assembly of inner vessel, foam insulation, outer skin, lid, evaporator, compressor bay, and fittings — not a monolithic body.",
+    "speculation_caveats": "parts[] counts and interfaces[] reflect typical smallholder milk-chilling tank architecture but are speculative; not derived from a specific ASME iShow rulebook.",
+    "original_sample_preserved_at": "benchmark/briefs/single/174_md8_asme_ishow.json"
+  }
+}

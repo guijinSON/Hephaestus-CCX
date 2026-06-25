@@ -1,0 +1,337 @@
+{
+  "id": "225_df9_nasa_herc",
+  "source": {
+    "catalog_ref": "DF9",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/225_df9_nasa_herc.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "human_powered_rover_structural",
+  "part_class": "herc_rover_folding_frame_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the primary chassis frame of a two-person tandem human-powered planetary rover benchmark as a welded/bolted folding multi-tube assembly. Rover folds into a 5 ft x 5 ft x 5 ft (1.52 m x 1.52 m x 1.52 m) stowed cube at the start line, then unfolds to a deployed configuration for the course. Maximum empty rover mass (without crew) <= 113 kg (250 lb) per benchmark handbook. Two riders sit in tandem, each with harness-restrained seating and independent pedaling drivetrain to the ground wheels. Wheelbase in deployed configuration: 2.1 m, track width: 1.3 m, with four independently-sprung wheels each rated for an obstacle impact of 3 g over a 30 cm berm. Frame material: 6061-T6 aluminum tubing (Young's modulus 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3), primary tubes 38 mm OD x 1.6 mm wall. The assembly consists of the two longitudinal main rails (left + right), two lateral crossmembers tying the rails, two tandem seat sub-frames (front rider + rear rider), folding hinge joints at the fold axis, four wheel axle upright brackets, two pedal drivetrain mount brackets (front + rear riders), and a tool-task bracket where sampling arms attach. Course obstacles per benchmark handbook: 8 terrain features including crater edges, dune traverse at 10 deg slope, boulder field requiring ground clearance 20 cm, plus four tool-task stations where the rover stops and the crew operates on-board sampling arms. Load cases: (LC1) dual-crew loading: 2 x 85 kg = 170 kg crew + 113 kg rover = 283 kg total, 1 g static; (LC2) 30 cm berm crossing: 3 g vertical impulse on one wheel; (LC3) lateral slope: 10 deg side slope with full 283 kg weight, 0.17 g lateral; (LC4) pedaling reaction: 600 N horizontal at each pedal drive at 1.5 Hz for the 900-second course (1350 cycles per pedal); (LC5) tool-task reaction: 500 N vertical + 300 N horizontal at the tool-mount bracket on the frame during sampling; (LC6) stow-cube compliance: frame must fold into 5x5x5 ft cube without plastic deformation at hinge joints. Pass/fail: (R1) max von Mises in aluminum tubes under LC1-LC5 <= 184 MPa (yield 276 / 1.5); (R2) wheel-axle deflection under LC2 berm <= 10 mm; (R3) hinge-joint tube stress under fold/deploy cycle below 184 MPa; (R4) empty rover mass <= 113 kg (250 lb); (R5) first torsional frame mode above 10 Hz; (R6) stowed-cube envelope compliance verified geometrically. Verification is performed on the assembled welded/hinged tubular frame with representative weld and hinge-bushing stiffness; per-part stress is reported but does not gate pass/fail. Deliverables: STEP AP242, FEA per case, modal, mass report, and stow-cube compliance check.",
+  "short_prompt": "Design the primary chassis frame of a two-person tandem human-powered planetary rover benchmark as a welded/bolted folding multi-tube assembly.\n\nRover folds into a 5 ft x 5 ft x 5 ft (1.52 m x 1.52 m x 1.52 m) stowed cube. Empty rover mass <= 113 kg (250 lb). Deployed wheelbase 2.1 m, track 1.3 m; four wheels rated for 3 g over a 30 cm berm. Frame: 6061-T6 tubing (E 68.9 GPa, Poisson 0.33, yield 276 MPa, ultimate 310 MPa, density 2700 kg/m^3), primary tubes 38 mm OD x 1.6 mm wall. Ground clearance 20 cm; 10 deg dune traverse.\n\nLoad cases.\n- LC1 dual-crew: 2 x 85 kg = 170 kg crew + 113 kg rover = 283 kg total at 1 g.\n- LC2 berm: 3 g vertical impulse on one wheel crossing a 30 cm berm.\n- LC3 lateral slope: 10 deg side slope with full 283 kg, 0.17 g lateral.\n- LC4 pedaling: 600 N horizontal at each pedal drive at 1.5 Hz, 1350 cycles per pedal over the 900 s course.\n- LC5 tool-task: 500 N vertical + 300 N horizontal at tool-mount bracket.\n- LC6 stow-cube: frame folds into 5x5x5 ft without plastic deformation at hinges.\n\nWheel-axle deflection under LC2 berm <= 10 mm; first torsional mode > 10 Hz.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "HERC two-crew folding human-powered rover frame (multi-part assembly)",
+    "brief": "6061-T6 Al tandem rover frame: 2 main rails + 2 crossmembers + 2 seat sub-frames + folding hinges + 4 axle uprights + 2 pedal mounts + tool-task bracket, folding into 1.52 m cube.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "longitudinal_main_rail",
+        "role": "left / right longitudinal main rail of the tandem chassis",
+        "count_min": 2,
+        "geometric_constraints": {
+          "tube_OD_mm": 38,
+          "tube_wall_mm": 1.6,
+          "wheelbase_m": 2.1
+        },
+        "material_hint": "Al 6061-T6 tube",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "lateral_crossmember",
+        "role": "lateral crossmember tying the two main rails at front and rear",
+        "count_min": 2,
+        "geometric_constraints": {
+          "track_width_m": 1.3
+        },
+        "material_hint": "Al 6061-T6 tube",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "seat_subframe",
+        "role": "tandem seat sub-frame for front rider and rear rider",
+        "count_min": 2,
+        "geometric_constraints": {},
+        "material_hint": "Al 6061-T6 tube",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "folding_hinge_joint",
+        "role": "hinge joint on each main rail enabling fold into 5x5x5 ft stowed cube",
+        "count_min": 2,
+        "geometric_constraints": {
+          "stowed_cube_m": 1.524
+        },
+        "material_hint": "Al 6061-T6 hinge + steel pin",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "wheel_axle_upright",
+        "role": "upright bracket at each wheel station carrying the sprung axle",
+        "count_min": 4,
+        "geometric_constraints": {
+          "ground_clearance_cm_min": 20
+        },
+        "material_hint": "Al 6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "pedal_drivetrain_mount",
+        "role": "bracket at each rider station carrying the pedal drivetrain reaction",
+        "count_min": 2,
+        "geometric_constraints": {
+          "F_N_per_pedal": 600
+        },
+        "material_hint": "Al 6061-T6 plate",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "tool_task_bracket",
+        "role": "frame bracket carrying the sampling-arm tool-task reaction",
+        "count_min": 1,
+        "geometric_constraints": {
+          "F_V_N": 500,
+          "F_H_N": 300
+        },
+        "material_hint": "Al 6061-T6 plate",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "deployed: 2.1 m wheelbase x 1.3 m track; stowed: 1.524 x 1.524 x 1.524 m cube",
+      "coordinate_system": "X forward, Y transverse, Z up; fold axis transverse between seat stations"
+    },
+    "material": {
+      "name": "Aluminum 6061-T6",
+      "youngs_modulus_GPa": 68.9,
+      "poissons_ratio": 0.33,
+      "density_kg_m3": 2700,
+      "yield_strength_MPa": 276,
+      "ultimate_tensile_strength_MPa": 310
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "dual_crew_static",
+        "total_mass_kg": 283
+      },
+      {
+        "id": "LC2",
+        "name": "berm_30cm_3g",
+        "g": 3
+      },
+      {
+        "id": "LC3",
+        "name": "10deg_side_slope",
+        "g_lateral": 0.17
+      },
+      {
+        "id": "LC4",
+        "name": "pedaling",
+        "F_N_per_pedal": 600,
+        "freq_Hz": 1.5,
+        "cycles_per_pedal": 1350
+      },
+      {
+        "id": "LC5",
+        "name": "tool_task",
+        "F_V_N": 500,
+        "F_H_N": 300
+      },
+      {
+        "id": "LC6",
+        "name": "fold_deploy_cycle",
+        "application": "hinge joints"
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "main rails welded to crossmembers and seat sub-frames; hinge joints pinned along main rails with representative hinge bushing stiffness; wheel axle uprights welded + bolted to rails; pedal and tool brackets welded to rails",
+      "support": "four wheel contact patches supported in LC1-LC5; hinge geometry verified kinematically in LC6"
+    },
+    "objective": "minimize empty rover mass under 113 kg while passing yield, berm deflection, hinge, modal, and stow-cube gates",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "empty_mass_kg",
+        "max_von_mises_per_case_MPa",
+        "wheel_axle_deflection_mm",
+        "first_torsional_mode_Hz",
+        "stow_cube_compliance",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_von_mises_stress",
+        "limit_MPa": 184,
+        "derivation": "6061-T6 yield 276 / 1.5",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "wheel_axle_deflection_at_berm",
+        "limit_mm": 10,
+        "applies_to": [
+          "LC2"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "hinge_joint_stress_during_fold",
+        "limit_MPa": 184,
+        "applies_to": [
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "structural_analysis",
+        "metric": "empty_rover_mass",
+        "limit_kg": 113,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R5",
+        "type": "vibration_analysis",
+        "metric": "first_torsional_mode",
+        "limit_Hz": 10,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R6",
+        "type": "structural_analysis",
+        "metric": "stowed_cube_envelope",
+        "limit_m": 1.524,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5",
+          "LC6"
+        ],
+        "operator": "<="
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "welded",
+      "load_path": "lateral crossmembers welded into main rails"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "welded",
+      "load_path": "seat sub-frames welded into main rails"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "pinned",
+      "load_path": "folding hinge joint on each main rail"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "A",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "wheel axle upright welded + bolted to main rail"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "welded",
+      "load_path": "pedal drivetrain mount welded to main rail"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "welded",
+      "load_path": "tool-task bracket welded to main rail"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "HERC rovers are tandem folding chassis with distinct rails, crossmembers, seat sub-frames, hinges, wheel uprights, and pedal / tool brackets; the fold-deploy and berm crossing load paths cross hinge and bracket interfaces that must be modelled explicitly.",
+    "speculation_caveats": "Hinge count, crossmember count, and bracket layout are speculative; materials, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "benchmark/briefs/single/225_df9_nasa_herc.json"
+  }
+}

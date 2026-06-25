@@ -1,0 +1,361 @@
+{
+  "id": "157_cn7_aisc_acsa_steel",
+  "source": {
+    "catalog_ref": "CN7",
+    "year": 2026,
+    "tier": "B",
+    "original_sample": "benchmark/briefs/single/157_cn7_aisc_acsa_steel.json",
+    "multipart_basis": "The original sample already specifies body_count=assembly for the column-free long-span steel roof bay. Multipart decomposition exposes the perimeter columns, long-span primary girders, short-span secondary framing, HSS bracing, metal-deck + topping slab, and connection elements as distinct part families."
+  },
+  "domain": "civil_structural",
+  "part_class": "long_span_steel_roof_bay_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design the AISC CN7 long-span steel roof bay for a community dance center as a multi-part assembly, explicitly modeling the 24.4 m x 18.3 m x 9.1 m column-free bay as the physical collection of ASTM A992 wide-flange perimeter columns, primary long-span girders, secondary short-span framing, ASTM A500 Grade C HSS lateral braces, the metal-deck + concrete-topping composite roof, and the bolted/welded connection elements that join them.\n\nThe assembly consists of seven part families: (A) four perimeter corner steel columns (ASTM A992 wide-flange) extending the 9.1 m floor-to-roof clear height; (B) primary long-span roof girders (ASTM A992 wide-flange) spanning the 24.4 m long direction along each of the two long elevations (2 primary girders, potentially deepened or built-up to satisfy LTB); (C) secondary roof framing (ASTM A992 wide-flange) spanning the 18.3 m short direction between the primary girders at regular pitch (typical 3.05 m / 10 ft pitch = 7 short-direction beams); (D) HSS lateral braces (ASTM A500 Grade C) in the vertical plane of the long elevation and in the roof plane for diaphragm bracing; (E) the metal-deck + lightweight concrete topping composite roof panel spanning between the secondary framing members; (F) four column base plates with anchor bolts fixing the columns to the foundation; (G) the bolted/welded beam-to-girder, girder-to-column, brace-gusset, and base-plate connection elements (shear tabs, gusset plates, ASTM F3125 Gr A325 high-strength bolts, fillet/complete-joint-penetration welds).\n\nGeometry inherits the original sample verbatim: column-free bay 24.4 m (long) x 18.3 m (short) x 9.1 m clear height.\n\nMaterial inherits verbatim: ASTM A992 wide-flange (Fy 345 MPa, Fu 450 MPa) for primary girders and columns; ASTM A500 Grade C HSS (Fy 345 MPa) for lateral bracing. Composite roof uses lightweight concrete topping over the metal deck per the original sample.\n\nLoads inherit verbatim: LC1 roof dead 1.2 kPa; LC2 roof live 0.96 kPa; LC3 snow 1.2 kPa; LC4 wind uplift 1.0 kPa; LC5 lateral wind 1.0 kPa on long elevation.\n\nPass/fail criteria inherit verbatim from the original and apply at the assembly level: (R1) every primary girder, column, and brace must achieve AISC 360-22 DCR <= 1.0 under ASCE 7-22 LRFD combinations; (R2) mid-span deflection under 1.0D + 1.0L <= 76.2 mm (span/240 for 18.3 m); (R3) lateral drift under wind <= 22.8 mm (H/400 for 9.1 m); (R4) first-mode buckling load factor of primary long-span girder under 1.0D + 1.0S >= 2.0 (LTB guard); (R5) total structural steel tonnage <= 12.0 metric tons. Added assembly-level targets under fem_check_policy.assembled_only: connection DCR at each beam-to-girder, girder-to-column, brace-gusset, and base-plate interface must be reported; per-part stresses are reported for diagnostic purposes but do not gate pass/fail.\n\nVibration, thermal, fluid, and radiation analyses are not required. An AISC 360-22 member-check spreadsheet is required outside the FEA for closed-form LTB/P-M/shear/HSS interaction. Deliver STEP AP242 of the assembly with each body (each column, each primary girder, each secondary beam, each HSS brace, the deck, the topping slab, each base plate, each connection element) as a distinct solid tagged with part_family (A..G) and instance_index, plus a cut list and structural report listing AISC 360-22 DCR maxima, mid-span deflection, lateral drift, buckling load factor, total steel tonnage, and connection DCR at each interface.",
+  "short_prompt": "Design the AISC CN7 long-span steel roof bay as a multi-part assembly (four perimeter columns, two primary long-span girders, seven secondary short-span beams, HSS lateral braces, metal-deck + lightweight concrete topping composite roof, four base plates, bolted/welded connection elements).\n\nColumn-free bay 24.4 m x 18.3 m x 9.1 m. Primary wide-flange ASTM A992 (Fy 345 MPa, Fu 450 MPa); HSS braces ASTM A500 Grade C (Fy 345 MPa).\n\nLoad cases: LC1 roof dead 1.2 kPa; LC2 roof live 0.96 kPa; LC3 snow 1.2 kPa; LC4 wind uplift 1.0 kPa; LC5 wind lateral 1.0 kPa.\n\nPass/fail: AISC 360-22 DCR <= 1.0 per ASCE 7-22 LRFD; mid-span deflection <= 76.2 mm (span/240 for 18.3 m); lateral drift <= 22.8 mm (H/400 for 9.1 m); LTB buckling factor >= 2.0 under 1.0D+1.0S; FEM at assembled level; connection DCR <= 1.0.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "vibration_analysis",
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": [
+      {
+        "tool": "AISC_360_22_member_check",
+        "reason": "AISC 360-22 Chapter F/H member checks (LTB with Cb, HSS P-M, shear Vn) are spreadsheet closed-form on top of FEA demands.",
+        "examples": [
+          "RISA-3D with AISC 360-22",
+          "SAP2000 Steel Design",
+          "hand spreadsheet"
+        ]
+      }
+    ]
+  },
+  "prompt": {
+    "language": "en",
+    "title": "Long-span steel roof bay for community dance center (multi-part assembly)",
+    "brief": "Multi-part 24.4 x 18.3 x 9.1 m column-free steel roof bay: 4 corner columns (A) + 2 primary 24.4 m girders (B) + 7 secondary 18.3 m beams (C) + HSS braces (D) + composite roof panel (E) + 4 base plates (F) + connection elements (G). Verified at assembly level against AISC 360-22 DCR <= 1.0, mid-span deflection <= 76.2 mm, drift <= 22.8 mm, LTB buckling factor >= 2.0, steel tonnage <= 12.0 t, and connection DCR <= 1.0.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "perimeter_column",
+        "role": "ASTM A992 wide-flange corner column, 9.1 m floor-to-roof clear height; carries gravity reactions from primary girders and distributes lateral wind base shear to the foundation",
+        "count_min": 4,
+        "geometric_constraints": {
+          "height_m": 9.1
+        },
+        "material_hint": "ASTM A992 Fy 345 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "primary_long_span_girder",
+        "role": "ASTM A992 wide-flange primary girder spanning the 24.4 m long direction on each long elevation; carries roof tributary load and governs the LTB buckling check (R4)",
+        "count_min": 2,
+        "geometric_constraints": {
+          "span_m": 24.4
+        },
+        "material_hint": "ASTM A992 Fy 345 MPa (deep section or built-up plate girder)",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "secondary_short_span_beam",
+        "role": "ASTM A992 wide-flange secondary beam spanning the 18.3 m short direction at approximately 3.05 m pitch between primary girders; carries the 1.2 kPa dead + 0.96 kPa live + 1.2 kPa snow tributary roof load",
+        "count_min": 7,
+        "count_note": "approximately 7 secondary beams over the 24.4 m long direction at 3.05 m pitch",
+        "geometric_constraints": {
+          "span_m": 18.3,
+          "pitch_m": 3.05
+        },
+        "material_hint": "ASTM A992 Fy 345 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "hss_brace",
+        "role": "ASTM A500 Grade C HSS lateral brace in the vertical plane of the long elevation and in the roof diaphragm plane; carries the 1.0 kPa lateral wind load through axial X- or K-bracing action",
+        "count_min": 4,
+        "geometric_constraints": {
+          "section": "HSS rectangular or square, team-selected"
+        },
+        "material_hint": "ASTM A500 Grade C Fy 345 MPa",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "composite_roof_panel",
+        "role": "metal-deck + lightweight concrete topping composite roof panel spanning between secondary beams; transmits gravity + snow + uplift loads into the framing",
+        "count_min": 1,
+        "geometric_constraints": {
+          "plan_m": [
+            24.4,
+            18.3
+          ]
+        },
+        "material_hint": "corrugated galvanized steel deck + lightweight concrete topping",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "column_base_plate",
+        "role": "column base plate with anchor-bolt pattern fixed to the foundation; transfers column axial + moment + shear into the foundation",
+        "count_min": 4,
+        "material_hint": "ASTM A572 Gr 50 base plate + ASTM F1554 anchor rods",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "connection_element",
+        "role": "bolted/welded beam-to-girder shear tabs, girder-to-column moment connections, brace-gusset plates, and base-plate anchorages; transfers shear + moment + axial across the frame nodes",
+        "count_min": 25,
+        "geometric_constraints": {
+          "bolt_sizes": [
+            "3/4 inch",
+            "7/8 inch",
+            "1 inch"
+          ]
+        },
+        "material_hint": "ASTM A572 Gr 50 plates + ASTM F3125 Gr A325 bolts + CJP welds",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "24.4 x 18.3 x 9.1 m",
+      "coordinate_system": "building coordinates: +x along 24.4 m long axis, +y along 18.3 m short axis, +z up from foundation"
+    },
+    "material": {
+      "wide_flange": "ASTM A992 Fy 345 MPa",
+      "HSS_braces": "ASTM A500 Grade C Fy 345 MPa"
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "roof_dead",
+        "magnitude_kPa": 1.2,
+        "application": "uniform on roof"
+      },
+      {
+        "id": "LC2",
+        "name": "roof_live",
+        "magnitude_kPa": 0.96,
+        "application": "uniform on roof"
+      },
+      {
+        "id": "LC3",
+        "name": "snow",
+        "magnitude_kPa": 1.2,
+        "derivation": "1.44 kPa ground to flat-roof per ASCE 7-22",
+        "application": "uniform on roof"
+      },
+      {
+        "id": "LC4",
+        "name": "wind_uplift",
+        "magnitude_kPa": 1.0,
+        "application": "upward on roof"
+      },
+      {
+        "id": "LC5",
+        "name": "wind_lateral",
+        "magnitude_kPa": 1.0,
+        "application": "equivalent static on long elevation"
+      }
+    ],
+    "boundary_conditions": {
+      "column_bases": "fixed to foundation via base plates + anchor rods",
+      "beam_to_girder_interface": "bolted shear/moment connection (IF2)",
+      "girder_to_column_interface": "bolted/welded moment connection (IF1)",
+      "brace_to_gusset_interface": "bolted/welded axial connection (IF3)"
+    },
+    "objective": {
+      "primary": "pass all AISC 360-22 DCR and serviceability limits under assembled_only FEM check",
+      "secondary": "minimize total steel tonnage"
+    },
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "max_member_DCR",
+        "mid_span_deflection_mm",
+        "lateral_drift_mm",
+        "first_buckling_load_factor",
+        "total_steel_tonnage_t",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_member_DCR",
+        "limit": 1.0,
+        "derivation": "AISC 360-22 LRFD",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "mid_span_deflection",
+        "limit_mm": 76.2,
+        "derivation": "span/240 for 18.3 m short direction",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "structural_analysis",
+        "metric": "lateral_drift",
+        "limit_mm": 22.8,
+        "derivation": "H/400 for 9.1 m height",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "buckling_analysis",
+        "metric": "first_mode_load_factor",
+        "limit": 2.0,
+        "derivation": "LTB guard under 1.0D+1.0S",
+        "applies_to": [
+          "LC1",
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "total_steel_tonnage",
+        "limit_t": 12.0,
+        "derivation": "efficiency target for column-free bay",
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6-assembly",
+        "type": "assembly_analysis",
+        "metric": "connection_DCR_all_joints",
+        "limit": 1.0,
+        "derivation": "AISC 360-22 Chapter J bolted/welded connection check at each beam-to-girder, girder-to-column, brace-gusset, and base-plate joint",
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC4",
+          "LC5"
+        ],
+        "operator": "<="
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "beam for girders/columns, truss for braces, shell for deck",
+      "mesh_size_mm_in_critical_regions": 300,
+      "solver_hints": [
+        "RISA-3D",
+        "SAP2000",
+        "ETABS"
+      ],
+      "analysis_types": [
+        "linear static",
+        "linear buckling eigenvalue"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "primary girder to corner column moment connection; transfers 24.4 m girder end reaction + moment into the column"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "B",
+        "C"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "secondary beam to primary girder shear connection; transfers tributary roof load into the primary girder"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "HSS brace gusseted connection to column; transfers lateral wind shear through axial brace action"
+    },
+    {
+      "id": "IF4",
+      "between": [
+        "C",
+        "E"
+      ],
+      "mediated_by": "welded",
+      "load_path": "metal deck to secondary beam top flange via welds/puddle welds; develops composite roof diaphragm action"
+    },
+    {
+      "id": "IF5",
+      "between": [
+        "A",
+        "F"
+      ],
+      "mediated_by": "welded",
+      "load_path": "column to base-plate welded connection + anchor rod tie-down to foundation; transfers column axial + moment + shear into the foundation"
+    },
+    {
+      "id": "IF6",
+      "between": [
+        "A",
+        "G"
+      ],
+      "mediated_by": "bolted",
+      "load_path": "column bolt-hole connection-element interaction at all moment and brace connections"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Long-span column-free roofs are inherently steel-framed assemblies of columns, primary girders, secondary beams, and bracing; the multipart sidecar formalizes that decomposition.",
+    "speculation_caveats": "Secondary beam count (7) and brace count (4) follow from the 3.05 m pitch and typical wind bracing layouts; the original sample does not prescribe exact counts.",
+    "original_sample_preserved_at": "benchmark/briefs/single/157_cn7_aisc_acsa_steel.json"
+  }
+}

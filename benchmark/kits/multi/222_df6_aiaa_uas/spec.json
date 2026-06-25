@@ -1,0 +1,566 @@
+{
+  "id": "222_df6_aiaa_uas",
+  "source": {
+    "catalog_ref": "DF6",
+    "year": 2026,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/222_df6_aiaa_uas.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "uas_munition_structural",
+  "part_class": "manpads_class_airframe_tube_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a 1-meter cylindrical airframe tube section of a shoulder-launched anti-UAV missile (MANPADS-class UAS interceptor) benchmark as a multi-part co-bonded assembly of: the filament-wound CFRP barrel tube, four circumferentially distributed fin-mount lug reinforcement patches bonded at 90 deg intervals on the tube, a forward nose-interface ring that carries the IR seeker dome, and an aft motor-interface ring that carries the nozzle. Total missile launch mass <= 15 kg (incl. warhead + motor + seeker + airframe), tube outer diameter 100 mm, engagement slant range 4000 m, peak acceleration at motor burnout 40 g axial, maneuver capability 20 g lateral at Mach 2.0 terminal engagement, IR seeker dome forward of the frame, launcher tube inner diameter 105 mm. Material: filament-wound carbon/epoxy composite cylinder [+/-45/0/90]s layup, quasi-isotropic effective E1=E2=55 GPa, G12=20 GPa, Poisson 0.30, density 1550 kg/m^3, tensile strength 800 MPa, compressive 600 MPa, through-thickness thermal conductivity 0.5 W/mK. Tube wall nominal 3 mm, reinforced at four hardpoints where fin-mount lugs interface. Tube must survive aerodynamic skin heating of 250 C at Mach 2.0 over a 6-second powered fly-out. Load cases: (LC1) launch eject + burnout: 40 g axial on 15 kg mass = 5886 N axial distributed through tube; (LC2) terminal maneuver: 20 g lateral on 10 kg post-burn mass = 1962 N lateral applied at the CG 0.6 m aft of nose; (LC3) aerodynamic pressure: external q = 250 kPa at Mach 2.0 sea level terminal phase, equivalent to 79 kN distributed across 1 m tube length; (LC4) thermal: 250 C sustained skin temperature, 40 C internal initial; (LC5) launch tube seal: 200 kPa internal over-pressure from motor start before nozzle clearance; (LC6) fin-lug point load: 500 N lateral at each fin lug during maneuver. Pass/fail: (R1) max principal strain in ply below 0.75% (conservative fracture limit for thermally-degraded CFRP at 250 C); (R2) max through-thickness shear below 40 MPa; (R3) launcher tube clearance (OD + thermal expansion + ovalization) below 104.5 mm inside 105 mm launcher; (R4) first ovalization mode >= 200 Hz; (R5) tube mass <= 1.2 kg per meter; (R6) linear buckling eigenvalue under LC3 external pressure >= 2.5. Verification is performed on the assembled tube + lug + end-ring multi-body model with representative co-bonded interface stiffness; per-part stress is reported but does not gate pass/fail. Deliverables: STEP + layup table, coupled thermal-structural FEA per case, modal, buckling, and mass report.",
+  "short_prompt": "Design a 1 m cylindrical airframe tube section of a shoulder-launched anti-UAV missile (MANPADS-class UAS interceptor) benchmark as a multi-part co-bonded assembly.\n\nTotal missile launch mass <= 15 kg, tube OD 100 mm, launcher tube ID 105 mm, slant range 4000 m, peak acceleration at motor burnout 40 g axial, maneuver 20 g lateral at Mach 2.0 terminal. Filament-wound carbon/epoxy [+/-45/0/90]s (E1=E2=55 GPa, G12=20 GPa, Poisson 0.30, density 1550 kg/m^3, tensile 800 MPa, compressive 600 MPa, k 0.5 W/mK), nominal 3 mm wall. Aerodynamic skin heating 250 C at Mach 2.0 over a 6-second fly-out.\n\nLoad cases.\n- LC1 launch eject + burnout: 40 g axial on 15 kg = 5886 N axial through tube.\n- LC2 terminal maneuver: 20 g lateral on 10 kg post-burn mass = 1962 N at CG 0.6 m aft of nose.\n- LC3 aerodynamic q = 250 kPa at Mach 2.0 sea level = 79 kN distributed over 1 m.\n- LC4 thermal: 250 C sustained skin, 40 C internal initial.\n- LC5 launch-tube seal: 200 kPa internal over-pressure from motor start.\n- LC6 fin-lug point load: 500 N lateral at each fin lug.\n\nLauncher OD clearance under thermal + ovalization below 104.5 mm inside 105 mm; tube mass <= 1.2 kg/m; buckling eigenvalue under LC3 >= 2.5.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "thermal_analysis",
+      "vibration_analysis",
+      "buckling_analysis"
+    ],
+    "explicitly_excluded": [
+      "fluid_analysis",
+      "radiation_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "MANPADS-class airframe tube (multi-part co-bonded assembly)",
+    "brief": "CFRP filament-wound 100 mm OD airframe tube + 4 fin-lug reinforcement patches + forward nose ring + aft motor ring, Mach 2 terminal, 40 g burnout.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "airframe_barrel_tube",
+        "role": "filament-wound [+/-45/0/90]s CFRP cylindrical barrel carrying axial + external-pressure + thermal loads",
+        "count_min": 1,
+        "geometric_constraints": {
+          "OD_mm": 100,
+          "wall_mm": 3,
+          "length_m": 1.0
+        },
+        "material_hint": "CFRP filament wound [+/-45/0/90]s",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "fin_lug_reinforcement_patch",
+        "role": "one of four bonded local reinforcement pads on the tube OD where fin-mount lugs attach (LC6)",
+        "count_min": 4,
+        "geometric_constraints": {
+          "F_N_per_lug": 500
+        },
+        "material_hint": "CFRP local doubler",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "forward_nose_interface_ring",
+        "role": "forward end-ring interfacing to the IR seeker dome assembly",
+        "count_min": 1,
+        "geometric_constraints": {},
+        "material_hint": "Al 2024 or Ti ring",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "aft_motor_interface_ring",
+        "role": "aft end-ring interfacing to the rocket motor case and carrying the nozzle seal",
+        "count_min": 1,
+        "geometric_constraints": {
+          "P_kPa_seal": 200
+        },
+        "material_hint": "Al 2024 or Ti ring",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "100 mm OD x 1.0 m length",
+      "coordinate_system": "+Z forward along missile axis, fin lugs at 0, 90, 180, 270 deg"
+    },
+    "material": {
+      "name": "CFRP filament wound [+/-45/0/90]s",
+      "E_GPa": 55,
+      "G12_GPa": 20,
+      "poissons_ratio": 0.3,
+      "density_kg_m3": 1550,
+      "tensile_MPa": 800,
+      "compressive_MPa": 600
+    },
+    "load_cases": [
+      {
+        "id": "LC1",
+        "name": "burnout_40g",
+        "F_N": 5886
+      },
+      {
+        "id": "LC2",
+        "name": "20g_maneuver",
+        "F_N": 1962,
+        "application": "CG 0.6 m aft of nose"
+      },
+      {
+        "id": "LC3",
+        "name": "q_M2",
+        "q_kPa": 250,
+        "F_N_distributed": 79000
+      },
+      {
+        "id": "LC4",
+        "name": "thermal",
+        "skin_C": 250,
+        "initial_C": 40
+      },
+      {
+        "id": "LC5",
+        "name": "motor_start_seal",
+        "P_kPa": 200
+      },
+      {
+        "id": "LC6",
+        "name": "fin_lug_maneuver",
+        "F_N_per_lug": 500
+      }
+    ],
+    "boundary_conditions": {
+      "interfaces": "fin-lug reinforcement patches co-bonded to tube OD with representative bonded interface stiffness; nose ring and motor ring bonded + mechanically indexed to tube ends",
+      "support": "launcher-tube ID support during LC1/LC5; free-free for modal"
+    },
+    "objective": "minimize tube mass per meter while passing ply strain, buckling, thermal clearance, and modal gates",
+    "output_format": {
+      "geometry": [
+        "STEP_AP242"
+      ],
+      "body_count": "multi-body",
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ],
+      "report_fields": [
+        "tube_mass_kg_per_m",
+        "max_ply_strain_pct",
+        "max_through_thickness_shear_MPa",
+        "OD_after_thermal_mm",
+        "first_oval_mode_Hz",
+        "buckling_eigenvalue",
+        "assembly_deflection",
+        "connection_DCR",
+        "per_part_max_stress"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {
+        "id": "R1",
+        "type": "structural_analysis",
+        "metric": "max_principal_ply_strain",
+        "limit_pct": 0.75,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R2",
+        "type": "structural_analysis",
+        "metric": "max_through_thickness_shear",
+        "limit_MPa": 40,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R3",
+        "type": "thermal_analysis",
+        "metric": "OD_with_thermal_ovalization",
+        "limit_mm": 104.5,
+        "applies_to": [
+          "LC4",
+          "LC3"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R4",
+        "type": "vibration_analysis",
+        "metric": "first_ovalization_mode",
+        "limit_Hz": 200,
+        "applies_to": [
+          "modal"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R5",
+        "type": "structural_analysis",
+        "metric": "tube_mass_per_m",
+        "limit_kg": 1.2,
+        "applies_to": [
+          "design"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R6",
+        "type": "buckling_analysis",
+        "metric": "external_pressure_eigenvalue",
+        "limit": 2.5,
+        "applies_to": [
+          "LC3"
+        ],
+        "operator": ">="
+      },
+      {
+        "id": "R_ASM1",
+        "type": "structural_analysis",
+        "metric": "assembly_interface_connection_DCR",
+        "limit": 1.0,
+        "applies_to": [
+          "LC1",
+          "LC2",
+          "LC3",
+          "LC6"
+        ],
+        "operator": "<="
+      },
+      {
+        "id": "R_GEOMETRY_COVERAGE",
+        "type": "geometric",
+        "metric": "declared_geometry_constraints",
+        "operator": "matches_declared_constraints",
+        "limit": "all declared geometry paths represented",
+        "applies_to": [
+          "geometry"
+        ],
+        "json_paths": [
+          "prompt.output_format.geometry",
+          "prompt.output_format.body_count",
+          "prompt.output_format.body_metadata",
+          "prompt.output_format.report_fields",
+          "prompt.parts[0].count_min",
+          "prompt.parts[0].geometric_constraints",
+          "prompt.parts[1].count_min",
+          "prompt.parts[1].geometric_constraints",
+          "prompt.parts[2].count_min",
+          "prompt.parts[3].count_min",
+          "prompt.parts[3].geometric_constraints"
+        ],
+        "derivation": "Generated coverage gate: ensures prompt-level envelope, body-count, report-field, and part geometry constraints are represented by an explicit geometry audit experiment.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      },
+      {
+        "id": "R_FEA_COVERAGE_LC5",
+        "type": "structural_analysis",
+        "metric": "generated_static_response_norm",
+        "limit": "finite",
+        "applies_to": [
+          "LC5"
+        ],
+        "operator": "is_finite",
+        "derivation": "Generated coverage gate: ensures the declared load case is present in the CCX deck and checked from model.dat.",
+        "generated_by": "ccx_multipart_coverage_generator"
+      }
+    ]
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": [
+        "A",
+        "B"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "fin-lug reinforcement patch co-bonded to tube OD"
+    },
+    {
+      "id": "IF2",
+      "between": [
+        "A",
+        "C"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "forward nose ring bonded + indexed to tube forward end"
+    },
+    {
+      "id": "IF3",
+      "between": [
+        "A",
+        "D"
+      ],
+      "mediated_by": "bonded",
+      "load_path": "aft motor ring bonded + sealed to tube aft end"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "The airframe tube is explicitly reinforced at four fin-mount hardpoints and carries distinct forward/aft end interfaces for the IR seeker and motor case; LC6 fin-lug point loads cross the bonded reinforcement interface and must be modelled as a multi-body co-bonded structure.",
+    "speculation_caveats": "Nose-ring and motor-ring materials and fin-lug patch layout are speculative; tube material, loads, and thresholds inherit the original sample verbatim.",
+    "original_sample_preserved_at": "benchmark/briefs/single/222_df6_aiaa_uas.json"
+  },
+  "generated_eval_coverage": {
+    "generator": "scripts/ccx_eval/generate_multipart_coverage_kits.py",
+    "purpose": "Add runnable CCX coverage kit for JSON-only multipart prompt.",
+    "fidelity": "generic_coverage_harness",
+    "source_requirement_ids": [
+      "R1",
+      "R2",
+      "R3",
+      "R4",
+      "R5",
+      "R6",
+      "R_ASM1"
+    ],
+    "geometry_requirement_paths": [
+      "prompt.output_format.geometry",
+      "prompt.output_format.body_count",
+      "prompt.output_format.body_metadata",
+      "prompt.output_format.report_fields",
+      "prompt.parts[0].count_min",
+      "prompt.parts[0].geometric_constraints",
+      "prompt.parts[1].count_min",
+      "prompt.parts[1].geometric_constraints",
+      "prompt.parts[2].count_min",
+      "prompt.parts[3].count_min",
+      "prompt.parts[3].geometric_constraints"
+    ],
+    "note": "Generated checks assert solver coverage for every FEA-grade requirement, every declared load case, and prompt-level geometry constraints; they are not a domain-specific certification model."
+  },
+  "fea_experiments": [
+    {
+      "id": "EXP_R1_000",
+      "requirement_id": "R1",
+      "requirement_path": "requirements.pass_fail_criteria[0]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3",
+        "LC6"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3,LC6",
+      "metric": "max_principal_ply_strain",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R2_001",
+      "requirement_id": "R2",
+      "requirement_path": "requirements.pass_fail_criteria[1]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3",
+      "metric": "max_through_thickness_shear",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R3_002",
+      "requirement_id": "R3",
+      "requirement_path": "requirements.pass_fail_criteria[2]",
+      "requirement_class": "FEA_THERMAL",
+      "solver": "calculix",
+      "analysis_card": "*HEAT TRANSFER",
+      "physics_card": null,
+      "load_cases": [
+        "LC3",
+        "LC4"
+      ],
+      "deck_step": "generated_thermal_step",
+      "metric": "OD_with_thermal_ovalization",
+      "metric_source": "thermal temperature block",
+      "outputs": [
+        "model.dat: temperatures"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R4_003",
+      "requirement_id": "R4",
+      "requirement_path": "requirements.pass_fail_criteria[3]",
+      "requirement_class": "FEA_MODAL",
+      "solver": "calculix",
+      "analysis_card": "*FREQUENCY",
+      "physics_card": null,
+      "load_cases": [
+        "modal"
+      ],
+      "deck_step": "generated_modal_step",
+      "metric": "first_ovalization_mode",
+      "metric_source": "modal eigenfrequency block",
+      "outputs": [
+        "model.dat: eigenfrequencies"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R5_004",
+      "requirement_id": "R5",
+      "requirement_path": "requirements.pass_fail_criteria[4]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "design"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "tube_mass_per_m",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R6_005",
+      "requirement_id": "R6",
+      "requirement_path": "requirements.pass_fail_criteria[5]",
+      "requirement_class": "FEA_BUCKLING",
+      "solver": "calculix",
+      "analysis_card": "*BUCKLE",
+      "physics_card": null,
+      "load_cases": [
+        "LC3"
+      ],
+      "deck_step": "generated_buckling_step",
+      "metric": "external_pressure_eigenvalue",
+      "metric_source": "buckling eigenvalue block",
+      "outputs": [
+        "model.dat: eigenvalues"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_ASM1_006",
+      "requirement_id": "R_ASM1",
+      "requirement_path": "requirements.pass_fail_criteria[6]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC1",
+        "LC2",
+        "LC3",
+        "LC6"
+      ],
+      "deck_step": "generated_static_step:LC1,LC2,LC3,LC6",
+      "metric": "assembly_interface_connection_DCR",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_GEOMETRY_COVERAGE_007",
+      "requirement_id": "R_GEOMETRY_COVERAGE",
+      "requirement_path": "requirements.pass_fail_criteria[7]",
+      "requirement_class": "GEOMETRIC",
+      "solver": "geometry",
+      "analysis_card": "GEOMETRY_AUDIT",
+      "physics_card": null,
+      "load_cases": [
+        "geometry"
+      ],
+      "deck_step": "geometry_audit",
+      "metric": "declared_geometry_constraints",
+      "metric_source": "geometry/spec assertion",
+      "outputs": [
+        "spec.json",
+        "generated geometry metadata"
+      ],
+      "assertion": {
+        "mode": "geometry_spec_assertion",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    },
+    {
+      "id": "EXP_R_FEA_COVERAGE_LC5_008",
+      "requirement_id": "R_FEA_COVERAGE_LC5",
+      "requirement_path": "requirements.pass_fail_criteria[8]",
+      "requirement_class": "FEA_STRUCTURAL",
+      "solver": "calculix",
+      "analysis_card": "*STATIC",
+      "physics_card": null,
+      "load_cases": [
+        "LC5"
+      ],
+      "deck_step": "generated_static_step:LC5",
+      "metric": "generated_static_response_norm",
+      "metric_source": "static stress/displacement block",
+      "outputs": [
+        "model.dat: stresses",
+        "model.dat: displacements"
+      ],
+      "assertion": {
+        "mode": "finite_solver_output",
+        "threshold_source": "declared_requirement"
+      },
+      "generated_by": "ccx_multipart_coverage_generator"
+    }
+  ]
+}

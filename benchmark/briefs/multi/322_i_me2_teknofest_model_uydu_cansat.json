@@ -1,0 +1,160 @@
+{
+  "id": "322_i_me2_teknofest_model_uydu_cansat",
+  "source": {
+    "catalog_ref": "I-ME2 (I-TF4)",
+    "year": 2025,
+    "tier": "A",
+    "original_sample": "benchmark/briefs/single/322_i_me2_teknofest_model_uydu_cansat.json",
+    "multipart_basis": "Decomposition inferred from the original prompt; no rulebook citations added beyond those carried by the original sample."
+  },
+  "domain": "aerospace_structural",
+  "part_class": "cansat_primary_structure_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design and deliver the primary structural assembly of a CanSat complying with the national aerospace student benchmark 2025 Model Uydu Yarışması şartnamesi, modelled as a multi-body assembly rather than a single monolithic part. The complete CanSat including all payloads, batteries, electronics, and recovery hardware must fit within a cylindrical envelope of outer diameter 66 mm (-0/+1 mm) and total height 115 mm (-0/+2 mm), with total integrated wet mass between 300 g and 350 g. The original rulebook prompt names four distinct part families that together form the structure: a thin-wall cylindrical outer skin, a conical nose cap, a base plate with parachute eyelet, and three internal PCB-stack rails spaced 120 degrees around the inner wall. In this multi-part rendering the structure is decomposed into six named bodies: (A) one cylindrical outer shell (skin), (B) one conical nose cap, (C) one base plate with parachute eyelet, (D) three PCB-stack rails (count_min = 3, one per 120-degree station), and two supporting interface families, (E) the joining hardware family that fixes nose and base to the shell (small countersunk screws or heat-stake pins; team-selected) and (F) the bonded or mechanical interface family between each rail and the inner shell wall. The CanSat is launched inside a carrier rocket to an altitude of approximately 700 m AGL, ejected, and descends under a single parachute with a nominal descent rate between 6 m/s and 8 m/s. Material is 3D-printed PA12-CF (carbon-fiber reinforced nylon, SLS) with Young's modulus 5.8 GPa, tensile strength 75 MPa, density 1060 kg/m^3. Load cases preserved from the monolithic sample: (LC1) 20 g quasi-static axial acceleration applied to the full CanSat wet mass of 350 g; (LC2) 15 g lateral acceleration simultaneously along the worst-case transverse direction; (LC3) parachute opening shock of 40 N applied at the base-plate eyelet in the axial direction while the CanSat hangs from the shock cord; (LC4) ground-impact drop of 350 g at 8 m/s onto a rigid flat surface, sized as an equivalent static 10 g deceleration on the base. Pass/fail criteria are unchanged: (R1) max von Mises stress in the primary structure below 37.5 MPa under all load cases (75/2.0 material FoS); (R2) max deflection of any PCB stack rail relative to the outer skin below 1.5 mm under LC1; (R3) no structural-element first natural frequency below 80 Hz; (R4) total structural dry mass (shell + nose + base + rails, excluding PCB/battery/parachute) not to exceed 120 g; (R5) the shell outer surface must not protrude past the 66 mm envelope under any load case. Because this sidecar treats the structure as an assembly, two additional assembly-level observables are reported: (A1) the maximum relative deflection between the nose cap and the shell at the bonded/joined interface IF1 under LC1 and LC3, and (A2) the maximum connection demand/capacity ratio at IF1 and IF2 (nose-to-shell and base-to-shell interfaces) and at the rail-to-shell interfaces IF3..IF5, each evaluated against the selected joint's shear / tensile capacity. These are per-connection reports and are not gating pass/fail criteria; pass/fail is still driven by R1..R5 evaluated on the assembled model. Vibration qualification is satisfied by meeting R3 plus the LC1/LC2 quasi-static envelope; no random-vibration PSD is imposed at this level. Thermal, fluid, and radiation analyses are not required. Deliverables: STEP AP242 multi-body solid model with one body per named part family plus one body per rail instance, SLS process note (build orientation and support plan per body), FEA report with stress + deflection for each load case over the fully assembled model, per-part max stress reported but not gating, assembly deflection at IF1, connection DCR table, and modal report listing the first 10 eigenfrequencies of the assembled CanSat.",
+  "short_prompt": "Design and deliver the primary structural assembly of a CanSat complying with the national aerospace student benchmark 2025 Model Uydu Yarışması şartnamesi, modelled as a multi-body assembly.\n\nEnvelope: cylindrical, outer diameter 66 mm (-0/+1 mm), total height 115 mm (-0/+2 mm). Integrated wet mass 300 g to 350 g. CanSat launched in carrier rocket to approximately 700 m AGL, descends under single parachute at 6 m/s to 8 m/s.\n\nMaterial: 3D-printed PA12-CF (carbon-fiber reinforced nylon, SLS), tensile 75 MPa, density 1060 kg/m^3.\n\nLoad cases: (LC1) 20 g quasi-static axial applied to 350 g wet mass; (LC2) 15 g lateral simultaneously along worst-case transverse; (LC3) parachute opening shock 40 N axial at base-plate eyelet; (LC4) ground-impact drop 350 g at 8 m/s, sized as equivalent static 10 g deceleration on base.\n\nPass/fail: (R1) max von Mises < 37.5 MPa across all LCs (75/2.0 FoS); (R2) PCB-rail relative deflection to skin < 1.5 mm under LC1; (R3) first natural frequency >= 80 Hz; (R4) structural dry mass (shell + nose + base + rails) <= 120 g; (R5) shell outer surface stays within 66 mm envelope under any LC.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": ["vibration_analysis"],
+    "explicitly_excluded": ["thermal_analysis", "fluid_analysis", "radiation_analysis", "buckling_analysis"],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "national aerospace student benchmark 2025 Model Uydu Primary CanSat Structure (multi-part assembly)",
+    "brief": "350 g CanSat primary shell + nose + base + 3 PCB-stack rails (multi-body assembly) inside 66 x 115 mm envelope, 20 g axial + 15 g lateral launch qual, parachute descent 6-8 m/s; assembled-only FEA pass/fail, per-part stresses reported.",
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "outer_cylindrical_shell",
+        "role": "primary load path carrying axial launch and lateral loads; defines outer envelope",
+        "count_min": 1,
+        "geometric_constraints": {
+          "outer_diameter_mm": 66,
+          "height_mm": 115,
+          "wall_mm_nominal": 1.2
+        },
+        "material_hint": "PA12-CF (SLS)",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "conical_nose_cap",
+        "role": "aerodynamic nose closure at top of CanSat; bonded or mechanically fastened to shell",
+        "count_min": 1,
+        "geometric_constraints": {"outer_diameter_mm": 66, "height_mm_nominal": 12},
+        "material_hint": "PA12-CF (SLS)",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "base_plate_with_parachute_eyelet",
+        "role": "reacts parachute opening shock and ground-impact deceleration; houses M3/M4 eyelet insert",
+        "count_min": 1,
+        "geometric_constraints": {"outer_diameter_mm": 66, "thickness_mm_nominal": 3.0, "eyelet_hole_mm": 4},
+        "material_hint": "PA12-CF (SLS)",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "internal_pcb_stack_rail",
+        "role": "PCB-stack support rail, one per 120-degree station, bonded or heat-staked to inner shell wall",
+        "count_min": 3,
+        "count_note": "Exactly 3 rails per original sample (three internal PCB-stack rails spaced 120 degrees).",
+        "geometric_constraints": {"length_mm": 100, "cross_section_mm": "6 x 6 approx", "angular_spacing_deg": 120},
+        "material_hint": "PA12-CF (SLS)",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "shell_end_fastener",
+        "role": "fastens nose cap and base plate to shell (small screws or heat-stake pins)",
+        "count_min": 6,
+        "count_note": "At least 3 per end (nose/base), typical for balanced load distribution.",
+        "geometric_constraints": {"nominal_size": "M2 to M3 or heat-stake pin diameter 2-3 mm"},
+        "material_hint": "stainless or integrated polymer pin; team-selected",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "rail_to_shell_bond",
+        "role": "bonded or mechanically joined interface between each rail and inner shell wall",
+        "count_min": 3,
+        "geometric_constraints": {"bond_line_length_mm": 100, "bond_line_width_mm_nominal": 4},
+        "material_hint": "structural adhesive or polymer weld; team-selected",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "overall_bbox": "cylinder outer_diameter 66 mm (-0/+1) x height 115 mm (-0/+2)",
+      "coordinate_system": "z-axis along launch vehicle axis (axial); x-y in base plane; origin at base-plate center"
+    },
+    "material": {
+      "name": "PA12-CF (SLS)",
+      "properties": {"youngs_modulus_GPa": 5.8, "tensile_strength_MPa": 75, "density_kg_m3": 1060}
+    },
+    "mission": {"deploy_altitude_m_AGL": 700, "descent_rate_mps_target": {"min": 6, "max": 8}},
+    "load_cases": [
+      {"id": "LC1", "name": "axial_launch_20g", "magnitude_g": 20, "application": "axial on full 350 g wet mass"},
+      {"id": "LC2", "name": "lateral_launch_15g", "magnitude_g": 15, "application": "transverse on full 350 g wet mass"},
+      {"id": "LC3", "name": "parachute_opening", "magnitude_N": 40, "application": "base plate eyelet axial"},
+      {"id": "LC4", "name": "ground_impact", "magnitude_g": 10, "application": "base equivalent static for 8 m/s drop"}
+    ],
+    "boundary_conditions": {
+      "rigid_body_suppression": "pinned at CanSat centerline during quasi-static launch load application; base eyelet pinned during LC3",
+      "connections": "IF1 nose-to-shell (joint type team-selected), IF2 base-to-shell, IF3..IF5 each PCB rail to inner shell wall; connection stiffness = equivalent linear spring for each E/F instance (screw shank axial + shear or adhesive bond line)."
+    },
+    "objective": {
+      "minimize_primary": "structural_dry_mass_g",
+      "minimize_secondary": "rail_deflection_LC1_mm"
+    },
+    "output_format": {
+      "geometry": ["STEP_AP242"],
+      "body_count": "multi-body",
+      "body_metadata": ["part_family", "instance_index"],
+      "report_fields": [
+        "structural_dry_mass_g",
+        "max_von_mises_per_case_MPa",
+        "per_part_max_stress_MPa",
+        "rail_deflection_LC1_mm",
+        "assembly_deflection_IF1_mm_LC1_LC3",
+        "connection_DCR_per_interface",
+        "first_10_eigenfrequencies_Hz"
+      ]
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {"id": "R1", "type": "structural_analysis", "metric": "max_von_mises_stress", "limit_MPa": 37.5, "derivation": "75 / 2.0 FoS", "applies_to": ["LC1", "LC2", "LC3", "LC4"], "operator": "<="},
+      {"id": "R2", "type": "structural_analysis", "metric": "rail_to_shell_relative_deflection", "limit_mm": 1.5, "applies_to": ["LC1"], "operator": "<="},
+      {"id": "R3", "type": "vibration_analysis", "metric": "first_natural_frequency", "limit_Hz": 80, "applies_to": ["design"], "operator": ">="},
+      {"id": "R4", "type": "structural_analysis", "metric": "structural_dry_mass", "limit_g": 120, "applies_to": ["design"], "operator": "<="},
+      {"id": "R5", "type": "structural_analysis", "metric": "max_radial_protrusion", "limit_mm_from_envelope": 0, "applies_to": ["LC1", "LC2", "LC3", "LC4"], "operator": "<="},
+      {"id": "R-A1", "type": "structural_analysis", "metric": "assembly_deflection_IF1", "applies_to": ["LC1", "LC3"], "operator": "reported", "severity": "reported_only"},
+      {"id": "R-A2", "type": "structural_analysis", "metric": "connection_DCR_per_interface", "limit": 1.0, "applies_to": ["LC1", "LC2", "LC3", "LC4"], "operator": "<=", "severity": "reported_only"}
+    ],
+    "recommended_fea_setup": {
+      "element_type": "TET10 solid for shell, nose, base, rails; tied/coupled connectors at IF1..IF5 with equivalent stiffness",
+      "mesh_size_mm": 1.5,
+      "solver_hints": ["ANSYS Mechanical", "Abaqus", "CalculiX"],
+      "analysis_types": ["linear static (x4)", "modal (first 10 modes) on assembled model"]
+    }
+  },
+  "interfaces": [
+    {"id": "IF1", "between": ["A", "B"], "mediated_by": "bonded", "load_path": "axial tension/compression + small moment from nose to shell under launch"},
+    {"id": "IF2", "between": ["A", "C"], "mediated_by": "bonded", "load_path": "axial tension under parachute shock, axial compression under ground impact"},
+    {"id": "IF3", "between": ["A", "D"], "mediated_by": "bonded", "load_path": "shear along bond line under LC1/LC2 transmitted from PCB stack mass to shell"},
+    {"id": "IF4", "between": ["A", "E"], "mediated_by": "bolted", "load_path": "small axial/tangential reaction where end fasteners close nose and base to shell"}
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "Multipart entries are verified on the assembled model. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "Original sample names four distinct part families (shell, nose, base, 3 rails) that cannot share a single printed body without sacrificing build orientation and rail alignment.",
+    "speculation_caveats": "Fastener family E and bond family F are speculative; team-selected count and type. IF1..IF2 may be bonded, screwed, or snap-fit.",
+    "original_sample_preserved_at": "benchmark/briefs/single/322_i_me2_teknofest_model_uydu_cansat.json"
+  }
+}

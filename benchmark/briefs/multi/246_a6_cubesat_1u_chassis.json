@@ -1,0 +1,301 @@
+{
+  "id": "246_a6_cubesat_1u_chassis",
+  "source": {
+    "catalog_ref": "A6",
+    "year": 2022,
+    "tier": "B+",
+    "original_sample": "benchmark/briefs/single/246_a6_cubesat_1u_chassis.json",
+    "multipart_basis": "Decomposition inferred from the canonical CubeSat Design Specification (CDS) rev 13 architecture used by the great majority of 1U builders: four rail posts at the corners (the dispenser-contact structure), four side panels, a top deck and a bottom deck, internal PC/104 stack standoffs, a separation-switch mount, a deployment-switch bracket (Remove-Before-Flight), and the full rail-fastener set. The original prompt calls out four rails at the four longitudinal corners, four M3 standoff holes for the PC/104 stack, and six face mounting interfaces, all of which map directly to the assembly parts below."
+  },
+  "domain": "space_structural",
+  "part_class": "cubesat_1u_primary_structure_assembly",
+  "assembly": true,
+  "multipart_schema_version": "0.1",
+  "multipart_required": true,
+  "full_prompt": "Design a single-part monolithic 1U CubeSat primary structure (chassis / frame) compliant with the 1U CubeSat design envelope and dispenser-interface specification. The structure provides four rails, six face mounting interfaces, and an internal stack interface for PC/104-Plus PCB stack. External envelope constraints: 100.0 +0.0/-0.1 mm along X and Y, 113.5 +0.0/-0.1 mm along Z (to accommodate rail protrusion above faces), with rails 8.5 x 8.5 mm cross section at each of the four longitudinal corners, and rails protruding at least 6.5 mm above +Z / -Z faces. Rail straightness <= 0.1 mm over full length; rail contact surface Ra <= 1.6 um; rail top/bottom hard-anodized per MIL-A-8625 Type III. Internal PCB stack accommodation: four M3 standoff holes on a 93.0 mm x 82.5 mm rectangular pattern. Center of mass offset from geometric center <= 20 mm along each axis. Total mass of 1U (structure + all payload + battery + boards) <= 2.0 kg; the structure alone shall not exceed 200 g. Material: 7075-T6 aluminum, hard-anodized. E = 71.7 GPa, yield = 503 MPa, ultimate = 572 MPa, density = 2810 kg/m^3. Qualification load cases (typical launch-vehicle ICD): (R1) quasi-static 25 g in each of three orthogonal axes applied to a 2.0 kg lumped internal mass at the CM; max von Mises in structure <= yield / 1.25 = 402 MPa. (R2) first natural frequency in hard-mounted configuration (dispenser rail-contact BC) >= 100 Hz in all three axes (typical small-launcher ICD minimum). (R3) random vibration qualification level 14.1 Grms over 20-2000 Hz, 3-sigma margin; max von Mises <= yield / 1.25 = 402 MPa. (R4) after qualification, all dimensional envelopes and rail straightness <= 0.1 mm shall still be met. (R5) structure mass <= 200 g. Primary verification: structural FEA (linear static for R1 and R4, modal for R2, random vibration PSD for R3). Thermal, fluid, and radiation analyses explicitly NOT required at this structural gate (thermal and radiation are separate mission-analysis gates). Deliverables: STEP AP242 monolithic part, rail inspection drawing, and a report listing mass in g, CM offset in mm, first three modal frequencies in Hz, max von Mises for quasi-static and random-vibration cases in MPa.\n\n--- ASSEMBLY RECONFIGURATION ---\nThe deliverable is reconfigured as a bolted 1U chassis assembly, which is the standard CubeSat Design Specification (CDS) architecture. Parts: four chassis rail posts at the corners (the dispenser contact surfaces, hard-anodized Type III), four side panels (+X, -X, +Y, -Y faces) carrying face mounting interfaces, a +Z top deck, a -Z bottom deck, internal PC/104 standoffs (four on the 93.0 x 82.5 mm pattern), a separation-switch mount, a deployment-switch (Remove-Before-Flight) bracket, and the full rail fastener set (typically 16-24 x M2.5). FEM verification runs on the assembled chassis only; per-part stress is reported but does not gate pass/fail. Rail-to-panel and panel-to-deck fastener DCR, and post-qualification rail straightness retention, must be verified at assembled level. All inherited load magnitudes, material properties, and pass/fail thresholds from the original single-part brief are preserved verbatim.",
+  "short_prompt": "Design a 1U CubeSat primary structure (chassis / frame) as a multi-part bolted assembly compliant with the 1U CubeSat design envelope and dispenser-interface specification.\n\nEnvelope 100.0 x 100.0 x 113.5 mm with rails 8.5 x 8.5 mm at each of the four longitudinal corners, protruding at least 6.5 mm above +Z / -Z faces. Rail straightness <= 0.1 mm; rail contact Ra <= 1.6 um; hard-anodized per MIL-A-8625 Type III. Internal PC/104-Plus stack on four M3 holes on a 93.0 x 82.5 mm pattern. CM offset <= 20 mm each axis. Structure mass <= 200 g.\n\nMaterial: 7075-T6 aluminum. Qualification load cases from typical launch-vehicle ICD: quasi-static 25 g in each of three orthogonal axes on a 2.0 kg lumped internal mass at CM; first natural frequency >= 100 Hz hard-mounted; random vibration 14.1 Grms over 20-2000 Hz with 3-sigma margin. Max von Mises <= 402 MPa (yield 503 MPa / 1.25). Post-qualification envelope and rail straightness shall still be met.",
+  "verification": {
+    "primary": "structural_analysis",
+    "secondary": [
+      "vibration_analysis"
+    ],
+    "explicitly_excluded": [
+      "thermal_analysis",
+      "fluid_analysis",
+      "radiation_analysis",
+      "buckling_analysis"
+    ],
+    "requires_non_fea_solver": []
+  },
+  "prompt": {
+    "language": "en",
+    "title": "1U CubeSat primary structure assembly (bolted rails + panels + decks)",
+    "brief": "1U chassis in hard-anodized 7075-T6 built up from 4 corner rails + 4 side panels + top/bottom decks + PC/104 standoffs + separation/deployment switches. Passes 25 g quasi-static + 14.1 Grms random vib; first mode >= 100 Hz; assembled mass <= 200 g; rail straightness retained after qualification.",
+    "geometric_constraints": {
+      "envelope_X_mm": 100.0,
+      "envelope_Y_mm": 100.0,
+      "envelope_Z_mm": 113.5,
+      "rail_cross_section_mm": "8.5 x 8.5",
+      "rail_protrusion_above_faces_mm_min": 6.5,
+      "rail_straightness_mm_max": 0.1,
+      "rail_Ra_um_max": 1.6,
+      "stack_hole_pattern_mm": "93.0 x 82.5",
+      "stack_hole_thread": "M3",
+      "CM_offset_mm_max": 20,
+      "monolithic": false,
+      "assembled_envelope_retained_after_qual": true
+    },
+    "material": {
+      "name": "7075-T6 aluminum, hard-anodized per MIL-A-8625 Type III",
+      "properties": {
+        "youngs_modulus_GPa": 71.7,
+        "yield_strength_MPa": 503,
+        "ultimate_tensile_strength_MPa": 572,
+        "density_kg_m3": 2810
+      }
+    },
+    "load_cases": [
+      {"id": "LC1", "name": "quasi_static_25g_x", "acceleration_g": 25, "direction": "X", "applied_mass_kg": 2.0},
+      {"id": "LC2", "name": "quasi_static_25g_y", "acceleration_g": 25, "direction": "Y", "applied_mass_kg": 2.0},
+      {"id": "LC3", "name": "quasi_static_25g_z", "acceleration_g": 25, "direction": "Z", "applied_mass_kg": 2.0},
+      {"id": "LC4", "name": "modal", "description": "hard-mounted at four rails over dispenser contact length"},
+      {"id": "LC5", "name": "random_vibration", "grms": 14.1, "band_Hz": [20, 2000], "margin_sigma": 3}
+    ],
+    "boundary_conditions": {
+      "mounting": "rail contact surfaces constrained in transverse directions, -Z rail foot axial support (dispenser)",
+      "applied_mass": "lumped 2 kg at CM coupled to four stack standoff holes"
+    },
+    "objective": {"minimize": "structure_mass"},
+    "output_format": {
+      "geometry": ["STEP_AP242"],
+      "body_count": "multi-body",
+      "report_fields": [
+        "structure_mass_g",
+        "CM_offset_mm",
+        "first_three_modal_frequencies_Hz",
+        "max_von_mises_quasi_static_MPa",
+        "max_von_mises_random_3sigma_MPa",
+        "rail_straightness_post_qual_mm",
+        "fastener_DCR",
+        "per_part_max_stress"
+      ],
+      "body_metadata": [
+        "part_family",
+        "instance_index"
+      ]
+    },
+    "parts": [
+      {
+        "part_id": "A",
+        "name": "chassis_rail_post",
+        "role": "longitudinal corner rail post; forms the dispenser contact surface (hard-anodized Type III) and ties the +Z deck to the -Z deck; must protrude >= 6.5 mm above each Z face",
+        "count_min": 4,
+        "count_note": "Exactly 4, one at each of the four longitudinal corners per the CubeSat Design Specification.",
+        "geometric_constraints": {
+          "cross_section_mm": "8.5 x 8.5",
+          "length_mm": 113.5,
+          "protrusion_above_each_Z_face_mm_min": 6.5,
+          "straightness_mm_max": 0.1,
+          "rail_contact_Ra_um_max": 1.6,
+          "surface_treatment": "MIL-A-8625 Type III hard anodize on the rail contact surface"
+        },
+        "material_hint": "7075-T6 aluminum, hard-anodized Type III",
+        "speculation": true
+      },
+      {
+        "part_id": "B",
+        "name": "side_panel",
+        "role": "face panel on +X, -X, +Y, or -Y; carries external face mounting interfaces (solar-cell interface) and reacts lateral quasi-static + random-vibration loads into the corner rails",
+        "count_min": 4,
+        "count_note": "Exactly 4 side panels: +X, -X, +Y, -Y. The +Z and -Z faces are provided by separate decks to preserve stack access.",
+        "geometric_constraints": {
+          "outer_dimensions_mm": "100 x 113.5 (before rail protrusion)",
+          "thickness_mm": 1.5,
+          "fastener_pattern": "4x M2.5 along each of the two long rail edges (8 per panel)",
+          "external_face_mounting_interface": "per CDS external face interface"
+        },
+        "material_hint": "7075-T6 aluminum, hard-anodized",
+        "speculation": true
+      },
+      {
+        "part_id": "C",
+        "name": "top_deck",
+        "role": "+Z deck providing the +Z face, incorporating any antenna / deployable interface pocket; reacts Z-axis quasi-static load from the stack through the standoff pattern",
+        "count_min": 1,
+        "geometric_constraints": {
+          "outer_dimensions_mm": "100 x 100",
+          "thickness_mm": 2.0,
+          "fastener_pattern": "4x M2.5 to each rail head (16 total shared with bottom deck)"
+        },
+        "material_hint": "7075-T6 aluminum, hard-anodized",
+        "speculation": true
+      },
+      {
+        "part_id": "D",
+        "name": "bottom_deck",
+        "role": "-Z deck providing the -Z face and the dispenser push-off surface",
+        "count_min": 1,
+        "geometric_constraints": {
+          "outer_dimensions_mm": "100 x 100",
+          "thickness_mm": 2.0,
+          "fastener_pattern": "4x M2.5 to each rail foot"
+        },
+        "material_hint": "7075-T6 aluminum, hard-anodized",
+        "speculation": true
+      },
+      {
+        "part_id": "E",
+        "name": "PC104_standoff",
+        "role": "internal standoff supporting the PC/104-Plus PCB stack on the 93.0 x 82.5 mm pattern; carries the 2.0 kg lumped internal mass under the three quasi-static axes (LC1-LC3)",
+        "count_min": 4,
+        "count_note": "Exactly 4, one per M3 standoff hole in the original sample's 93.0 x 82.5 mm pattern.",
+        "geometric_constraints": {
+          "thread": "M3",
+          "pattern_mm": "93.0 x 82.5",
+          "length_mm": 105,
+          "hex_across_flats_mm": 5
+        },
+        "material_hint": "7075-T6 aluminum or stainless steel A2",
+        "speculation": true
+      },
+      {
+        "part_id": "F",
+        "name": "separation_switch_mount",
+        "role": "small mounting bracket on the -Z deck for the dispenser separation switch required by the launch provider ICD (switch signals loss of dispenser contact)",
+        "count_min": 1,
+        "geometric_constraints": {
+          "mount_footprint_mm": "12 x 8",
+          "thickness_mm": 1.0,
+          "fastener": "2x M2"
+        },
+        "material_hint": "7075-T6 aluminum",
+        "speculation": true
+      },
+      {
+        "part_id": "G",
+        "name": "deployment_switch_bracket",
+        "role": "Remove-Before-Flight / deployment switch bracket that inhibits the CubeSat electronics while stowed in the dispenser",
+        "count_min": 1,
+        "geometric_constraints": {
+          "mount_footprint_mm": "15 x 10",
+          "thickness_mm": 1.0,
+          "fastener": "2x M2"
+        },
+        "material_hint": "7075-T6 aluminum",
+        "speculation": true
+      },
+      {
+        "part_id": "H",
+        "name": "rail_fastener",
+        "role": "M2.5 cap-screw set that ties side panels and decks to rails; every fastener is in single or double shear under LC1-LC3 and in cycling shear/tension under LC5",
+        "count_min": 16,
+        "count_note": "Typical build uses 16-24 M2.5 fasteners; minimum of 16 is set by 4 per rail at decks (16 total) with panels further increasing the count.",
+        "geometric_constraints": {
+          "thread": "M2.5",
+          "length_mm_typical": 6,
+          "head": "socket cap (hex drive)",
+          "grade": "A2-70 stainless steel"
+        },
+        "material_hint": "A2-70 stainless steel",
+        "speculation": true
+      }
+    ],
+    "assembly_envelope": {
+      "X_mm": 100.0,
+      "Y_mm": 100.0,
+      "Z_mm": 113.5,
+      "coordinate_system": "CDS convention: Z = long axis (rail axis), X/Y face normals",
+      "CM_offset_mm_max": 20
+    }
+  },
+  "requirements": {
+    "pass_fail_criteria": [
+      {"id": "R1", "type": "structural_analysis", "metric": "max_von_mises_stress", "limit_MPa": 402, "applies_to": ["LC1", "LC2", "LC3"], "operator": "<="},
+      {"id": "R2", "type": "vibration_analysis", "metric": "first_modal_frequency", "limit_Hz": 100, "applies_to": ["LC4"], "operator": ">="},
+      {"id": "R3", "type": "vibration_analysis", "metric": "max_von_mises_stress_3sigma", "limit_MPa": 402, "applies_to": ["LC5"], "operator": "<="},
+      {"id": "R4a", "type": "dimensional_compliance", "metric": "envelope_X_post_qual_mm", "limit_mm": 100.0, "applies_to": ["design"], "operator": "<="},
+      {"id": "R4b", "type": "dimensional_compliance", "metric": "rail_straightness_post_qual_mm", "limit_mm": 0.1, "applies_to": ["design"], "operator": "<="},
+      {"id": "R5", "type": "structural_analysis", "metric": "structure_mass", "limit_g": 200, "applies_to": ["design"], "operator": "<="},
+      {
+        "id": "R_asm1",
+        "description": "Fastener DCR for every M2.5 rail/panel/deck fastener shall be <= 1.0 under LC1-LC3 (quasi-static 25 g) and LC5 (random vibration 3-sigma).",
+        "metric": "max_fastener_DCR across IF1..IF3",
+        "threshold": 1.0,
+        "operator": "<=",
+        "scope": "assembled_only"
+      },
+      {
+        "id": "R_asm2",
+        "description": "Rail-to-rail parallelism and overall 100.0 x 100.0 x 113.5 mm envelope shall be retained after the random-vibration case (LC5) on the assembled chassis, tolerance +0.0/-0.1 mm.",
+        "metric": "envelope_post_LC5_deviation_mm",
+        "threshold": 0.1,
+        "operator": "<=",
+        "scope": "assembled_only"
+      }
+    ],
+    "recommended_fea_setup": {
+      "element_type": "second-order hex or tet for rails and decks; second-order shell for side panels",
+      "mesh_size_mm_in_critical_regions": 2,
+      "solver_hints": ["ANSYS Mechanical", "Nastran", "Abaqus Standard"],
+      "analysis_types": [
+        "linear static (x3 axes) on assembled model",
+        "modal on assembled model",
+        "random vibration PSD on assembled model"
+      ]
+    }
+  },
+  "interfaces": [
+    {
+      "id": "IF1",
+      "between": ["A_chassis_rail_post", "C_top_deck"],
+      "mediated_by": "4x M2.5 cap screws per rail (total 4)",
+      "load_path": "Z-axis tensile preload + XY shear transfer from +Z deck into corner rails"
+    },
+    {
+      "id": "IF2",
+      "between": ["A_chassis_rail_post", "D_bottom_deck"],
+      "mediated_by": "4x M2.5 cap screws per rail (total 4)",
+      "load_path": "Z-axis tensile preload + XY shear transfer from -Z deck into corner rails; also the dispenser push-off reaction"
+    },
+    {
+      "id": "IF3",
+      "between": ["A_chassis_rail_post", "B_side_panel"],
+      "mediated_by": "M2.5 cap screws along each rail edge",
+      "load_path": "X or Y lateral face loads transferred into adjacent rails; governs LC1/LC2 lateral quasi-static and LC5 random"
+    },
+    {
+      "id": "IF4",
+      "between": ["C_top_deck", "E_PC104_standoff"],
+      "mediated_by": "M3 thread into deck-side tapped hole",
+      "load_path": "Z-axis load from 2.0 kg internal mass into +Z deck through the four standoff heads"
+    },
+    {
+      "id": "IF5",
+      "between": ["D_bottom_deck", "E_PC104_standoff"],
+      "mediated_by": "M3 thread into deck-side tapped hole",
+      "load_path": "Z-axis load from 2.0 kg internal mass into -Z deck through the four standoff bases"
+    },
+    {
+      "id": "IF6",
+      "between": ["D_bottom_deck", "F_separation_switch_mount"],
+      "mediated_by": "2x M2 screws",
+      "load_path": "switch push-off reaction at dispenser separation event"
+    },
+    {
+      "id": "IF7",
+      "between": ["B_side_panel", "G_deployment_switch_bracket"],
+      "mediated_by": "2x M2 screws",
+      "load_path": "RBF switch load"
+    }
+  ],
+  "fem_check_policy": {
+    "level": "assembled_only",
+    "rationale": "The qualification load cases are defined at the dispenser rail-contact boundary; the structural response depends on rail-to-panel-to-deck fastener behavior, not on any single part. Per-part stress is reported but does not gate pass/fail.",
+    "per_part_metrics_reported": true
+  },
+  "notes": {
+    "why_multi_part": "A 1U CubeSat primary structure that truly conforms to the CubeSat Design Specification (4 corner rails, 6 face interfaces, internal PC/104 stack, separation and deployment switches) is inherently a bolted assembly. Monocoque 1U chassis exist but the majority of flown 1Us are assemblies of the parts enumerated here.",
+    "speculation_caveats": "Side-panel thickness, deck thickness, and exact fastener counts (>=16) are speculative; the corner-rail count (4), standoff count (4), and face-interface count (6) are anchored to the original sample.",
+    "original_sample_preserved_at": "benchmark/briefs/single/246_a6_cubesat_1u_chassis.json"
+  }
+}
